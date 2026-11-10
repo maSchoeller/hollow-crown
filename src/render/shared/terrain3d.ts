@@ -43,7 +43,7 @@ export function hash3(x: number, y: number, z: number): number {
   return (h ^ (h >>> 16)) >>> 0;
 }
 
-function vnoise(x: number, y: number, seed: number): number {
+export function vnoise(x: number, y: number, seed: number): number {
   const xi = Math.floor(x);
   const yi = Math.floor(y);
   const xf = x - xi;
@@ -145,6 +145,29 @@ export function terrainGrid(data: GameData, state: BattleState, seed: number): T
 }
 
 /** Where feet stand on the board: per tile and, on ramps, stairs and the foot of a ladder, per point of the tile (story 15.13). */
+/** Props whose tile carries a deck (`floorOf`): they shape where a figure stands, so they belong to the blocks. */
+const DECK_PROPS = new Set(['bridge', 'boardwalk']);
+
+/**
+ * Story 11.26: whether two grids build the same blocks, so a terrain change (a fire that catches or burns out, ash) only repaints
+ * the ground and its props instead of rebuilding every mesh of a 30 × 40 map (1–2 s at 2× CPU throttling). Compares what the
+ * geometry, the floor and the water read: height (with a map's level), standing height, cliff, water and its look, connector
+ * and a deck prop; the surface (splat map) and other props may differ.
+ */
+export function sameBlocks(a: TerrainGrid, b: TerrainGrid): boolean {
+  if (a.w !== b.w || a.h !== b.h || a.skirt !== b.skirt || a.interior !== b.interior) return false;
+  for (let gy = 0; gy < a.h; gy++)
+    for (let gx = 0; gx < a.w; gx++) {
+      const p = a.at(gx, gy);
+      const q = b.at(gx, gy);
+      if (p === q) continue;
+      if (!p || !q) return false;
+      if (p.height !== q.height || p.stand !== q.stand || p.cliff !== q.cliff || p.water !== q.water || p.waterLook !== q.waterLook || p.connector !== q.connector) return false;
+      if ((DECK_PROPS.has(p.prop ?? '') || DECK_PROPS.has(q.prop ?? '')) && p.prop !== q.prop) return false;
+    }
+  return true;
+}
+
 export interface Floor {
   /** where a unit's feet are on map tile (x, y): bridges carry their deck, water its surface, a connector its middle */
   standOn(x: number, y: number): number;
@@ -286,46 +309,93 @@ export function splatFactors(weights: number[]): number[] {
   return out;
 }
 
-function splatTextures(scene: Scene, grid: TerrainGrid, seed: number): [RawTexture, RawTexture] {
+/** The warp noise of the splat map, per texel (two values: x and y); it depends on the size and seed only, so a rebuild (fire) reuses it. */
+let warpCache: { key: string; n: Float64Array } | null = null;
+function warpNoise(w: number, h: number, seed: number): Float64Array {
+  const key = `${w}x${h}:${seed}`;
+  if (warpCache?.key === key) return warpCache.n;
+  const n = new Float64Array(w * h * 2);
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++) {
+      const tx = x / SPLAT_PX;
+      const ty = y / SPLAT_PX;
+      n[(y * w + x) * 2] = (vnoise(tx * 3, ty * 3, seed + 1) - 0.5) * 2;
+      n[(y * w + x) * 2 + 1] = (vnoise(tx * 3, ty * 3, seed + 2) - 0.5) * 2;
+    }
+  warpCache = { key, n };
+  return n;
+}
+
+/**
+ * The two mix maps of the top faces as RGBA bytes (`grid.w` × `grid.h` tiles at `SPLAT_PX` texels each). Pure, for the test; on a
+ * 30 × 40 map with its skirt that is 400 × 480 texels, worked out again on every terrain change (story 11.26 made it cheaper).
+ */
+export function splatData(grid: TerrainGrid, seed: number): [Uint8Array, Uint8Array] {
   const w = grid.w * SPLAT_PX;
   const h = grid.h * SPLAT_PX;
   const layers = SPLAT_LAYERS.length;
+  const noise = warpNoise(w, h, seed);
+  // per tile, once (story 11.26; `grid.at` per texel was half the time): its splat layer and how far its edge is warped
+  const tiles = grid.w * grid.h;
+  const layerOf = new Uint8Array(tiles);
+  const warpOf = new Float64Array(tiles);
+  for (let gy = 0; gy < grid.h; gy++)
+    for (let gx = 0; gx < grid.w; gx++) {
+      const def = grid.at(gx, gy);
+      const surface = grid.interior && def?.cliff === 'rock' ? 'vault' : (def?.surface ?? 'grass');
+      const li = SPLAT_LAYERS.indexOf(surface);
+      layerOf[gy * grid.w + gx] = li < 0 ? 1 : li;
+      // roads keep crisper edges than grass or sand
+      warpOf[gy * grid.w + gx] = def?.surface === 'road' ? 0.18 : 0.42;
+    }
   const raw = new Float32Array(w * h * layers);
   for (let y = 0; y < h; y++)
     for (let x = 0; x < w; x++) {
       const tx = x / SPLAT_PX;
       const ty = y / SPLAT_PX;
-      const own = grid.at(Math.floor(tx), Math.floor(ty));
-      // roads keep crisper edges than grass or sand
-      const warp = own?.surface === 'road' ? 0.18 : 0.42;
-      const nx = tx + (vnoise(tx * 3, ty * 3, seed + 1) - 0.5) * 2 * warp;
-      const ny = ty + (vnoise(tx * 3, ty * 3, seed + 2) - 0.5) * 2 * warp;
+      const warp = warpOf[Math.floor(ty) * grid.w + Math.floor(tx)]!;
+      const nx = tx + noise[(y * w + x) * 2]! * warp;
+      const ny = ty + noise[(y * w + x) * 2 + 1]! * warp;
       const gx = Math.min(grid.w - 1, Math.max(0, Math.floor(nx)));
       const gy = Math.min(grid.h - 1, Math.max(0, Math.floor(ny)));
-      const def = grid.at(gx, gy);
-      const surface = grid.interior && def?.cliff === 'rock' ? 'vault' : (def?.surface ?? 'grass');
-      const li = SPLAT_LAYERS.indexOf(surface);
-      raw[(y * w + x) * layers + (li < 0 ? 1 : li)] = 1;
+      raw[(y * w + x) * layers + layerOf[gy * grid.w + gx]!] = 1;
     }
-  // soften the edges (one 5 × 5 box blur)
-  const soft = new Float32Array(raw.length);
+  // soften the edges (one 5 × 5 box blur, edges clamped). Story 11.26: two passes (rows, then columns) with a running sum of the
+  // five texels, the same sums (whole numbers, exact in floats) with 2 instead of 25 reads per texel
+  const clampX = (x: number) => Math.min(w - 1, Math.max(0, x));
+  const clampY = (y: number) => Math.min(h - 1, Math.max(0, y));
+  const across = new Float32Array(raw.length);
   for (let y = 0; y < h; y++)
-    for (let x = 0; x < w; x++)
-      for (let c = 0; c < layers; c++) {
-        let s = 0;
-        for (let j = -2; j <= 2; j++)
-          for (let i = -2; i <= 2; i++) {
-            const xx = Math.min(w - 1, Math.max(0, x + i));
-            const yy = Math.min(h - 1, Math.max(0, y + j));
-            s += raw[(yy * w + xx) * layers + c]!;
-          }
-        soft[(y * w + x) * layers + c] = s / 25;
+    for (let c = 0; c < layers; c++) {
+      const at = (x: number) => raw[(y * w + clampX(x)) * layers + c]!;
+      let sum = at(-2) + at(-1) + at(0) + at(1) + at(2);
+      for (let x = 0; x < w; x++) {
+        across[(y * w + x) * layers + c] = sum;
+        sum += at(x + 3) - at(x - 2);
       }
+    }
+  const soft = new Float32Array(raw.length);
+  for (let x = 0; x < w; x++)
+    for (let c = 0; c < layers; c++) {
+      const at = (y: number) => across[(clampY(y) * w + x) * layers + c]!;
+      let sum = at(-2) + at(-1) + at(0) + at(1) + at(2);
+      for (let y = 0; y < h; y++) {
+        soft[(y * w + x) * layers + c] = sum / 25;
+        sum += at(y + 3) - at(y - 2);
+      }
+    }
   const a = new Uint8Array(w * h * 4);
   const b = new Uint8Array(w * h * 4);
+  // the blend factors of `splatFactors`, worked out in place (story 11.26: no two arrays per texel)
+  const f = new Float64Array(layers);
   for (let y = 0; y < h; y++)
     for (let x = 0; x < w; x++) {
-      const f = splatFactors(Array.from(soft.subarray((y * w + x) * layers, (y * w + x + 1) * layers)));
+      let sum = 0;
+      for (let c = 0; c < layers; c++) {
+        const wt = soft[(y * w + x) * layers + c]!;
+        sum += wt;
+        f[c] = c === 0 ? 1 : sum > 1e-6 ? wt / sum : 0;
+      }
       // rows flipped: v = 1 is the northern edge of the top faces
       const k = ((h - 1 - y) * w + x) * 4;
       a[k] = f[0]! * 255;
@@ -337,6 +407,13 @@ function splatTextures(scene: Scene, grid: TerrainGrid, seed: number): [RawTextu
       b[k + 2] = f[6]! * 255;
       b[k + 3] = (1 - f[7]!) * 255;
     }
+  return [a, b];
+}
+
+function splatTextures(scene: Scene, grid: TerrainGrid, seed: number): [RawTexture, RawTexture] {
+  const w = grid.w * SPLAT_PX;
+  const h = grid.h * SPLAT_PX;
+  const [a, b] = splatData(grid, seed);
   const mk = (data: Uint8Array) => {
     const t = RawTexture.CreateRGBATexture(data, w, h, scene, false, false, Texture.BILINEAR_SAMPLINGMODE);
     t.wrapU = t.wrapV = Texture.CLAMP_ADDRESSMODE;
@@ -349,6 +426,11 @@ function splatTextures(scene: Scene, grid: TerrainGrid, seed: number): [RawTextu
 
 export interface TerrainView extends Floor {
   grid: TerrainGrid;
+  /**
+   * Story 11.26: shows `grid`, which builds the same blocks (`sameBlocks`), by writing the ground's splat maps anew; the meshes,
+   * the floor and the water stay. The caller rebuilds the props if they changed.
+   */
+  repaint(grid: TerrainGrid): void;
   /** shadow casters among the terrain meshes */
   casters: Mesh[];
   /** top height of map tile (x, y), null outside the map */
@@ -518,10 +600,16 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
 
   let frame = -1;
   const floor = floorOf(data, grid, state.width, state.height, data.maps[state.mapId]?.ladders);
-  return {
+  const view: TerrainView = {
     grid,
     casters,
     ...floor,
+    repaint: (next) => {
+      const [a, b] = splatData(next, seed);
+      mix1.update(a);
+      mix2.update(b);
+      view.grid = next;
+    },
     topOf: (x, y) => {
       if (x < 0 || y < 0 || x >= state.width || y >= state.height) return null;
       const def = grid.at(x + S, y + S);
@@ -557,4 +645,5 @@ export function buildTerrain(scene: Scene, data: GameData, state: BattleState, t
       }
     },
   };
+  return view;
 }
