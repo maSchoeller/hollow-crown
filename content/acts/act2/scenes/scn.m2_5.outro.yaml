@@ -1,0 +1,145 @@
+# Mission 2-5, Szene nach der Karte (Knoten post, Story 11.16): Odile ist am Ausgang beigetreten und erzählt von Halvards Briefen (Saat Stimme,
+# Missionsliste 2-5); Halvard ist für die Truppe noch der Mentor, die Zeile beunruhigt, sie klärt nichts auf (narrative.md:173-203).
+# E5: Seraphines Angebot an Odile überbringt ein Lanzenreiter mit ihrem Brief (PO 2026-11-09 F1 = A). Drei Haltungen auf zwei Werte (F4 = A):
+# warm → stay, sober → return, defiant → stay. Bei return geht Odile (leave: ihre Ausrüstung bleibt im Konvoi), e05 bestimmt ihre Zeile in Kronfeld (11.19).
+# Akademie-Hinweis (F3 vom 2026-11-06, Umsetzung F2 = A): steht die Akademie unter Stufe 3 und fehlt Varek, gilt c01_capped – dort nennt die
+# Folgen-Karte von return den Wegfall von Stufe 3; sonst c01 ohne Hinweis. Story 11.17 verwendet dieselbe Bedingung (roomLevel) für E6.
+# Sable spricht nur, wenn sie bei E7 gewechselt hat (e07: warn). Text als Vorschlag der Schreib-Pipeline, Abnahme offen.
+id: scn.m2_5.outro
+background: silberquell
+music: camp
+lines:
+  - id: l01
+    mood: neutral
+    text: "Jenseits der Schlucht wird es still. Unten treibt die Westbrücke als Bretterhaufen im Fluss."
+  - id: l02
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Ihr kanntet mich nicht und habt mich trotzdem geholt. Dafür schulde ich euch die Wahrheit."
+  - id: l03
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Ich war die Leibwache der Prinzessin. Nach der Paktnacht schickte man mich fort, ohne Grund."
+  - id: l04
+    speaker: [avatar]
+    mood: neutral
+    text: "Und warum jagt dich Dravns Heer bis in ein Kloster?"
+  - id: l05
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Weil ich Dinge gesehen habe. Ehrwürden Halvard schreibt der Prinzessin Briefe."
+  - id: l06
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Er schreibt ihr nachts, nach Gesprächen mit der Krone. Sie liest sie und verbrennt sie."
+  - id: l07
+    speaker: [lucan]
+    mood: neutral
+    text: "Halvard ist ein alter Mann, der um seinen König trauert. Briefe sind kein Verbrechen."
+  - id: l08
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Vielleicht. Aber wer sie zu Gesicht bekam, hat seither keine Arbeit mehr bei Hof."
+  - id: l09
+    speaker: [varek]
+    fallback: skip
+    requires: [{ alive: varek }]
+    mood: neutral
+    text: "Odile. Ich hätte nicht gedacht, dich je außerhalb des Palasts zu sehen."
+  - id: l10
+    speaker: [sable]
+    fallback: skip
+    requires: [{ flag: { e07: warn } }]
+    mood: neutral
+    text: "Dravn wollte dich nicht tot, nur still. Jetzt redest du. Das wird ihm nicht gefallen."
+  - id: l11
+    mood: neutral
+    text: "Hufe auf dem Felsweg. Ein Lanzenreiter der Prinzessin hält an, Silber auf dem Wimpel."
+  - id: l12
+    speaker: [lance_rider]
+    fallback: skip
+    mood: neutral
+    text: "Ein Brief für Dame Odile. Ihre Hoheit ruft Euch in die Garde zurück. Euer Platz ist frei."
+  - id: l13
+    speaker: [odile]
+    fallback: skip
+    mood: sad
+    text: "Ein Jahr Schweigen, jetzt ein Brief. Braucht sie mich, oder will mich jemand zurück bei Hof?"
+  - id: l14
+    speaker: [odile]
+    fallback: skip
+    mood: neutral
+    text: "Sag du es, {avatar}. Ihr habt mich geholt. Gehe ich zurück, oder bleibe ich?"
+  - id: c01
+    title: "Seraphines Ruf: Odile zurück in die Garde"
+    requires: [{ any: [{ roomLevel: { id: academy, min: 3 } }, { alive: varek }] }]
+    choice:
+      - id: warm
+        stance: warm
+        text: "„Bleib bei uns. Hier fragt dich keiner, was du gesehen hast.“"
+        summary: "Odile bleibt in der Truppe"
+        effects: [{ setFlag: { e05: stay } }]
+      - id: sober
+        stance: sober
+        text: "„Geh zurück. Am Hof bist du näher an den Briefen als hier bei uns.“"
+        summary: "Odile kehrt in die Garde der Prinzessin zurück"
+        effects: [{ setFlag: { e05: return } }, { leave: odile }]
+      - id: defiant
+        stance: defiant
+        text: "„Sie hat dich weggeworfen. Ein Brief ändert daran nichts. Du bleibst.“"
+        summary: "Odile bleibt, gegen den Ruf der Prinzessin"
+        effects: [{ setFlag: { e05: stay } }]
+  - id: c01_capped
+    title: "Seraphines Ruf: Odile zurück in die Garde"
+    requires: [{ roomLevel: { id: academy, max: 2 } }, { not: { alive: varek } }]
+    choice:
+      - id: warm
+        stance: warm
+        text: "„Bleib bei uns. Hier fragt dich keiner, was du gesehen hast.“"
+        summary: "Odile bleibt in der Truppe"
+        effects: [{ setFlag: { e05: stay } }]
+      - id: sober
+        stance: sober
+        text: "„Geh zurück. Am Hof bist du näher an den Briefen als hier bei uns.“"
+        summary: "Odile kehrt zurück, die Akademie erreicht Stufe 3 nicht mehr"
+        effects: [{ setFlag: { e05: return } }, { leave: odile }]
+      - id: defiant
+        stance: defiant
+        text: "„Sie hat dich weggeworfen. Ein Brief ändert daran nichts. Du bleibst.“"
+        summary: "Odile bleibt, gegen den Ruf der Prinzessin"
+        effects: [{ setFlag: { e05: stay } }]
+  - id: r01
+    speaker: [odile]
+    fallback: skip
+    requires: [{ flag: { e05: return } }]
+    mood: sad
+    text: "Dann gehe ich. Erfahre ich bei Hof etwas über die Briefe, hört ihr von mir."
+  - id: r02
+    speaker: [odile]
+    fallback: skip
+    requires: [{ flag: { e05: return } }]
+    mood: neutral
+    text: "Mein Zeug bleibt hier, die Garde gibt mir neues. Passt auf euch auf, Aschenbanner."
+  - id: r03
+    requires: [{ flag: { e05: return } }]
+    mood: neutral
+    text: "Odile steigt hinter dem Lanzenreiter auf. Am Felsweg dreht sie sich nicht mehr um."
+  - id: s01
+    speaker: [odile]
+    fallback: skip
+    requires: [{ flag: { e05: stay } }]
+    mood: happy
+    text: "Dann bleibe ich. Sag deiner Herrin, ihre Leibwache hat jetzt eine andere Truppe."
+  - id: s02
+    requires: [{ flag: { e05: stay } }]
+    mood: neutral
+    text: "Der Lanzenreiter steckt den Brief ein und reitet ohne ein Wort davon."
+  - id: l15
+    speaker: [lucan]
+    mood: neutral
+    text: "Halvards Briefe. Merk dir das, {avatar}. Weiter, bevor das Grenzheer zurückkommt."

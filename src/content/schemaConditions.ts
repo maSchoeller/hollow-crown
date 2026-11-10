@@ -29,6 +29,11 @@ export const conditionSchema: z.ZodType<Condition> = z.lazy(() =>
     }),
     z.strictObject({ act: z.number().int().min(1) }),
     z.strictObject({ castleTier: z.number().int().min(1).max(3) }),
+    z.strictObject({
+      roomLevel: z
+        .strictObject({ id: z.string().min(1), min: z.number().int().min(0).optional(), max: z.number().int().min(0).optional() })
+        .refine((r) => r.min !== undefined || r.max !== undefined, 'min or max'),
+    }),
     z.strictObject({ support: z.strictObject({ pair: z.tuple([companion, companion]), rank }) }),
     z.strictObject({ stance }),
     z.strictObject({ met: z.string().min(1) }),

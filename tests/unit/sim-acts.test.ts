@@ -36,15 +36,17 @@ const probe = (r: ReturnType<typeof sim>): MissionSim => r.missions.find((m) => 
 
 // Each of these plays whole battles of the probe map (at m2_1) and of 2-2 and 2-3 (real maps since stories 11.13, 11.14): 9–10.5 s alone
 // (story 11.14, was 2.3–8 s with 2-2 only), about twice that under coverage on a busy machine, hence the own timeout.
+// 2-5 has its real map since story 11.16: maxMissions stops each run before it.
 describe('simulation over the acts (story 11.4)', { timeout: 45_000 }, () => {
   it('gives the same report for the same seed, and skips the nodes without a map', () => {
-    const a = sim(opts());
-    expect(sim(opts())).toEqual(a);
+    const a = sim(opts({ maxMissions: 3 }));
+    expect(sim(opts({ maxMissions: 3 }))).toEqual(a);
     expect(a.missions.map((m) => m.node)).toEqual(['m2_1', 'm2_2', 'm2_3']);
     expect(a.missions[0]!.map).toBe('dev_eisenmark');
     expect(a.missions[1]!.map).toBe('m2_2_salzpass');
     expect(a.missions[2]!.map).toBe('m2_3_rabenweide');
-    expect(Object.keys(a.skipped)).toEqual(['m2_4', 'm2_5', 'm2_6', 'm2_7', 'm2_8']);
+    // the placeholders up to the next real map (m2_5) are skipped, the run stops there
+    expect(Object.keys(a.skipped)).toEqual(['m2_4']);
     // the company starts act 2 on P of its first mission
     expect(a.entry.runs).toBe(1);
     expect(a.entry.armyLevel).toBe(base);
@@ -52,18 +54,18 @@ describe('simulation over the acts (story 11.4)', { timeout: 45_000 }, () => {
   });
 
   it('--position sets P of the target node, and the expected start raises the company to it', () => {
-    const a = sim(opts({ position: base + 3 }));
+    const a = sim(opts({ position: base + 3, maxMissions: 1 }));
     expect(a.missions[0]!.expectedLevel).toBe(base + 3);
     expect(a.entry.armyLevel).toBe(base + 3);
     // the target is the node of --node; the skipped nodes before it count for P
-    const d = sim(opts({ node: 'm2_4', position: base + 1 }));
+    const d = sim(opts({ node: 'm2_4', position: base + 1, maxMissions: 4 }));
     expect(probe(d).node).toBe('m2_4');
     expect(probe(d).expectedLevel).toBe(base + 1);
   });
 
   it('--order puts a mission of a pair first: m2_3 at the first or the second position after m2_1', () => {
-    const late = sim(opts({ node: 'm2_3' }));
-    const early = sim(opts({ node: 'm2_3', order: ['m2_3'] }));
+    const late = sim(opts({ node: 'm2_3', maxMissions: 3 }));
+    const early = sim(opts({ node: 'm2_3', order: ['m2_3'], maxMissions: 3 }));
     // file order plays m2_2 before m2_3; with --order m2_3 comes right after m2_1
     expect(probe(late).expectedLevel).toBe(base + 2);
     expect(probe(early).expectedLevel).toBe(base + 1);
@@ -72,9 +74,9 @@ describe('simulation over the acts (story 11.4)', { timeout: 45_000 }, () => {
   it('--flags sets the outcome of a decision for the whole run, only registered flags', () => {
     const seen: Array<CampaignState['flags']> = [];
     const onMission = (_: string, c: CampaignState) => void seen.push({ ...c.flags });
-    sim(opts({ onMission }));
+    sim(opts({ onMission, maxMissions: 1 }));
     const first = seen.length;
-    sim(opts({ flags: ['e07=warn'], onMission }));
+    sim(opts({ flags: ['e07=warn'], onMission, maxMissions: 1 }));
     expect(seen[0]!.e07).toBeUndefined();
     expect(seen[first]!.e07).toBe('warn');
     expect(() => sim(opts({ flags: ['e7_warned'] }))).toThrow(/no flag "e7_warned"/);

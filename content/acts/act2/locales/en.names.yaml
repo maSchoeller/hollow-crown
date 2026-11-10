@@ -37,6 +37,7 @@ faction.iron_march.name: "Border Army of the Eisenmark"
 
 # Foes of act 2 on maps and in haunts (story 11.5, settled in 11.7)
 unit.border_soldier.name: "Border Soldier"
+unit.border_captain.name: "Border Army Captain"
 unit.lance_squire.name: "Lance Squire"
 unit.privateer.name: "Privateer"
 unit.free_blade.name: "Free Blade"
@@ -48,6 +49,7 @@ unit.dravn_envoy.name: "Border Army Envoy"
 
 # Story 11.12: mission 2-1 (map)
 map.m2_1_windscharte.name: "The Wind Gap"
+map.m2_5_silberquell.name: "Silverspring Abbey"
 
 # Story 11.13: mission 2-2 (map, foes)
 map.m2_2_salzpass.name: "The Salt Pass"

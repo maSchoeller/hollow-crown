@@ -1,0 +1,10 @@
+# Mission 2-5, Warnung zu Beginn der Spielerphase von Runde 5 (Trigger t_warn, Story 11.16): in Runde 6 kappen Sables Leute die Westbrücke.
+id: scn.m2_5.bridge_warn
+lines:
+  - id: l01
+    mood: neutral
+    text: "Am Nordrand hacken Soldaten an den Seilen der Westbrücke. Die Planken schwanken schon."
+  - id: l02
+    speaker: [lucan]
+    mood: angry
+    text: "Sie kappen die Westbrücke! Wer hinüber will, muss jetzt rüber oder nach Osten."

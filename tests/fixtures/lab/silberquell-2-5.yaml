@@ -1,0 +1,7 @@
+# Story 11.16: Mission 2-5 „Die verstoßene Leibwache“ zu Beginn, mit der Truppe, die bis Akt 2 beigetreten ist (Sichtprüfung, Bild 375 × 812).
+#   pnpm lab silberquell-2-5                     Lage zu Beginn (Sable am Ausgang; Hauptmann statt Sable: silberquell-2-5-warn)
+#   im Dev-Build von Akt 2 (pnpm dev:act2) ist das Paket act2 beim Start noch nicht geladen; in der Konsole:
+#   await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('silberquell-2-5')
+question: Wie sieht das Kloster Silberquell zu Beginn aus?
+map: m2_5_silberquell
+company: expected
