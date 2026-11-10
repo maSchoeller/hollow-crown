@@ -1,0 +1,7 @@
+# Story 11.13: Mission 2-2 „Das Siegel im Salzpass“ zu Beginn, mit der Truppe, die bis Akt 2 beigetreten ist (Sichtprüfung, Bild 375 × 812: Nebel, Warnung R4).
+#   pnpm lab salzpass-2-2                       Lage zu Beginn
+#   im Dev-Build von Akt 2 (pnpm dev:act2) ist das Paket act2 beim Start noch nicht geladen; in der Konsole:
+#   await (await import('/src/packs/load.ts')).loadPack('act2'); await __hc.lab('salzpass-2-2')
+question: Wie sieht der Salzpass zu Beginn aus?
+map: m2_2_salzpass
+company: expected
