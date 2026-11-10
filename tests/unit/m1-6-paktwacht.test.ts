@@ -206,6 +206,7 @@ describe('Hask withdraws through the east postern (product owner 2026-11-06)', (
     expect(unit(s, 'hask').ai?.profile).toBe('flee');
   });
 
+  // Validates the whole content five times (~9 s alone with act 2 side quests and supports, over 15 s under a full parallel run): own timeout.
   it('content:check wants a way out for flee and refuses a bad one', () => {
     const issues = (edit: (m: GameData['maps'][string]) => void) => {
       const d = structuredClone(data);
@@ -218,7 +219,7 @@ describe('Hask withdraws through the east postern (product owner 2026-11-06)', (
     expect(issues((m) => (flee(m).area = { tiles: [[99, 99]] }))).toContain('t_hask_flight: set_ai area 99,99 is off the map or impassable');
     expect(issues((m) => (flee(m).area = { tiles: [[21, 14]] }))).toContain('t_hask_flight: set_ai area 21,14 is off the map or impassable');
     expect(issues((m) => (flee(m).units = ['nobody']))).toContain('t_hask_flight: set_ai for unknown unit nobody');
-  });
+  }, 40_000);
 
   it('above the threshold nothing happens', () => {
     const s = battle();
