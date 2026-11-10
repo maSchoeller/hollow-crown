@@ -124,3 +124,32 @@ export function boardwalkPiece(joins: (gx: number, gy: number) => boolean, gx: n
   }
   return { model: 'boardwalk_straight', rot: n || s ? SOUTH : EAST };
 }
+
+/**
+ * Pieces of a paddock tile (story 11.14), from the neighbouring paddock tiles (`joins`: paddock fence or gate). The models of
+ * tools/art/props/village.py at `rot` = 0: `paddock_straight` and `paddock_gate` run east-west, `paddock_corner` has its rails to the
+ * west and the north. A line picks straight (or the gate), two joins at a right angle a corner, a junction a straight per axis.
+ */
+export function paddockPiece(joins: (gx: number, gy: number) => boolean, gx: number, gy: number, gate: boolean): Array<{ model: string; rot: number }> {
+  const n = joins(gx, gy - 1);
+  const s = joins(gx, gy + 1);
+  const e = joins(gx + 1, gy);
+  const w = joins(gx - 1, gy);
+  const across = e || w;
+  const along = n || s;
+  const line = gate ? 'paddock_gate' : 'paddock_straight';
+  if (!across && along) return [{ model: line, rot: EAST }];
+  if (across && !along) return [{ model: line, rot: NORTH }];
+  if (!across) return [{ model: line, rot: NORTH }];
+  if (!gate && +n + +s + +e + +w === 2) {
+    // corner: rails west+north at 0, north+east at pi/2, east+south at pi, south+west at -pi/2
+    if (w && n) return [{ model: 'paddock_corner', rot: NORTH }];
+    if (n && e) return [{ model: 'paddock_corner', rot: EAST }];
+    if (e && s) return [{ model: 'paddock_corner', rot: SOUTH }];
+    return [{ model: 'paddock_corner', rot: WEST }];
+  }
+  return [
+    { model: line, rot: NORTH },
+    { model: 'paddock_straight', rot: EAST },
+  ];
+}

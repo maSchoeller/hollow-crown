@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { boardwalkPiece, faceRot, gatePieces, wallPieces, type TerrainAt } from '../../src/render/board/wallKit';
+import { boardwalkPiece, faceRot, gatePieces, paddockPiece, wallPieces, type TerrainAt } from '../../src/render/board/wallKit';
 
 /** A map from rows: # wall, G gate, D door, . ground. */
 function grid(rows: string[]): TerrainAt {
@@ -67,6 +67,22 @@ describe('boardwalk pieces', () => {
     expect(boardwalkPiece(walk(['   ', '===', '   ']), 1, 1)).toEqual({ model: 'boardwalk_straight', rot: Math.PI / 2 });
     expect(boardwalkPiece(walk(['   ', ' ==', ' = ']), 1, 1)).toEqual({ model: 'boardwalk_corner', rot: Math.PI });
     expect(boardwalkPiece(walk(['   ', ' = ', ' = ']), 1, 1)).toEqual({ model: 'boardwalk_end', rot: Math.PI });
+  });
+});
+
+describe('paddock pieces (story 11.14)', () => {
+  const fence = (rows: string[]) => (gx: number, gy: number) => rows[gy]?.[gx] === '|' || rows[gy]?.[gx] === 'G';
+  it('runs straight along its line, turns at a corner and sets the gate in line', () => {
+    expect(paddockPiece(fence(['   ', '|||', '   ']), 1, 1, false)).toEqual([{ model: 'paddock_straight', rot: 0 }]);
+    expect(paddockPiece(fence([' | ', ' | ', ' | ']), 1, 1, false)).toEqual([{ model: 'paddock_straight', rot: Math.PI / 2 }]);
+    expect(paddockPiece(fence([' | ', '|| ', '   ']), 1, 1, false)).toEqual([{ model: 'paddock_corner', rot: 0 }]);
+    expect(paddockPiece(fence([' | ', ' ||', '   ']), 1, 1, false)).toEqual([{ model: 'paddock_corner', rot: Math.PI / 2 }]);
+    expect(paddockPiece(fence(['   ', ' ||', ' | ']), 1, 1, false)).toEqual([{ model: 'paddock_corner', rot: Math.PI }]);
+    expect(paddockPiece(fence(['   ', '|| ', ' | ']), 1, 1, false)).toEqual([{ model: 'paddock_corner', rot: -Math.PI / 2 }]);
+    expect(paddockPiece(fence(['   ', '|G|', '   ']), 1, 1, true)).toEqual([{ model: 'paddock_gate', rot: 0 }]);
+    expect(paddockPiece(fence([' | ', ' G ', ' | ']), 1, 1, true)).toEqual([{ model: 'paddock_gate', rot: Math.PI / 2 }]);
+    // a junction draws a straight piece along each axis
+    expect(paddockPiece(fence([' | ', '|||', '   ']), 1, 1, false).map((p) => p.rot)).toEqual([0, Math.PI / 2]);
   });
 });
 

@@ -72,6 +72,7 @@ packs:
       - locations/brandhang.webp
       - locations/kronfeld.webp
       - locations/windscharte.webp
+      - locations/rabenweide.webp
       - locations/brandschneise.webp
       - locations/kraehenholm.webp
       - locations/kontor.webp
@@ -123,6 +124,13 @@ packs:
       - gatehouse_closed
       - ramp_idle
       - ladder_idle
+      # Story 11.14: Gestüt der Rabenweide (2-3), erst ab Akt 2 gebraucht; bis act2 veröffentlicht ist, kommen sie wie die Herbstmodelle mit act1
+      - paddock_straight
+      - paddock_corner
+      - paddock_gate
+      - stable_a
+      - barn_a
+      - hay_a
       - well_idle
       - fence_gate
       - grove_c

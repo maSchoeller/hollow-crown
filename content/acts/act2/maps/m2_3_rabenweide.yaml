@@ -1,0 +1,193 @@
+# Mission 2-3 – Die Rabenweide (Knoten m2_3). Entwurf concept/27-ueberarbeitung/levels/s2_2_3_rabenweide.yaml, Missionsliste: M 22×26, boss Rowena, 9 / 24, Beitritt Ilka.
+# Gestüt der Silbernen Lanze an der Aure. Die Truppe kommt im Süden über offene Weiden; der Fluss hat drei Furten (shallows: Gepanzerte kommen nicht durch)
+# und seit Story 11.14 einen Steg an der Straße (PO 2026-11-09 F5 = C), damit Gepanzerte ans Nordufer kommen. Nördlich davon Koppeln und der Gestütshof.
+# Rowena (Leutnantin, Boss) wacht im Hof erst auf, wenn jemand nah kommt, und bleibt dann dort (trigger → guard). Bei 0 KP flieht sie wie jeder
+# Leutnant (gone: fled) und die Mission ist gewonnen; die Aufgabe erzählt die Nachszene (F1 = A). Ilka steht als Fährtenleserin der Lanze im Wald
+# am Nordostufer und tritt nur durch Ansprechen bei (jede Figur, F3 = A; Werte aus units.yaml, P − 1).
+# Abweichungen vom Entwurf (Story 11.14, alle in levels/abnahme/s2_2_3_rabenweide.md): Karten-Id m2_3_rabenweide, Szenen scn.m2_3.*, Gegner nur mit levelOffset
+# und als Lanzenritter/Lanzenknecht mit den Figuren des Pools silver_lance, Plänkler mit Schwert statt Lanze (Klasse führt keine Lanze),
+# Rowenas Stufe nach der Leutnant-Regel, Ilka ohne eigene Stufe/Waffen, Trigger t_rowena gestrichen (feuert für Leutnants nie),
+# Steg [10,12]–[10,13] statt des mittleren Furtfelds [ASSUMPTION], Koppelzaun und -tor (paddock, F6 = D) statt Zaun, Stall/Scheune/Heu im Hof (propVariants).
+# Gold 2 000 und zwei Heimsuchungs-Anker rout und defend (F8 = A).
+# Balancing [C] (pnpm sim m2_3_rabenweide --campaign act2 --start expected --runs 50, Story 11.14), Sieg / Niedergestreckte / Tote / Runden:
+#   früheste Position (nach 2-1, P 13): Leicht 100 % / 0,02 / 0,00 / p50 7; Normal 100 % / 0,61 / 0,06 / p50 9; Schwer 82 % / 2,49 / 0,83 / p50 22
+#   späteste Position (nach 2-2, P 14):  Leicht 100 % / 0,00 / 0,00 / p50 7; Normal 100 % / 0,49 / 0,10 / p50 10; Schwer 92 % / 1,36 / 0,29 / p50 17 (25 Läufe)
+#   Schwer liegt über dem Korridor (Sieg, Niedergestreckte); Abstimmung in Story 11.27
+# Szenen: scn.m2_3.intro vor der Karte (Knoten pre), scn.m2_3.water_hint (Runde 2), scn.m2_3.ilka_talk (Ansprechen), scn.m2_3.outro nach dem Sieg.
+id: m2_3_rabenweide
+nameKey: map.m2_3_rabenweide.name
+size: [22, 26]
+legend:
+  ".": plain
+  ",": grass
+  "_": road
+  "T": forest
+  "F": fort
+  "b": building
+  "|": paddock
+  "G": paddock_gate
+  "~": river
+  "f": shallows
+  "=": footbridge
+  "v": village
+#          x: 0123456789012345678901
+terrain: |
+  TTTT,,,,,,,,,,,,,,TTTT
+  TTT,,,bbbb,bbbb,,,,TTT
+  TT,,,,bbbb.bbbb,,,,,TT
+  TT,,,,...._....,,,,,TT
+  ,,,,,,,..F_F..,,,,,,,,
+  ,|||G|||,,_,,|||G|||,,
+  ,|,,,,,|,,_,,|,,,,,|,,
+  ,|,v,,,,,,_,,,,,,v,|,,
+  ,|,,,,,|,,_,,|,,,,,|,,
+  ,|||,|||,,_,,|||,|||,,
+  ,,,,,,,,,,_,,,,,,,,,,,
+  ,,TT,,,,,,_,,,,,,TT,,,
+  ~~~ff~~~~f=f~~~~~ff~~~
+  ~~~ff~~~~f=f~~~~~ff~~~
+  ,,,,,,,,,,_,,,,,,,,,,,
+  ,TT,,,,,,,_,,,,,,TTT,,
+  ,TT,,||||,_,||||,,,,,,
+  ,,,,,|,,,,_,,,,|,,,,,,
+  ,,,,,|,,,,_,,,,|,,TT,,
+  ,,,,,,,,,,_,,,,,,,TT,,
+  TT,,,,,,,,_,,,,,,,,,TT
+  TT,,,,,,,,_,,,,,,,,,TT
+  TTT,,,,,,,_,,,,,,,,TTT
+  TTT,,,,,,,_,,,,,,,,TTT
+  TTTT,,,,,,_,,,,,,,TTTT
+  TTTT,,,,,,_,,,,,,,TTTT
+# Koppeltore (G) stehen geschlossen in der Nordlinie der Koppeln und sperren wie der Zaun; die Lücken bleiben offenes Gras [ASSUMPTION A2].
+# Der Steg liegt auf der Straße (x 10) zwischen den beiden Feldern der mittleren Furt [ASSUMPTION A1].
+# Gestütshof: zwei Ställe (je zwei Felder) und eine Scheune im Westflügel, Stall und Scheunen im Ostflügel, Heu am Hof; die übrigen Felder bleiben Kulissenhäuser
+propVariants:
+  - { at: [6, 1], model: stable_a }
+  - { at: [8, 1], model: stable_a }
+  - { at: [11, 1], model: barn_a }
+  - { at: [12, 1], model: stable_a }
+  - { at: [14, 1], model: barn_a }
+  - { at: [9, 2], model: hay_a }
+  - { at: [11, 2], model: hay_a }
+timeOfDay: noon
+weather: clear
+objects:
+  # die beiden Stallhäuser in den Koppeln (Nebenziel s_stables)
+  - { id: v_west, type: village, at: [3, 7], reward: { gold: 300 } }
+  - { id: v_east, type: village, at: [17, 7], reward: { gold: 300 } }
+deploy:
+  max: 9
+  forced: [avatar, lucan]
+  slots: [[7, 22], [8, 22], [9, 22], [11, 22], [12, 22], [13, 22], [7, 23], [8, 23], [9, 23], [11, 23], [12, 23], [13, 23]]
+# Heimsuchungs-Anker (Story 5.5, Produktinhaber 2026-11-09 F8 = A: rout und defend), die Gründe stehen als Kommentar darüber
+haunts:
+  # Grund: die Südweide – hier stand die Streife der Lanze, hier sammeln sich wieder Reste, die das Aschenbanner von der Weide jagen will.
+  # Die Truppe kommt die Straße herauf wie in der Mission, die Gegner halten die Weide zwischen der kleinen Koppel und dem Fluss.
+  - variant: rout
+    target: { at: [10, 16] }
+    enemySpawn: { rect: [4, 14, 16, 15] }
+    deploy: { rect: [7, 20, 13, 21] }
+  # Grund: der Gestütshof – Rowena hat ihn gehalten, jetzt hält ihn ein Stallmeister allein. Die Truppe steht um ihn im Hof,
+  # die Angreifer kommen vom Nordufer herauf; fünf Runden Standhalten [C] [ASSUMPTION A3].
+  - variant: defend
+    target: { at: [10, 3] }
+    enemySpawn: { rect: [6, 10, 14, 11] }
+    deploy: { tiles: [[10, 2], [9, 3], [11, 3], [9, 4], [10, 4], [11, 4], [9, 5], [10, 5], [11, 5]] }
+    turns: 5
+units:
+  # Gestütshof: Rowena mit Rittern auf den Festen (Stufe nach der Leutnant-Regel, levelOffset nur fürs Format; rowenas_lance ist nur Beute)
+  - { id: rowena, nameKey: unit.rowena.name, team: enemy, class: knight, levelOffset: 2, at: [10, 3], boss: true, lieutenant: rowena, items: [{ def: steel_lance }], ai: { profile: trigger, radius: 5, then: guard } }
+  - { id: k1, nameKey: unit.lance_knight.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [9, 4], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: k2, nameKey: unit.lance_knight.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [11, 4], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: heal, nameKey: unit.lance_squire.name, team: enemy, class: healer, sprite: cleric, levelOffset: -2, at: [10, 5], items: [{ def: heal_staff }], ai: { profile: support } }
+  # Koppeln: Lanzen warten, bis jemand nah kommt
+  - { id: r1, nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [5, 7], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: guard } }
+  - { id: r2, nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [6, 7], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: r3, nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [14, 7], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: guard } }
+  - { id: r4, nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [15, 7], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: r5, nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [16, 6], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: guard }, difficulty: [normal, hard] }
+  # Nordufer: Ritter am Steg, ein Bogen hinter der mittleren Furt
+  - { id: f1, nameKey: unit.lance_knight.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [9, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: f2, nameKey: unit.lance_knight.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [11, 11], items: [{ def: iron_lance }], ai: { profile: guard } }
+  - { id: f3, nameKey: unit.lance_squire.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [10, 10], items: [{ def: iron_bow }], ai: { profile: hold } }
+  - { id: f4, nameKey: unit.lance_squire.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [6, 10], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  # Südufer: Streife und Fußvolk an der kleinen Koppel
+  - { id: s1, nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [8, 15], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: s2, nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [13, 15], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: s3, nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [7, 18], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive } }
+  - { id: s4, nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [13, 18], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [normal, hard] }
+  # Nur Schwer
+  - { id: h1, nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [4, 15], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h2, nameKey: unit.lance_squire.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [15, 10], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
+  # Ilka, von der Lanze als Fährtenleserin für die Pferdezüge angeheuert, im Wald am Nordostufer; schießt vom Waldrand und wechselt die Seite,
+  # wenn man sie anspricht (jede Figur, F3 = A; Stufe max(10, P − 1), Waffen aus units.yaml)
+  - { id: ilka, char: ilka, team: enemy, class: marksman, at: [18, 11], items: [], ai: { profile: hold }, ignoreForRout: true, recruit: { by: any, dialogue: scn.m2_3.ilka_talk } }
+reinforcements:
+  # Lanzen von Osten, auf dem Südufer in den Rücken
+  - turn: 3
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [21, 19], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [21, 17], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [21, 15], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Lanzen von Westen
+  - turn: 5
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [0, 17], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_squire.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [0, 18], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [0, 19], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Nach Norden: Ausfall aus dem Hof
+  - turn: 7
+    phase: enemy
+    announce: true
+    units:
+      - { nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -1, at: [10, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      - { nameKey: unit.lance_squire.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -1, at: [11, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+objectives:
+  victory: { type: boss, unit: rowena }
+  defeat:
+    - { type: unit_dies, unit: avatar }
+    - { type: unit_dies, unit: lucan }
+  side:
+    - { id: s_ilka, type: recruit, unit: ilka, reward: { gold: 300 } }
+    - { id: s_stables, type: visit_villages, reward: { item: { def: vulnerary } } }
+triggers:
+  # Hinweis auf die Furten und den Steg zu Beginn der zweiten Runde
+  - id: t_water
+    once: true
+    when: { type: turn_start, turn: 2, phase: player }
+    then:
+      - { action: dialogue, id: scn.m2_3.water_hint }
+# Gold nach der Goldkurve von Akt 2 (2 000–3 000, GDD Ökonomie), Produktinhaber 2026-11-09 F8 = A; 11.27 stimmt ab
+goldReward: 2000
+design:
+  title: Die Rabenweide
+  intent: >
+    Kampf um ein Gestüt ohne Reiter: Die Silberne Lanze verteidigt zu Fuß. Wer auf der offenen Weide stehen bleibt, wird von zwei Seiten gefasst; wer Furten, Steg, Wald und Koppelzäune nutzt, bricht die Linie.
+    Rowena verteidigt ihr eigenes Gestüt, das macht sie greifbar. Dravn holt sich hier die Pferde, die die Krone ihm verweigert.
+  mood: Heller, kühler Herbstmittag auf weiten goldenen Weiden, weiße Koppelzäune, die silbrige Aure mit flachen Furten und einem Holzsteg, Stallungen mit Schieferdächern, Banner der Silbernen Lanze, Pferde hinter den Zäunen.
+  phases:
+    - { id: p1, turns: [1, 4], label: Weide, note: "Streife auf dem Südufer, R3 Lanzen von Osten. Wald und kleine Koppel als Deckung." }
+    - { id: p2, turns: [5, 7], label: Furten, note: "R5 von Westen. Drei Furten und der Steg: Mitte bewacht, West und Ost führen in die Koppeln." }
+    - { id: p3, turns: [8, 12], label: Gestütshof, note: "Koppelwachen erwachen, R7 Ausfall aus dem Hof, Rowena stellt sich." }
+  paths:
+    - { team: player, points: [[10, 21], [10, 14], [10, 12], [10, 6], [10, 4]], label: Mitte }
+    - { team: player, points: [[8, 22], [3, 18], [3, 14], [4, 12], [4, 9], [4, 7], [8, 7]], phase: p2, label: West }
+    - { team: player, points: [[13, 22], [17, 16], [17, 14], [17, 12], [16, 9], [16, 7], [13, 7]], phase: p2, label: Ost }
+    - { team: enemy, points: [[21, 19], [13, 21]], phase: p1, label: R3 }
+    - { team: enemy, points: [[0, 18], [7, 21]], phase: p2, label: R5 }
+  zones:
+    - { area: { rect: [8, 3, 12, 5] }, label: Gestütshof, phase: p3 }
+  marks:
+    - { at: [10, 12], label: S, note: "Steg an der Straße (F5 = C): einzige Stelle, an der Gepanzerte über die Aure kommen; daneben die mittlere Furt (je Feld 3)." }
+    - { at: [7, 7], label: L, note: "Lücken in den Koppelzäunen (West [7,7], Süd [4,9], Ost [13,7], Süd [16,9]): Engstellen, die Vorkämpfer schließen können." }
+    - { at: [18, 11], label: I, note: "Ilka im Wald; wer sie anspricht, gewinnt sie. Sie schießt sonst vom Waldrand." }
+  notes:
+    - "Stufen über levelOffset (Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants nach der Leutnant-Regel); P = 13 direkt nach 2-1, 14 nach 2-2."
+    - "Normal 24 Gegner einschließlich Ilka (6 davon R3/R5/R7) gegen 9 eigene; Leicht 20, Schwer 28."
+    - "Pferde nur als Kulisse ohne Regel (Produktinhaber 2026-11-05); Koppelzaun, Stall, Scheune und Heu aus der Galerie (F6 = D), ein Pferd kommt mit 11.24."
+    - "Rowena flieht bei 0 KP als Leutnant (Sieg) und kehrt in 2-8 zurück; die Aufgabe und die Saat (sie lässt Lucan versorgen) erzählt die Nachszene (F1 = A, F2 = A)."
+    - "Rolle belohnt: Vorkämpfer am Steg und an der Zaunlücke; Heiler braucht Abstand zur Weide."
