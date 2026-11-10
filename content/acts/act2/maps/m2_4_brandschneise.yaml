@@ -75,10 +75,10 @@ levels:
 timeOfDay: evening
 weather: ash
 objects:
-  - { id: v_nw, type: village, at: [8, 20], reward: { gold: 300 } }
-  - { id: v_ne, type: village, at: [21, 20], reward: { gold: 300 } }
+  - { id: v_nw, type: village, at: [8, 20], reward: { gold: 150 } }
+  - { id: v_ne, type: village, at: [21, 20], reward: { gold: 150 } }
   - { id: v_sw, type: village, at: [11, 25], reward: { item: { def: vulnerary } } }
-  - { id: v_se, type: village, at: [18, 25], reward: { gold: 300 } }
+  - { id: v_se, type: village, at: [18, 25], reward: { gold: 150 } }
   - { id: c_page, type: chest, at: [10, 4], contents: { gold: 300, chronicle: a2_brandhang, dialogue: scn.m2_4.page } }
 initialEffects:
   - { effect: burning, tiles: [[2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [12, 3], [13, 3], [16, 3], [17, 3], [18, 3], [19, 3], [20, 3], [21, 3], [22, 3], [23, 3], [24, 3], [25, 3], [26, 3], [27, 3]], turns: 3 }
@@ -132,7 +132,7 @@ units:
   - { id: h4, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [13, 10], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
   - { id: h5, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [16, 10], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive }, difficulty: [hard] }
   # Brann auf dem Schrein im Dorf: Gast, nicht steuerbar. Fällt er, ist die Mission verloren
-  - { id: brann, char: brann, team: other, class: elementalist, at: [15, 22], items: [{ def: rockfall }], ai: { profile: hold }, ignoreForRout: true, guest: true }
+  - { id: brann, char: brann, team: other, class: elementalist, at: [15, 22], items: [{ def: rockfall }, { def: steel_helm }, { def: leather_vest }, { def: vulnerary }], ai: { profile: hold }, ignoreForRout: true, guest: true }
   # Sable als Dravns Offizierin auf der Lichtung im Nordosten (plain, brennt nicht): generisch ohne char/lieutenant, damit sie nicht über die Mission beitritt
   # (Beitritt nur über E7). [ASSUMPTION] PO F4 vorläufig D: ohne Waffe (greift mit hold nie an), unangreifbar, geht in Runde 7 nach ihrer Szene (t_sable).
   - { id: sable, nameKey: unit.sable.name, team: other, class: duelist, sprite: sable, portrait: sable, levelOffset: 0, at: [21, 7], items: [], ai: { profile: hold }, ignoreForRout: true, untargetable: true }
@@ -256,7 +256,7 @@ design:
     - { area: { rect: [4, 13, 25, 16] }, label: Obere Terrasse St.2 }
     - { area: { rect: [4, 28, 25, 31] }, label: Untere Felder St.0 }
   marks:
-    - { at: [15, 22], label: B, note: "Brann auf dem Schrein (Gast). Heilt 20 %, steht aber in Reichweite der Schützen auf der Kante." }
+    - { at: [15, 22], label: B, note: "Brann auf dem Schrein (Gast). Heilt 20 %, steht aber in Reichweite der Schützen auf der Kante. Story 11.27: Stahlhelm, Lederweste und Heiltrank, sonst fällt er auf Schwer in R8–11." }
     - { at: [21, 7], label: S, note: "Sable schaut zu, greift nicht an, kann nicht angegriffen werden. E7 „warnen“ nach der Mission entscheidet ihren Beitritt." }
     - { at: [10, 4], label: C, note: "Chronik-Seite in der Köhlerruine. Der Wald brennt dorthin: früh losgehen." }
     - { at: [14, 17], label: R, note: "Rampen der Oberkante bei x 6, 14, 15, 23; Unterkante ebenso, dazu Treppen bei x 10, 19." }
