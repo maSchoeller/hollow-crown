@@ -64,3 +64,8 @@ unit.clan_elder.name: "Clan Elder"
 map.n5_kupfermine.name: "The Copper Mine"
 unit.duchess_looter.name: "Duchess's Looter"
 unit.foreman.name: "Foreman"
+# Story 11.22: side quest N6 (map, troupe master and debt collectors)
+map.n6_auemarkt.name: "The Meadow Market"
+unit.troupe_master.name: "Master Maren"
+unit.debt_collector.name: "Debt Collector"
+unit.debt_boss.name: "Head Collector"

@@ -20,6 +20,7 @@ item.ember_focus.desc: "Ein glühender Stein für die Nebenhand. Stärkt Magie; 
 item.ember_robe.desc: "Eine Robe mit eingewebter Glut. Schützt gegen Magie und gibt dem Träger die Affinität Feuer; Teil des Sets Gewand der Glut."
 item.ember_spark.desc: "Ein Funke, der nicht verlischt. Wird beim Aufstieg einer Figur verbraucht und bleibt bis dahin im Konvoi."
 item.feather_rune.desc: "Eine Hilfsrune, die die Waffe leichter macht."
+item.final_curtain.desc: "Jorys alte Laute aus der Gauklertruppe, bemalt mit dem Vorhang ihrer Bühne. Anfeuern stärkt zwei Verbündete."
 item.fire_bomb.desc: "Ein Tonkrug voll Brandöl. Aus der Entfernung werfen: Feuerschaden, das Ziel brennt, Gelände fängt Feuer."
 item.fire_rune_1.desc: "Eine Rune aus Glutstein. Gibt einer Waffe das Element Feuer."
 item.fire_rune_2.desc: "Eine stärkere Feuerrune. Treffer können das Ziel in Brand setzen."
