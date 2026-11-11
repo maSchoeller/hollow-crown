@@ -33,3 +33,11 @@ EXPRESSION: noble, determined.
 WEAPON: a long knightly lance held upright in her right hand, the steel tip inside the image; her helmet with small feathered wings held under her left arm.
 SIGNATURE: the winged helmet.
 ```
+
+## Nachtrag 2026-11-11 (Story 11.25): Figurenblatt berichtigt
+
+Der Prompt oben bleibt im Wortlaut der Erzeugung (A3). Seit der Missionsliste (Narrative-Log 2026-11-05) gilt für Rowena:
+
+- **Rolle:** Lanzenritterin der Prinzessin, kämpft **zu Fuß** (Klasse `knight`, `content/acts/act2/lieutenants.yaml`); kein Pegasus, keine Flieger in Staffel 1.
+- **Signatur:** Ritterhelm mit kleinen weißen Flügeln, **unterm linken Arm bzw. in der linken Hand**, nie auf dem Kopf; dazu der lange hohe Zopf und die Lanze (Art Direction §4.3).
+- **Das Porträt passt** und bleibt: Es zeigt sie schon zu Fuß mit Helm unterm Arm. Brettfigur: `art/prompts/rowena_board_turnaround.md` (Fassung 2026-11-11).

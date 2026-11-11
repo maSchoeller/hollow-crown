@@ -18,3 +18,5 @@
 
 - Vereinfacht wie die vorigen Brettfiguren ✓, türkiser Undercut und Fliegerbrille erkennbar ✓, Teamtuch (Schal und Hüfttuch) flach Magenta ✓, keine Waffe ✓, kein Text ✓, Seitenansicht schaut nach rechts ✓.
 - Ohne Wyvern (Reittiere sind laut art-direction.md §4.6 Schritt 6 offen); Teamtuch vom Assistenten gewählt.
+
+> **Nachtrag 2026-11-11 (Story 11.25):** Brakka kämpft seit der Missionsliste als **Ballistenmeisterin** zu Fuß (kein Wyvern), siehe `art/prompts/brakka.md`. Dieser Turnaround und das Modell bleiben unverändert (F2, Produktinhaber 2026-11-06).
