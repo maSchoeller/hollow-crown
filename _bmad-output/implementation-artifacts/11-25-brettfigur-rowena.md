@@ -2,6 +2,8 @@
 
 Status: ready-for-dev
 
+> **Wartet auf Tripo-Credits.** Tripo zeigt am 2026-11-11 65 Credits, eine Figur kostet 140 (F2 rechnete mit dem Stand vor Story 15.14). Der Produktinhaber hat die Story am 2026-11-11 zurückgestellt (Option c): Erledigt ist der Teil ohne Credits (T1, T2, T3 bis auf die Abnahme, Teile von T7). Kein Tripo-Lauf, `rowena.glb` bleibt Platzhalter. Weiter mit T3-Abnahme und T4, sobald Credits da sind. *Nachtrag 2026-11-11:* Der Produktinhaber prüft per Vergleichsbild, ob das alte Modell bleiben darf; dann entfallen Tripo und Nacharbeit. Der Turnaround gilt als Referenz, nicht abgenommen. Die Story bleibt offen, bis er entschieden hat.
+
 ## Story
 
 Als Spieler
@@ -22,14 +24,18 @@ damit ich sie wiedererkenne.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Tripo-Guthaben ablesen (AC 1)
-- [ ] T2 Figurenblätter Rowena und Brakka berichtigen (AC 2)
+- [x] T1 Tripo-Guthaben ablesen (AC 1)
+- [x] T2 Figurenblätter Rowena und Brakka berichtigen (AC 2)
 - [ ] T3 Brett-Turnaround per ChatGPT, teilen mit `tools/art/split_turnaround.py`, Abnahme beim Orchestrator (AC 3)
+  - [x] Turnaround erzeugt (2 Iterationen) und geteilt, Vergleichsbild übergeben
+  - [ ] Abnahme (Stand: Referenz, nicht abgenommen)
 - [ ] T4 Tripo-Lauf, GLB nach `art/models/source/rowena_board_tripo.glb` (AC 3)
 - [ ] T5 `pnpm art:tripo rowena`, Budget-Zeile, `pnpm art:build` (AC 4, 6)
 - [ ] T6 Silhouetten, Vergleichsbogen, Screenshot 2-3 (AC 5, 7)
 - [ ] T7 Doku: Prompt-Datei, Decision-Log, `figuren-bestand.md`, `art/README.md` (AC 7)
+  - [x] Stand „wartet auf Credits“ eingetragen (2026-11-11); nach dem Lauf Tripo-Eintrag, Credits, Bestand ✅
 - [ ] T8 `pnpm check`, PR gegen `main` (nicht selbst mergen), Status review
+  - [x] Zwischen-PR mit dem Teil ohne Credits, Status bleibt ready-for-dev
 
 ## Dev Notes
 
@@ -62,4 +68,14 @@ Claude Opus 5.5
 
 ### Completion Notes List
 
+- 2026-11-11: Tripo-Guthaben 65 (Kopfleiste Tripo Studio). Orchestrator/PO: Story zurückstellen, nur der Teil ohne Credits.
+- Turnaround: Chat https://chatgpt.com/c/6af48a28-247c-83ed-b7d6-928aa888c9c9, v1 mit Zopf vorn über der Schulter verworfen, v2 übernommen. Helm in der linken Hand mit Abstand zum Rumpf statt unter die Achsel geklemmt (Rig).
+- Figurenblätter Rowena und Brakka als Nachtrag berichtigt (Prompt bleibt im Wortlaut, A3).
+- Sichtprüfung altes Modell: headless Workbench-Render von `art/models/source/rowena_board_tripo.glb` (vorn/rechts/hinten, Brett 35° Neigung, 72 px Zelle wie `tools/art/silhouettes.py`); Vergleichsbild in den Session-Notizen des Orchestrators. Unterschiede: Helm auf dem Kopf statt in der Hand, Zopf kürzer, Umhang gezackt, keine braunen Handschuhe.
+
 ### File List
+
+- `art/turnarounds/rowena_board/{sheet,front,side,back}.png`
+- `art/prompts/rowena_board_turnaround.md`, `rowena.md`, `brakka.md`, `brakka_board_turnaround.md`
+- `concept/23-art-direction/figuren-bestand.md`, `decision-log.md`; `art/README.md`
+- `_bmad-output/implementation-artifacts/sprint-status.yaml`, `11-25-brettfigur-rowena.md`

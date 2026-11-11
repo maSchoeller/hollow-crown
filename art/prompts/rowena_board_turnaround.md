@@ -1,5 +1,7 @@
 # rowena_board_turnaround – Brett-Turnaround Rowena (Leutnant, Fassung 2026-11-11)
 
+> **Status: Referenz, nicht abgenommen.** Vorlage für eine spätere neue Brettfigur; der Produktinhaber hat den Turnaround nicht formal abgenommen (2026-11-11).
+
 - **Dateien:** `art/turnarounds/rowena_board/sheet.png` (1536 × 1024, unveränderter Download, A3); daraus `front.png`, `side.png`, `back.png` (`tools/art/split_turnaround.py`, je 1024 × 1024). Ersetzt die Fassung vom 2026-10-24 (Pegasus-Ritterin, Helm auf dem Kopf, Vorlage Kael); die alte Fassung samt Protokoll liegt in der Git-Historie (Commit `25fc4b8`).
 - **Datum:** 2026-11-11 (Story 11.25)
 - **Werkzeug:** ChatGPT (Bildgenerierung, Denkaufwand „Medium“), gesteuert über Claude in Chrome; Konto `maschoeller`; keine Modell-Versionsnummer sichtbar
@@ -24,4 +26,8 @@
 
 - Selbstprüfung: kahler Kopf ohne Helm, hoher Zopf mit dunkelblauem Band in allen drei Ansichten mittig auf dem Rücken ✓; blaue Augen, entschlossener Mund ✓; glatte Silberrüstung mit Goldkanten, ein brauner Gürtel, braune Handschuhe ✓; Flügelhelm in der linken Hand, vorn und hinten sichtbar, in der Seitenansicht verdeckt ✓; Umhang, Schulterkragen und Tabard flach Magenta ✓; keine Waffe, rechte Hand leer, kein Text, Seitenansicht blickt nach rechts ✓.
 - Kleinigkeiten: Vorn berührt der Helm knapp den Umhangrand; der Haaransatz oben wirkt wie ein Dutt, aus dem der Zopf fällt.
-- Freigabe: siehe Abschnitt Tripo.
+- **Referenz, nicht abgenommen** (Produktinhaber 2026-11-11): Vorlage für eine spätere neue Figur.
+
+## Tripo
+
+Noch kein Lauf: Tripo zeigt am 2026-11-11 65 Credits, eine Figur kostet 140. Der Produktinhaber hat Story 11.25 am 2026-11-11 zurückgestellt; das Modell `art/models/units/rowena.glb` bleibt bis dahin die Oktober-Fassung (Platzhalter). Der Produktinhaber prüft, ob das alte Modell bleiben kann (dann kein Tripo und keine Nacharbeit). Sichtprüfung des alten Modells für den Produktinhaber: Vergleichsbild (Porträt | Turnaround | altes Modell vorn/rechts/hinten | Brett Zoom „Mittel“) am 2026-11-11 übergeben. Unterschiede: Das alte Modell trägt den Flügelhelm auf dem Kopf statt in der Hand, der Zopf reicht nur bis zu den Schulterblättern, der Umhang ist gezackt und es fehlen die braunen Handschuhe.
