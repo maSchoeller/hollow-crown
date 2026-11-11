@@ -67,8 +67,8 @@ describe('map n4_clanlager', () => {
     ]);
   });
 
-  it('has 17 / 20 / 23 foes with the waves, no lieutenant, all on the position level', () => {
-    for (const [d, n] of [['easy', 17], ['normal', 20], ['hard', 23]] as const) {
+  it('has 17 / 18 / 23 foes with the waves, no lieutenant, all on the position level', () => {
+    for (const [d, n] of [['easy', 17], ['normal', 18], ['hard', 23]] as const) {
       const s = battle(d);
       const start = s.units.filter((u) => u.team === 'enemy').length;
       const waves = map().reinforcements.flatMap((r) => r.units).filter((u) => !u.difficulty || u.difficulty.includes(d)).length;

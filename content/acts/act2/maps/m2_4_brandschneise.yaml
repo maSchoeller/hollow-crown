@@ -102,14 +102,14 @@ haunts:
 units:
   # Oberste Terrasse: Schützen schießen von Stufe 2 ins Dorf (Reichweite +1); a0 trägt den Schlüssel der Köhlertruhe [ASSUMPTION] (Truhen brauchen Schlüssel oder Späher)
   - { id: a0, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [5, 16], items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: a1, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [10, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: a1, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [10, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
   - { id: a2, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [19, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: a3, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [24, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: a3, nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [24, 16], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
   # Oberer Weg durch Wald und Felder
   - { id: n1, nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [13, 15], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { id: n2, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [16, 15], items: [{ def: iron_axe }], ai: { profile: aggressive } }
   - { id: n3, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [13, 12], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-  - { id: n4, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [16, 12], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: n4, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [16, 12], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
   # Plünderer in den Flanken: gehen auf die Häuser, nicht auf die Truppe
   - { id: r0, nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [3, 19], items: [{ def: iron_axe }], ai: { profile: raider } }
   - { id: r1, nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [3, 21], items: [{ def: iron_sword }], ai: { profile: raider } }
@@ -144,7 +144,7 @@ reinforcements:
     units:
       - { nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
       - { nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [15, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [14, 1], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [14, 1], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
       - { nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [15, 1], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   # Westflanke
   - turn: 5
@@ -153,7 +153,7 @@ reinforcements:
     units:
       - { nameKey: unit.looter.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [2, 30], items: [{ def: iron_sword }], ai: { profile: raider } }
       - { nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [2, 31], items: [{ def: iron_axe }], ai: { profile: raider } }
-      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [2, 32], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [2, 32], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   # Grell selbst mit seinen Leuten
   - turn: 6
     phase: enemy
@@ -162,7 +162,7 @@ reinforcements:
       - { id: grell, nameKey: unit.grell.name, team: enemy, class: skirmisher, levelOffset: 1, at: [14, 1], lieutenant: grell, items: [{ def: steel_sword }], ai: { profile: aggressive } }
       - { nameKey: unit.looter.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [15, 1], items: [{ def: iron_lance }], ai: { profile: aggressive } }
       - { nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [15, 0], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [15, 0], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
   # Von Süden
   - turn: 8
     phase: enemy
@@ -177,7 +177,7 @@ reinforcements:
     announce: true
     units:
       - { nameKey: unit.looter.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [14, 0], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [15, 0], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      - { nameKey: unit.looter.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [15, 0], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
   # Ostflanke
   - turn: 10
     phase: enemy
@@ -262,7 +262,7 @@ design:
     - { at: [14, 17], label: R, note: "Rampen der Oberkante bei x 6, 14, 15, 23; Unterkante ebenso, dazu Treppen bei x 10, 19." }
   notes:
     - "Stufen über levelOffset (Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2); 2-4 kommt immer nach drei Story-Missionen, P = 15."
-    - "Normal 38 Gegner (18 davon in Wellen), P−3 bis P−1 (P = 15, Stufe 12–14), Leutnants P+1 bis P+2, gegen 12 eigene; Leicht 33, Schwer 44. Die Gegnerstufen sind per pnpm sim abzustimmen."
+    - "Normal 33 Gegner (16 davon in Wellen), P−3 bis P−1 (P = 15, Stufe 12–14), Leutnants P+1 bis P+2, gegen 12 eigene; Leicht 29, Schwer 44 (Story 11.27: a1, a3, n4 und die Schützen von R6/R9 nur Schwer, die übrigen Wellen-Schützen nicht auf Leicht). Die Gegnerstufen sind per pnpm sim abzustimmen."
     - "Plünderer (AI raider) zerstören Besuchshäuser; ohne Einsatz geht das Nebenziel Häuser verloren."
     - "Feuer: Wald, Gras und Feld brennen; feste Feuerfront über ignite-Trigger (Story 11.15, F1 = A vorläufig), dazu die Ausbreitung der Regel. Asche, Straße, Rampen und die Lichtung (plain) brennen nicht. Die Schneise liegt auf y 17."
     - "Modell Getreideterrasse, Rampe, Stützmauer laut Matrix fehlend; Boden Herbst ausstehend."

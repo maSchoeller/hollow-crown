@@ -90,7 +90,7 @@ units:
   - { id: b3, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [5, 10], items: [{ def: iron_bow }], ai: { profile: hold } }
   - { id: b4, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [12, 10], items: [{ def: iron_bow }], ai: { profile: hold } }
   - { id: b5, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [6, 13], items: [{ def: iron_bow }], ai: { profile: hold } }
-  - { id: b6, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [11, 13], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
+  - { id: b6, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [11, 13], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
   # Felsnase (Stufe 2): Goldübergabe. Genau eine Figur: Sable (Stufe nach der Leutnant-Regel, levelOffset nur fürs Format; auch ohne E7) oder, nach E7 warn, der Hauptmann auf P + 1.
   # Beide tragen den Schlüssel der Truhe (drops).
   - { id: sable, nameKey: unit.sable.name, team: enemy, class: duelist, levelOffset: 1, at: [8, 12], lieutenant: sable, items: [{ def: steel_sword }, { def: door_key }], drops: [1], ai: { profile: guard }, requires: [{ not: { flag: { e07: warn } } }] }
@@ -199,7 +199,7 @@ design:
     - { at: [8, 12], label: S, note: "Sable; hat sie bei E7 gewechselt, steht hier ein Hauptmann, Sable belastet Dravn in der Beweisszene." }
   notes:
     - "Stufen über levelOffset (Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2)."
-    - "Normal 28 Gegner (6 davon R3/R6/R8) gegen 10 eigene; Leicht 24, Schwer 32. Auf der Felsnase steht nur Sable oder der Hauptmann."
+    - "Normal 27 Gegner (6 davon R3/R6/R8) gegen 10 eigene; Leicht 24, Schwer 32 (Story 11.27: Schütze b6 nur Schwer). Auf der Felsnase steht nur Sable oder der Hauptmann."
     - "Formatwunsch: Modelle Schiff, Boot, Kai, Lagerhaus, Kran fehlen laut Matrix; Zustand Sandbank (Sand reicht fürs Erste)."
     - "Die Flut lässt besetzte Felder unverändert (Regel set_terrain), niemand ertrinkt."
     - "E6 (Varek, falls dabei) nach 2-6; das verbrannte Dorf (Beat 9) nur nach E7 warn auf dem Rückweg."

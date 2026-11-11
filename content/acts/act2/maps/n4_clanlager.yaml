@@ -73,10 +73,10 @@ units:
   - { id: a1, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [10, 5], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { id: a2, nameKey: unit.border_soldier.name, team: enemy, class: knight, sprite: soldier, levelOffset: -3, at: [9, 6], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { id: a3, nameKey: unit.border_soldier.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [7, 5], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: a4, nameKey: unit.border_soldier.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [12, 5], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: a4, nameKey: unit.border_soldier.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [12, 5], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
   - { id: b1, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [2, 12], items: [{ def: iron_sword }], ai: { profile: aggressive } }
   - { id: b2, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [3, 16], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
-  - { id: b3, nameKey: unit.border_soldier.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [2, 10], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [normal, hard] }
+  - { id: b3, nameKey: unit.border_soldier.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [2, 10], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
   - { id: c1, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [17, 12], items: [{ def: iron_sword }], ai: { profile: aggressive } }
   - { id: c2, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [16, 16], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
   - { id: c3, nameKey: unit.border_soldier.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [17, 10], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive } }
@@ -87,8 +87,8 @@ units:
   - { id: h1, nameKey: unit.border_soldier.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [8, 3], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
   - { id: h2, nameKey: unit.border_soldier.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [11, 3], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
   - { id: h3, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [10, 20], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
-  # Die Clanälteste, Zivilistin; das Nebenziel hängt an ihr
-  - { id: elder, nameKey: unit.clan_elder.name, team: other, class: civilian, sprite: villager_elder, portrait: clan_elder, level: 5, at: [10, 12], items: [], ai: { profile: hold }, ignoreForRout: true }
+  # Die Clanälteste, Zivilistin; das Nebenziel hängt an ihr. Story 11.27: Stufe 12, Platte und Helm, ein Feld weiter im Ring der Aufstellung (vorher Stufe 5 auf [10,12], fiel in R1–3)
+  - { id: elder, nameKey: unit.clan_elder.name, team: other, class: civilian, sprite: villager_elder, portrait: clan_elder, level: 12, at: [10, 11], items: [{ def: plate_armor }, { def: steel_helm }], ai: { profile: hold }, ignoreForRout: true }
 reinforcements:
   # Nord
   - turn: 3
@@ -120,8 +120,8 @@ objectives:
     - { id: s_downs, type: no_downs, reward: { item: { def: vulnerary } } }
     - { id: s_tents, type: visit_villages, reward: { gold: 300 } }
     - { id: s_elder, type: protect_npc, unit: elder, reward: { gold: 300 } }
-# [ASSUMPTION] Gold wie Entwurf; die Akt-2-Kurve stimmt 11.27 ab
-goldReward: 1400
+# Story 11.27: 2 000 statt 1 400 nach der Akt-2-Kurve (PO-Annahme, Ziel 2 000)
+goldReward: 2000
 design:
   title: Der Clan im Schnee
   intent: >
@@ -138,6 +138,6 @@ design:
     - { at: [10, 12], label: A, note: "Clanälteste, kann fallen; Nebenziel, keine Niederlage." }
   notes:
     - "Stufen über levelOffset (Formatwunsch, Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2). level zeigt den Wert bei P = 14 und bleibt fürs Schema."
-    - "Normal 20 Gegner (6 davon R3/R5/R7), gegen 8 eigene; Leicht 17, Schwer 23."
+    - "Normal 18 Gegner (6 davon R3/R5/R7), gegen 8 eigene; Leicht 17, Schwer 23 (Story 11.27: Schützen a4 und b3 nur Schwer)."
     - "Belohnung als Knotenwirkung: Glutfunke und Signaturbogen white_wolf, auch in der Gedenk-Variante. Ilka ist Pflicht, wenn sie lebt; ist sie gefallen, entfällt sie aus forced (Formatwunsch: bedingte Pflichtfigur)."
     - "Epic 11.18 sah 14×16 und defend vor; es gilt die Missionsliste mit 20×24 und survive."

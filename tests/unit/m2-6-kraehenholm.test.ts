@@ -52,8 +52,8 @@ describe('map m2_6_kraehenholm', () => {
     expect(map().act).toBe(2);
   });
 
-  it('has 24 / 28 / 32 foes with the waves', () => {
-    for (const [d, n] of [['easy', 24], ['normal', 28], ['hard', 32]] as const) {
+  it('has 24 / 27 / 32 foes with the waves', () => {
+    for (const [d, n] of [['easy', 24], ['normal', 27], ['hard', 32]] as const) {
       const s = battle(inAct2({}, d));
       const start = s.units.filter((u) => u.team === 'enemy').length;
       const waves = map().reinforcements.flatMap((r) => r.units).filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
