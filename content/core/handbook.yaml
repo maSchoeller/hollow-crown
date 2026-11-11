@@ -115,7 +115,7 @@ entries:
   - id: terrain_open
     category: terrain
     graphic: terrain
-    terrain: [plain, grass, road, bridge, boardwalk, footbridge, field, relief, vault, torch]
+    terrain: [plain, grass, road, bridge, boardwalk, footbridge, rope_bridge, quay, field, relief, vault, torch]
     see: [terrain_cover, movement]
   - id: terrain_cover
     category: terrain

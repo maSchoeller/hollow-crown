@@ -114,12 +114,16 @@ def first_appearance(model_ids, root=ROOT):
 
 def prop_packs(stems, root=ROOT):
     """-> {prop file stem (`<prop>_<state>`): pack id}. A pack lists its props under `props:` in content/packs.yaml;
-    a prop that no released pack lists ships with the first pack (core, precached with the first mission)."""
-    packs = released_packs(root)
+    a prop that no pack lists ships with the first pack (core, precached with the first mission). A prop that only an
+    unreleased pack lists (act 2 before its release, story 11.24) goes to the last released pack, like a unit model that no
+    released pack shows: never into the first download, and its own pack takes it over on release."""
+    every = _yaml(os.path.join(root, 'content', 'packs.yaml'))['packs']
+    packs = [p for p in every if p.get('released')]
     listed = {}
-    for p in packs[1:]:
+    for p in every[1:]:
+        pid = p['id'] if p.get('released') else packs[-1]['id']
         for stem in p.get('props') or []:
-            listed.setdefault(stem, p['id'])
+            listed.setdefault(stem, pid)
     return {s: listed.get(s, packs[0]['id']) for s in stems}
 
 

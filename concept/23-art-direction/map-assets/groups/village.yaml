@@ -81,6 +81,11 @@ items:
     ref: { sheet: village_1.png, box: [925, 50, 1490, 320] }
     missions: [2-3]
     use: 2 Felder breit, Ursprung in der Mitte; Halbtüren mit Heu, Heuraufe, Ziegeldach, sperrt.
+  - id: horse_a
+    ships: true
+    name: Pferd am Anbindebalken
+    missions: [2-3]
+    use: Deko-Pferd (Story 11.24, in Blender ohne Reittier-Pipeline), Fuchs mit Blesse am Anbindebalken, Tränke am Kopf; Balken und Tränke füllen das Feld, die Ohren stehen über der Figur, sperrt wie das Kulissenhaus.
   - id: paddock_straight
     ships: true
     name: Koppelzaun gerade
@@ -100,6 +105,7 @@ items:
     missions: [2-3]
     use: Zwei Pfosten mit offenem Brettertor, nach Süden aufgeschwungen, Durchgang in der Mitte frei.
   - id: terrace_a
+    ships: true
     name: Getreideterrasse
     ref: { sheet: village_2.png, box: [835, 540, 1330, 955] }
     missions: [2-4]

@@ -1,7 +1,7 @@
 /** Schemas of terrain and battle maps (units, objectives, triggers, haunt anchors). */
 import { z } from 'zod';
 import { SEASONS, TIMES_OF_DAY, WEATHERS } from '../core/defs';
-import { HAUNT_VARIANTS } from '../core/mapDefs';
+import { FACINGS, HAUNT_VARIANTS } from '../core/mapDefs';
 import { area, itemRefSchema, pos, range, rank, team, weaponType } from './schemaBase';
 import { conditionSchema } from './schemaConditions';
 
@@ -234,7 +234,7 @@ export const mapSchema = z.object({
   music: z.string().optional(),
   devNote: z.string().optional(),
   /** per field the model of a prop variant (house, rock, tree, lodge), overriding the hash pick of render.yaml board.variants; content:check checks the id */
-  propVariants: z.array(z.object({ at: pos, model: z.string().min(1) })).optional(),
+  propVariants: z.array(z.object({ at: pos, model: z.string().min(1), face: z.enum(FACINGS).optional() })).optional(),
   /** planning notes for the level sheet (`pnpm levels`, concept/27-ueberarbeitung/level-werkzeug.md); the game ignores them */
   design: z
     .strictObject({

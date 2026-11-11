@@ -5,7 +5,7 @@ import { variantClassOf, variantList } from './propVariants';
 import { seasonOf } from './season';
 
 /** Terrain props the board builds from pieces or names itself (walls, gates, boardwalks, the rock wall, the lever), not from `<prop>_idle`. */
-const OWN_KIT = new Set(['bridge', 'gate', 'boardwalk', 'rockwall', 'lever', 'paddock', 'paddock_gate']);
+const OWN_KIT = new Set(['bridge', 'gate', 'boardwalk', 'lever', 'paddock', 'paddock_gate', 'rope_bridge', 'quay']);
 
 /** A map's weather must be one that `render.yaml look.weather[..].acts` allows in the map's act (art-direction §2.5): an error. */
 export function validateWeather(data: GameData): ContentIssue[] {
@@ -44,13 +44,13 @@ export function validateSeasons(data: GameData, groundTextures?: ReadonlySet<str
 
 /**
  * `propVariants` of a map (single fields set by hand): the field is on the map, its terrain carries a prop with variants
- * (house, lodge, rock, tree, field, relief, sarcophagus, stall) and the model is one of that class's list in `render.yaml board.variants`
+ * (house, lodge, rock, tree, field, relief, sarcophagus, stall, wagon, rockwall) and the model is one of that class's list in `render.yaml board.variants`
  * (the trees of the map's season); a weight-0 entry is exactly such a hand-placed model.
  */
 export function validatePropVariants(data: GameData): ContentIssue[] {
   const out: ContentIssue[] = [];
   const v = data.render.board.variants;
-  for (const [cls, lists] of Object.entries({ house: [v.house], lodge: [v.lodge], rock: [v.rock], field: [v.field], relief: [v.relief], stall: [v.stall], sarcophagus: [v.sarcophagus], tree: Object.values(v.tree), sceneryTree: Object.values(v.sceneryTree) })) {
+  for (const [cls, lists] of Object.entries({ house: [v.house], lodge: [v.lodge], rock: [v.rock], field: [v.field], relief: [v.relief], stall: [v.stall], sarcophagus: [v.sarcophagus], wagon: [v.wagon], rockwall: [v.rockwall], tree: Object.values(v.tree), sceneryTree: Object.values(v.sceneryTree) })) {
     for (const list of lists) {
       const seen = new Set<string>();
       for (const e of list) {
@@ -70,18 +70,29 @@ export function validatePropVariants(data: GameData): ContentIssue[] {
       }
       const cls = variantClassOf(data.terrain[id]?.prop);
       if (!cls) {
-        out.push({ file: where, message: `propVariants ${pv.at}: terrain ${id} carries no prop with variants (house, lodge, rock, tree, field, relief, sarcophagus, stall)` });
+        out.push({ file: where, message: `propVariants ${pv.at}: terrain ${id} carries no prop with variants (house, lodge, rock, tree, field, relief, sarcophagus, stall, wagon, rockwall)` });
         continue;
       }
       const season = seasonOf(data.render, map);
       const entry = variantList(data, cls, season).find((e) => e.model === pv.model);
       if (!entry) {
         out.push({ file: where, message: `propVariants ${pv.at}: ${pv.model} is not a ${cls} variant of ${season} (render.yaml board.variants.${cls}: ${variantList(data, cls, season).map((e) => e.model).join(', ')})` });
-      } else if (entry.wide) {
-        // a two-field model covers its east neighbour: the same terrain there, and no model of its own set by hand
-        const east = map.legend[rows[pv.at[1]]?.[pv.at[0] + 1] ?? ''];
-        const taken = (map.propVariants ?? []).some((o) => o.at[0] === pv.at[0] + 1 && o.at[1] === pv.at[1]);
-        if (east !== id || taken) out.push({ file: where, message: `propVariants ${pv.at}: ${pv.model} is two fields wide and needs the east neighbour as ${id} without a model of its own` });
+      } else if (entry.wide || entry.big) {
+        // a two-field model covers its east neighbour, a 2 × 2 one also the south and south-east ones: the same terrain there, and no
+        // model of their own set by hand
+        const others: Array<[number, number]> = entry.big ? [[1, 0], [0, 1], [1, 1]] : [[1, 0]];
+        const bad = others.some(([dx, dy]) => {
+          const other = map.legend[rows[pv.at[1] + dy]?.[pv.at[0] + dx] ?? ''];
+          const taken = (map.propVariants ?? []).some((o) => o.at[0] === pv.at[0] + dx && o.at[1] === pv.at[1] + dy);
+          return other !== id || taken;
+        });
+        if (bad)
+          out.push({
+            file: where,
+            message: entry.big
+              ? `propVariants ${pv.at}: ${pv.model} is 2 × 2 fields and needs the east, south and south-east neighbours as ${id} without a model of their own`
+              : `propVariants ${pv.at}: ${pv.model} is two fields wide and needs the east neighbour as ${id} without a model of its own`,
+          });
       }
     }
   }

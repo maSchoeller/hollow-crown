@@ -194,6 +194,66 @@ objectives:
   side:
     - { id: s_houses, type: visit_villages, reward: { gold: 500 } }
     - { id: s_page, type: open_chests, reward: { item: { def: vulnerary } } }
+# Story 11.24: Bergdorf (Feldsteinhäuser) und Getreideterrassen am Südrand jedes Feldblocks
+propVariants:
+  - { at: [6, 19], model: house_slate_a }
+  - { at: [7, 19], model: house_slate_b }
+  - { at: [12, 19], model: house_slate_a }
+  - { at: [17, 19], model: house_slate_b }
+  - { at: [21, 19], model: house_slate_a }
+  - { at: [22, 19], model: house_slate_b }
+  - { at: [9, 23], model: house_slate_a }
+  - { at: [10, 23], model: house_slate_b }
+  - { at: [19, 23], model: house_slate_a }
+  - { at: [20, 23], model: house_slate_b }
+  - { at: [4, 16], model: terrace_a }
+  - { at: [5, 16], model: terrace_a }
+  - { at: [6, 16], model: terrace_a }
+  - { at: [7, 16], model: terrace_a }
+  - { at: [8, 16], model: terrace_a }
+  - { at: [9, 16], model: terrace_a }
+  - { at: [10, 16], model: terrace_a }
+  - { at: [11, 16], model: terrace_a }
+  - { at: [12, 16], model: terrace_a }
+  - { at: [13, 16], model: terrace_a }
+  - { at: [16, 16], model: terrace_a }
+  - { at: [17, 16], model: terrace_a }
+  - { at: [18, 16], model: terrace_a }
+  - { at: [19, 16], model: terrace_a }
+  - { at: [20, 16], model: terrace_a }
+  - { at: [21, 16], model: terrace_a }
+  - { at: [22, 16], model: terrace_a }
+  - { at: [23, 16], model: terrace_a }
+  - { at: [24, 16], model: terrace_a }
+  - { at: [25, 16], model: terrace_a }
+  - { at: [2, 26], model: terrace_a }
+  - { at: [3, 26], model: terrace_a }
+  - { at: [4, 26], model: terrace_a }
+  - { at: [5, 26], model: terrace_a }
+  - { at: [24, 26], model: terrace_a }
+  - { at: [25, 26], model: terrace_a }
+  - { at: [26, 26], model: terrace_a }
+  - { at: [27, 26], model: terrace_a }
+  - { at: [4, 31], model: terrace_a }
+  - { at: [5, 31], model: terrace_a }
+  - { at: [6, 31], model: terrace_a }
+  - { at: [7, 31], model: terrace_a }
+  - { at: [8, 31], model: terrace_a }
+  - { at: [9, 31], model: terrace_a }
+  - { at: [10, 31], model: terrace_a }
+  - { at: [11, 31], model: terrace_a }
+  - { at: [12, 31], model: terrace_a }
+  - { at: [13, 31], model: terrace_a }
+  - { at: [16, 31], model: terrace_a }
+  - { at: [17, 31], model: terrace_a }
+  - { at: [18, 31], model: terrace_a }
+  - { at: [19, 31], model: terrace_a }
+  - { at: [20, 31], model: terrace_a }
+  - { at: [21, 31], model: terrace_a }
+  - { at: [22, 31], model: terrace_a }
+  - { at: [23, 31], model: terrace_a }
+  - { at: [24, 31], model: terrace_a }
+  - { at: [25, 31], model: terrace_a }
 triggers:
   # [ASSUMPTION] PO F1 vorläufig A: Feuerfront, je eine Runde vorher angekündigt (warn). Nur brennbare Felder fangen Feuer (igniteTile), schon Verbranntes nicht.
   - { id: t_fire_w2, once: true, when: { type: turn_start, turn: 2, phase: player }, then: [{ action: ignite, area: { rect: [2, 4, 13, 7] }, warn: true }] }

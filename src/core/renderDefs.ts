@@ -5,8 +5,10 @@ import type { Condition } from './storyDefs';
 export interface PropVariant {
   model: string;
   weight: number;
-  /** two fields wide, east-west (story 11.14, the stable): only by hand (weight 0), stands between its field and the east neighbour */
+  /** two fields wide, east-west (story 11.14, the stable; story 11.24 any class): only by hand (weight 0), stands between its field and the east neighbour */
   wide?: boolean;
+  /** 2 × 2 fields (story 11.24, the monastery): only by hand (weight 0), stands on the corner it shares with its east, south and south-east neighbours */
+  big?: boolean;
 }
 
 /** Look of the board's legibility aids (render.yaml `legibility`, epic 13); lengths in tiles unless named px. */
@@ -154,6 +156,9 @@ export interface RenderDef {
       relief: PropVariant[];
       stall: PropVariant[];
       sarcophagus: PropVariant[];
+      /** story 11.24: wagon (wagon_idle; the mine cart of N5 by hand) and rock wall (rock_idle; the adit of N5 by hand) */
+      wagon: PropVariant[];
+      rockwall: PropVariant[];
       tree: Partial<Record<Season, PropVariant[]>>;
       sceneryTree: Partial<Record<Season, PropVariant[]>>;
     };

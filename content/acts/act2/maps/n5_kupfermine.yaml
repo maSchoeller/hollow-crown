@@ -23,10 +23,11 @@ legend:
   "L": lever
   "W": wagon
   "q": sarcophagus
+  "t": torch
 #          x: 0123456789012345
 terrain: |
   XXXXXXXXXXXXXXXX
-  XXooooooooooooXX
+  XXootooooootooXX
   XXooooqqqqooooXX
   XXoooooqqoooooXX
   XXooooooooooooXX
@@ -36,13 +37,13 @@ terrain: |
   XXXXXXXddXXoooXX
   XXXXXXXooXXXgXXX
   XXXXXXXooXXXoXXX
-  XXXXXXXooooooooX
-  XooooooooWooooLX
+  XXXXXXXooooootoX
+  XootoooooWooooLX
   XooooWoooooooooX
   XooooooooXXXXXXX
   XXXXXXXooXXXXXXX
   XXXXXXXooXXXXXXX
-  XXXXXooooooXXXXX
+  XXXXXtooootXXXXX
   XXXXXooooooXXXXX
   XXXXXooooooXXXXX
 timeOfDay: indoor
@@ -111,6 +112,15 @@ objectives:
     - { id: s_brann, type: recruit, unit: brann, reward: { gold: 300 } }
     - { id: s_fast, type: turn_limit, turns: 9, reward: { item: { def: vulnerary } } }
     - { id: s_downs, type: no_downs, reward: { item: { def: vulnerary } } }
+# Story 11.24: Drachenknochen in der Knochenhalle, Loren, Stollenmünder an den Gangenden; Fackeln (t) an Wänden im Norden
+propVariants:
+  - { at: [6, 2], model: dragon_bones_a }
+  - { at: [8, 2], model: dragon_bones_a }
+  - { at: [7, 3], model: dragon_bones_a }
+  - { at: [9, 12], model: mine_cart_idle }
+  - { at: [5, 13], model: mine_cart_idle }
+  - { at: [0, 12], model: mine_entrance_a, face: east }
+  - { at: [15, 13], model: mine_entrance_a, face: west }
 triggers:
   # Der Hebel im Ostgang hebt das Gatter vor dem Aufgang zur Knochenhalle
   - id: t_gate

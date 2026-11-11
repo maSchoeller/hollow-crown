@@ -103,6 +103,11 @@ objectives:
   side:
     - { id: s_downs, type: no_downs, reward: { item: { def: vulnerary } } }
     - { id: s_stalls, type: visit_villages, reward: { item: { def: vulnerary } } }
+# Story 11.24: Gaukelbühne neben der Bühnenterrasse, zwei Streifenzelte
+propVariants:
+  - { at: [6, 5], model: stage_a }
+  - { at: [3, 9], model: tent_market_a }
+  - { at: [11, 12], model: tent_market_a }
 triggers:
   # Jory (oder, in der Gedenk-Variante, Lucan) spricht die Meisterin an, sobald eine eigene Figur die Bühne betritt
   - id: t_stage

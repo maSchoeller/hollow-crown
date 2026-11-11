@@ -160,8 +160,8 @@ describe('map m2_3_rabenweide', () => {
     expect(map().objectives.side).toContainEqual({ id: 's_stables', type: 'visit_villages', reward: { item: { def: 'vulnerary' } } });
   });
 
-  it('sets the stables, barns and hay of the gallery in the stud yard (F6 = D)', () => {
-    expect(new Set((map().propVariants ?? []).map((p) => p.model))).toEqual(new Set(['stable_a', 'barn_a', 'hay_a']));
+  it('sets the stables, barns, hay and the tied horses (story 11.24) of the gallery in the stud yard (F6 = D)', () => {
+    expect(new Set((map().propVariants ?? []).map((p) => p.model))).toEqual(new Set(['stable_a', 'barn_a', 'hay_a', 'horse_a']));
     expect(data.render.board.variants.house.find((v) => v.model === 'stable_a')).toEqual({ model: 'stable_a', weight: 0, wide: true });
   });
 });

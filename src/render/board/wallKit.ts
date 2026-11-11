@@ -3,6 +3,7 @@
  * neighbouring fields, the way the ground picks its splat. Pure, render only; the rules never read it.
  * Rotations are for the models of tools/art/props/fortify.py: `wallrim` stands on the south edge at `rot` = pi.
  */
+import type { Facing } from '../../core/mapDefs';
 
 export interface KitPiece {
   model: string;
@@ -106,6 +107,8 @@ export function gatePieces(at: TerrainAt, gx: number, gy: number): KitPiece[] {
 /** Height of a boardwalk's deck above its tile's ground level, and of the deck within the model (tools/art/props/nature_map.py DECK). */
 export const BOARDWALK_DECK = 0.04;
 export const BOARDWALK_MODEL_DECK = 0.16;
+/** Height of a rope bridge's planks within the model (tools/art/props/coast.py rope_bridge_straight), story 11.24. */
+export const ROPE_BRIDGE_MODEL_DECK = 0.06;
 
 /**
  * Piece of a boardwalk tile, from the fields it reaches (`joins`: another boardwalk or dry walkable ground). The models of
@@ -152,4 +155,47 @@ export function paddockPiece(joins: (gx: number, gy: number) => boolean, gx: num
     { model: line, rot: NORTH },
     { model: 'paddock_straight', rot: EAST },
   ];
+}
+
+/** Turn that points a model's front (its south side as built, `rot` = pi) to a side (map `propVariants` `face`, story 11.24). */
+export const FACE_ROT: Readonly<Record<Facing, number>> = { south: SOUTH, east: EAST, north: NORTH, west: WEST };
+
+/**
+ * Piece of a rope bridge tile (story 11.24), from the neighbours along the bridge (`isBridge`: another rope bridge tile). The models
+ * of tools/art/props/coast.py at `rot` = pi: `rope_bridge_straight` runs north-south, `rope_bridge_end` anchors at the north edge.
+ * A tile whose one neighbour along the axis is no bridge gets the anchor on that side; the rest of the span is straight. A tile
+ * left alone (the span was cut, 2-5) anchors on the bank (`isLand`: dry ground a figure can stand on).
+ */
+export function ropeBridgePiece(isBridge: (gx: number, gy: number) => boolean, isLand: (gx: number, gy: number) => boolean, gx: number, gy: number): { model: string; rot: number } {
+  const n = isBridge(gx, gy - 1);
+  const s = isBridge(gx, gy + 1);
+  const e = isBridge(gx + 1, gy);
+  const w = isBridge(gx - 1, gy);
+  if (n && s) return { model: 'rope_bridge_straight', rot: SOUTH };
+  if (e && w) return { model: 'rope_bridge_straight', rot: EAST };
+  // the anchor sits on the side away from the rest of the span: at rot = pi it is on the north edge
+  if (s) return { model: 'rope_bridge_end', rot: SOUTH };
+  if (n) return { model: 'rope_bridge_end', rot: NORTH };
+  if (e) return { model: 'rope_bridge_end', rot: EAST };
+  if (w) return { model: 'rope_bridge_end', rot: WEST };
+  const rot = isLand(gx, gy - 1) ? SOUTH : isLand(gx, gy + 1) ? NORTH : isLand(gx - 1, gy) ? EAST : isLand(gx + 1, gy) ? WEST : SOUTH;
+  return { model: 'rope_bridge_end', rot };
+}
+
+/**
+ * Piece of a quay tile (story 11.24), from the open water beside it (`isWater`: water without a deck). The models of
+ * tools/art/props/coast.py at `rot` = pi: `quay_straight` has its stone edge and fenders to the south, `quay_corner` to the south
+ * and the east. Two sides of water at a right angle make a corner, otherwise the edge faces the first water side (south, east,
+ * north, west); a quay without water beside it lies as a plain deck facing south.
+ */
+export function quayPiece(isWater: (gx: number, gy: number) => boolean, gx: number, gy: number): { model: string; rot: number } {
+  const n = isWater(gx, gy - 1);
+  const s = isWater(gx, gy + 1);
+  const e = isWater(gx + 1, gy);
+  const w = isWater(gx - 1, gy);
+  if (+n + +s + +e + +w === 2 && n !== s) {
+    if (s) return { model: 'quay_corner', rot: e ? SOUTH : WEST };
+    return { model: 'quay_corner', rot: e ? EAST : NORTH };
+  }
+  return { model: 'quay_straight', rot: s ? SOUTH : e ? EAST : n ? NORTH : w ? WEST : SOUTH };
 }

@@ -242,9 +242,16 @@ export interface MapDef {
   noHaunts?: boolean;
   music?: string;
   devNote?: string;
-  /** model of a prop variant for single fields (`board.variants` of render.yaml names the allowed models), overriding the hash pick */
-  propVariants?: Array<{ at: Pos; model: string }>;
+  /**
+   * model of a prop variant for single fields (`board.variants` of render.yaml names the allowed models), overriding the hash pick;
+   * `face` turns the model's front (its south side as built) to that side, else the board's own turn (story 11.24)
+   */
+  propVariants?: Array<{ at: Pos; model: string; face?: Facing }>;
 }
+
+/** Sides a hand-placed prop can face (map `propVariants`, story 11.24). */
+export const FACINGS = ['south', 'east', 'north', 'west'] as const;
+export type Facing = (typeof FACINGS)[number];
 
 /** The kinds of haunt (story 5.5): a repeat task on a known map against a lieutenant. */
 export const HAUNT_VARIANTS = ['boss', 'rout', 'defend', 'escort', 'treasure'] as const;

@@ -20,15 +20,15 @@ Erzeugt von `build.py`, dort pflegen. Status: **V** vorhanden, **B** verbessern,
 | N3 | Das Erbe | Pachthof, Mühle, Fluss | Süd | Gras, Erde, Straße, Zaun, Mühle mit Rad, Kulissenhäuser, Fluss, Truhe | Kornfeld, Besuchshaus, Furt, Flachwasser, Holzbrücke, Wald | – |
 | 2-1 | Wind über der Eisenmark | Windscharte, Ballisten auf Felsnasen | Hochland | – | Berg, Felsmasse, Wald | Boden Herbst, Balliste, Klippe, Absturzkante, Rampe, Stützmauer, Terrasse |
 | 2-2 | Das Siegel im Salzpass | Pass, Nebel, Steinschlag | Hochland | Truhe, Wagen | Berg, Felsmasse | Boden Herbst, Klippe, Absturzkante |
-| 2-3 | Die Rabenweide | Gestüt, Weiden, Koppelzäune, Furten | Hochland | Zaun, Fluss, Kulissenhäuser | Furt, Flachwasser, Wald | Boden Herbst, Koppel, Stall, Gestüt |
-| 2-4 | Die Brandschneise | Bergdorf, Getreideterrassen, Wald | Hochland | Kulissenhäuser | Besuchshaus, Wald, Berg, Felsmasse | Boden Herbst, Getreideterrasse, Bergdorf, Rampe, Stützmauer, Terrasse |
-| 2-5 | Die verstoßene Leibwache | Kloster, Hängebrücken, Wasserfall | Hochland | Fluss | Schrein, Mauer, Berg, Felsmasse | Boden Herbst, Hängebrücke, Wasserfall, Klippe, Absturzkante |
-| 2-6 | Gold für Banditen | Krähenholm, Strand, Ebbe, Schiff | Küste | Sand, Strand, Zelt, Lager | Berg, Felsmasse, Furt, Flachwasser | Boden Herbst, Klippe, Absturzkante, Schiff, Boot, Kai, Lagerhaus, Kran |
-| 2-7 | Das Kontor am Silbermeer | Lagerhäuser, Kräne, Kais | Küste | Kulissenhäuser, Wagen, Fluss, Truhe | Steinbrücke | Boden Herbst, Kai, Lagerhaus, Kran, Schiff, Boot |
+| 2-3 | Die Rabenweide | Gestüt, Weiden, Koppelzäune, Furten | Hochland | Koppel, Stall, Gestüt, Zaun, Fluss, Kulissenhäuser | Furt, Flachwasser, Wald | Boden Herbst |
+| 2-4 | Die Brandschneise | Bergdorf, Getreideterrassen, Wald | Hochland | Getreideterrasse, Bergdorf, Kulissenhäuser | Besuchshaus, Wald, Berg, Felsmasse | Boden Herbst, Rampe, Stützmauer, Terrasse |
+| 2-5 | Die verstoßene Leibwache | Kloster, Hängebrücken, Wasserfall | Hochland | Hängebrücke, Wasserfall, Fluss | Schrein, Mauer, Berg, Felsmasse | Boden Herbst, Klippe, Absturzkante |
+| 2-6 | Gold für Banditen | Krähenholm, Strand, Ebbe, Schiff | Küste | Sand, Strand, Kai, Lagerhaus, Kran, Zelt, Lager | Berg, Felsmasse, Furt, Flachwasser | Boden Herbst, Klippe, Absturzkante, Schiff, Boot |
+| 2-7 | Das Kontor am Silbermeer | Lagerhäuser, Kräne, Kais | Küste | Kai, Lagerhaus, Kran, Kulissenhäuser, Wagen, Fluss, Truhe | Steinbrücke | Boden Herbst, Schiff, Boot |
 | 2-8 | Kronfeld | Ebene, Hügel, Fluss | Hochland | Fluss, Zelt, Lager, Wagen | Berg, Felsmasse, Wald, Furt, Flachwasser, Steinbrücke, Festung | Boden Herbst |
 | N4 | Der Clan im Schnee | Bergwald, früher Schnee | Hochland | Zelt, Lager | Wald, Berg, Felsmasse, Lagerfeuer, Kohlebecken | Boden Schnee, Schneehauben |
-| N5 | Glut unter dem Berg | Bergwerk, Loren, Schächte | Innen | Truhe | – | Höhlenboden und Felswand innen, Stollen, Lore, Schienen, Drachenknochen, Fackel, Wandleuchte |
-| N6 | Die Gauklertruppe | Herbstmarkt, Boote, Bühne | Küste | Marktstand, Fluss, Wagen | Holzbrücke | Boden Herbst, Gaukelbühne, Markt-Deko, Schiff, Boot |
+| N5 | Glut unter dem Berg | Bergwerk, Loren, Schächte | Innen | Drachenknochen, Truhe | Stollen, Lore, Schienen | Höhlenboden und Felswand innen, Fackel, Wandleuchte |
+| N6 | Die Gauklertruppe | Herbstmarkt, Boote, Bühne | Küste | Gaukelbühne, Markt-Deko, Marktstand, Fluss, Wagen | Holzbrücke | Boden Herbst, Schiff, Boot |
 | 3-1 | Winter über Aurenhall | Gänge unter dem Palast, Türen | Innen | Truhe | Tür, offen und zu | Höhlenboden und Felswand innen, Palast: Fliesen, Teppich, Empore, Hebel, Fackel, Wandleuchte |
 | 3-2 | Das verbotene Lied | Sängerviertel, Kanäle, Boote, Schnee | Stadt | – | Steinbrücke | Boden Schnee, Schneehauben, Stadthaus hoch, Gasse, Kanal, Schleuse, Schiff, Boot, Fackel, Wandleuchte |
 | 3-3 | Die Einsiedlerin | Winterwald, gefrorener Bach | Winter | Kulissenhäuser | Wald, Besuchshaus, Berg, Felsmasse | Boden Schnee, Schneehauben, Eis mit Bruchstellen |
@@ -77,9 +77,9 @@ Erzeugt von `build.py`, dort pflegen. Status: **V** vorhanden, **B** verbessern,
 | Begehbares Dach | Bauten | fehlt | 2 | N1 | 1 | Formatwunsch aus N1 (`roof`). Regel offen (R3). |
 | Mühle mit Rad | Hof | vorhanden | 2 | N3 | 1 | Seit Story 15.8 im Spiel (`mill_idle`), die Karte setzt sie von Hand (`propVariants`). |
 | Truhe | Dinge | vorhanden | 3 | 1-3, 1-4, 1-5, 1-6, 1-7, N1, N2, N3, 2-2, 2-7, N5, 3-1, N7, N10 | 14 | Gut, aber dunkel. Im Zielmodus fehlt der im Text geforderte Glanz. |
-| Boden Schnee, Schneehauben | Boden | im Spiel (Story 15.15) | 3 | N4, 3-2, 3-3, 3-4, 3-5, 3-6, 3-7, 3-8, N8, N9 | 10 | Schneeboden, gefrorene Erde, Schneeweg; Schnee auf Requisiten (Weg B), Mauerkante und Turm mit Schneehaube, Waldfeld im Schnee. Weg B abgenommen (2026-11-07); verschneiter Busch und drei Waldfelder seit Story 15.16. |
+| Boden Schnee, Schneehauben | Boden | fehlt | 3 | N4, 3-2, 3-3, 3-4, 3-5, 3-6, 3-7, 3-8, N8, N9 | 10 | Schneefichten stehen auf Sommerwiese, Felsen und Dächer tragen keinen Schnee. |
 | Fluss | Wasser | vorhanden | 3 | 1-1, 1-2, N1, N3, 2-3, 2-5, 2-7, 2-8, N6 | 9 | Klar und schön, passt aber nur für Akt 1. Im Moor und auf dem See ist es dasselbe Türkis. |
-| Boden Herbst | Boden | im Spiel (Story 15.15) | 3 | 2-1, 2-2, 2-3, 2-4, 2-5, 2-6, 2-7, 2-8, N6 | 9 | Herbstgras mit Laub (sheet6), drei Waldfelder Herbst (Story 15.16). |
+| Boden Herbst | Boden | fehlt | 3 | 2-1, 2-2, 2-3, 2-4, 2-5, 2-6, 2-7, 2-8, N6 | 9 | Es gibt nur eine Grastextur. In Akt 2 steht Herbstlaub auf Sommerwiese. |
 | Wagen | Dinge | vorhanden | 3 | 1-1, 1-5, 2-2, 2-7, 2-8, N6, 3-4, 3-6, N8 | 9 | Gut. |
 | Kulissenhäuser | Bauten | vorhanden | 3 | 1-1, 1-2, N1, N3, 2-3, 2-4, 2-7, 3-3 | 8 | Vier gute Modelle, Stil einheitlich. Aus der Spielkamera sieht man fast nur das Dach, daher soll das Dach die Variante tragen. |
 | Zelt, Lager | Dinge | vorhanden | 3 | 1-4, 1-5, 2-6, 2-8, N4, 3-4, N8 | 7 | Gut. |
@@ -88,15 +88,15 @@ Erzeugt von `build.py`, dort pflegen. Status: **V** vorhanden, **B** verbessern,
 | Klippe, Absturzkante | Natur | fehlt | 4 | 2-1, 2-2, 2-5, 2-6, 3-7, 3-8, N9 | 7 | Heute nur niedrige Seitenwände, keine sichtbare Kante nach unten. |
 | Schiff, Boot | Küste | fehlt | 4 | 1-5, 2-6, 2-7, N6, 3-2 | 5 |  |
 | Sand, Strand | Boden | vorhanden | 4 | 1-5, 2-6 | 2 | Vorhanden. Für Ebbe in 2-6 fehlt der Zustand „Sandbank“. |
-| Kai, Lagerhaus, Kran | Küste | fehlt | 4 | 2-6, 2-7 | 2 |  |
-| Wasserfall | Wasser | fehlt | 4 | 2-5 | 1 |  |
-| Hängebrücke | Wege | fehlt | 4 | 2-5 | 1 |  |
-| Koppel, Stall, Gestüt | Hof | fehlt | 4 | 2-3 | 1 |  |
-| Getreideterrasse, Bergdorf | Hof | fehlt | 4 | 2-4 | 1 |  |
+| Kai, Lagerhaus, Kran | Küste | vorhanden | 4 | 2-6, 2-7 | 2 | Seit Story 11.24: Kai als Gelände `quay` in 2-7, Speicher und Kran von Hand in 2-6 und 2-7. |
+| Wasserfall | Wasser | vorhanden | 4 | 2-5 | 1 | Seit Story 11.24 im Spiel (`waterfall_a`, von Hand auf der Felsspalte von 2-5); wirkt dort klein, ein eigenes Gelände bis zur Wasserlinie wäre besser. |
+| Hängebrücke | Wege | vorhanden | 4 | 2-5 | 1 | Seit Story 11.24 eigenes Gelände `rope_bridge` (Werte des Stegs), Anker am Ufer nach den Nachbarfeldern. |
+| Koppel, Stall, Gestüt | Hof | vorhanden | 4 | 2-3 | 1 | Seit Story 11.14 im Spiel, Deko-Pferd am Anbindebalken seit Story 11.24 (`horse_a`). |
+| Getreideterrasse, Bergdorf | Hof | vorhanden | 4 | 2-4 | 1 | Seit Story 11.24 von Hand in 2-4 (`terrace_a` am Südrand der Felder, `house_slate_a/b`). |
 | Balliste | Interaktiv | fehlt | 4 | 2-1 | 1 | Dito unsichtbar. Zentrale Lektion von 2-1. |
-| Gaukelbühne, Markt-Deko | Dinge | fehlt | 4 | N6 | 1 |  |
-| Stollen, Lore, Schienen | Bergwerk | fehlt | 4 | N5 | 1 |  |
-| Drachenknochen | Bergwerk | fehlt | 4 | N5 | 1 |  |
+| Gaukelbühne, Markt-Deko | Dinge | vorhanden | 4 | N6 | 1 | Seit Story 11.24 von Hand in N6 (`stage_a`, `tent_market_a`). |
+| Stollen, Lore, Schienen | Bergwerk | verbessern | 4 | N5 | 1 | Stollen und Lore seit Story 11.24 von Hand in N5; Schienen und Grubenstütze zeichnet noch kein Gelände. |
+| Drachenknochen | Bergwerk | vorhanden | 4 | N5 | 1 | Seit Story 11.24 in der Knochenhalle von N5 (`dragon_bones_a`, zwei Felder). |
 | Eis mit Bruchstellen | Wasser | fehlt | 5 | 3-3, 3-4, 3-7 | 3 | Braucht auch eine Regel (R4). |
 | Stadthaus hoch, Gasse | Bauten | fehlt | 5 | 3-2, 3-6, N10 | 3 | Für Aurenhall mit eigenen Vierteln. |
 | Palast: Fliesen, Teppich, Empore | Bauten | fehlt | 5 | 3-1, 3-5, N7 | 3 |  |

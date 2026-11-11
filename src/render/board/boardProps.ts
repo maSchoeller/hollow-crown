@@ -2,7 +2,7 @@
  * Terrain, props with their see-through twins (story 8.10), static-material freezing and fires of the battle board.
  * Part of the class chain BoardBase → BoardSetup → BoardProps → BoardUnits → BoardCamera → BoardFrame → BoardView.
  */
-import { BOARDWALK_DECK, BOARDWALK_MODEL_DECK, boardwalkPiece, connectorRot, faceRot, gatePieces, isWallTop, ladderRot, paddockPiece, topPieces, wallPieces } from './wallKit';
+import { BOARDWALK_DECK, BOARDWALK_MODEL_DECK, FACE_ROT, ROPE_BRIDGE_MODEL_DECK, boardwalkPiece, connectorRot, faceRot, gatePieces, isWallTop, ladderRot, paddockPiece, quayPiece, ropeBridgePiece, topPieces, wallPieces } from './wallKit';
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color';
 import { Matrix, Quaternion, Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
@@ -183,6 +183,8 @@ export abstract class BoardProps extends BoardSetup {
     const map = this.data.maps[s.mapId]!;
     // variants: a field hash picks from the weighted list of the prop class (trees of the season of the map's act); the map can set single fields
     const overrides = new Map((map.propVariants ?? []).map((v) => [`${v.at[0]},${v.at[1]}`, v.model]));
+    // story 11.24: a hand-placed model may turn its front to a side (waterfall, adit, horse); otherwise the case below decides
+    const faces = new Map((map.propVariants ?? []).filter((v) => v.face).map((v) => [`${v.at[0]},${v.at[1]}`, FACE_ROT[v.face!]]));
     const chosen = new Map<string, string>();
     const variant = (prop: string, gx: number, gy: number, x: number, y: number): string => {
       const cls = variantClassOf(prop)!;
@@ -219,8 +221,23 @@ export abstract class BoardProps extends BoardSetup {
       const p = grid.at(gx, gy)?.prop;
       return p === 'paddock' || p === 'paddock_gate';
     };
-    // a two-field house model (render.yaml board.variants.house `wide`, the stable) stands between its field and the east neighbour, which then draws nothing
-    const wide = new Set(this.data.render.board.variants.house.filter((e) => e.wide).map((e) => e.model));
+    // a two-field model (render.yaml board.variants `wide`: the stable, a warehouse, the dragon bones) stands between its field and the east
+    // neighbour, which then draws nothing
+    const { house, lodge, rock, field, relief, stall, sarcophagus, wagon, rockwall } = this.data.render.board.variants;
+    const lists = [house, lodge, rock, field, relief, stall, sarcophagus, wagon, rockwall];
+    const wide = new Set(lists.flatMap((l) => l.filter((e) => e.wide).map((e) => e.model)));
+    // a 2 × 2 model (`big`, the monastery) stands on the corner it shares with its east, south and south-east neighbours
+    const big = new Set(lists.flatMap((l) => l.filter((e) => e.big).map((e) => e.model)));
+    // a rope bridge joins the rope bridge tiles beside it; a quay's edge faces open water (story 11.24)
+    const ropeJoins = (gx: number, gy: number) => grid.at(gx, gy)?.prop === 'rope_bridge';
+    const dryLand = (gx: number, gy: number) => {
+      const n = grid.at(gx, gy);
+      return !!n && !n.water && n.cost.foot !== null;
+    };
+    const openWater = (gx: number, gy: number) => {
+      const n = grid.at(gx, gy);
+      return !!n && n.water && n.prop !== 'bridge' && n.prop !== 'boardwalk' && n.prop !== 'rope_bridge';
+    };
     const covered = new Set<string>();
     for (let gy = 0; gy < grid.h; gy++)
       for (let gx = 0; gx < grid.w; gx++) {
@@ -265,6 +282,17 @@ export abstract class BoardProps extends BoardSetup {
         if (covered.has(`${gx},${gy}`)) continue;
         const r = hash3(gx, gy, this.seed + 5);
         const base: Place = { x, y, h: def.height, rot: Math.PI, scale: 1, dim: !grid.inMap(gx, gy) };
+        const face = grid.inMap(gx, gy) ? faces.get(`${x},${y}`) : undefined;
+        // a variant model, two fields wide when its list says so (covers the east neighbour), turned by the map's `face` or `rot`
+        const putVariant = (model: string, rot: number, scale = 1) => {
+          if (big.has(model)) {
+            for (const k of [`${gx + 1},${gy}`, `${gx},${gy + 1}`, `${gx + 1},${gy + 1}`]) covered.add(k);
+            put(model, { ...base, x: x + 0.5, y: y + 0.5, rot: face ?? Math.PI });
+          } else if (wide.has(model)) {
+            covered.add(`${gx + 1},${gy}`);
+            put(model, { ...base, x: x + 0.5, rot: face ?? Math.PI });
+          } else put(model, { ...base, rot: face ?? rot, scale });
+        };
         switch (def.prop) {
           case 'tree': {
             const model = variant('tree', gx, gy, x, y);
@@ -279,6 +307,17 @@ export abstract class BoardProps extends BoardSetup {
             put(k.model, { ...base, h: BOARDWALK_DECK - BOARDWALK_MODEL_DECK, rot: k.rot });
             break;
           }
+          case 'rope_bridge': {
+            const k = ropeBridgePiece(ropeJoins, dryLand, gx, gy);
+            // the planks lie level with the banks, like a boardwalk's deck (model deck at about 0.06)
+            put(k.model, { ...base, h: BOARDWALK_DECK - ROPE_BRIDGE_MODEL_DECK, rot: k.rot });
+            break;
+          }
+          case 'quay': {
+            const k = quayPiece(openWater, gx, gy);
+            put(k.model, { ...base, rot: k.rot });
+            break;
+          }
           case 'paddock':
           case 'paddock_gate':
             for (const k of paddockPiece(paddockJoins, gx, gy, def.prop === 'paddock_gate')) put(k.model, { ...base, rot: k.rot });
@@ -287,26 +326,27 @@ export abstract class BoardProps extends BoardSetup {
           case 'relief':
           case 'sarcophagus':
           case 'stall':
-            put(variant(def.prop, gx, gy, x, y), base);
+          case 'wagon':
+            putVariant(variant(def.prop, gx, gy, x, y), Math.PI);
             break;
           case 'rock':
             // the massif's rim lies flat on the tile edge, so neighbours join: full size, quarter turns only
-            put(variant(def.prop, gx, gy, x, y), { ...base, rot: ((r >>> 4) % 4) * (Math.PI / 2) });
+            putVariant(variant(def.prop, gx, gy, x, y), ((r >>> 4) % 4) * (Math.PI / 2));
             break;
-          case 'rockwall':
-            put('rock_idle', { ...base, rot: ((r >>> 4) % 4) * (Math.PI / 2), scale: 0.9 });
+          case 'rockwall': {
+            // the boulder turns at random and stays a little smaller; a hand-placed model (the adit of N5) fills the tile
+            const model = variant(def.prop, gx, gy, x, y);
+            if (model === 'rock_idle') putVariant(model, ((r >>> 4) % 4) * (Math.PI / 2), 0.9);
+            else putVariant(model, Math.PI);
             break;
+          }
           case 'house': // scenery house (terrain building): no object, always standing
           case 'lodge': {
             // the visitable house: its object's state picks intact / visited / razed
             const obj = s.objects.find((o) => o.at[0] === x && o.at[1] === y);
             const model = variant(def.prop, gx, gy, x, y);
-            if (wide.has(model)) {
-              covered.add(`${gx + 1},${gy}`);
-              put(model, { ...base, x: x + 0.5 });
-              break;
-            }
-            put(withState(model, obj?.state === 'visited' ? 'visited' : obj?.state === 'razed' ? 'razed' : 'intact'), base);
+            if (wide.has(model) || big.has(model)) putVariant(model, Math.PI);
+            else put(withState(model, obj?.state === 'visited' ? 'visited' : obj?.state === 'razed' ? 'razed' : 'intact'), { ...base, rot: face ?? Math.PI });
             break;
           }
           case 'gate':

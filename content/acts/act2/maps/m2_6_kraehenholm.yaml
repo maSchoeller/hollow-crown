@@ -143,6 +143,15 @@ objectives:
   side:
     - { id: s_nell, type: recruit, unit: nell, reward: { gold: 300 } }
     - { id: s_gold, type: open_chests, reward: { item: { def: vulnerary } } }
+# Story 11.24: Speicher und Kran auf der Insel
+propVariants:
+  - { at: [12, 1], model: warehouse_b }
+  - { at: [14, 1], model: warehouse_b }
+  - { at: [12, 2], model: warehouse_a }
+  - { at: [15, 2], model: warehouse_a }
+  - { at: [12, 3], model: warehouse_a }
+  - { at: [13, 3], model: warehouse_b }
+  - { at: [15, 3], model: crane_idle }
 triggers:
   # Ebbe: der Kanal im Osten fällt trocken, ein zweiter Weg in die Bucht
   - id: t_ebb

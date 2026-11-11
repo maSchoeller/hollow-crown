@@ -82,6 +82,31 @@ packs:
       - locations/silberquell.webp
       - locations/aschedorf.webp
       - world/sites/burnt_slope_burnt.webp
+    # Story 11.24: Galerie-Modelle, die nur Karten von Akt 2 zeichnen (Auswahl im Art-Log, concept/23-art-direction/decision-log.md).
+    # Solange act2 unveröffentlicht ist, legt tools/art/model_packs.py sie ins letzte veröffentlichte Paket (act1), nie in den ersten Download.
+    props:
+      - paddock_straight
+      - paddock_corner
+      - paddock_gate
+      - stable_a
+      - horse_a
+      - house_slate_a
+      - house_slate_b
+      - terrace_a
+      - monastery_a
+      - waterfall_a
+      - rope_bridge_straight
+      - rope_bridge_end
+      - warehouse_a
+      - warehouse_b
+      - crane_idle
+      - quay_straight
+      - quay_corner
+      - dragon_bones_a
+      - mine_cart_idle
+      - mine_entrance_a
+      - stage_a
+      - tent_market_a
 
   - id: act1
     released: true
@@ -126,11 +151,7 @@ packs:
       - gatehouse_closed
       - ramp_idle
       - ladder_idle
-      # Story 11.14: Gestüt der Rabenweide (2-3), erst ab Akt 2 gebraucht; bis act2 veröffentlicht ist, kommen sie wie die Herbstmodelle mit act1
-      - paddock_straight
-      - paddock_corner
-      - paddock_gate
-      - stable_a
+      # Story 11.14: Gestüt der Rabenweide (2-3); Koppel und Stall seit Story 11.24 im Paket act2, Scheune und Heu bleiben (auch N3)
       - barn_a
       - hay_a
       - well_idle
