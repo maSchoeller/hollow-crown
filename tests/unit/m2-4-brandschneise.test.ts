@@ -81,8 +81,8 @@ describe('map m2_4_brandschneise', () => {
     expect(map().deploy.max).toBe(12);
   });
 
-  it('has 33 / 38 / 44 foes with the waves, no riders or fliers', () => {
-    for (const [d, n] of [['easy', 33], ['normal', 38], ['hard', 44]] as const) {
+  it('has 29 / 33 / 44 foes with the waves, no riders or fliers (story 11.27: fewer archers on easy and normal)', () => {
+    for (const [d, n] of [['easy', 29], ['normal', 33], ['hard', 44]] as const) {
       const s = battle(d);
       const start = s.units.filter((u) => u.team === 'enemy').length;
       const waves = map().reinforcements.flatMap((r) => r.units).filter((u) => !u.difficulty || u.difficulty.includes(d)).length;

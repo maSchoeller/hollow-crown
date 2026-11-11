@@ -90,7 +90,7 @@ units:
   - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, levelOffset: 1, at: [15, 10], lieutenant: brakka, items: [{ def: steel_bow }], ai: { profile: hold } }
   - { id: g_east, nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [16, 11], items: [{ def: iron_lance }, { def: door_key }], drops: [1], ai: { profile: guard } }
   - { id: t_east, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [16, 14], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 4, then: aggressive } }
-  # Westnase: Bedienung an der Balliste, Wache, Söldner auf der Terrasse
+  # Westnase: Bedienung an der Balliste, Wache, Söldner auf der Terrasse (Story 11.27: ohne Bedienung lief die Sim-Truppe auf die freie Westnase, Leicht 0,46 → 1,28 Niedergestreckte)
   - { id: crew_west, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [3, 12], items: [{ def: iron_bow }], ai: { profile: hold } }
   - { id: g_west, nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [3, 14], items: [{ def: iron_lance }], ai: { profile: guard } }
   - { id: t_west, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [3, 16], items: [{ def: iron_axe }], ai: { profile: trigger, radius: 4, then: aggressive } }
@@ -98,7 +98,7 @@ units:
   - { id: m1, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [9, 12], items: [{ def: iron_axe }], ai: { profile: aggressive } }
   - { id: m2, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [10, 12], items: [{ def: iron_sword }], ai: { profile: aggressive } }
   - { id: m3, nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [8, 11], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { id: m4, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [11, 11], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+  - { id: m4, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [11, 11], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
   - { id: m5, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [9, 9], items: [{ def: iron_bow }], ai: { profile: aggressive } }
   - { id: m6, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [10, 9], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - { id: m7, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [8, 8], items: [{ def: iron_sword }], ai: { profile: aggressive } }
@@ -106,6 +106,9 @@ units:
   # Nur Schwer
   - { id: h1, nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [9, 8], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
   - { id: h2, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [10, 8], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Story 11.27: Schwer lag bei 78 % Sieg (Korridor 30–70); Zusätze in den Wellen kamen zu spät an, darum zwei mehr in der ersten Linie
+  - { id: h3, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [8, 9], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h4, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [11, 9], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
   # Jory am liegengebliebenen Gauklerwagen, in Reichweite der Ostballiste: Gast, tritt nur durch Ansprechen bei (Stufe max(10, P − 1), Waffen aus units.yaml)
   - { id: jory, char: jory, team: other, class: minstrel, at: [16, 19], items: [], ai: { profile: hold }, ignoreForRout: true, guest: true, recruit: { by: any, dialogue: scn.m2_1.jory_talk } }
 reinforcements:
@@ -116,7 +119,7 @@ reinforcements:
     units:
       - { nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [9, 0], items: [{ def: iron_lance }], ai: { profile: aggressive } }
       - { nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [10, 0], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [7, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [7, 0], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
   # Zweite Welle
   - turn: 6
     phase: enemy
@@ -133,7 +136,9 @@ reinforcements:
     units:
       - { nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [9, 24], items: [{ def: iron_axe }], ai: { profile: aggressive } }
       - { nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [10, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [8, 24], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [normal, hard] }
+      - { nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [8, 24], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
+      # Story 11.27: Schwer lag bei 78 % Sieg (Korridor 30–70)
+      - { nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [11, 24], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
   # Letzte Welle
   - turn: 9
     phase: enemy
@@ -197,7 +202,7 @@ design:
     - { at: [12, 17], label: H, note: "Passhospiz: heilt, liegt aber in Reichweite der Ostballiste." }
   notes:
     - "Stufen über levelOffset (Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2); P = 12 (positionLevel.base, 2-1 ist fixed: first)."
-    - "Normal 24 Gegner (10 davon R3/R6/R7/R9) gegen 9 eigene (+ Jory); Leicht 20, Schwer 28."
+    - "Normal 21 Gegner (8 davon R3/R6/R7/R9) gegen 9 eigene (+ Jory); Leicht 20, Schwer 31 (Story 11.27: m4 und je ein Mann von R3 und R7 nur Schwer; auf Schwer h3/h4 in der ersten Linie und R7 +1)."
     - "Die KI bedient die Balliste nur mit Profil hold (Brakka Ost, Schütze West)."
     - "Saat Drachen: In Runde 8 zieht ein Schatten über die Scharte, Söldner und Truppe halten kurz inne (Szene, keine Figur)."
     - "Nach dem Sieg: Rowenas Lanzenreiter (ohne Rowena) und ein Bote Dravns erreichen den Pass gleichzeitig, beide bieten den Freispruch an; Rhen antwortet mit einer Haltung (PO 2026-11-09). Brakka zieht ab, sie wurde bezahlt."

@@ -72,10 +72,10 @@ units:
   # An den Brücken
   - { id: c1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [7, 13], items: [{ def: iron_axe }], ai: { profile: guard, prefer: player } }
   - { id: c2, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [2, 13], items: [{ def: iron_sword }], ai: { profile: guard, prefer: player }, difficulty: [normal, hard] }
-  # Nur Schwer
-  - { id: h1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [3, 3], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
+  # Nur Schwer (Story 11.27: h1 und h3 wie die übrigen Eintreiber mit prefer: player, vorher gingen sie auf den Truppenmeister; Schwer 20 %)
+  - { id: h1, nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [3, 3], items: [{ def: iron_axe }], ai: { profile: aggressive, prefer: player }, difficulty: [hard] }
   - { id: h2, nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [12, 3], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
-  - { id: h3, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [9, 12], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: h3, nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [9, 12], items: [{ def: iron_sword }], ai: { profile: aggressive, prefer: player }, difficulty: [hard] }
   # Die Gauklermeisterin auf der Bühne, folgt der nächsten eigenen Figur (Stufe P − 3 [ASSUMPTION]; der Entwurf nannte 7 bei P 12)
   - { id: troupe_master, nameKey: unit.troupe_master.name, team: other, class: minstrel, portrait: troupe_master, levelOffset: -3, at: [10, 5], items: [{ def: iron_dagger }, { def: travel_lute }], ai: { profile: follow }, ignoreForRout: true }
 reinforcements:
