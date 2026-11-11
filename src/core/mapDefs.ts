@@ -206,6 +206,8 @@ export interface MapDef {
   fog: boolean;
   /** tutorial map: downed player units never bleed out or die (except those whose death loses the battle); see `deathless` */
   noDeath?: boolean;
+  /** lieutenants' level: `company` (default, story 3.4) or `position` = P + their `levelOffset` (story 11.27) */
+  lieutenantLevel?: 'company' | 'position';
   legend: Record<string, string>;
   terrain: string;
   /** tiles standing a level other than their terrain's (a stairs on the wall walk, a terrace of ordinary ground) */

@@ -7,7 +7,9 @@ import {
   conditionContext,
   createBattle,
   enterNextAct,
+  lieutenantLevel,
   newCampaign,
+  planLieutenants,
   relicStage,
   resolveScene,
   runTriggers,
@@ -78,6 +80,22 @@ describe('map m2_8_kronfeld', () => {
     expect(warned.units.filter((u) => u.team === 'enemy' && u.lieutenant).map((u) => u.lieutenant)).toEqual(['rowena', 'grell', 'brakka']);
     expect(warned.units.some((u) => u.uid === 'captain')).toBe(true);
     expect(s.units.some((u) => u.uid === 'captain')).toBe(false);
+  });
+
+  it('stands the four lieutenants on P+1, not on the company plus grudge; grudge weapons and skills stay (story 11.27)', () => {
+    expect(map().lieutenantLevel).toBe('position');
+    const base = inAct2();
+    // a strong company and a grudging Grell: the general rule would put him far above P+1
+    const c: CampaignState = { ...base, roster: base.roster.map((r) => ({ ...r, level: 30 })), lieutenants: { grell: { met: true, encounters: 2, grudge: 2, routs: 2, signatureDropped: false } } };
+    const s = battle(c);
+    for (const lt of ['rowena', 'grell', 'brakka', 'sable']) expect(s.units.find((u) => u.lieutenant === lt)!.level, lt).toBe(s.positionLevel! + 1);
+    const grell = s.units.find((u) => u.lieutenant === 'grell')!;
+    expect(grell.grudge).toBe(2);
+    expect(s.lieutenantPlan!.grell!.skills).toEqual(data.lieutenants!.grell!.grudgeSkills.slice(0, 2));
+    expect(s.lieutenantPlan!.grell!.items.map((i) => i.def)).toEqual(['steel_sword']);
+    // the same map without the position keeps the general rule (haunts and every other map plan this way)
+    expect(planLieutenants(data, c, map(), 'normal').grell!.level).toBe(lieutenantLevel(data, c, 2));
+    expect(Object.values(data.maps).filter((m) => m.lieutenantLevel === 'position').map((m) => m.id)).toEqual(['m2_8_kronfeld']);
   });
 
   it('stands the company on the terrace (level 1); Brakka’s ballista sits on the crag of the east hill (level 2)', () => {

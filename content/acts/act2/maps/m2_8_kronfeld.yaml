@@ -13,6 +13,8 @@
 id: m2_8_kronfeld
 nameKey: map.m2_8_kronfeld.name
 size: [30, 40]
+# Produktinhaber 2026-11-10 (Story 11.27): die vier Leutnants stehen fest auf P + levelOffset (+1), nicht nach Truppe + Groll; Groll-Waffen und -Fähigkeiten bleiben
+lieutenantLevel: position
 legend:
   "Q": ballista
   ",": grass
@@ -100,7 +102,7 @@ haunts:
     chests: [[22, 12], [26, 14]]
 units:
   # Norden: Rowena mit der Lanze vor dem Brückentor, ihre Lanzenritter und die Lanzenknechte der Krone
-  - { id: rowena, nameKey: unit.rowena.name, team: enemy, class: knight, levelOffset: 2, at: [14, 9], lieutenant: rowena, items: [{ def: steel_lance }], ai: { profile: trigger, radius: 6, then: aggressive } }
+  - { id: rowena, nameKey: unit.rowena.name, team: enemy, class: knight, levelOffset: 1, at: [14, 9], lieutenant: rowena, items: [{ def: steel_lance }], ai: { profile: trigger, radius: 6, then: aggressive } }
   - { id: n1, nameKey: unit.lance_knight.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [10, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
   - { id: n2, nameKey: unit.lance_knight.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [19, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
   - { id: n3, nameKey: unit.lance_squire.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [14, 12], items: [{ def: iron_lance }], ai: { profile: aggressive } }

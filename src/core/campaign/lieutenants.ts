@@ -16,7 +16,7 @@ import { onDifficulty, posKey } from '../util';
 import type { BountyResult } from './campaign';
 import { takeItem } from './camp';
 import type { CampaignEvent } from './commands';
-import { raiseToLevel } from './position';
+import { atPosition, raiseToLevel } from './position';
 
 /** The highest grudge (GDD: Groll 0-3), from `balance.lieutenant.grudge.max`. */
 export const grudgeMax = (data: Pick<GameData, 'balance'>): number => data.balance.lieutenant.grudge.max;
@@ -96,16 +96,18 @@ export function lieutenantItems(data: GameData, def: Pick<LieutenantDef, 'signat
 
 /**
  * A map unit as the battle builds it: for a lieutenant (known in the content) the level from the company and his grudge,
- * the tiered items and the grudge skills; the level on the map is ignored. Any other unit comes back unchanged.
+ * the tiered items and the grudge skills; the level on the map is ignored. With `position` (a map with `lieutenantLevel: position`,
+ * story 11.27) and a `levelOffset` on the unit, the level is that position plus the offset instead; items and skills stay the same.
+ * Any other unit comes back unchanged.
  */
-export function lieutenantUnit(data: GameData, c: Pick<CampaignState, 'roster' | 'lieutenants'>, def: MapUnitDef): { def: MapUnitDef; skills: string[] } {
+export function lieutenantUnit(data: GameData, c: Pick<CampaignState, 'roster' | 'lieutenants'>, def: MapUnitDef, position?: number): { def: MapUnitDef; skills: string[] } {
   const lt = def.lieutenant ? data.lieutenants?.[def.lieutenant] : undefined;
   if (!lt) return { def, skills: [] };
   const grudge = lieutenantState(c, lt.id).grudge;
   const { items, kept } = lieutenantItems(data, lt, def.items, grudge);
   const drops = def.drops?.map((i) => kept.indexOf(i)).filter((i) => i >= 0);
   return {
-    def: { ...def, level: lieutenantLevel(data, c, grudge), items, ...(drops ? { drops } : {}) },
+    def: { ...def, level: position !== undefined && def.levelOffset !== undefined ? atPosition(def, position).level! : lieutenantLevel(data, c, grudge), items, ...(drops ? { drops } : {}) },
     skills: lieutenantSkills(data, lt, grudge),
   };
 }
@@ -121,14 +123,21 @@ function mapUnitDefs(map: Pick<MapDef, 'units' | 'reinforcements' | 'triggers'>,
 /**
  * The plan of every lieutenant on the map (review R1): what `lieutenantUnit` makes of him, for the line-up, the reinforcements
  * and the trigger spawns alike. Lieutenants who joined the company are not in it. One lieutenant appears once per map and
- * difficulty (`content:check`); should a map name him twice, the first definition counts.
+ * difficulty (`content:check`); should a map name him twice, the first definition counts. `position`: the fixed position level
+ * the lieutenants stand on (map with `lieutenantLevel: position`, story 11.27); left out, they scale with the company.
  */
-export function planLieutenants(data: GameData, c: Pick<CampaignState, 'roster' | 'lieutenants' | 'flags'>, map: Pick<MapDef, 'units' | 'reinforcements' | 'triggers'>, difficulty: Difficulty): Record<string, LieutenantPlan> {
+export function planLieutenants(
+  data: GameData,
+  c: Pick<CampaignState, 'roster' | 'lieutenants' | 'flags'>,
+  map: Pick<MapDef, 'units' | 'reinforcements' | 'triggers'>,
+  difficulty: Difficulty,
+  position?: number,
+): Record<string, LieutenantPlan> {
   const plan: Record<string, LieutenantPlan> = {};
   for (const def of mapUnitDefs(map, difficulty)) {
     const id = def.lieutenant;
     if (!id || !data.lieutenants?.[id] || isJoined(c, id) || plan[id]) continue;
-    const scaled = lieutenantUnit(data, c, def);
+    const scaled = lieutenantUnit(data, c, def, position);
     const st = c.lieutenants?.[id];
     plan[id] = {
       level: scaled.def.level ?? 1,

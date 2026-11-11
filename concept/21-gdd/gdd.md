@@ -121,7 +121,7 @@ Die Kampfregeln des Proof of Concept gelten unverändert; Formeln und alle Werte
 | Kampf | wie normale Gegner |
 | Bei 0 TP | **Flucht** statt Tod; verlässt die Karte; zählt für Ziele als besiegt; die Vorschau zeigt „flieht“ |
 | Tod | nie; Leutnants kehren unbegrenzt wieder |
-| Stufe | Durchschnitt der 6 stärksten Einheiten der Armee + Groll |
+| Stufe | Durchschnitt der 6 stärksten Einheiten der Armee + Groll. Ausnahme Akt-2-Finale 2-8: fest P + 1 (Missionsstufe), ohne Groll-Aufschlag; Groll-Tier und Groll-Fähigkeiten gelten dort weiter (Karte `lieutenantLevel: position`, 2026-11-10) |
 | Groll | 0–3; +1 je Vertreibung. Jede Groll-Stufe gibt +1 Ausrüstungs-Tier und schaltet eine der 3 Groll-Fähigkeiten frei. Entscheidungen können Groll um 1 senken |
 | Groll-Ziel | die Einheit, die ihn zuletzt vertrieben hat; die KI gewichtet sie mit +20; beim Wiedersehen spricht er eine Groll-Zeile. Stirbt das Ziel, bleibt der Groll und richtet sich nach der nächsten Vertreibung neu aus; bis dahin eine Gedenk-Spottzeile |
 | Kopfgeld | 200 × (Groll + 1) Gold + 1–2 Material des Akts `[ASSUMPTION]` |
