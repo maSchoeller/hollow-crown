@@ -111,7 +111,7 @@ reinforcements:
       - { nameKey: unit.looter.name, team: enemy, class: scout, sprite: mercenary, level: 5, at: [14, 13], items: [{ def: iron_dagger }], ai: { profile: aggressive }, difficulty: [normal, hard] }
 objectives:
   # treasure löst die Niederlage durch die Rundenfrist selbst aus (kein defeat turn_limit)
-  victory: { type: treasure, chests: [c_chronicle], turns: 10 }
+  victory: { type: treasure, chests: [c_chronicle], turns: 12 }
   defeat:
     - { type: unit_dies, unit: lucan }
     - { type: unit_dies, unit: avatar }
@@ -122,27 +122,27 @@ triggers:
   # Das Beben aus dem Norden, Warnung vor dem Einsturz
   - id: t_quake
     once: true
-    when: { type: turn_start, turn: 4, phase: player }
+    when: { type: turn_start, turn: 7, phase: player }
     then:
       - { action: dialogue, id: scn.m1_7.quake }
-  # Runde 5: Königskammer außer der Chronik und dem Weg zu ihr
+  # Runde 8: Königskammer außer der Chronik und dem Weg zu ihr
   - id: t_collapse_king
     once: true
-    when: { type: turn_start, turn: 5, phase: player }
+    when: { type: turn_start, turn: 8, phase: player }
     then:
       - { action: set_terrain, area: { rect: [4, 1, 6, 3] }, terrain: rockwall }
       - { action: set_terrain, area: { rect: [9, 1, 11, 3] }, terrain: rockwall }
-  # Runde 6: die oberen Kammern
+  # Runde 9: die oberen Kammern
   - id: t_collapse_upper
     once: true
-    when: { type: turn_start, turn: 6, phase: player }
+    when: { type: turn_start, turn: 9, phase: player }
     then:
       - { action: set_terrain, area: { rect: [1, 6, 4, 8] }, terrain: rockwall }
       - { action: set_terrain, area: { rect: [11, 6, 14, 8] }, terrain: rockwall }
-  # Runde 7: die unteren Kammern; der Hauptgang bleibt
+  # Runde 10: die unteren Kammern; der Hauptgang bleibt
   - id: t_collapse_lower
     once: true
-    when: { type: turn_start, turn: 7, phase: player }
+    when: { type: turn_start, turn: 10, phase: player }
     then:
       - { action: set_terrain, area: { rect: [1, 12, 4, 14] }, terrain: rockwall }
       - { action: set_terrain, area: { rect: [11, 12, 14, 14] }, terrain: rockwall }
@@ -169,13 +169,13 @@ music: battle_a
 design:
   title: Unter der Paktwacht
   intent: >
-    Zweite veränderliche Karte: Das Gewölbe stürzt ab Runde 5 von Norden her ein. Der Spieler muss wählen zwischen der Chronik
+    Zweite veränderliche Karte: Das Gewölbe stürzt ab Runde 8 von Norden her ein. Der Spieler muss wählen zwischen der Chronik
     (Sieg) und den Grabkammern (Beute), bevor sie verschüttet sind. Enge Gänge, Dunkelheit, Plünderer aus Felsspalten.
   mood: Dunkles Felsgewölbe, Fackeln an den Wänden, Steinsarkophage junger Könige mit Kronen-Reliefs, Staub rieselt, ein fahles Glühen im Norden.
   phases:
-    - { id: p1, turns: [1, 3], label: Gang, note: "Plünderer in Gang und unteren Kammern; Spaltenwelle Nordost (R3)." }
-    - { id: p2, turns: [4, 6], label: Beben, note: "R4 Beben; R5 stürzt die Königskammer bis auf die Chronik ein, R6 die oberen Kammern." }
-    - { id: p3, turns: [7, 8], label: Flucht nach vorn, note: "R7 stürzen die unteren Kammern ein; der Hauptgang bleibt offen." }
+    - { id: p1, turns: [1, 6], label: Gang, note: "Plünderer in Gang und unteren Kammern; Spaltenwelle Nordost (R3)." }
+    - { id: p2, turns: [7, 9], label: Beben, note: "R7 Beben; R8 stürzt die Königskammer bis auf die Chronik ein, R9 die oberen Kammern." }
+    - { id: p3, turns: [10, 12], label: Flucht nach vorn, note: "R10 stürzen die unteren Kammern ein; der Hauptgang bleibt offen." }
   paths:
     - { team: player, points: [[7, 18], [7, 13], [7, 4], [7, 2]], label: Hauptgang }
     - { team: player, points: [[6, 13], [3, 13]], label: Kammer W1 }
