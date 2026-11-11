@@ -113,13 +113,13 @@ describe('map m2_5_silberquell', () => {
     expect(dialogues(at(4, 'player'))).toEqual([]);
     expect(dialogues(at(5, 'player'))).toEqual(['scn.m2_5.bridge_warn']);
     expect(terrainWarnings(data, s).map((w) => ({ turn: w.turn, terrain: w.terrain, tiles: w.tiles }))).toEqual([{ turn: 6, terrain: 'river', tiles: [[4, 10], [4, 11]] }]);
-    expect(terrainAt(s, [4, 10])).toBe('footbridge');
+    expect(terrainAt(s, [4, 10])).toBe('rope_bridge');
     at(6, 'player');
-    expect(terrainAt(s, [4, 10])).toBe('footbridge');
+    expect(terrainAt(s, [4, 10])).toBe('rope_bridge');
     at(6, 'enemy');
     expect(terrainAt(s, [4, 10])).toBe('river');
     expect(terrainAt(s, [4, 11])).toBe('river');
-    for (const y of [9, 10, 11, 12]) expect(terrainAt(s, [15, y])).toBe('footbridge');
+    for (const y of [9, 10, 11, 12]) expect(terrainAt(s, [15, y])).toBe('rope_bridge');
   });
 
   it('plays the meeting with Odile once, when a company member reaches the yard around her', () => {

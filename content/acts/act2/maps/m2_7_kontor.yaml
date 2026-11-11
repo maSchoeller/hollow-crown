@@ -21,6 +21,7 @@ legend:
   "W": wagon
   "L": lever
   "s": stairs
+  "q": quay
 #          x: 01234567890123456789
 terrain: |
   ~..................~
@@ -34,11 +35,11 @@ terrain: |
   ~.bbbb..._Q...bbbb.~
   ~.bbbb.W.__.W.bbbb.~
   ~.bbbb...__...bbbb.~
-  ~........ss.......s~
+  ~qqqqqqqqssqqqqqqqs~
   ~~~~~~~~~BB~~~~~~~~~
   ~~~~~~~~~BB~~~~~~~~~
   ~~~~~~~~~BB~~~~~~~~~
-  ~........__.....L..~
+  ~qqqqqqqq__qqqqqLqq~
   ~.W......__........~
   ~..bbbb..__..bbbb..~
   ~..bbbb..__..bbbb..~
@@ -142,6 +143,36 @@ objectives:
   side:
     - { id: s_page, type: open_chests, reward: { item: { def: vulnerary } } }
     - { id: s_fast, type: turn_limit, turns: 12, reward: { gold: 400 } }
+# Story 11.24: Speicher und zwei Kräne (Ausleger zum Steg bzw. zum Kai); Kaifelder q am Wasser
+propVariants:
+  - { at: [2, 8], model: warehouse_b }
+  - { at: [4, 8], model: warehouse_b }
+  - { at: [2, 9], model: warehouse_a }
+  - { at: [5, 9], model: warehouse_a }
+  - { at: [2, 10], model: warehouse_b }
+  - { at: [4, 10], model: warehouse_a }
+  - { at: [5, 10], model: warehouse_a }
+  - { at: [14, 8], model: warehouse_b }
+  - { at: [16, 8], model: warehouse_b }
+  - { at: [14, 9], model: warehouse_a }
+  - { at: [17, 9], model: warehouse_a }
+  - { at: [14, 10], model: warehouse_a }
+  - { at: [15, 10], model: crane_idle, face: west }
+  - { at: [16, 10], model: warehouse_b }
+  - { at: [3, 17], model: warehouse_b }
+  - { at: [5, 17], model: warehouse_b }
+  - { at: [3, 18], model: warehouse_a }
+  - { at: [6, 18], model: warehouse_a }
+  - { at: [3, 19], model: warehouse_b }
+  - { at: [5, 19], model: warehouse_a }
+  - { at: [6, 19], model: warehouse_a }
+  - { at: [13, 17], model: warehouse_a }
+  - { at: [14, 17], model: warehouse_b }
+  - { at: [16, 17], model: crane_idle, face: east }
+  - { at: [13, 18], model: warehouse_a }
+  - { at: [16, 18], model: warehouse_a }
+  - { at: [13, 19], model: warehouse_a }
+  - { at: [14, 19], model: warehouse_b }
 triggers:
   # Hebel am Kran: der Ausleger schwenkt einen Steg über das Becken
   - id: t_crane

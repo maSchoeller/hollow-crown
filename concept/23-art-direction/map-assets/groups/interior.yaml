@@ -106,6 +106,7 @@ items:
     missions: [1-6, 1-8, N1]
     use: Stufenwechsel nur zu Fuß, schmale Leiter in der Feldmitte lehnt an der Mauer 0,85, Boden seitlich frei; 1 Feld.
   - id: mine_cart_idle
+    ships: true
     name: Lore
     ref: { sheet: interior_4.png, box: [110, 50, 440, 400] }
     missions: [N5]
@@ -121,11 +122,13 @@ items:
     missions: [N5]
     use: Zwei Pfosten, Querbalken und Laterne, die Mitte bleibt offen und begehbar; 1 Feld.
   - id: mine_entrance_a
+    ships: true
     name: Stolleneingang
     ref: { sheet: interior_4.png, box: [30, 430, 655, 925] }
     missions: [N5]
     use: Felsbrocken mit Holzrahmen, schwarzem Mund und Schienen nach Süden; sperrt, 1 Feld.
   - id: dragon_bones_a
+    ships: true
     name: Drachenknochen
     ref: { sheet: interior_4.png, box: [715, 440, 1505, 955] }
     missions: [N5]

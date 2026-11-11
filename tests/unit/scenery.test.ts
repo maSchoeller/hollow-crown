@@ -40,11 +40,14 @@ describe('prop variants', () => {
   const list = [{ model: 'house_intact', weight: 3 }, { model: 'house_b_intact', weight: 1 }, { model: 'house_c_intact', weight: 1 }];
   const all = () => true;
 
-  it('classes: houses, lodges, rocks and trees have variants, the rest not (the rock wall keeps its single boulder)', () => {
+  it('classes: houses, lodges, rocks and trees have variants, the rest not (rock wall and wagon since story 11.24: the adit and the mine cart by hand)', () => {
     expect(variantClassOf('house')).toBe('house');
     expect(variantClassOf('lodge')).toBe('lodge');
     expect(variantClassOf('rock')).toBe('rock');
-    expect(variantClassOf('rockwall')).toBeNull();
+    expect(variantClassOf('rockwall')).toBe('rockwall');
+    expect(variantClassOf('wagon')).toBe('wagon');
+    expect(variantList(data, 'rockwall').filter((v) => v.weight > 0).map((v) => v.model)).toEqual(['rock_idle']);
+    expect(variantList(data, 'wagon').filter((v) => v.weight > 0).map((v) => v.model)).toEqual(['wagon_idle']);
     expect(variantClassOf('tree')).toBe('tree');
     expect(variantClassOf('fort')).toBeNull();
     expect(variantClassOf(undefined)).toBeNull();
@@ -131,7 +134,7 @@ describe('prop variants', () => {
   it('stands are a variant class: market stalls by hash, the camp tent of 1-5 by hand; the mill only by hand (story 15.8)', () => {
     expect(variantClassOf('stall')).toBe('stall');
     expect(data.terrain.stall!.prop).toBe('stall');
-    expect(variantList(data, 'stall').map((v) => [v.model, v.weight > 0])).toEqual([['market_a', true], ['market_b', true], ['camp_tent_a', false]]);
+    expect(variantList(data, 'stall').map((v) => [v.model, v.weight > 0])).toEqual([['market_a', true], ['market_b', true], ['camp_tent_a', false], ['stage_a', false], ['tent_market_a', false]]);
     expect(variantList(data, 'house').find((v) => v.model === 'mill_idle')?.weight).toBe(0);
     // the scenery around the map takes the first entries of a list: never a hand-placed one
     for (const cls of ['house', 'stall'] as const) for (const v of variantList(data, cls, 'summer', true)) expect(v.weight).toBeGreaterThan(0);

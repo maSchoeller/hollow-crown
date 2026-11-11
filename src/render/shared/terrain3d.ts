@@ -146,7 +146,7 @@ export function terrainGrid(data: GameData, state: BattleState, seed: number): T
 
 /** Where feet stand on the board: per tile and, on ramps, stairs and the foot of a ladder, per point of the tile (story 15.13). */
 /** Props whose tile carries a deck (`floorOf`): they shape where a figure stands, so they belong to the blocks. */
-const DECK_PROPS = new Set(['bridge', 'boardwalk']);
+const DECK_PROPS = new Set(['bridge', 'boardwalk', 'rope_bridge']);
 
 /**
  * Story 11.26: whether two grids build the same blocks, so a terrain change (a fire that catches or burns out, ash) only repaints
@@ -195,7 +195,7 @@ export function floorOf(data: GameData, grid: TerrainGrid, width: number, height
   for (const l of ladders) if (!ladderAt.has((l.at[1] + S) * grid.w + l.at[0] + S)) ladderAt.set((l.at[1] + S) * grid.w + l.at[0] + S, l);
   const flat = (def: TerrainDef) => {
     if (def.prop === 'bridge') return 0.02;
-    if (def.prop === 'boardwalk') return BOARDWALK_DECK;
+    if (def.prop === 'boardwalk' || def.prop === 'rope_bridge') return BOARDWALK_DECK;
     return def.water ? Math.max(def.height, board.waterLevel - 0.05) : def.height + def.stand;
   };
   // a connector's rise per tile, worked out once: placing a figure asks every frame

@@ -72,6 +72,10 @@
 - { id: creek,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: river, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: peat, height: -0.32, water: true, waterLook: creek }
 - { id: boardwalk, def: 0, avoid: 0,  heal: 0,  flammable: false, ground: river, prop: boardwalk, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: peat, height: -0.32, water: true, waterLook: creek }
 - { id: footbridge, def: 0, avoid: 0, heal: 0,  flammable: false, ground: river, prop: boardwalk, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: riverbed, height: -0.32, water: true }
+# Story 11.24: Hängebrücke (2-5) mit den Werten des Stegs, Modell rope_bridge_* (Anker am Ufer, src/render/board/wallKit.ts)
+- { id: rope_bridge, def: 0, avoid: 0, heal: 0, flammable: false, ground: river, prop: rope_bridge, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: riverbed, height: -0.32, water: true }
+# Story 11.24: Kai (2-7) mit den Werten von plain, Modell quay_* mit der Steinkante zum offenen Wasser
+- { id: quay,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: quay, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: road }
 # Gewölbe (1-7): Boden wie plain, nur dunkler Stein; Sarkophag sperrt wie der Wagen; Wandfackel steht an der Nordkante, das Feld bleibt begehbar. Startwerte [C].
 - { id: vault,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: vault }
 - { id: sarcophagus, def: 0, avoid: 0, heal: 0, flammable: false, ground: plain, prop: sarcophagus, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: vault }

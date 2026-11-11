@@ -16,7 +16,7 @@ legend:
   "T": forest
   "^": mountain
   "~": river
-  "h": footbridge
+  "h": rope_bridge
   "M": wall
   "G": gate
   "S": shrine
@@ -136,6 +136,14 @@ objectives:
   side:
     - { id: s_amos, type: recruit, unit: amos, reward: { gold: 300 } }
     - { id: s_fast, type: turn_limit, turns: 11, reward: { gold: 300 } }
+# Story 11.24: Kloster (2 × 2), Feldsteinhäuser am Westhof, Wasserfall der Quelle im Osten
+propVariants:
+  - { at: [12, 16], model: monastery_a }
+  - { at: [6, 17], model: house_slate_a }
+  - { at: [7, 17], model: house_slate_b }
+  - { at: [6, 18], model: house_slate_b }
+  - { at: [7, 18], model: house_slate_a }
+  - { at: [19, 10], model: waterfall_a, face: west }
 triggers:
   # Begegnung: die erste eigene Figur neben Odile im Klosterhof
   - id: t_odile

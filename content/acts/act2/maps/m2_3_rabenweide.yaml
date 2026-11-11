@@ -69,6 +69,10 @@ propVariants:
   - { at: [14, 1], model: barn_a }
   - { at: [9, 2], model: hay_a }
   - { at: [11, 2], model: hay_a }
+  # Story 11.24: Pferde am Anbindebalken im Gestütshof (Deko, sperren wie das Kulissenhaus)
+  - { at: [6, 2], model: horse_a }
+  - { at: [8, 2], model: horse_a }
+  - { at: [13, 2], model: horse_a }
 timeOfDay: noon
 weather: clear
 objects:

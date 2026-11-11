@@ -958,6 +958,62 @@ def stable_a():
     done(join(parts, 'stable_a'), 'stable_a', size=512)
 
 
+# ---------------------------------------------------------------- horse (story 11.24)
+
+def horse_a():
+    """Deco horse for the stud farm of 2-3: a round chestnut tied at a hitching rail on the north edge, a trough at its head.
+    Blocks the tile like a house variant: rail and trough fill the tile, the ears stand higher than a figure. Side on to the
+    south camera, head to the east. Built from primitives here, not through the mount pipeline (story 11.24)."""
+    reset()
+    M = V()
+    rng = random.Random(231)
+    coat = tone('v_coat', (92, 44, 20), (190, 108, 56), 70.0, wn=0.6, noise=0.08, nscale=10)
+    mane = tone('v_mane', (24, 16, 14), (70, 48, 36), 71.0, wn=0.5, noise=0.1, nscale=18, stretch=(1, 1, 5))
+    parts = []
+    # hitching rail along the north edge, the full tile wide
+    yr = 0.36
+    for s in (-1, 1):
+        parts.append(block(f'rp{s}', (s * 0.43, yr, 0.29), (0.07, 0.07, 0.58), M.timber, 0.01))
+        parts.append(block(f'rf{s}', (s * 0.43, yr, 0.03), (0.12, 0.12, 0.06), M.block, 0.008))
+    parts.append(rod('rail', (-0.47, yr, 0.5), (0.47, yr, 0.5), 0.032, M.oak, seg=6))
+    # trough at the head, east
+    parts.append(block('tr', (0.33, 0.2, 0.09), (0.26, 0.15, 0.17), M.oak, 0.01))
+    parts.append(box('trw', (0.33, 0.2, 0.172), (0.21, 0.1, 0.012), M.glass))
+    for s in (-1, 1):
+        parts.append(block(f'trb{s}', (0.33 + s * 0.1, 0.2, 0.09), (0.025, 0.17, 0.19), M.timber, 0.004))
+    # body: a round barrel, legs short and sturdy (chibi)
+    zb = 0.5
+    parts.append(sphere('body', (-0.04, -0.06, zb), 0.2, coat, rng, (1.6, 0.9, 0.95), sub=2, jitter=0.02))
+    parts.append(sphere('rump', (-0.22, -0.06, zb + 0.02), 0.15, coat, rng, (1.0, 1.0, 1.0), sub=2, jitter=0.02))
+    parts.append(sphere('chest', (0.15, -0.06, zb + 0.02), 0.15, coat, rng, (1.0, 0.95, 1.05), sub=2, jitter=0.02))
+    for i, (x, y) in enumerate(((0.16, -0.14), (0.16, 0.02), (-0.24, -0.14), (-0.24, 0.02))):
+        parts.append(rod(f'leg{i}', (x, y, zb - 0.08), (x, y, 0.07), 0.05, coat, seg=7, r1=0.038))
+        sock = M.white if i in (0, 2) else coat
+        parts.append(rod(f'sock{i}', (x, y, 0.16), (x, y, 0.05), 0.041, sock, seg=7))
+        parts.append(rod(f'hoof{i}', (x, y, 0.055), (x, y, 0.0), 0.046, M.dark, seg=7, r1=0.05))
+    # neck up to the north-east, a long head bent down to the trough
+    parts.append(rod('neck', (0.18, -0.05, zb + 0.04), (0.33, -0.01, 0.78), 0.105, coat, seg=8, r1=0.078))
+    parts.append(sphere('poll', (0.35, -0.0, 0.8), 0.085, coat, rng, (1.0, 0.95, 1.0), sub=2, jitter=0.02))
+    parts.append(rod('face', (0.38, 0.0, 0.8), (0.55, 0.02, 0.66), 0.075, coat, seg=8, r1=0.058))
+    parts.append(sphere('muzzle', (0.56, 0.02, 0.65), 0.064, M.soil, rng, (1.0, 0.95, 0.9), sub=2, jitter=0.02))
+    parts.append(rod('blaze', (0.42, 0.0, 0.84), (0.555, 0.02, 0.705), 0.03, M.white, seg=5, r1=0.022))
+    for s in (-1, 1):
+        parts.append(sphere(f'eye{s}', (0.42, s * 0.068, 0.79), 0.017, M.dark))
+        parts.append(rod(f'ear{s}', (0.34, s * 0.045, 0.86), (0.32, s * 0.06, 0.95), 0.032, coat, seg=5, r1=0.008))
+    # mane along the neck crest, forelock, a full tail
+    for k in range(6):
+        t = k / 5
+        parts.append(sphere(f'mn{k}', (0.13 + 0.2 * t, 0.0 + 0.01 * t, zb + 0.12 + 0.22 * t), 0.062 - 0.012 * t, mane, rng, (0.9, 0.75, 1.25), sub=1, jitter=0.1))
+    parts.append(sphere('fore', (0.39, 0.0, 0.86), 0.035, mane, rng, (1.3, 1.2, 0.8), sub=1, jitter=0.1))
+    parts.append(rod('tail0', (-0.35, -0.06, zb + 0.08), (-0.43, -0.05, 0.36), 0.06, mane, seg=6, r1=0.05))
+    parts.append(rod('tail1', (-0.43, -0.05, 0.36), (-0.42, -0.04, 0.16), 0.05, mane, seg=6, r1=0.022))
+    # lead rope from the muzzle to the rail
+    parts.append(rod('lead', (0.55, 0.06, 0.66), (0.3, yr - 0.01, 0.5), 0.012, M.rope, seg=4))
+    # a few straw tufts at the hooves
+    tufts(parts, M, [(-0.4, -0.3), (0.05, -0.32), (-0.1, 0.2)], rng, 'ht', mat=M.straw)
+    done(join(parts, 'horse_a'), 'horse_a', size=512)
+
+
 # ---------------------------------------------------------------- town houses
 
 def house_town_a():
@@ -1499,6 +1555,7 @@ if __name__ == '__main__':
         'lodge_b_razed': lodge_b_razed,
         'roof_tile_idle': roof_tile_idle,
         'terrace_a': terrace_a,
+        'horse_a': horse_a,
     }
     for name, fn in jobs.items():
         if not only or name in only:

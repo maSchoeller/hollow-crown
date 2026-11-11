@@ -82,6 +82,9 @@ export const TERRAIN: Record<string, { fill: string; glyph?: string; dark?: bool
   vault: { fill: '#9d968c', name: 'Gewölbe' },
   sarcophagus: { fill: '#7d766d', glyph: '▭', dark: true, name: 'Sarkophag' },
   torch: { fill: '#a39a8c', glyph: '♆', name: 'Fackel' },
+  // story 11.24: rope bridge (values of the footbridge) and quay (values of plain)
+  rope_bridge: { fill: '#b68b5a', glyph: '≍', dark: true, name: 'Hängebrücke' },
+  quay: { fill: '#b9a27c', glyph: '⊓', name: 'Kai' },
 };
 
 const COL = {

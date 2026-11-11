@@ -45,18 +45,27 @@ board:
   variants:
     # Gewicht 0: nur von Hand gesetzt (propVariants der Karte), nie vom Feld-Hash gewürfelt (Story 15.8)
     # Kulissenhäuser (Terrain building, nicht besuchbar): vier Häuser; die Mühle mit Rad (N3) setzt die Karte von Hand, ebenso Stall, Scheune und Heu
-    # des Gestüts (2-3, Story 11.14); wide: zwei Felder breit (Stall), steht zwischen seinem Feld und dem östlichen Nachbarn, der dann nichts zeichnet
-    house: [{ model: house_intact, weight: 3 }, { model: house_b_intact, weight: 2 }, { model: house_c_intact, weight: 2 }, { model: house_d_intact, weight: 2 }, { model: mill_idle, weight: 0 }, { model: stable_a, weight: 0, wide: true }, { model: barn_a, weight: 0 }, { model: hay_a, weight: 0 }]
+    # des Gestüts (2-3, Story 11.14); wide: zwei Felder breit (Stall), steht zwischen seinem Feld und dem östlichen Nachbarn, der dann nichts zeichnet;
+    # big: 2 × 2 Felder (Kloster), steht auf der gemeinsamen Ecke mit dem östlichen, südlichen und südöstlichen Nachbarn (gilt für jede Klasse).
+    # Story 11.24 (Akt 2): Deko-Pferd am Anbindebalken (2-3), Bergdorf (2-4), Kloster (2-5), Speicher und Kran (2-6, 2-7)
+    house: [{ model: house_intact, weight: 3 }, { model: house_b_intact, weight: 2 }, { model: house_c_intact, weight: 2 }, { model: house_d_intact, weight: 2 }, { model: mill_idle, weight: 0 }, { model: stable_a, weight: 0, wide: true }, { model: barn_a, weight: 0 }, { model: hay_a, weight: 0 },
+      { model: horse_a, weight: 0 }, { model: house_slate_a, weight: 0 }, { model: house_slate_b, weight: 0 }, { model: monastery_a, weight: 0, big: true }, { model: warehouse_a, weight: 0 }, { model: warehouse_b, weight: 0, wide: true }, { model: crane_idle, weight: 0 }]
     # Besuchshaus (Terrain village, Objekt village): eigenes, deutlich anderes Modell mit den Zuständen intact, visited, razed
     lodge: [{ model: lodge_b_intact, weight: 1 }]
     # Kornfeld ohne Rahmen (begehbar, Boden sichtbar), Grabrelief und Sarkophag: je ein eigenes Modell (Art Direction §3.2)
-    field: [{ model: field_open, weight: 1 }]
+    # Story 11.24: Getreideterrasse der Brandschneise (2-4), begehbar wie das Feld
+    field: [{ model: field_open, weight: 1 }, { model: terrace_a, weight: 0 }]
     relief: [{ model: relief_a, weight: 1 }]
-    sarcophagus: [{ model: sarcophagus_a, weight: 1 }]
+    # Story 11.24: die Drachenknochen der Knochenhalle (N5), zwei Felder breit
+    sarcophagus: [{ model: sarcophagus_a, weight: 1 }, { model: dragon_bones_a, weight: 0, wide: true }]
     # Stand (Terrain stall, sperrt): Marktstände; das Lagerzelt des Hungerlagers (1-5) setzt die Karte von Hand (Story 15.8)
-    stall: [{ model: market_a, weight: 1 }, { model: market_b, weight: 1 }, { model: camp_tent_a, weight: 0 }]
+    stall: [{ model: market_a, weight: 1 }, { model: market_b, weight: 1 }, { model: camp_tent_a, weight: 0 }, { model: stage_a, weight: 0 }, { model: tent_market_a, weight: 0 }]
+    # Story 11.24: Wagen und Felswall mit Varianten von Hand: die Lore und der Stollen des Bergwerks (N5)
+    wagon: [{ model: wagon_idle, weight: 1 }, { model: mine_cart_idle, weight: 0 }]
+    rockwall: [{ model: rock_idle, weight: 1 }, { model: mine_entrance_a, weight: 0 }]
     # Felsmasse (Terrain mountain): gefacettete Kappe bis an die Feldkante; der Felswall (rockwall) zeichnet rock_idle
-    rock: [{ model: massif_a, weight: 3 }, { model: massif_b, weight: 3 }, { model: massif_c, weight: 2 }]
+    # Story 11.24: der Wasserfall an der Quelle von Silberquell (2-5), von Hand mit Blickrichtung
+    rock: [{ model: massif_a, weight: 3 }, { model: massif_b, weight: 3 }, { model: massif_c, weight: 2 }, { model: waterfall_a, weight: 0 }]
     # Waldfeld je Jahreszeit (Story 15.15, sonst die des Akts, siehe actSeason); eine Jahreszeit ohne Eintrag nimmt den Sommerwald. Bäume am Nord- und
     # Westrand, die Feldmitte bleibt frei (§3.2): je Jahreszeit drei Waldfelder, b und c im Herbst und Winter mit dem Aufbau von grove_b und grove_c (Story 15.16)
     tree:
