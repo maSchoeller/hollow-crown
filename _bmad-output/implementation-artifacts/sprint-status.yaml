@@ -220,7 +220,7 @@ development_status:
   11-24-galerie-modelle-fuer-akt-2: backlog  # Galerie-Modelle für Akt 2
   11-25-brettfigur-rowena: backlog  # Brettfigur Rowena (Schritt 3, verkleinert; F2 2026-11-06)
   11-26-leistung-von-akt-2: review  # Leistung von Akt 2
-  11-27-akt-2-abstimmen-und-abschliessen: backlog  # Akt 2 abstimmen und abschließen
+  11-27-akt-2-abstimmen-und-abschliessen: review  # Akt 2 abstimmen und abschließen
   epic-11-retrospective: optional
 
   # Epic 12: Akt 3 „Krone“ und Staffelende – grob
