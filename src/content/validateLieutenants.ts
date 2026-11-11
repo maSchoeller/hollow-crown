@@ -131,5 +131,7 @@ export function validateLieutenants(data: GameData, locales: Locales, err: Err, 
       const lt = data.lieutenants?.[u.lieutenant];
       if (!lt) err(`maps/${m.id}`, `${u.id ?? u.class}: unknown lieutenant ${u.lieutenant}`);
       else if (u.items.some((r) => r.def === lt.signatureItem)) err(`maps/${m.id}`, `${u.id ?? u.class}: ${lt.id} never carries his signature item ${lt.signatureItem} (loot only)`);
+      // story 11.27: lieutenants on P need their offset in the map
+      if (m.lieutenantLevel === 'position' && u.levelOffset === undefined) err(`maps/${m.id}`, `${u.id ?? u.class}: lieutenantLevel position needs a levelOffset on ${u.lieutenant}`);
     }
 }

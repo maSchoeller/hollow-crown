@@ -163,6 +163,11 @@ export const mapSchema = z.object({
    * and return after the mission. Units named in a `unit_dies` defeat objective (or flagged mustSurvive) are exempt: their death still loses.
    */
   noDeath: z.boolean().optional(),
+  /**
+   * How the lieutenants of the map get their level (story 11.27, Produktinhaber 2026-11-10): `company` (default) from the strongest
+   * units of the company plus grudge (story 3.4); `position` from the battle's position level P plus their `levelOffset` (the act 2 finale).
+   */
+  lieutenantLevel: z.enum(['company', 'position']).optional(),
   legend: z.record(z.string(), z.string()),
   terrain: z.string(),
   levels: z.array(z.object({ level: z.number().int().min(0).max(2), area })).optional(),

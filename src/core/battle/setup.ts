@@ -44,9 +44,12 @@ export function createBattle(data: GameData, c: CampaignState, nodeId: string, d
   // every lieutenant of the map is scaled here, from the campaign, so those who arrive later are built the same (review R1);
   // one whose `requires` fails stays off the board and gets no plan either (story 11.10, Sable after E7)
   const lineUp = onConditions(conditionContext(data, c), map.units);
-  const s = battleSkeleton(data, c, map, nodeId, seed, planLieutenants(data, c, { ...map, units: lineUp }, c.settings.difficulty));
   // story 11.2: in an act with a position level the battle keeps P, so foes with `levelOffset` (also later ones) and companions stand on it
-  if (positionOf(data, nodeAct(data, node.id) ?? actOf(c))) s.positionLevel = nodeLevel(data, c, node);
+  const position = positionOf(data, nodeAct(data, node.id) ?? actOf(c)) ? nodeLevel(data, c, node) : undefined;
+  // story 11.27: on a map with `lieutenantLevel: position` (act 2 finale) the lieutenants stand on P + their offset, not on the company
+  const ltPosition = map.lieutenantLevel === 'position' ? position : undefined;
+  const s = battleSkeleton(data, c, map, nodeId, seed, planLieutenants(data, c, { ...map, units: lineUp }, c.settings.difficulty, ltPosition));
+  if (position !== undefined) s.positionLevel = position;
   deployPlayers(data, c, s, map, deployIds);
   placeMapUnits(data, c, s, map.units);
   finishSetup(data, s, map);
