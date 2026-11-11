@@ -33,3 +33,11 @@ EXPRESSION: reckless, cocky grin.
 WEAPON: a long axe-lance (a lance with an axe blade at the tip) held diagonally across her body in both hands.
 SIGNATURE: the teal undercut and the goggles.
 ```
+
+## Nachtrag 2026-11-11 (Story 11.25): Figurenblatt berichtigt
+
+Der Prompt oben bleibt im Wortlaut der Erzeugung (A3). Seit der Missionsliste (Narrative-Log 2026-11-05) gilt für Brakka:
+
+- **Rolle:** **Ballistenmeisterin** zu Fuß, Söldnerin für den Meistbietenden (Klasse `marksman`, Grollfähigkeiten `ballista_reach`, `steady_crew`, `paid_in_full`; `content/acts/act2/lieutenants.yaml`); kein Wyvern, keine Flieger in Staffel 1.
+- **Waffe im Spiel:** Bogen bzw. Ballisten auf der Karte statt Axtlanze (Art Direction §4.3: türkiser Haarschnitt, Bogen).
+- **Aussehen bleibt:** türkiser Undercut, Fliegerbrille auf der Stirn und die oliv-braune Schuppenrüstung passen auch zur Ballistenmeisterin (die Brille als Zielbrille). Porträt und Brettfigur bleiben unverändert, kein neues Modell (F2, Produktinhaber 2026-11-06).

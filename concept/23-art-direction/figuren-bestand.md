@@ -1,6 +1,6 @@
 # Figuren-Bestand Akt 1 und Akt 2
 
-Stand 2026-11-05, Credits und Schritt 1a/1b nachgetragen am 2026-11-06 (Stories 15.9, 15.14). Bestandsaufnahme als Vorarbeit für Etappe 3 der Roadmap (`concept/27-ueberarbeitung/roadmap.md`). In dieser Runde wurden keine neuen Bilder und keine neuen Modelle erzeugt. Die Beschlüsse des Produktinhabers vom selben Tag sind eingearbeitet.
+Stand 2026-11-05, Credits und Schritt 1a/1b nachgetragen am 2026-11-06 (Stories 15.9, 15.14), Rowena und Credits am 2026-11-11 (Story 11.25). Bestandsaufnahme als Vorarbeit für Etappe 3 der Roadmap (`concept/27-ueberarbeitung/roadmap.md`). In dieser Runde wurden keine neuen Bilder und keine neuen Modelle erzeugt. Die Beschlüsse des Produktinhabers vom selben Tag sind eingearbeitet.
 
 ## Kurzfassung
 
@@ -23,7 +23,7 @@ Der Produktinhaber hat am 2026-11-05 die kleine Variante gewählt, statt alle Fi
 | **1a** | ✅ **Lucan**, **Verwalter der Paktwacht**, **Osric Dunn** | **3** | **420** | Erledigt in Story 15.9 (2026-11-06) |
 | 1b | ✅ **Dorfältester** | 1 | 140 | Erledigt in Story 15.14 (2026-11-06) |
 | 2 | **Brenna**, **Mira**, **Varek**, **Ysolde** | 4 | 560 | Signaturteil fehlt oder wird vom Teamtuch überdeckt |
-| 3 | **Rowena**, **Brann**, neu: **Ritter der Lanze**, **Kaperer** | 4 | 560 | Vor dem Bau von Akt 2 |
+| 3 | **Rowena**, **Brann**, neu: **Ritter der Lanze**, **Kaperer** | 4 | 560 | Vor dem Bau von Akt 2; verkleinert auf Rowena (F2), Rowena: altes Modell abgenommen, kein Neubau (Story 11.25, 2026-11-11); damit entfällt Schritt 3 ganz |
 | | **Summe** | **12** | **1 680** | |
 
 - Je Modell kommt ein Brett-Turnaround per ChatGPT dazu.
@@ -45,7 +45,7 @@ Der Produktinhaber hat am 2026-11-05 die kleine Variante gewählt, statt alle Fi
 
 ## Offen, entscheidet der Produktinhaber
 
-1. **Nach Schritt 1a:** ob es weitergeht und ob Tripo-Credits nachgekauft werden. Für Akt 2 entschieden am 2026-11-06: nur **Rowena** neu mit dem Rest-Guthaben (Story 11.25); Brann bleibt, Ritter der Lanze und Kaperfahrer bleiben Platzhalter, Brakka bleibt, wie sie ist (nur Figurenblatt berichtigen). Kein Nachkauf vorerst.
+1. **Nach Schritt 1a:** ob es weitergeht und ob Tripo-Credits nachgekauft werden. Für Akt 2 entschieden am 2026-11-06: nur **Rowena** neu mit dem Rest-Guthaben (Story 11.25); Brann bleibt, Ritter der Lanze und Kaperfahrer bleiben Platzhalter, Brakka bleibt, wie sie ist (nur Figurenblatt berichtigen). Kein Nachkauf vorerst. *Nachtrag 2026-11-11:* Die 205 waren schon von Story 15.14 verbraucht (Rest 65); nach einer Sichtprüfung hat der Produktinhaber Rowenas vorhandenes Modell abgenommen, ein Neubau entfällt endgültig. Die Figurenblätter von Rowena und Brakka sind berichtigt, Rowenas neuer Turnaround bleibt Referenz.
 2. **Seraphines Kampfrolle** (Funkenflug #9). Davon hängen ihre Stimmungen und ein mögliches Porträt mit Waffe ab.
 
 ## Beschlossen am 2026-11-05
@@ -141,9 +141,9 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 | Amos | 1 | ja | ja | ✅ | |
 | Ilka | 1 | ja | ja | ✅ | |
 | Sable | 1 | ja | ja | ✅ | Porträt und Modell zeigen längeres Haar, §4.3 sagt Stoppeln |
-| Brakka | 1 | ja | ja | 🟡 | sieht aus wie das Porträt; Figurenblatt sagt noch „wyvern rider“, die Missionsliste Ballistenmeisterin |
+| Brakka | 1 | ja | ja | ✅ | sieht aus wie das Porträt; Figurenblatt am 2026-11-11 auf Ballistenmeisterin berichtigt (Story 11.25), kein neues Modell (F2) |
 | Grell | 1 | ja | ja | ✅ | |
-| Rowena | 1 | ja | ja | ❌ | Porträt: Helm unterm Arm, langer Zopf. Modell: Helm auf dem Kopf. Figurenblatt sagt noch „pegasus knight“; sie kämpft jetzt als Lanzenritterin zu Fuß |
+| Rowena | 1 | neu | ja | ✅ | Porträt: Helm unterm Arm, langer Zopf. Modell (Oktober, Platzhalter): Helm auf dem Kopf. Figurenblatt berichtigt auf Lanzenritterin zu Fuß, neuer Brett-Turnaround vom 2026-11-11 (Helm in der linken Hand, Zopf), Referenz, nicht abgenommen. **Altes Modell abgenommen** (Produktinhaber 2026-11-11, Story 11.25): Helm auf dem Kopf ist gewollt, kein Neubau |
 
 **Ohne Modell:** Dravn (Porträt 4), Maelis (1), Seraphine (1, ohne Waffe). Sie bekommen nach §4.3 nur ein Modell, wenn sie auf einer Karte stehen.
 
@@ -152,6 +152,8 @@ Legende: ✅ passt, 🟡 Wesentliches fehlt, ❌ Widerspruch oder kein Modell. �
 </details>
 
 ## Credits
+
+**Stand 2026-11-11 (Story 11.25):** **65 Credits**, abgelesen in Tripo Studio. Kein Lauf, kein Nachkauf: Rowena behält ihr vorhandenes Modell (Produktinhaber 2026-11-11).
 
 **Stand 2026-11-06 (Story 15.14):** **65 Credits.** Der Dorfälteste hat 140 verbraucht (ein Lauf). Für Schritt 2 und 3 muss nachgekauft werden.
 
