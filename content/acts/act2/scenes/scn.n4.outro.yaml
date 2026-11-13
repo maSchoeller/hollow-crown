@@ -1,4 +1,5 @@
 # Nebenquest N4, Szene nach der Karte (Knoten post, Story 11.20): Die Vorposten ziehen ab, Ilka bekommt den Weißwolf (Knotenwirkung) und bleibt.
+# [ASSUMPTION] QA Akt 2 2026-11-13: Wurde Ilka nie angeworben, geben Ersatzzeilen den Weißwolf an die Truppe; die Knotenwirkung bleibt gleich.
 # Ob die Älteste überlebt hat, kann eine Szene nicht abfragen (keine Bedingung auf Nebenziele); die Zeilen lassen es offen.
 id: scn.n4.outro
 background: clanlager
@@ -22,6 +23,18 @@ lines:
     requires: [{ alive: ilka }]
     mood: neutral
     text: "Ich gehe mit euch. Aber jetzt weiß ich wieder, wofür."
+  - id: l03x
+    speaker: [clan_elder]
+    fallback: skip
+    requires: [{ not: { recruited: ilka } }]
+    mood: sad
+    text: "Weißwolf. Der Bogen der Clanjäger. Wir geben ihn dem, der fortgeht – und heute geht ihr."
+  - id: l04x
+    speaker: [brenna, lucan, avatar]
+    fallback: skip
+    requires: [{ not: { recruited: ilka } }]
+    mood: neutral
+    text: "Wir tragen ihn weiter. Und wir sagen, wo wir ihn bekommen haben."
   - id: l05
     speaker: [lucan]
     mood: angry

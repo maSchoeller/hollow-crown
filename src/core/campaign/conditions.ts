@@ -114,6 +114,8 @@ export function evalCondition(ctx: ConditionContext, cond: Condition): boolean {
       return ctx.fallen.includes(v as string);
     case 'left':
       return ctx.left.includes(v as string);
+    case 'recruited':
+      return ctx.roster.includes(v as string) || ctx.fallen.includes(v as string) || ctx.left.includes(v as string);
     case 'completed':
       return ctx.completed.includes(v as string);
     case 'storyCount': {

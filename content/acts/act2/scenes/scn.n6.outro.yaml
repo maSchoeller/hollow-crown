@@ -1,5 +1,6 @@
 # Nebenquest N6, Szene nach der Karte (Knoten post, Story 11.22): Die Truppe ist frei, Maren gibt Jory seine alte Laute zurück.
 # Die Laute Letzter Vorhang (final_curtain) ist die Knotenwirkung (campaign.yaml n6 effects), die Szene zeigt sie nur, wie N1/N3.
+# [ASSUMPTION] QA Akt 2 2026-11-13: Wurde Jory nie angeworben, gibt Maren die Laute der Truppe mit; die Knotenwirkung bleibt gleich.
 # Jory ist hier in der Truppe (sonst scn.n6.memorial_outro). Maren spricht mit eigener Halbfigur (troupe_master, 2026-11-10). Text Vorschlag [ASSUMPTION].
 id: scn.n6.outro
 background: auemarkt
@@ -9,11 +10,23 @@ lines:
     mood: neutral
     text: "Das Boot liegt am Ufer. Die Eintreiber sind fort, ihre Schuldbriefe treiben im Wasser."
   - id: l02
+    requires: [{ recruited: jory }]
     mood: sad
     text: "Maren tritt zu Jory."
+  - id: l02a
+    requires: [{ not: { recruited: jory } }]
+    mood: sad
+    text: "Eine Frau in abgetragenem Bühnenmantel tritt zu der Truppe: Maren, die Meisterin."
+  - id: l02y
+    speaker: [troupe_master]
+    fallback: skip
+    requires: [{ not: { recruited: jory } }]
+    mood: sad
+    text: "Ihr habt uns die Bühne gelassen. Dafür geben wir euch etwas mit."
   - id: l02b
     speaker: [troupe_master]
     fallback: skip
+    requires: [{ recruited: jory }]
     mood: sad
     text: "Wir sind dir eine Erklärung schuldig. Und noch etwas anderes."
   - id: l03
@@ -24,13 +37,28 @@ lines:
     fallback: skip
     mood: happy
     text: "Der Letzte Vorhang. Ich dachte, ihr hättet sie verkauft."
+  - id: l04y
+    speaker: [troupe_master]
+    fallback: skip
+    requires: [{ not: { recruited: jory } }]
+    mood: sad
+    text: "Der Letzte Vorhang. Sie gehörte einem, der nicht mehr mit uns fährt. Nehmt sie."
   - id: l05
     speaker: [troupe_master]
     fallback: skip
+    requires: [{ recruited: jory }]
     mood: happy
     text: "Nie. Sie war immer deine. Spiel sie, wo man dich hört, nicht wo man dich jagt."
+  - id: l05x
+    speaker: [brenna, lucan, avatar]
+    fallback: skip
+    requires: [{ not: { recruited: jory } }]
+    mood: neutral
+    text: "Dann trägt sie jemand, der sie am Feuer spielt. Versprochen."
   - id: l06
     speaker: [brenna, lucan, avatar]
+    fallback: skip
+    requires: [{ recruited: jory }]
     mood: happy
     text: "Und wenn er sie am Feuer spielt, hören wir zu. Versprochen."
   - id: l07

@@ -8,6 +8,7 @@ import type { Pos } from '../defs';
 import type { GameData } from '../gameData';
 import type { Area, HauntAnchor, HauntPoolsDef, MapDef, MapObjectDef, ObjectiveDef, Reward } from '../mapDefs';
 import { areaTiles, posKey } from '../util';
+import { companyMoveTypes } from '../moveTypes';
 import { parseTerrain } from './terrain';
 
 /**
@@ -52,17 +53,19 @@ export function withoutStaleHauntBattle<T extends { battle?: { start: { mapId: s
 }
 
 /**
- * The tiles of `area` a unit of move type `moveType` can stand on (the terrain lets it in, no object on it, a closed door
- * is no place to stand). Shared with `content:check`.
+ * The tiles of `area` a unit can stand on (the terrain lets it in, no object on it, a closed door is no place to stand).
+ * `moveType` is one move type, or a list every tile has to be open to (QA act 2, 2026-11-13: the deploy slots of a haunt are
+ * one list for the whole company, so a tile only `foot` may enter would strand a rider or an armour there). Shared with `content:check`.
  */
-export function standableTiles(data: GameData, map: MapDef, area: Area, moveType: string): Pos[] {
+export function standableTiles(data: GameData, map: MapDef, area: Area, moveType: string | readonly string[]): Pos[] {
   const [w, h] = map.size;
   const terrain = parseTerrain(data, map.id);
   const objects = new Set(map.objects.map((o) => posKey(o.at)));
+  const mts = typeof moveType === 'string' ? [moveType] : moveType;
   return areaTiles(area).filter((p) => {
     if (p[0] < 0 || p[1] < 0 || p[0] >= w || p[1] >= h) return false;
     const t = data.terrain[terrain[p[1]! * w + p[0]!]!];
-    return !!t && !t.opensTo && t.cost[moveType as keyof typeof t.cost] !== null && !objects.has(posKey(p));
+    return !!t && !t.opensTo && mts.every((mt) => t.cost[mt as keyof typeof t.cost] !== null) && !objects.has(posKey(p));
   });
 }
 
@@ -123,7 +126,7 @@ export function buildHauntMap(data: GameData, mapId: string, variant: string, lt
     fog: base.fog && data.balance.haunt.fog,
     objects,
     initialEffects: base.initialEffects,
-    deploy: { max: hauntPlaces(data, base, anchor), forced: [], slots: standableTiles(data, base, anchor.deploy, 'foot') },
+    deploy: { max: hauntPlaces(data, base, anchor), forced: [], slots: standableTiles(data, base, anchor.deploy, companyMoveTypes(data)) },
     units: [],
     pairs: [],
     reinforcements: [],

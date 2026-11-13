@@ -44,6 +44,7 @@ export { applyAct, giveItem, moveAfterAction } from './battle/act';
 export * from './battle/setup';
 export * from './battle/deploy';
 export * from './battle/terrain';
+export * from './moveTypes';
 export * from './battle/hauntMap';
 export * from './battle/hauntBattle';
 export * from './ai/ai';

@@ -1,28 +1,8 @@
-import type { MoveType, Pos } from '../core/defs';
+import type { Pos } from '../core/defs';
 import type { GameData } from '../core/gameData';
 import type { MapDef, MapUnitDef } from '../core/mapDefs';
 import { ladderBetween } from '../core/ladders';
 import { areaTiles, posKey } from '../core/util';
-
-/**
- * Move types a unit of the company can have: the classes of the story characters, everything they promote into and the player
- * units the maps place. A deploy slot has to be open to all of them, since the slots are one list for the whole company.
- */
-export function companyMoveTypes(data: GameData): MoveType[] {
-  const seen = new Set<string>();
-  const out = new Set<MoveType>();
-  const walkClass = (classId: string) => {
-    if (seen.has(classId)) return;
-    seen.add(classId);
-    const cls = data.classes[classId];
-    if (!cls) return;
-    out.add(cls.moveType);
-    for (const next of cls.proPaths ?? []) if (data.classes[next]?.playable) walkClass(next);
-  };
-  for (const ch of Object.values(data.chars)) walkClass(ch.class);
-  for (const m of Object.values(data.maps)) for (const u of m.units) if (u.team === 'player') walkClass(u.class);
-  return [...out];
-}
 
 /** All units of a map: the placed ones, reinforcements and those triggers spawn. */
 export function allUnits(m: MapDef): MapUnitDef[] {

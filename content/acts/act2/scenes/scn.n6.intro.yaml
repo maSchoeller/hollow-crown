@@ -1,6 +1,7 @@
 # Nebenquest N6, Szene vor der Karte (Knoten pre, Story 11.22): Herbstmarkt auf der Aue-Insel in der Auremündung, Jorys alte Truppe
 # steht bei Schuldeneintreibern in der Kreide (Gläubiger ungenannt [ASSUMPTION]), die Meisterin auf der Bühne. Jory ist Pflicht und in der
-# Truppe (sonst spielt scn.n6.memorial_intro). Nell nur, wenn sie beigetreten ist (requires alive); Text Vorschlag [ASSUMPTION].
+# Truppe (sonst spielt scn.n6.memorial_intro). [ASSUMPTION] QA Akt 2 2026-11-13: Wurde Jory nie angeworben (nicht recruited), tragen
+# Ersatzzeilen ohne ihn dieselbe Auskunft; die Truppe hilft der Gauklertruppe, weil die Eintreiber auf dem Markt stehen. Nell nur, wenn sie beigetreten ist (requires alive); Text Vorschlag [ASSUMPTION].
 id: scn.n6.intro
 background: auemarkt
 music: tense
@@ -13,6 +14,10 @@ lines:
     fallback: skip
     mood: sad
     text: "Das ist unser Wagen. Und das da oben ist Maren. Sie hat mir das Spielen beigebracht."
+  - id: l02x
+    requires: [{ not: { recruited: jory } }]
+    mood: neutral
+    text: "Ein bemalter Wagen, ein Name auf der Plane: die Gauklertruppe der Maren."
   - id: l03
     mood: neutral
     text: "Um die Bühne stehen Bewaffnete mit Schuldbriefen. Sie zählen Kostüme, Pferde, Menschen."
@@ -21,6 +26,12 @@ lines:
     fallback: skip
     mood: angry
     text: "Eintreiber. Deshalb sind sie im Morgengrauen fort. Sie haben mir nie etwas gesagt."
+  - id: l04x
+    speaker: [lucan]
+    fallback: skip
+    requires: [{ not: { recruited: jory } }]
+    mood: angry
+    text: "Eintreiber. Sie nehmen sich die Truppe Stück für Stück, und niemand hält sie auf."
   - id: l05
     speaker: [nell]
     fallback: skip
@@ -33,5 +44,13 @@ lines:
     text: "Wir holen die Meisterin von der Bühne und bringen sie zum Boot im Südwesten."
   - id: l07
     speaker: [avatar]
+    fallback: skip
+    requires: [{ recruited: jory }]
     mood: neutral
     text: "Über die Steinbrücke hinein. Und Jory: Heute spielst du laut."
+  - id: l07x
+    speaker: [avatar]
+    fallback: skip
+    requires: [{ not: { recruited: jory } }]
+    mood: neutral
+    text: "Über die Steinbrücke hinein. Und wer eine Trommel findet, schlage sie laut."

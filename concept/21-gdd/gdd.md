@@ -236,7 +236,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 | Knoten | Gesperrt | Verfügbar | Abgeschlossen | Verfällt |
 |---|---|---|---|---|
 | Story-Mission | bis Akt erreicht bzw. Vorgänger gespielt | wählbar auf der Weltkarte | nicht wiederholbar; Karte kehrt als Heimsuchung zurück, außer die Karte trägt `noHaunts` (Prolog verlassen, 1-6 Heimat, 1-7 eingestürzt; Log 2026-11-06) | nie |
-| Nebenquest | bis Auslöser (Entscheidung, Gefährte, Story-Fortschritt) | offen über alle Akte | nicht wiederholbar | nie; stirbt oder geht der Auslöser, Gedenk-Variante der Szene |
+| Nebenquest | bis Auslöser (Entscheidung, Gefährte, Story-Fortschritt) | offen über alle Akte | nicht wiederholbar | nie; stirbt der Auslöser, Gedenk-Variante der Szene; wurde der Gefährte nie angeworben, öffnet die Quest trotzdem (Ersatzzeilen ohne ihn); nur „gegangen“ schließt sie |
 | Heimsuchung | bis zur ersten Leutnant-Begegnung | bis zu 6 offen | verschwindet | älteste wird verdrängt, wenn eine 7. entsteht |
 
 ## RPG Specific Design
@@ -364,6 +364,8 @@ Jede Interaktion braucht höchstens 2 Taps; kein Raum ist Pflicht.
 | Große Schlacht | 3 (Teil der 25 Story-Missionen) | 30×40 bis 40×30, 10–15 eigene Einheiten | 30–45 Min. |
 | Nebenquest | 10 (2 als Variante einer Story-Karte) | kompakt bis mittel | 10–25 Min. |
 | Heimsuchung | Varianten auf gespielten Karten | Größe der Vorlage | 10–20 Min. |
+
+Eine Karte mit dem Siegziel „Truhenjagd“ bringt so viele Schlüssel mit, wie sie Truhen hat (Träger unter den Gegnern, Dorfgabe oder eigene Einheit), oder einen eigenen Späher: ein Schlüssel wird an der Truhe verbraucht, die er öffnet, und der Sieg darf nicht daran hängen, welche Truhe der Spieler zuerst wählt (QA Akt 2 2026-11-13, `content:check` prüft es).
 
 Jede Story-Karte hat 1–3 Nebenziele und mindestens ein Element, das eine Rolle besonders belohnt (Engstelle für Vorkämpfer, Nebel für Späher, Brennbares für Elementaristen).
 
