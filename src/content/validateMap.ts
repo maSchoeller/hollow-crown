@@ -10,7 +10,7 @@ import { validateHaunts } from './validateHaunts';
 import { validateUnitLevels } from './validateLevels';
 import { validatePhases } from './validatePhases';
 import type { ContentRefs } from './validateRefs';
-import { allUnits, elevationOf, validateObjectAccess, walkable, type Terr } from './validateWalk';
+import { allUnits, companyMoveTypes, elevationOf, validateObjectAccess, walkable, type Terr } from './validateWalk';
 
 /** Terrain grid, units, objects, objectives, triggers and reachability of one battle map. */
 export function validateMap(
@@ -157,7 +157,13 @@ export function validateMap(
     reward(f, s.reward, s.id);
     if (s.reward.chronicle) err(f, `${s.id}: a side objective cannot pay a chronicle page (chests and villages can)`);
   }
-  for (const s of map.deploy.slots) if (inside(s) && terr(s)?.cost.foot === null) err(f, `deploy slot ${s} on impassable ${terr(s)?.id}`);
+  // QA act 2 (2026-11-13): the slots are one list for the whole company, so a slot closed to riders or armour alone would put that
+  // companion on terrain it cannot stand on (as the mountain spawns of the report from 1-7 and 1-8 did)
+  for (const s of map.deploy.slots) {
+    if (!inside(s)) continue;
+    const closed = companyMoveTypes(data).filter((mt) => terr(s)?.cost[mt] === null);
+    if (closed.length) err(f, `deploy slot ${s} on impassable ${terr(s)?.id} (closed to ${closed.join(', ')})`);
+  }
   // reachability on foot from the deploy area (ignoring units, along the levels and their connectors): the goal of the mission
   const v = map.objectives.victory;
   const start = map.deploy.slots[0];

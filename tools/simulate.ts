@@ -2,6 +2,9 @@
  * pnpm sim <mapId> [--runs 50] [--seed 1] [--difficulty normal] [--chain normal] [--death standard] [--fresh] [--flag name=value]... [--leave id[,id]]
  * --chain spielt die Missionen vor der Zielkarte auf einer anderen Stufe (Schwer-Ziel mit Normal-Kette, damit genug Läufe ankommen).
  * pnpm sim --haunt <mapId>:<variant> [--lt hask] [--runs 50] [--seed 1] [--difficulty normal] [--death standard]
+ * Eine Karte eines späteren Akts geht genauso (`pnpm sim m2_4 --runs 50`): die Akte davor gelten als gespielt (Gefährten, Gold aus
+ * `simulation.startExpected`), die Truppe steht auf der Positionsstufe des Knotens, und die Kette spielt nur die Story-Missionen
+ * dieses Akts davor. Der ganze Weg über die Akte bleibt `--campaign act2`.
  * pnpm sim --campaign act1 [--runs 50] [--seed 1] [--difficulty normal] [--death standard] [--haunts] [--action-s 12]
  * pnpm sim --campaign act2 [dieselben] [--start expected] [--position k] [--order m2_3,m2_6] [--flags e07=warn] [--map-file <pfad> [--node m2_4]]
  * KI gegen KI fürs Balancing (concept/10 §8). Die Spielerseite spielt autoCommand.
@@ -68,7 +71,7 @@ if (campaignArg) {
   process.exit(0);
 }
 const mapId = args.find((a) => !a.startsWith('--') && !args[args.indexOf(a) - 1]?.startsWith('--')) ?? 'prologue_paktnacht';
-const node = data.acts[1]!.nodes.find((n) => n.map === mapId || n.id === mapId);
+const node = Object.values(data.acts).flatMap((a) => a.nodes).find((n) => n.map === mapId || n.id === mapId);
 if (!node) throw new Error(`no campaign node for ${mapId}`);
 const runs = Number(opt('runs', '50'));
 const seed0 = Number(opt('seed', '1'));

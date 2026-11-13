@@ -2,8 +2,26 @@
  * One mission, many runs (`pnpm sim <mapId>`): each run is a pure function of its seed (`simulateMapRun`), so the runs can go to
  * worker threads in any order and are summed up in run order afterwards (`summarizeMap`, Testlabor S1/S2).
  */
-import { addToRoster, autoplay, beginBattle, finishBattle, newCampaign, promote, promotionTargets, sideObjectiveDone, type DeathMode, type Difficulty, type GameData } from '../src/core';
-import { applyNodeRewards } from './simCampaign';
+import {
+  addToRoster,
+  autoplay,
+  beginBattle,
+  finishBattle,
+  findNode,
+  levelUp,
+  newCampaign,
+  nodeAct,
+  nodeLevel,
+  nodesUpTo,
+  promote,
+  promotionTargets,
+  sideObjectiveDone,
+  type CampaignState,
+  type DeathMode,
+  type Difficulty,
+  type GameData,
+} from '../src/core';
+import { applyNodeRewards, entryCampaign } from './simCampaign';
 
 export interface MapSimOptions {
   node: string;
@@ -46,28 +64,56 @@ export interface MapRun {
 
 const AVATAR = { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' } as const;
 
+/**
+ * The act a node belongs to, and every node up to it in play order. A node of a later act (story 11.4) brings the acts before it
+ * along: they count as done, so position level, companions and rewards are those of a company that played its way here.
+ */
+const actOrder = (d: GameData, nodeId: string) => {
+  const act = nodeAct(d, nodeId) ?? 1;
+  return { act, order: nodesUpTo(d, act).map((n) => n.id) };
+};
+
+/**
+ * `--fresh`: the company stands at the node without having played. In act 1 it is a level-1 roster as before. In a later act the
+ * earlier acts are done with their rewards (`entryCampaign`, as `--campaign act2 --start expected` and `__hc.devNode` build it) and
+ * everyone stands on the node's position level, since a level-1 company against enemies on P says nothing.
+ */
 export function campaignAt(d: GameData, seed: number, nodeId: string, difficulty: Difficulty, deathMode: DeathMode) {
-  const c = newCampaign(d, seed, { difficulty, deathMode }, { ...AVATAR });
-  // recruit chars who would have joined before this node
-  const order = d.acts[1]!.nodes.map((n) => n.id);
+  const { act, order } = actOrder(d, nodeId);
   const idx = order.indexOf(nodeId);
+  const c = act > 1 ? entryCampaign(d, seed, { act, difficulty, deathMode }) : newCampaign(d, seed, { difficulty, deathMode }, { ...AVATAR });
+  // recruit chars who would have joined before this node
   for (const ch of Object.values(d.chars)) {
     const j = order.indexOf(ch.joins);
-    if (j >= 0 && j < idx) addToRoster(d, c, ch.id);
+    if (j >= 0 && j < idx && !c.roster.some((u) => u.id === ch.id)) addToRoster(d, c, ch.id);
   }
   c.completed = order.slice(0, idx);
+  if (act > 1) {
+    // the campaign stands in the node's act (`BattleState.act`: season, level cap, EP share, relics), as `labCampaign` does
+    c.act = act;
+    const level = nodeLevel(d, c, findNode(d, nodeId)!);
+    for (const u of c.roster) while (u.level < level) levelUp(d, u, c.rng);
+  }
   return c;
 }
 
-/** Plays the campaign up to the target node with autoplay so units carry their progression; null if a mission before it is lost. */
+/**
+ * Plays the campaign up to the target node with autoplay so units carry their progression; null if a mission before it is lost.
+ * In a later act the acts before it are not replayed (that is what `--campaign act2` is for): the run starts at the entry of the
+ * act (`campaignAt`) and chains this act's own story nodes before the target.
+ */
 export function campaignChained(d: GameData, seed: number, nodeId: string, difficulty: Difficulty, chainDifficulty: Difficulty, deathMode: DeathMode) {
+  const { act } = actOrder(d, nodeId);
+  const first = d.acts[act]!.nodes[0]!.id;
   // the missions before the target can run on another difficulty (e.g. hard target with a normal chain, so enough runs arrive)
-  let c = newCampaign(d, seed, { difficulty: chainDifficulty, deathMode }, { ...AVATAR });
-  for (const n of d.acts[1]!.nodes) {
+  let c: CampaignState = act > 1 ? campaignAt(d, seed, first, chainDifficulty, deathMode) : newCampaign(d, seed, { difficulty: chainDifficulty, deathMode }, { ...AVATAR });
+  for (const n of d.acts[act]!.nodes) {
     if (n.id === nodeId) {
       c.settings.difficulty = difficulty;
       return c;
     }
+    // in a later act a chained run plays the story line, as `--campaign` does without `--order`; act 1 keeps playing every node
+    if ((act > 1 && n.kind !== 'story') || !d.maps[n.map]) continue;
     const { state } = autoplay(d, beginBattle(d, c, n.id, c.roster.map((u) => u.id)).state);
     if (state.outcome !== 'victory') return null;
     c = finishBattle(d, c, state).campaign;
@@ -183,7 +229,7 @@ export function summarizeMap(data: GameData, o: MapSimOptions & { runs: number; 
     for (const u of r.lost ?? []) add(causes, `lost:${u}`);
     for (const u of r.recruited ?? []) add(recruited, u);
   }
-  const node = data.acts[1]!.nodes.find((n) => n.id === o.node)!;
+  const node = findNode(data, o.node)!;
   const sideDefs = data.maps[node.map]!.objectives.side;
   const side = Object.fromEntries(
     sideDefs.map((s) => {
