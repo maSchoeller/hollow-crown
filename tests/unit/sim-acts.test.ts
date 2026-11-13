@@ -96,7 +96,8 @@ describe('simulation over the acts (story 11.4)', { timeout: 45_000 }, () => {
     const o = { difficulty: 'normal' as const, deathMode: 'standard' as const };
     expect(prepareActData(data, o)).toBe(data);
     expect(prepareActData(data, { ...o, act: 2 }).releasedActs).toEqual([1, 2]);
-    expect(data.releasedActs).toEqual([1]);
+    // act 2 is in the build since 2026-11-13, so the loaded data already carries both acts
+    expect(data.releasedActs).toEqual([1, 2]);
     expect(() => prepareActData(data, { ...o, position: 12 })).toThrow(/later act/);
     expect(() => simulateCampaign(data, { ...o, runs: 1, seed: 1, start: 'expected' })).toThrow(/later act/);
   });

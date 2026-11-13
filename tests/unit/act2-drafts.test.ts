@@ -236,14 +236,23 @@ describe('changing maps of act 2 run on set_terrain, levers and triggers', () =>
 });
 
 describe('the lock and the flag registers', () => {
-  it('locks only IDs of released packs: the unreleased act 2 adds nothing', () => {
-    const { packs, ids } = releasedIdSets(process.cwd(), data, readPacks(process.cwd()));
-    expect(packs).not.toContain('act2');
+  it('locks only IDs of released packs: act 2 is in the build, the unreleased voice packs add nothing', () => {
+    const all = readPacks(process.cwd());
+    const { packs, ids } = releasedIdSets(process.cwd(), data, all);
+    // act 2 is released since 2026-11-13 (product owner: play it on the phone), so its IDs are locked with act 1's
+    expect(packs).toContain('act2');
+    expect(packs).not.toContain('voice.act1.de');
     expect(ids.flags).toContain('e04');
-    expect(ids.flags.filter((f) => ['e07', 'joined_sable', 'm2_2_seal'].includes(f))).toEqual([]);
-    expect(ids.scenes.filter((x) => x.startsWith('scn.m2_'))).toEqual([]);
-    expect(ids.maps.every((m) => data.maps[m]!.act === 1)).toBe(true);
+    expect(ids.flags).toContain('e07');
+    expect(ids.scenes.some((x) => x.startsWith('scn.m2_'))).toBe(true);
     expect(ids.chars).toContain('lucan');
+    // an act whose pack is not released stays out: act 2 held back adds none of its IDs
+    const held = all.map((p) => (p.id === 'act2' ? { ...p, released: false } : p));
+    const closed = releasedIdSets(process.cwd(), data, held);
+    expect(closed.packs).not.toContain('act2');
+    expect(closed.ids.flags.filter((f) => ['e07', 'joined_sable', 'm2_2_seal'].includes(f))).toEqual([]);
+    expect(closed.ids.scenes.filter((x) => x.startsWith('scn.m2_'))).toEqual([]);
+    expect(closed.ids.maps.every((m) => data.maps[m]!.act === 1)).toBe(true);
   });
 
   it('reports a flag declared in two act registers', () => {

@@ -226,37 +226,34 @@ describe('side quests of act 2 (story 11.11, product owner 2026-11-09)', () => {
 
 describe('placeholders of act 2 on the world map (story 11.11)', () => {
   let mapInBuild: (id: string) => boolean;
-  let sessionMaps: Record<string, MapDef>;
-  const added: string[] = [];
 
   beforeAll(async () => {
     mapInBuild = (await import('../../src/app/state/packs')).mapInBuild;
-    sessionMaps = (await import('../../src/app/state/session')).data.maps;
-  });
-
-  afterEach(() => {
-    for (const id of added.splice(0)) delete sessionMaps[id];
   });
 
   /** What the world map offers: the open nodes whose map is in the build (WorldMap.tsx). */
-  const offered = (done: string[]) =>
+  const offeredWith = (done: string[], inBuild: (id: string) => boolean) =>
     availableNodes(data, withUnit(withUnit(inAct2(done), 'ilka', 'in'), 'jory', 'in'))
-      .filter((n) => own(data).has(n.id) && mapInBuild(n.map))
+      .filter((n) => own(data).has(n.id) && inBuild(n.map))
       .map((n) => n.id);
+  const offered = (done: string[]) => offeredWith(done, mapInBuild);
 
-  it('no node of act 2 has a map in the build today, so the world map offers none', () => {
-    for (const n of act2Nodes()) expect(mapInBuild(n.map), n.id).toBe(false);
-    for (const order of walked.orders) for (let i = 0; i <= order.length; i++) expect(offered(order.slice(0, i))).toEqual([]);
+  it('every node of act 2 has its map in the build, so the world map offers the open ones', () => {
+    // act 2 is released since 2026-11-13 (product owner: play it on the phone); before that no map of act 2 was in the build
+    for (const n of act2Nodes()) expect(mapInBuild(n.map), n.id).toBe(true);
+    expect(offered([])).toEqual(['m2_1']);
+    expect(offered(['m2_1'])).toEqual(['m2_2', 'm2_3']);
+    expect(offered(['m2_1', 'm2_2'])).toEqual(['m2_3']);
+    expect(offered(['m2_1', 'm2_2', 'm2_3'])).toEqual(['m2_4', 'n4']);
   });
 
-  it('with a map for one node of a pair only that one is offered; the next node waits until both are played', () => {
-    const m22 = node('m2_2').map;
-    sessionMaps[m22] = data.maps[data.acts[1]!.nodes[0]!.map]!;
-    added.push(m22);
-    expect(mapInBuild(m22)).toBe(true);
-    expect(offered(['m2_1'])).toEqual(['m2_2']);
-    // m2_3 is not in the build (act 2 unreleased, its map since story 11.14 only on disk): after 2-2 nothing is on offer, 2-4 opens only once 2-3 is played as well
-    expect(offered(['m2_1', 'm2_2'])).toEqual([]);
+  it('a node whose map is not in the build is held back; the next node waits until both of a pair are played', () => {
+    // the rule of story 11.11, independent of which packs are released: a node without its map never reaches the world map
+    const m23 = node('m2_3').map;
+    const without = (id: string) => id !== m23;
+    // only 2-2 of the pair is on offer; 2-4 still opens only once 2-3 is played as well
+    expect(offeredWith(['m2_1'], without)).toEqual(['m2_2']);
+    expect(offeredWith(['m2_1', 'm2_2'], without)).toEqual([]);
     expect(storyOpen(data, inAct2(['m2_1', 'm2_2']))).toEqual(['m2_3']);
     expect(storyOpen(data, inAct2(['m2_1', 'm2_2', 'm2_3']))).toEqual(['m2_4']);
   });

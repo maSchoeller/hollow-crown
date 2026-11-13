@@ -308,7 +308,7 @@ describe('the finale won and lost', () => {
   }
 
   // the heaviest test: a whole battle on the finale map and its replay, 7 s alone and 29 s under coverage and load (2026-11-06)
-  it('gives two ember sparks in the convoy on a victory, saves and loads them, and the act is over', { timeout: 60_000 }, () => {
+  it('gives two ember sparks in the convoy on a victory, saves and loads them, and act 2 opens', { timeout: 60_000 }, () => {
     const { start, played, seed } = playToVictory(base);
     const r = applyCampaign(data, { ...base, seed }, { type: 'finishMission', start, commands: played.log });
     const sparks = (cc: CampaignState) => cc.convoy.filter((i) => i.def === 'ember_spark').length;
@@ -316,8 +316,14 @@ describe('the finale won and lost', () => {
     expect(sparks(r.campaign)).toBe(2);
     expect(r.events.filter((e) => e.t === 'itemGained' && e.def === 'ember_spark')).toHaveLength(2);
     expect(r.campaign.completed).toContain(NODE);
-    expect(actFinished(data, r.campaign)).toBe(true);
-    expect(availableNodes(data, r.campaign).filter((n) => n.kind !== 'side')).toEqual([]);
+    // act 2 is in the build since 2026-11-13: the finale moves the company on instead of ending the campaign, so the
+    // finished act is act 1 while `actFinished` already asks about act 2
+    expect(r.campaign.act).toBe(2);
+    expect(actFinished({ ...data, releasedActs: [1] }, { ...r.campaign, act: 1 })).toBe(true);
+    expect(actFinished(data, r.campaign)).toBe(false);
+    const next = availableNodes(data, r.campaign).filter((n) => n.kind !== 'side');
+    expect(next.map((n) => n.id)).toContain('m2_1');
+    for (const n of next) expect(data.maps[n.map]?.act, n.id).toBe(2);
     expect(sparks(normalizeCampaign(data, JSON.parse(JSON.stringify(r.campaign))))).toBe(2);
     // two instances, not one counted twice
     expect(new Set(r.campaign.convoy.filter((i) => i.def === 'ember_spark').map((i) => i.uid)).size).toBe(2);

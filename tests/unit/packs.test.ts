@@ -58,7 +58,7 @@ describe('parsePacks', () => {
   it('reads content/packs.yaml with core first', () => {
     // act2 before act1 (story 11.3): its pictures win over act1's `world/**`
     expect(realPacks.map((p) => p.id)).toEqual(['core', 'act2', 'act1', 'voice.act1.de', 'voice.act1.en']);
-    expect(realPacks.filter((p) => p.released).map((p) => p.id)).toEqual(['core', 'act1']);
+    expect(realPacks.filter((p) => p.released).map((p) => p.id)).toEqual(['core', 'act2', 'act1']);
   });
   it('rejects a file without core first or with duplicate ids', () => {
     expect(() => parsePacks({ packs: [{ id: 'act1', released: true, load: 'background', act: 1, budgetMb: 1 }] })).toThrow();
@@ -151,8 +151,9 @@ describe('act packs in the build (story 11.3)', () => {
         // the head files and the prologue of act 1 come with core (first download); every other act stays in its own pack
         if (act && act !== '1') expect(id, f).toBe(`act${act}`);
       }
-    // act 2 is not released before act 1 is (story 9.14): none of its files is in the build
-    expect(released.has('act2')).toBe(false);
+    // act 2 is in the build since 2026-11-13 (product owner: play act 2 on the phone); the voice packs still show the unreleased case
+    expect(released.has('act2')).toBe(true);
+    expect(released.has('voice.act1.de')).toBe(false);
     expect((byPack.get('act2') ?? []).some((f) => f.startsWith('acts/act2/'))).toBe(true);
     expect(byPack.get('act2')).toEqual(expect.arrayContaining(['acts/act2/campaign.yaml', 'acts/act2/locales/de.names.yaml']));
   });
@@ -167,8 +168,8 @@ describe('act packs in the build (story 11.3)', () => {
 
   it('the developer switch releases the named packs for the dev server only', () => {
     expect(withDevPacks(realPacks, undefined)).toEqual(realPacks);
-    const dev = withDevPacks(realPacks, ' act2 ,nothing');
-    expect(dev.filter((p) => p.released).map((p) => p.id)).toEqual(['core', 'act2', 'act1']);
-    expect(realPacks.find((p) => p.id === 'act2')!.released).toBe(false);
+    const dev = withDevPacks(realPacks, ' voice.act1.de ,nothing');
+    expect(dev.filter((p) => p.released).map((p) => p.id)).toEqual(['core', 'act2', 'act1', 'voice.act1.de']);
+    expect(realPacks.find((p) => p.id === 'voice.act1.de')!.released).toBe(false);
   });
 });
