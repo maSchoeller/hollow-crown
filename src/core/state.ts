@@ -291,6 +291,14 @@ export interface DecisionRecord {
   option: string;
 }
 
+/** EP a reserve member got from the training ground after a won mission (story 10.8): the EP that counted, the level before and after. */
+export interface ReserveGain {
+  unit: string;
+  exp: number;
+  levelBefore: number;
+  levelAfter: number;
+}
+
 export interface CampaignState {
   version: number;
   /** the act the company is in (story 11.1): starts at 1, `finishMission` raises it after an act's finale; saves before it hold none (= 1) */
@@ -306,6 +314,8 @@ export interface CampaignState {
   fallen: Array<{ id: string; nameKey: string; name?: string; node: string; classId?: string; portrait?: string; mercenary?: true }>;
   /** lessons passed on in the memorial hall (story 10.7), in order; default [] */
   heritageGiven: HeritageRecord[];
+  /** what the training ground gave the reserve after the last won mission (story 10.8); default [] */
+  reserveLast: ReserveGain[];
   convoy: ItemInstance[];
   gold: number;
   materials: Record<string, number>;

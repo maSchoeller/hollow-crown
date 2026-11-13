@@ -45,6 +45,7 @@ export const balanceSchema = z.object({
     heritagePerAct: z.number().int().min(1),
     heritageChoiceByLevel: z.array(z.enum(['fixed', 'role', 'all'])).min(1).max(3),
   }),
+  training: z.strictObject({ reservePctByLevel: z.array(z.number().int().min(0).max(100)).min(1).max(3) }),
   death: z.record(z.string(), z.number()),
   day: z.strictObject({ resetHour: z.number().int().min(0).max(23), catchUp: z.number().int().min(1) }),
   haunt: z.strictObject({

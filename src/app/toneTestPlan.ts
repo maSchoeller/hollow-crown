@@ -68,5 +68,6 @@ export function toneTestResult(data: GameData): BattleResult {
     recruited: [],
     supportsReady: [],
     granted: [],
+    reserve: [],
   };
 }

@@ -86,6 +86,8 @@ export interface Balance {
   academy: { changePathFromLevel: number; changePathGold: number; secondPathFromLevel: number; secondPathSparks: number };
   /** lessons of the memorial hall (story 10.7): how many per act, and which lessons each hall level offers */
   memorial: { heritagePerAct: number; heritageChoiceByLevel: Array<'fixed' | 'role' | 'all'> };
+  /** training ground (story 10.8): share (percent) of the deployed survivors' average EP each reserve member gets, by level */
+  training: { reservePctByLevel: number[] };
   death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
   /** the day change (story 5.4): new day at this local hour, at most `catchUp` day packets for days away */
   day: { resetHour: number; catchUp: number };

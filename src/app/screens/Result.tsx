@@ -183,6 +183,38 @@ function Company({ v }: { v: MissionResultView }) {
   );
 }
 
+/** The training ground's line (story 10.8): "Übungsplatz: Reserve +n EP", under it the reserve members who levelled up. */
+function Reserve({ v }: { v: MissionResultView }) {
+  if (!v.reserve) return null;
+  const c = campaign.value!;
+  const ups = v.reserve.leveled.flatMap((r) => {
+    const u = c.roster.find((x) => x.id === r.unit);
+    return u ? [{ r, u }] : [];
+  });
+  return (
+    <section class="res-sec">
+      <div class="res-note is-good res-reserve">
+        <Icon name="training" size={18} />
+        <span>{t('ui.result.reserve')}</span>
+        <Amount resource="exp" value={v.reserve.exp} signed />
+      </div>
+      {ups.length > 0 && (
+        <div class="res-units">
+          {ups.map(({ r, u }) => (
+            <div key={r.unit} class="res-unit">
+              <span class="res-unit__lv" title={t('ui.result.levelUp')}>
+                {t('ui.lv')} {r.levelAfter}
+              </span>
+              <UnitHead portrait={u.portrait} classId={u.classId} name={unitName(u)} size={40} />
+              <span class="res-unit__name">{unitName(u)}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
 function Notes({ v }: { v: MissionResultView }) {
   const c = campaign.value!;
   // the hint only helps when the campfire can be entered: its room may still be locked (rooms.yaml `requires`)
@@ -236,6 +268,7 @@ export function Result({ result }: { result: BattleResult }) {
         <Bounty v={v} />
         <Sides v={v} />
         <Company v={v} />
+        <Reserve v={v} />
         <Notes v={v} />
       </Piece>
       <PrimaryButton onClick={() => (screen.value = farewell ? { name: 'farewell', result, index: 0 } : { name: 'worldmap' })}>
