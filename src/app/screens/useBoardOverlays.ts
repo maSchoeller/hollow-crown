@@ -1,6 +1,7 @@
 /** Board overlays of the battle screen (Battle.tsx). */
 import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, forecast, healTiles, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, terrainWarnings, visibleTiles, trapsOf, trapTeam, isHostile } from '../../core';
 import { data } from '../state/session';
+import { tileModeTiles } from './battleMode';
 import { goalMarkTiles, markedGoal } from '../state/goalMarks';
 import { activeVictory } from '../../core/battle/activeVictory';
 import { mapOf } from '../../core/battle/objectives';
@@ -137,7 +138,7 @@ export function useBoardOverlays(b: BattleScreen) {
       return board.setOverlays({ ...base, path, ghost, targets: tiles.filter((p) => !mode.at || !samePos(p, mode.at)), cast: pre?.kind === 'cast' ? pre.area.tiles : [], cursor: mode.at ?? to });
     }
     if (mode.k === 'tile') {
-      const tiles = availableActions(data, s, u, to).find((o) => o.kind === mode.action)?.tiles ?? [];
+      const tiles = tileModeTiles(data, s, u, mode);
       return board.setOverlays({ ...base, path, ghost, attack: tiles, cursor: to });
     }
     if (mode.k === 'passive') {

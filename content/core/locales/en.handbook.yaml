@@ -153,6 +153,12 @@ handbook:
     two: "Condition tier II"
     three: "Condition tier III"
     merge: "Merge"
+    mergeGold: "Gold per rune tier"
+    limit2: "Up to rune at level II"
+    limit3: "Up to rune at level III"
+    bombOre: "Iron ore per fire bomb"
+    bombGold: "Gold per fire bomb"
+    runeMoon: "Moonsteel per rune"
     foot: "Carry on foot"
     armored: "Carry armored"
     over1: "Overload tier I"
@@ -384,6 +390,11 @@ handbook:
       text: "In the academy a figure of level {level} or more is promoted to a pro path for an ember spark: it starts again at level one, gains stats and carries {loadoutPro} skills instead of four. From academy level {changePath} a pro changes its path for {changeGold} gold; from level {secondPath} it also learns the effect of the other path for one more ember spark."
       where: "The academy is a room of the castle in the second act; in the troop, “Promote” leads there."
       keywords: "academy, promotion, pro, change path, second path, ember spark"
+    workshop:
+      title: "Workshop"
+      text: "The castle's workshop turns material into a consumable or a rune for the convoy. At its first level it makes fire bombs ({bombOre} iron ore and {bombGold} gold) and keys, from the second scrolls of haste and strong antidotes, at the third trap kits and element runes of the first tier ({runeMoon} moonsteel). Strong antidotes and trap kits are made only here. Bounties and hauntings bring the material."
+      where: "The workshop is a room of the castle in the second act; every recipe names its material and gold."
+      keywords: "workshop, make, craft, recipe, material, iron ore, moonsteel, trap kit, antidote"
     ember_spark:
       title: "Ember spark and promotion"
       text: "With an ember spark a unit from level {level} promotes in the academy to one of the two pro paths of its role and starts again at level one. Ember sparks are rare: from the finale and side quests, later at the merchant for {price} gold."
@@ -402,8 +413,8 @@ handbook:
       keywords: "upgrade, smith, level, improve, material"
     runes:
       title: "Runes"
-      text: "The enchanter sets runes into rune slots: one element rune per weapon, plus utility runes. Element runes give their element, from tier two a condition chance of {two}, at tier three {three}. {merge} equal runes merge into the next tier."
-      where: "At the castle's enchanter; set runes are listed in the item sheet."
+      text: "In the first act runes are only loot. From the second act the castle's enchanter sets them into rune slots and takes them out again, at every level and every rune: one element rune per weapon, plus utility runes. Element runes give their element, from tier two a condition chance of {two}, at tier three {three}. {merge} equal runes and {mergeGold} gold per tier of the rune merge into the next tier; the enchanter does not merge at its first level, up to rune {limit2} at its second and up to rune {limit3} at its third."
+      where: "At the castle's enchanter; set runes are listed in the item sheet. The workshop also makes runes of the first tier."
       keywords: "rune, runes, enchanter, element, merge"
     sets:
       title: "Sets"

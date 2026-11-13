@@ -5,7 +5,7 @@ import { forecast, type Forecast } from '../rules/combat';
 import { castArea, castTargets, type CastArea } from '../rules/cast';
 import { classActionId } from '../rules/roles';
 import { ballistaTargets } from '../rules/ballista';
-import { disarmTiles, trapTiles } from '../rules/traps';
+import { disarmTiles, trapKitTiles, trapTiles } from '../rules/traps';
 import { openTargets, stealPreview, stealTargets, type StealPreview } from '../rules/scout';
 import { moveBudget, reachable, strikeTiles, tilesInRange, weaponRange } from '../rules/movement';
 import { computeStats } from '../rules/stats';
@@ -207,6 +207,9 @@ export function availableActions(data: GameData, s: BattleState, u: BattleUnit, 
     const d = itemDef(data, i);
     if (!d.use || (i.charges ?? 1) <= 0) return false;
     if (d.use.heal) return u.hp < computeStats(data, u).maxHp;
+    // Fallen-Set (story 10.6): a free tile in reach; Starkes Gegengift also shields before a condition comes
+    if (d.use.trap) return trapKitTiles(data, s, u, pos, d.use.rng).length > 0;
+    if (d.use.statusImmuneRounds) return true;
     if (d.use.cureStatus) return u.status.length > 0;
     if (d.use.damage) return true;
     if (d.use.statMods) return true;
@@ -276,7 +279,7 @@ export function itemTargets(data: GameData, s: BattleState, u: BattleUnit, pos: 
   const inst = u.bag.find((i) => i.uid === itemUid);
   if (!inst) return [];
   const use = itemDef(data, inst).use;
-  if (!use) return [];
+  if (!use || use.trap) return [];
   if (use.damage) {
     const r = use.rng ?? [1, 1];
     return s.units
@@ -290,6 +293,13 @@ export function itemTargets(data: GameData, s: BattleState, u: BattleUnit, pos: 
       .map((o) => (o.uid === u.uid ? u.uid : o.uid));
   }
   return [u.uid];
+}
+
+/** Fields an item is used on (story 10.6: the trap set lays its trap there); empty for items that aim at units. */
+export function itemTiles(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, itemUid: string): Pos[] {
+  const inst = u.bag.find((i) => i.uid === itemUid);
+  const use = inst ? itemDef(data, inst).use : undefined;
+  return use?.trap ? trapKitTiles(data, s, u, pos, use.rng) : [];
 }
 
 export { weaponRange };

@@ -154,6 +154,8 @@ export interface Balance {
     startExpected: Record<string, { gold: number }>;
     /** story 10.1: the rooms the home heuristic builds up first, in this order; the other rooms follow in rooms.yaml order */
     roomOrder: string[];
+    /** story 10.6: the home heuristic makes fire bombs while more iron ore than this is left */
+    craftIronOreAbove: number;
     /** story 11.28: the home heuristic hires tavern mercenaries up to the next mission's deploy limit, keeping `reserve` gold */
     hire: { reserve: number };
   };
@@ -191,6 +193,8 @@ export interface Balance {
     upgradePerLevel: { weaponMight: number; weaponHit: number; armorDefOrRes: number };
     rerollAffix: { gold: number; arcane_dust: number; epicGold: number; epicArcaneDust: number };
     runeMerge: { count: number; goldPerTier: number };
+    /** highest rune tier the enchanter merges into, by enchanter level (index = level - 1, story 10.6, `runeMergeLimit`) */
+    enchanterMergeMaxTier: number[];
     recruitCost: { base: number; perLevel: number };
     /** gold per healer level (index = level - 1, story 10.1), or the herb */
     scarRemoval: { goldByLevel: number[]; altItem: string };

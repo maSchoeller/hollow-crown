@@ -76,6 +76,8 @@ item.steel_sword.desc: "A sword of steel. More damage than the iron sword, but h
 item.stone_wall.desc: "An earth spell without damage: it raises a rock wall from the ground that blocks the way."
 item.surge.desc: "A water spell. Makes the target wet and puts out burning terrain."
 item.tinder.desc: "Hask's axe, black with soot. Its strike can set the target ablaze."
+item.strong_remedy.desc: "A bitter antidote from the workshop. Removes all harmful conditions from the unit or a neighbour and keeps new ones away until the end of the enemy phase."
+item.trap_kit.desc: "Iron, spring and moonsteel from the workshop. Lays a trap on a free neighbouring tile that only foes set off."
 item.torch.desc: "A pitch torch. Lights up the surroundings in the dark for a few rounds."
 item.tower_shield.desc: "A shield as tall as a man. A great deal of protection, but it slows you down."
 item.travel_lute.desc: "A lute for the minstrel's off hand. Raises luck."

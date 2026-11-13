@@ -1,0 +1,15 @@
+# Werkstatt-Rezepte (Story 10.6, recipeSchema): aus Material und Gold entsteht ein Item im Konvoi, sobald die Werkstatt die
+# Stufe roomLevel erreicht (craftCost in camp.ts, Command craft). materials: Material-Id → Menge (kind: material), gold ≥ 0.
+# [ASSUMPTION] Mengen: Materialwert = Preis in items.yaml; Material und Gold zusammen 60–100 % des Kaufpreises (Verbrauchsgüter
+# des Händlers 60–80 %, reine Werkstatt-Items ≈ 80 %, Runen I ≈ 100 %); kein Arkanstaub (er hat keine Quelle). Story 11.27 prüft
+# die Spanne in der Abstimmung.
+- { id: fire_bomb,     item: fire_bomb,     roomLevel: 1, materials: { iron_ore: 2 }, gold: 100 }
+- { id: door_key,      item: door_key,      roomLevel: 1, materials: { iron_ore: 1 }, gold: 50 }
+- { id: haste_scroll,  item: haste_scroll,  roomLevel: 2, materials: { moonsteel: 1 }, gold: 200 }
+- { id: strong_remedy, item: strong_remedy, roomLevel: 2, materials: { moonsteel: 1 } }
+- { id: trap_kit,      item: trap_kit,      roomLevel: 3, materials: { moonsteel: 1, iron_ore: 1 } }   # 500 von 600 = 83 %
+- { id: fire_rune_1,   item: fire_rune_1,   roomLevel: 3, materials: { moonsteel: 1 } }
+- { id: wind_rune_1,   item: wind_rune_1,   roomLevel: 3, materials: { moonsteel: 1 } }
+- { id: earth_rune_1,  item: earth_rune_1,  roomLevel: 3, materials: { moonsteel: 1 } }
+- { id: water_rune_1,  item: water_rune_1,  roomLevel: 3, materials: { moonsteel: 1 } }
+- { id: light_rune_1,  item: light_rune_1,  roomLevel: 3, materials: { moonsteel: 1 }, gold: 200 }   # Kaufpreis 600; Dunkel bleibt Beute

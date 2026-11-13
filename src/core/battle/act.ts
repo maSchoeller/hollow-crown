@@ -247,6 +247,8 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
       const use = itemDef(data, inst).use!;
       const target = a.target ? getUnit(s, a.target) : u;
       events.push({ t: 'itemUsed', unit: u.uid, item: inst.def, target: target.uid });
+      // Fallen-Set (story 10.6): a trap like the trapper's, of its own kind, so it never pushes out one of the trapper's two
+      if (use.trap && a.at) layTrap(data, s, u, a.at, events, 'item');
       if (use.heal) {
         const max = computeStats(data, target).maxHp;
         const amount = Math.min(max - target.hp, use.heal + (inst.upgrade ?? 0) * (b.economy.potionUpgrade[0]?.heal ?? 0));
@@ -257,6 +259,8 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
         for (const x of target.status) events.push({ t: 'status', unit: target.uid, status: x.id, on: false });
         target.status = [];
       }
+      // Starkes Gegengift (story 10.6): no new condition to the end of the round, the enemy phase after it included
+      if (use.statusImmuneRounds) target.buffs.push({ source: inst.def, statusImmune: true, untilTurn: s.turn + use.statusImmuneRounds - 1, untilPhase: 'enemy' });
       if (use.damage) {
         damageUnit(data, s, target, use.damage, 'item', events, u.uid);
         if (use.status && active(target)) applyStatus(data, s, target, use.status, events);

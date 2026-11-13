@@ -4,7 +4,8 @@ export type Action =
   | { kind: 'wait' }
   | { kind: 'attack'; target: string; weapon?: string }
   | { kind: 'staff'; target: string; staff?: string }
-  | { kind: 'item'; item: string; target?: string }
+  /** `at`: the field of an item used on a field (Fallen-Set, story 10.6) */
+  | { kind: 'item'; item: string; target?: string; at?: Pos }
   | { kind: 'visit' }
   | { kind: 'chest' }
   | { kind: 'door'; object: string }

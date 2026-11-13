@@ -66,7 +66,22 @@ export function validateUnits(data: GameData, err: Err, { item, conditions, batt
     const image = it.image ?? it.id;
     if (itemImages && !itemImages.has(image)) err(it.kind === 'rune' ? 'runes.yaml' : 'items.yaml', `${it.id}: no image art/items/${image}.png`);
   }
+  validateRecipes(data, err, itemImages);
   for (const s of Object.values(data.sets)) {
     for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);
+  }
+}
+
+/** Workshop recipes (story 10.6): the item exists (items.yaml or runes.yaml), every material is `kind: material` with a painted image. */
+export function validateRecipes(data: GameData, err: Err, itemImages?: Set<string>): void {
+  for (const r of Object.values(data.recipes)) {
+    if (!data.items[r.item]) err('recipes.yaml', `${r.id}: unknown item ${r.item}`);
+    if (!Object.keys(r.materials).length) err('recipes.yaml', `${r.id}: needs at least one material`);
+    for (const m of Object.keys(r.materials)) {
+      const d = data.items[m];
+      if (!d) err('recipes.yaml', `${r.id}: unknown material ${m}`);
+      else if (d.kind !== 'material') err('recipes.yaml', `${r.id}: ${m} is not a material`);
+      else if (itemImages && !itemImages.has(d.image ?? d.id)) err('recipes.yaml', `${r.id}: material ${m} has no image art/items/${d.image ?? d.id}.png`);
+    }
   }
 }

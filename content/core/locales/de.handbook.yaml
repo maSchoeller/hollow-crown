@@ -153,6 +153,12 @@ handbook:
     two: "Zustand Stufe II"
     three: "Zustand Stufe III"
     merge: "Verschmelzen"
+    mergeGold: "Gold je Runen-Stufe"
+    limit2: "Bis Rune auf Stufe II"
+    limit3: "Bis Rune auf Stufe III"
+    bombOre: "Eisenerz je Feuerbombe"
+    bombGold: "Gold je Feuerbombe"
+    runeMoon: "Mondstahl je Rune"
     foot: "Tragkraft Fuß"
     armored: "Tragkraft gepanzert"
     over1: "Überlast Stufe I"
@@ -384,6 +390,11 @@ handbook:
       text: "In der Akademie steigt eine Figur ab Stufe {level} für einen Glutfunken auf einen Profi-Weg auf: Sie beginnt wieder bei Stufe eins, gewinnt Werte und trägt {loadoutPro} statt vier Skills. Ab Akademie-Stufe {changePath} wechselt ein Profi für {changeGold} Gold den Weg, ab Stufe {secondPath} lernt er für einen weiteren Glutfunken auch die Wirkung des anderen Wegs."
       where: "Die Akademie ist ein Raum der Burg im zweiten Akt; in der Truppe führt „Aufsteigen“ dorthin."
       keywords: "Akademie, Aufstieg, Profi, Weg wechseln, zweiter Weg, Glutfunke"
+    workshop:
+      title: "Werkstatt"
+      text: "In der Werkstatt der Burg wird aus Material ein Verbrauchsgut oder eine Rune für den Konvoi. Auf der ersten Stufe entstehen Feuerbomben ({bombOre} Eisenerz und {bombGold} Gold) und Schlüssel, ab der zweiten Schriftrollen der Hast und Starkes Gegengift, auf der dritten Fallen-Sets und Element-Runen der ersten Stufe ({runeMoon} Mondstahl). Starkes Gegengift und Fallen-Set gibt es nur hier. Material bringen Kopfgelder und Heimsuchungen."
+      where: "Die Werkstatt ist ein Raum der Burg im zweiten Akt; jedes Rezept nennt Material und Gold."
+      keywords: "Werkstatt, herstellen, Rezept, Material, Eisenerz, Mondstahl, Fallen-Set, Gegengift"
     ember_spark:
       title: "Glutfunke und Aufstieg"
       text: "Mit einem Glutfunken steigt eine Figur ab Stufe {level} in der Akademie zu einem der zwei Profi-Wege ihrer Rolle auf und beginnt wieder bei Stufe eins. Glutfunken sind selten: aus dem Finale und aus Nebenquests, später beim Händler für {price} Gold."
@@ -402,8 +413,8 @@ handbook:
       keywords: "Aufwerten, Schmied, Stufe, verbessern, Material"
     runes:
       title: "Runen"
-      text: "Der Verzauberer setzt Runen in die Runen-Plätze: eine Element-Rune je Waffe, dazu Hilfs-Runen. Element-Runen geben das Element, ab Stufe zwei eine Zustands-Chance von {two}, auf Stufe drei {three}. Aus {merge} gleichen Runen wird die nächste Stufe."
-      where: "Im Verzauberer der Burg; eingesetzte Runen stehen im Item-Blatt."
+      text: "Im ersten Akt sind Runen nur Beute. Ab dem zweiten Akt setzt der Verzauberer der Burg sie in die Runen-Plätze und baut sie wieder aus, auf jeder Stufe und jede Rune: eine Element-Rune je Waffe, dazu Hilfs-Runen. Element-Runen geben das Element, ab Stufe zwei eine Zustands-Chance von {two}, auf Stufe drei {three}. Aus {merge} gleichen Runen und {mergeGold} Gold je Stufe der Rune wird die nächste Stufe; der Verzauberer der ersten Stufe verschmilzt nicht, auf seiner zweiten Stufe bis Rune {limit2}, auf der dritten bis Rune {limit3}."
+      where: "Im Verzauberer der Burg; eingesetzte Runen stehen im Item-Blatt. Runen der ersten Stufe stellt auch die Werkstatt her."
       keywords: "Rune, Runen, Verzauberer, Element, verschmelzen"
     sets:
       title: "Sets"

@@ -26,6 +26,8 @@ import {
   rerollAllowed,
   rerollCost,
   roomUnlocks,
+  mergeError,
+  mergeLevelFor,
   runeMerge,
   runeSlotCount,
   sellPrice,
@@ -50,6 +52,7 @@ import { Amount, ItemImage, Piece, PrimaryButton, QuietButton, SecondaryButton, 
 import { nodeShort } from '../campaignInfo';
 import { Scene } from './Scene';
 import { AcademyRoom } from './Academy';
+import { WorkshopRoom } from './Workshop';
 import { campaign, data } from '../state/session';
 import { StoneImage, UnitHead } from './unitArt';
 import '../../ui/camp.css';
@@ -605,17 +608,23 @@ export function EnchanterRoom({ room, apply, onClose }: { room: RoomDef; apply: 
       <div class="hm-subhead">{t('ui.camp.runes')}</div>
       {[...new Set(runes.map((r) => r.def))].map((id) => {
         const n = runes.filter((r) => r.def === id).length;
+        // story 10.6: the enchanter's level caps the tier merged into; the button names the cost from runeMerge
         const m = runeMerge(data, id);
+        const err = mergeError(data, c, id);
+        const from = m && err === 'room_locked' ? mergeLevelFor(data, m.next.tier ?? 0) : null;
         return (
-          <div key={id} class="hm-offer">
+          <div key={id} class="hm-offer hm-offer--merge">
             <ItemImage data={data} item={id} />
             <span class="hm-offer__name">
               {t(`item.${id}.name`)} ×{n}
               <ItemInfoButton data={data} item={id} />
+              {from !== null && <span class="hm-offer__note">{t('ui.room.enchanter.mergeFrom', { n: from })}</span>}
             </span>
-            <SecondaryButton disabled={!m || n < data.balance.economy.runeMerge.count} onClick={() => apply({ type: 'mergeRunes', rune: id }, t('ui.camp.merged'))}>
-              {t('ui.camp.merge')}
-            </SecondaryButton>
+            {m && (
+              <SecondaryButton disabled={err !== null} onClick={() => apply({ type: 'mergeRunes', rune: id }, t('ui.camp.merged'))}>
+                {t('ui.room.enchanter.merge')} · {m.count} × <ItemImage data={data} item={id} size={20} bare /> <Amount resource="gold" value={m.gold} short={c.gold < m.gold} />
+              </SecondaryButton>
+            )}
           </div>
         );
       })}
@@ -718,6 +727,7 @@ function RoomBody({ room, apply, onClose, unit }: { room: RoomDef; apply: Apply;
     case 'academy':
       return <AcademyRoom room={room} apply={apply} onClose={onClose} unit={unit} />;
     case 'workshop':
+      return <WorkshopRoom room={room} apply={apply} onClose={onClose} />;
     case 'training':
       // their effects come with stories 10.7 and 10.9; until then the panel holds the build-up band and a line
       return (

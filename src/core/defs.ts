@@ -72,6 +72,10 @@ export interface ItemUse {
   promote?: boolean;
   minLevel?: number;
   removeScar?: boolean;
+  /** Starkes Gegengift (story 10.6): after the cure the target takes no new condition for this many rounds (to the end of the enemy phase) */
+  statusImmuneRounds?: number;
+  /** Fallen-Set (story 10.6): lays a trap of `classActions.trap` on a free tile in `rng` (`source: 'item'`) */
+  trap?: boolean;
 }
 
 export interface ItemDef {
@@ -111,6 +115,16 @@ export interface ItemDef {
   image?: string;
   /** relic stages 2 and 3 (story 11.9): see `stagedItemDef` */
   stages?: ItemStage[];
+}
+
+/** A recipe of the workshop (story 10.6, `content/core/recipes.yaml`): materials and gold for one `item` from workshop level `roomLevel`. */
+export interface RecipeDef {
+  id: string;
+  /** item or rune that the recipe makes */
+  item: string;
+  roomLevel: number;
+  materials: Record<string, number>;
+  gold: number;
 }
 
 /** One awakened stage of a relic (story 11.9): reached while `when` holds; replaces image and `statMods`, adds passive `skills`. */

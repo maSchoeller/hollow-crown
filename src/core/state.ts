@@ -52,6 +52,8 @@ export interface Buff {
   damage?: number;
   hit?: number;
   mov?: number;
+  /** Starkes Gegengift (story 10.6): no new condition while the buff lasts */
+  statusImmune?: boolean;
   /** buff ends when this turn's phase of `untilPhase` ends */
   untilTurn: number;
   untilPhase: Team;

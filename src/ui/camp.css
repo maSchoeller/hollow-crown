@@ -385,6 +385,24 @@
   gap: 2px;
   min-width: 0;
 }
+/* "ab Verzauberer Stufe n" under a rune that cannot be merged yet (story 10.6) */
+.hm-offer__name:has(.hm-offer__note) {
+  flex-wrap: wrap;
+}
+/* the merge button names its cost (story 10.6) and takes the row under the rune's name */
+.hm-offer--merge > :first-child {
+  grid-row: span 2;
+}
+.hm-offer--merge > button {
+  grid-column: 2 / -1;
+  justify-self: start;
+}
+.hm-offer__note {
+  flex-basis: 100%;
+  font-family: var(--hc-font-label);
+  font-size: 12px;
+  color: var(--hc-soft);
+}
 .hm-stat-line {
   display: flex;
   flex-wrap: wrap;
