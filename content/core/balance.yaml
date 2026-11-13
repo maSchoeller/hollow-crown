@@ -171,6 +171,9 @@ simulation:
   # Story 10.1: Reihenfolge, in der die Heimat-Heuristik Räume ausbaut (danach der Rest in der Reihenfolge von rooms.yaml); sie baut nur,
   # wenn danach noch das Gold für eine Narbe und eine Aufwertung bleibt [ASSUMPTION]
   roomOrder: [smith, academy, healer, training]
+  # Story 11.28: die Heimat-Heuristik wirbt in der Taverne Söldner an, bis die Truppe das Einsatz-Limit der nächsten Mission füllt,
+  # und behält dabei mindestens reserve Gold (für Heiltränke und Narben) [ASSUMPTION]; nur die Simulation, kein Spielwert
+  hire: { reserve: 500 }
 # loading before missions (story 7.6): a download that stays silent this long counts as failed (shows the retry)
 loading:
   fetchTimeoutMs: 30000
