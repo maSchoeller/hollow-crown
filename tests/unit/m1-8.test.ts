@@ -88,7 +88,7 @@ describe('node m1_8', () => {
   const node = () => data.acts[1]!.nodes.find((n) => n.id === NODE)!;
 
   it('is the finale after m1_7 with the Pactwatch as home, two ember sparks and the world map place bound to it', () => {
-    expect(node()).toMatchObject({ fixed: 'finale', place: 'paktwacht_heimat', merchantTier: 2, expectedLevel: 9, titleKey: 'node.m1_8.title', pre: 'scn.m1_8.intro', post: 'scn.m1_8.outro' });
+    expect(node()).toMatchObject({ fixed: 'finale', place: 'paktwacht_spaetsommer', merchantTier: 2, expectedLevel: 9, titleKey: 'node.m1_8.title', pre: 'scn.m1_8.intro', post: 'scn.m1_8.outro' });
     expect(node().requires).toEqual([{ completed: 'm1_7' }]);
     expect(node().effects).toEqual([{ item: { def: 'ember_spark' } }, { item: { def: 'ember_spark' } }]);
     expect(data.world.places.find((p) => p.slots.some((x) => x.node === NODE))!.id).toBe('paktwacht');
