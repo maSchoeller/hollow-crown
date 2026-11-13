@@ -469,6 +469,49 @@
   font-family: var(--hc-font-label);
   font-weight: 700;
 }
+/* story 10.1: green while a build is possible now (DESIGN colors.positive), with the effect and the build button */
+.hm-upband.is-ready {
+  border-style: solid;
+  border-color: var(--hc-positive);
+  background: var(--hc-positive-soft);
+  color: var(--hc-line);
+}
+.hm-upband__text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+.hm-upband__text small {
+  font-size: 12px;
+  font-weight: 600;
+}
+.hm-upband .hm-upband__mate {
+  color: var(--hc-positive);
+}
+.hm-upband.is-ready .hc-btn {
+  flex: none;
+  white-space: nowrap;
+}
+.hm-upband.is-top {
+  border-style: solid;
+  justify-content: center;
+}
+/* a room stone that can be built up now: green arrow at its corner (DESIGN room-stone) */
+.hm-up {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--hc-positive);
+  color: var(--hc-cream);
+  box-shadow: 0 0 0 1.5px var(--hc-cream);
+}
 
 /* memorial hall: desaturated, only the ember line stays (DESIGN.md Gedenken) */
 .hm.hm--mourn.has-room .hm__scene {

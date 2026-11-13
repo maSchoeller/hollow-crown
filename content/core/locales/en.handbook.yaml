@@ -136,6 +136,8 @@ handbook:
     rescueExp: "EXP for a rescue"
     limit: "Scars until death"
     cost: "Remove a scar"
+    level2: "Upgrade to the second level"
+    level3: "Upgrade to the third level"
     sell: "Sell price"
     convoy: "Convoy slots"
     level: "Promotion from level"
@@ -366,7 +368,7 @@ handbook:
       keywords: "room, merchant, smith, healer, tavern, campfire, convoy, hall of remembrance"
     rooms_upgrade:
       title: "Upgrading the castle"
-      text: "The castle's rooms grow in three levels. Each level needs the right companion in the company and gold, and unlocks more, such as higher upgrades at the smith or ranks A and S at the campfire. The academy, workshop, enchanter and training ground join them."
+      text: "The castle's rooms grow in three levels. From the second act, the second level costs only gold ({level2}); the third costs {level3} gold and needs one of the room's two companions in the company, named on the upgrade band. Each level unlocks more, such as higher upgrades at the smith or ranks A and S at the campfire. The academy, workshop, enchanter and training ground join them. A room keeps its level even when its companions leave."
       where: "Upgrading is offered in every room of the castle."
       keywords: "upgrade, level, castle, academy, workshop, training ground"
     trade:

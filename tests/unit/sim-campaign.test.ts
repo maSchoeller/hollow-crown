@@ -20,6 +20,7 @@ const mission = (over: Partial<MissionSim> = {}): MissionSim => ({
   sideGold: 2000,
   cleared: 10,
   armyLevel: 20,
+  rooms: 0,
   deaths: 0,
   turns: 0,
   actions: 0,
@@ -58,10 +59,10 @@ describe('chained act simulation (story 6.8)', () => {
     const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'R', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
     c.gold = 5000;
     c.materials = { ...c.materials, iron_ore: 10 };
-    const spent = { heal: 0, buy: 0, upgrade: 0 };
+    const spent = { heal: 0, buy: 0, upgrade: 0, rooms: 0 };
     const after = homeHeuristic(data, c, spent);
     expect(after.gold).toBeGreaterThanOrEqual(0);
-    expect(spent.buy + spent.upgrade + spent.heal).toBe(5000 - after.gold);
+    expect(spent.buy + spent.upgrade + spent.heal + spent.rooms).toBe(5000 - after.gold);
     expect(spent.upgrade).toBeGreaterThan(0);
   });
 

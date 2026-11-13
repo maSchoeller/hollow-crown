@@ -6,7 +6,7 @@
  */
 import { useEffect, useState } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { actOf, availableSupportTalks, castleTier, homeRooms, pendingHomeScene, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
+import { actOf, availableSupportTalks, buildableRooms, castleTier, homeRooms, pendingHomeScene, roomBuild, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Toast } from '../../ui/components';
@@ -17,19 +17,9 @@ import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { lockReason, Room, type Apply } from './Rooms';
 import { Castle3d, castle3dFlag, CastleDevBar } from './Castle3d';
+import { Pips, UpArrow } from './roomStone';
 import { Scene } from './Scene';
 import '../../ui/camp.css';
-
-/** Level of a castle room as dots (filled up to the level; three at most). */
-function Pips({ level, max }: { level: number; max: number }) {
-  return (
-    <span class="hm-pips" role="img" aria-label={t('ui.room.level', { n: level, max })}>
-      {Array.from({ length: max }, (_, i) => (
-        <i key={i} class={i < level ? '' : 'off'} />
-      ))}
-    </span>
-  );
-}
 
 /**
  * The camp, the "home" place of the world map (story 5.3): HUD with the purse, the diorama, the stations, and the bar to
@@ -68,6 +58,9 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
   const mourn = room?.function === 'memorial';
   /** a stone of the room list or of the picture: opens the room, or names why it is locked */
   const tap = ({ room: r, open: isOpen, unmet }: RoomStatus) => (isOpen ? setOpen(r.id) : setToast(lockReason(unmet)));
+  /** story 10.1: a castle room that can be built up now carries the green arrow on its stone */
+  const canBuild = (id: string) => castle && roomBuild(data, c, id).error === null;
+  const buildable = castle ? buildableRooms(data, c) : 0;
   return (
     <div class={`hm ${open ? 'has-room' : ''} ${mourn ? 'hm--mourn' : ''}`}>
       {castle ? (
@@ -75,6 +68,7 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
           rooms={rooms}
           levelOf={(id) => (devTier !== null ? Math.max(1, devTier) : rooms.some((x) => x.room.id === id) ? roomLevel(c, id) : 0)}
           tier={devTier ?? castleTier(data, c)}
+          canBuild={canBuild}
           onRoom={(_id, st) => (st ? tap(st) : setToast(t('ui.dev.castle3d.noRoom')))}
           fallback={asset(`locations/${view.image}.webp`)}
           stats={devBar}
@@ -108,7 +102,7 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
           <Piece class="hm-rooms">
             <div class="hm-rooms__title">
               {t(`home.${kind}.title`)}
-              <span>{castle ? t('ui.home.rooms', { n: rooms.length }) : t('home.camp.later')}</span>
+              <span>{castle ? (buildable > 0 ? t('ui.home.roomsBuildable', { n: rooms.length, b: buildable }) : t('ui.home.rooms', { n: rooms.length })) : t('home.camp.later')}</span>
             </div>
             {rooms.map((st) => {
               const { room: r, open: isOpen, unmet } = st;
@@ -125,6 +119,7 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
                   <span class="hm-room__stone">
                     <Icon name={isOpen ? r.icon : 'lock'} size={26} />
                     {isOpen && (count > 0 || fresh) && <span class="hm-dot">{count > 0 ? count : '!'}</span>}
+                    {isOpen && canBuild(r.id) && <UpArrow />}
                   </span>
                   {t(`room.${r.id}.name`)}
                   {castle && r.levels.length > 0 && <Pips level={roomLevel(c, r.id)} max={r.levels.length + 1} />}

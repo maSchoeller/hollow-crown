@@ -189,7 +189,7 @@ export interface CampaignNodeDef {
 export interface RoomDef {
   id: string;
   /** what the room does; the UI opens the matching panel */
-  function: 'convoy' | 'merchant' | 'smith' | 'healer' | 'tavern' | 'campfire' | 'memorial' | 'enchanter' | 'academy';
+  function: 'convoy' | 'merchant' | 'smith' | 'healer' | 'tavern' | 'campfire' | 'memorial' | 'enchanter' | 'academy' | 'workshop' | 'training';
   /** line icon of the room stone (icons.tsx) */
   icon: string;
   /** first act in which the room exists */
@@ -197,14 +197,15 @@ export interface RoomDef {
   /** homes the room belongs to */
   homes: HomeKind[];
   requires: Condition[];
-  /** what the next levels need, level 2 first (story 6.9): the build rules come with Epic 10; empty = no build-up */
+  /** cost and conditions of the next levels, level 2 first (stories 6.9 and 10.1, command `buildRoom`); empty = no build-up */
   levels: RoomLevelDef[];
   /** things inside the room that open later (e.g. the lessons of the memorial hall) */
   unlocks: RoomUnlockDef[];
 }
 
-/** Conditions of one build-up step of a room (level 2 and 3). */
+/** Cost and conditions of one build-up step of a room (level 2 and 3, story 10.1). */
 export interface RoomLevelDef {
+  cost: { gold: number };
   requires: Condition[];
 }
 
@@ -283,6 +284,8 @@ export interface CampaignDef {
 
 /** What the tavern offers (`balance.yaml` economy.tavern): hireable classes with their kit, names, level spread. */
 export interface TavernDef {
+  /** offers per round by tavern level (index = level - 1, story 10.1): `tavernOfferCount` */
+  offersByLevel: number[];
   /** an offer's level lies between the expected level of the next mission minus `levelSpread` and that level */
   levelSpread: number;
   /** name keys of generated mercenaries (locales) */

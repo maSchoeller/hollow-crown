@@ -1,16 +1,45 @@
-# Räume der Heimat (Architektur §5.10, Story 6.3). Reihenfolge = Anzeige. Namen: room.<id>.name, Kurztext: room.<id>.desc.
+# Räume der Heimat (Architektur §5.10, Stories 6.3 und 10.1). Reihenfolge = Anzeige. Namen: room.<id>.name, Kurztext: room.<id>.desc.
 # homes: camp = wanderndes Lager (Akt 1), castle = Burg (ab Mission 1-6). requires = Bedingungen (Architektur §5.3), UND.
-# levels = Bedingungen für Stufe 2 und 3 (Ausbau, Story 6.9; der Ausbau selbst kommt mit Epic 10), unlocks = was ein Raum später freigibt.
-# Sind sie nicht erfüllt, steht die Station gestrichelt da, mit der ersten offenen Bedingung als Grund (Freischaltung aus U20).
-- { id: convoy,    function: convoy,    icon: convoy,    fromAct: 1, homes: [camp, castle], requires: [], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
-- { id: merchant,  function: merchant,  icon: merchant,  fromAct: 1, homes: [camp, castle], requires: [], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
-- { id: smith,     function: smith,     icon: smith,     fromAct: 1, homes: [camp, castle], requires: [{ any: [{ act: 2 }, { storyCount: { min: 3 } }] }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
-- { id: healer,    function: healer,    icon: healer,    fromAct: 1, homes: [camp, castle], requires: [{ any: [{ act: 2 }, { storyCount: { min: 3 } }] }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
-- { id: tavern,    function: tavern,    icon: tavern,    fromAct: 1, homes: [camp, castle], requires: [{ any: [{ act: 2 }, { storyCount: { min: 3 } }] }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
-- { id: campfire,  function: campfire,  icon: campfire,  fromAct: 1, homes: [camp, castle], requires: [{ any: [{ act: 2 }, { storyCount: { min: 4 } }] }], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
+# levels = Ausbau auf Stufe 2 und 3 (Command buildRoom, Story 10.1): cost = Gold, requires = Bedingungen der Stufe. Stufe 2 kostet nur
+# Gold (ab Akt 2), Stufe 3 braucht zusätzlich einen der zwei Raum-Gefährten (any: alive, einer reicht; Produktinhaber 2026-10-31,
+# Readiness-Runde R2). Kosten 1 500 / 4 000 Gold: GDD-Annahme 9. Die Wirkungen der Stufen stehen als Stufen-Arrays in balance.yaml.
+# unlocks = was ein Raum später freigibt. Sind die Bedingungen nicht erfüllt, steht die Station gestrichelt da, mit der ersten
+# offenen Bedingung als Grund (Freischaltung aus U20).
+- { id: convoy, function: convoy, icon: convoy, fromAct: 1, homes: [camp, castle], requires: [],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: tobin }, { alive: nell }] }] }] }
+- { id: merchant, function: merchant, icon: merchant, fromAct: 1, homes: [camp, castle], requires: [],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: fenn }, { alive: nell }] }] }] }
+- { id: smith, function: smith, icon: smith, fromAct: 1, homes: [camp, castle], requires: [{ any: [{ act: 2 }, { storyCount: { min: 3 } }] }],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: brenna }, { alive: grosk }] }] }] }
+- { id: healer, function: healer, icon: healer, fromAct: 1, homes: [camp, castle], requires: [{ any: [{ act: 2 }, { storyCount: { min: 3 } }] }],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: liora }, { alive: amos }] }] }] }
+- { id: tavern, function: tavern, icon: tavern, fromAct: 1, homes: [camp, castle], requires: [{ any: [{ act: 2 }, { storyCount: { min: 3 } }] }],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: varek }, { alive: jory }] }] }] }
+- { id: campfire, function: campfire, icon: campfire, fromAct: 1, homes: [camp, castle], requires: [{ any: [{ act: 2 }, { storyCount: { min: 4 } }] }],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: jory }, { alive: brenna }] }] }] }
 # Gedächtnishalle: Gedenksteine ab Akt 1, die Lektionen (Story 10.6) erst ab Akt 2
-- { id: memorial,  function: memorial,  icon: stone,     fromAct: 1, homes: [castle], requires: [], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }], unlocks: [{ id: lessons, requires: [{ act: 2 }] }] }
-# Verzauberer (Runen): Raum ab Akt 2, Geschichte in Epic 10 (10.5); das Panel funktioniert schon
-- { id: enchanter, function: enchanter, icon: enchanter, fromAct: 2, homes: [castle], requires: [], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
-# Akademie (Story 10.2): Aufstieg mit Glutfunke ab Akt 2; Stufe 2 Weg wechseln, Stufe 3 zweiten Weg lernen (Kosten und Gefährten mit 10.1)
-- { id: academy,   function: academy,   icon: academy,   fromAct: 2, homes: [castle], requires: [], levels: [{ requires: [{ act: 2 }] }, { requires: [{ act: 2 }] }] }
+- { id: memorial, function: memorial, icon: stone, fromAct: 1, homes: [castle], requires: [],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: liora }, { alive: amos }] }] }],
+    unlocks: [{ id: lessons, requires: [{ act: 2 }] }] }
+# Verzauberer (Runen): Raum ab Akt 2, Geschichte in Epic 10 (10.5)
+- { id: enchanter, function: enchanter, icon: enchanter, fromAct: 2, homes: [castle], requires: [],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: ysolde }, { alive: brann }] }] }] }
+# Akademie (Story 10.2): Aufstieg mit Glutfunke ab Akt 2; Stufe 2 Weg wechseln, Stufe 3 zweiten Weg lernen
+- { id: academy, function: academy, icon: academy, fromAct: 2, homes: [castle], requires: [],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: varek }, { alive: odile }] }] }] }
+# Werkstatt und Übungsplatz: Räume ab Akt 2, ihre Wirkungen kommen mit den Stories 10.7 und 10.9
+- { id: workshop, function: workshop, icon: workshop, fromAct: 2, homes: [castle], requires: [],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: fenn }, { alive: brann }] }] }] }
+- { id: training, function: training, icon: training, fromAct: 2, homes: [castle], requires: [],
+    levels: [{ cost: { gold: 1500 }, requires: [{ act: 2 }] },
+             { cost: { gold: 4000 }, requires: [{ act: 2 }, { any: [{ alive: mira }, { alive: ilka }] }] }] }

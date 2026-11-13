@@ -152,6 +152,8 @@ export interface Balance {
     gold: { perNode: Record<string, [number, number]>; perAct: Record<string, [number, number]>; sideShare: [number, number] };
     /** `--start expected` (story 11.4): the gold of the company that starts act N without playing the acts before, by act */
     startExpected: Record<string, { gold: number }>;
+    /** story 10.1: the rooms the home heuristic builds up first, in this order; the other rooms follow in rooms.yaml order */
+    roomOrder: string[];
   };
   /** Nebel (story 2.6): `baseVision` plus the highest of `roleBonus` (class role) and `moveTypeBonus`; sight ends behind `blockers` terrain */
   /** height levels (GDD): range bonus from above, move types free of the connectors, connectors a melee blow reaches over */
@@ -184,11 +186,11 @@ export interface Balance {
     rerollAffix: { gold: number; arcane_dust: number; epicGold: number; epicArcaneDust: number };
     runeMerge: { count: number; goldPerTier: number };
     recruitCost: { base: number; perLevel: number };
-    scarRemoval: { gold: number; altItem: string };
+    /** gold per healer level (index = level - 1, story 10.1), or the herb */
+    scarRemoval: { goldByLevel: number[]; altItem: string };
     potionUpgrade: Array<{ gold: number; heal: number }>;
     /** effect `villageAid` (E1): extra charges of every healing potion (`use.heal`) until the end of the act */
     villageAid: { healCharges: number };
-    tavernOffersPerChapter: number;
     armyLimit: number;
     /** mercenaries on top of the `armyLimit` companions (GDD: 20 + 6) */
     mercenaryLimit: number;

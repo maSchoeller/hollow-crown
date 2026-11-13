@@ -85,6 +85,7 @@ export const balanceSchema = z.object({
       sideShare: z.tuple([z.number(), z.number()]),
     }),
     startExpected: z.record(z.string(), z.object({ gold: z.number().int().min(0) })).default({}),
+    roomOrder: z.array(z.string()).default([]),
   }),
   elevation: z.object({
     rangedBonus: z.number().int().min(0),
@@ -117,7 +118,9 @@ export const balanceSchema = z.object({
     smithMaxUpgrade: z.array(z.number().int().min(0)).min(1),
     rerollFromSmithLevel: z.number().int().min(1),
     villageAid: z.object({ healCharges: z.number().int().min(1) }),
+    scarRemoval: z.object({ goldByLevel: z.array(z.number().int().min(0)).min(1), altItem: z.string() }),
     tavern: z.object({
+      offersByLevel: z.array(z.number().int().min(0)).min(1),
       levelSpread: z.number().int().min(0),
       names: z.array(z.string()).min(1),
       classes: z.array(z.object({ class: z.string(), items: z.array(z.string()), requires: z.array(conditionSchema).optional() })).min(1),
