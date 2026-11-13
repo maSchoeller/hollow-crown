@@ -6,7 +6,7 @@ import { levelCap, otherProPath, promotionTargets } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { relicCtx } from './relics';
 import { computeStats } from '../rules/stats';
-import { pendingRank, rankIndex } from '../rules/supports';
+import { maxRank, pendingRank, rankIndex } from '../rules/supports';
 import type { CampaignState, ItemInstance, UnitRecord } from '../state';
 import { clone } from '../util';
 import { shopPrice } from './aid';
@@ -149,6 +149,25 @@ export function unlockableRank(data: GameData, c: CampaignState, key: string): S
   const st = c.supports[key];
   const rank = st ? pendingRank(data, st, key) : null;
   return rank && rankIndex(rank) <= rankIndex(campfireMaxRank(data, c)) ? rank : null;
+}
+
+/** Why the campfire holds back the next rank of a pair (story 10.8): the campfire level that opens it, or S only for core pairs. */
+export type CampfireLock = { rank: SupportRank; reason: 'level'; level: number } | { rank: 'S'; reason: 'core' };
+
+/**
+ * The next rank of pair `key` that the campfire keeps locked, or null: a rank whose points are reached but which lies above
+ * `campfireMaxRank` (with the campfire level that opens it), or S for a pair at A that is no core pair.
+ */
+export function campfireLock(data: GameData, c: CampaignState, key: string): CampfireLock | null {
+  const st = c.supports[key];
+  if (!st) return null;
+  const rank = pendingRank(data, st, key);
+  if (rank) {
+    if (rankIndex(rank) <= rankIndex(campfireMaxRank(data, c))) return null;
+    const level = data.balance.supports.campfireMaxRank.findIndex((r) => rankIndex(r) >= rankIndex(rank)) + 1;
+    return level > 0 ? { rank, reason: 'level', level } : null;
+  }
+  return st.rank === 'A' && maxRank(data, key) === 'A' ? { rank: 'S', reason: 'core' } : null;
 }
 
 /** The talk waiting at the campfire for pair `key`: both companions in the company, a rank to unlock and its scene. */

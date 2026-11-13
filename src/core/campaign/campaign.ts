@@ -11,7 +11,7 @@ import { nextInt, pick, seedRng } from '../rng';
 import { deathless } from '../rules/effects';
 import { allItems, itemDef, maxCharges, stackKeys } from '../rules/items';
 import { expPercent, grantSp, levelCap } from '../rules/progression';
-import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, UnitRecord } from '../state';
+import type { AvatarSettings, BattleSettings, BattleState, BattleUnit, CampaignState, ItemInstance, ReserveGain, UnitRecord } from '../state';
 import { clone } from '../util';
 import { conditionContext, evalConditions } from './conditions';
 import { availableNodes, enterNextAct, noteRoles, storyCount } from './graph';
@@ -20,6 +20,7 @@ import { nodeLevel, positionNow, raiseOnJoin } from './position';
 import { availableSupportTalks, tavernOfferCount } from './camp';
 import { applyLieutenantOutcome, bountyMaterialId, lieutenantState, payBounties } from './lieutenants';
 import { hauntGold, hauntHalved } from './haunts';
+import { trainReserve } from './training';
 import { parseHauntMapId } from '../battle/hauntMap';
 
 export const SAVE_VERSION = 1;
@@ -36,6 +37,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     roster: [],
     fallen: [],
     heritageGiven: [],
+    reserveLast: [],
     convoy: [],
     gold: campaignOfAct(data, 1).startGold,
     materials: {},
@@ -111,6 +113,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     // story 10.7: lessons of the memorial hall, absent in saves from before them
     roster: c.roster.map((u) => ({ ...u, bag: stackKeys(data, u.bag), promotionGain: u.promotionGain ?? {}, secondPath: u.secondPath ?? null, heritage: u.heritage ?? null })),
     heritageGiven: (c as Partial<CampaignState>).heritageGiven ?? [],
+    // story 10.8: the reserve of the last mission, absent in saves from before the training ground
+    reserveLast: (c as Partial<CampaignState>).reserveLast ?? [],
     tavern: (c.tavern ?? []).map((u) => ({ ...u, bag: stackKeys(data, u.bag) })),
     // pairs of content added since the save (a later act) start empty
     supports: { ...Object.fromEntries(Object.keys(data.supports).map((k) => [k, { points: 0, rank: null }])), ...c.supports },
@@ -221,6 +225,8 @@ export interface BattleResult {
   granted: Array<{ id: string; item: ItemInstance }>;
   /** effects of the node's own reward that were applied (campaign.yaml `effects`, e.g. `setHome`); absent when there were none */
   effects?: Effect[];
+  /** EP the training ground gave the reserve (story 10.8), in company order; empty without an open training ground */
+  reserve: ReserveGain[];
   /** set when the battle was a haunt (story 5.6): gold and bounty were halved, units above the expected level earned fewer EP */
   haunt?: { id: string; variant: string; halved: boolean; catchUp: boolean };
 }
@@ -287,6 +293,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
     recruited: [],
     supportsReady: [],
     granted: [],
+    reserve: [],
   };
   if (result.outcome === 'defeat') return { campaign: c0, result };
   const c = clone(c0);
@@ -360,6 +367,9 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       mastered: events.filter((e) => e.t === 'mastered' && e.unit === u.uid).map((e) => (e as { skill: string }).skill),
     });
   }
+  // training ground (story 10.8): the reserve learns along, with the battle RNG after the deployed figures
+  result.reserve = trainReserve(data, c, s, result.units, rng);
+  c.reserveLast = clone(result.reserve);
   // grief: every surviving fixed support partner of a fallen companion from support rank C (GDD: −10 hit for 3 missions)
   for (const f of result.fallen) {
     if (f.mercenary) continue;

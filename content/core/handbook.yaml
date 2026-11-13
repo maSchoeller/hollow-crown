@@ -337,6 +337,16 @@ entries:
     values:
       - { id: perAct, ref: balance.memorial.heritagePerAct }
     see: [rooms_upgrade]
+  # story 10.8: the training ground lets the reserve learn along; the shares stand in balance.yaml (training)
+  - id: training
+    category: home
+    icon: training
+    fromAct: 2
+    values:
+      - { id: reserve1, ref: balance.training.reservePctByLevel.0, format: percent, icon: star }
+      - { id: reserve2, ref: balance.training.reservePctByLevel.1, format: percent, icon: star }
+      - { id: reserve3, ref: balance.training.reservePctByLevel.2, format: percent, icon: star }
+    see: [rooms_upgrade, supports]
   - id: ember_spark
     category: home
     icon: star

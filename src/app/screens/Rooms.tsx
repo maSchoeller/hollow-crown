@@ -13,6 +13,8 @@ import {
   isMercenary,
   mercenaryRoom,
   availableSupportTalks,
+  campfireLock,
+  reservePct,
   currentTier,
   hireCost,
   hireError,
@@ -51,6 +53,7 @@ import { Scene } from './Scene';
 import { AcademyRoom } from './Academy';
 import { WorkshopRoom } from './Workshop';
 import { MemorialRoom } from './Memorial';
+import { TrainingRoom } from './Training';
 import { campaign, data } from '../state/session';
 import { UnitHead } from './unitArt';
 import '../../ui/camp.css';
@@ -113,7 +116,7 @@ function UpgradeBand({ room }: { room: RoomDef }) {
     <div class="hm-upband is-ready">
       <div class="hm-upband__text">
         <b>{t('ui.room.upgradeTo', { n: b.level })}</b>
-        <small>{t(`room.${room.id}.level.${b.level}`)}</small>
+        <small>{t(`room.${room.id}.level.${b.level}`, { pct: reservePct(data, c, b.level) })}</small>
         {mate && <small class="hm-upband__mate">{t('ui.room.mateReady', { name: t(`unit.${mate}.name`) })}</small>}
       </div>
       <PrimaryButton onClick={() => apply?.({ type: 'buildRoom', room: room.id }, t('ui.room.built', { room: name, n: b.level }))}>
@@ -521,6 +524,13 @@ export function CampfireRoom({ room, apply, onClose }: { room: RoomDef; apply: A
   const [talk, setTalk] = useState<{ key: string; dialogue: string } | null>(null);
   const talks = availableSupportTalks(data, c);
   const unit = (id: string) => c.roster.find((u) => u.id === id);
+  // talks above the campfire's cap (story 10.8), with the reason: the campfire level that opens them, or S only for core pairs
+  const locks = Object.keys(c.supports)
+    .filter((k) => k.split('|').every((id) => c.roster.some((r) => r.id === id)))
+    .flatMap((key) => {
+      const lock = campfireLock(data, c, key);
+      return lock ? [{ key, lock }] : [];
+    });
   return (
     <RoomPanel room={room} onClose={onClose}>
       <p class="hm-hint">{t('ui.camp.campfire.hint')}</p>
@@ -543,6 +553,15 @@ export function CampfireRoom({ room, apply, onClose }: { room: RoomDef; apply: A
           />
         );
       })}
+      {locks.length > 0 && <div class="hm-subhead">{t('ui.room.campfire.locked')}</div>}
+      {locks.map(({ key, lock }) => (
+        <div key={key} class="hm-bond is-locked">
+          <span>{key.split('|').map((id) => t(`unit.${id}.name`)).join(' × ')}</span>
+          <small>
+            <Icon name="lock" size={14} /> {lock.reason === 'core' ? t('ui.room.campfire.lockCore') : t('ui.room.campfire.lockLevel', { rank: lock.rank, n: lock.level })}
+          </small>
+        </div>
+      ))}
       <div class="hm-subhead">{t('ui.camp.bonds')}</div>
       {Object.entries(c.supports)
         .filter(([k]) => k.split('|').every((id) => c.roster.some((r) => r.id === id)))
@@ -675,12 +694,7 @@ function RoomBody({ room, apply, onClose, unit }: { room: RoomDef; apply: Apply;
     case 'workshop':
       return <WorkshopRoom room={room} apply={apply} onClose={onClose} />;
     case 'training':
-      // their effects come with stories 10.7 and 10.9; until then the panel holds the build-up band and a line
-      return (
-        <RoomPanel room={room} onClose={onClose}>
-          <div class="hm-none">{t('ui.room.later')}</div>
-        </RoomPanel>
-      );
+      return <TrainingRoom room={room} onClose={onClose} />;
   }
 }
 

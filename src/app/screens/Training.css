@@ -1,0 +1,25 @@
+/* training ground (story 10.8): one line per reserve member of the last mission: head, name, level-up, EP */
+.tr-line {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+}
+.tr-line__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tr-line__lv {
+  padding: 0 6px;
+  border: 2px solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-positive);
+  color: #fff;
+  font-size: 11px;
+}

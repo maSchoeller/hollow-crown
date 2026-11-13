@@ -48,6 +48,7 @@ const fake = (over: Partial<BattleResult> = {}): BattleResult => ({
   recruited: [],
   supportsReady: [],
   granted: [],
+  reserve: [],
   ...over,
 });
 

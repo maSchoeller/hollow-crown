@@ -159,6 +159,9 @@ handbook:
     bombOre: "Eisenerz je Feuerbombe"
     bombGold: "Gold je Feuerbombe"
     perAct: "Lektionen je Akt"
+    reserve1: "Reserve auf der ersten Stufe"
+    reserve2: "Reserve auf der zweiten Stufe"
+    reserve3: "Reserve auf der dritten Stufe"
     runeMoon: "Mondstahl je Rune"
     foot: "Tragkraft Fuß"
     armored: "Tragkraft gepanzert"
@@ -401,6 +404,11 @@ handbook:
       text: "In der Gedächtnishalle gibt ein Gedenkstein das Erbe eines Gefallenen als Lektion an einen lebenden Gefährten weiter, {perAct}× je Akt; was in einem Akt nicht vergeben wurde, verfällt. Jeder Stein vererbt nur einmal, jeder Gefährte trägt höchstens eine Lektion. Sie wirkt immer wie ein passiver Skill, ohne Platz im Loadout. Auf der ersten Stufe der Halle gibt es die feste Lektion der Rolle des Gefallenen, ab der zweiten eine von zwei, auf der dritten jede. Fällt der Träger, geht die Lektion mit ihm."
       where: "Die Gedächtnishalle ist ein Raum der Burg; Lektionen gibt es ab dem zweiten Akt. In der Truppe steht die Lektion mit ihrer Herkunft unter den Skills."
       keywords: "Lektion, Gedächtnishalle, Gedenkstein, Erbe, vererben, Gefallene"
+    training:
+      title: "Übungsplatz"
+      text: "Nach jeder gewonnenen Mission lernt die Reserve auf dem Übungsplatz mit: Jede lebende Figur der Truppe, die nicht eingesetzt war, auch Söldner, erhält einen Anteil der durchschnittlichen EP der eingesetzten Überlebenden: auf Stufe eins {reserve1}, auf Stufe zwei {reserve2}, auf Stufe drei {reserve3}. Der Stufendeckel des Akts gilt auch hier; nach einer Niederlage gibt es nichts."
+      where: "Der Übungsplatz ist ein Raum der Burg im zweiten Akt; das Missionsergebnis nennt die Reserve-EP, das Panel die Reserve der letzten Mission."
+      keywords: "Übungsplatz, Reserve, EP, Erfahrung, Bank, nicht eingesetzt, Söldner"
     ember_spark:
       title: "Glutfunke und Aufstieg"
       text: "Mit einem Glutfunken steigt eine Figur ab Stufe {level} in der Akademie zu einem der zwei Profi-Wege ihrer Rolle auf und beginnt wieder bei Stufe eins. Glutfunken sind selten: aus dem Finale und aus Nebenquests, später beim Händler für {price} Gold."

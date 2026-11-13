@@ -153,6 +153,9 @@ async function runCampaign(act: string) {
       gold: `${per(m.gold, m.cleared).toFixed(0)}${mark(f, 'gold')}`,
       'side gold': `${per(m.sideGold, m.cleared).toFixed(0)}${mark(f, 'side')}`,
       'army lv': `${per(m.armyLevel, m.reached).toFixed(1)}${mark(f, 'level')}`,
+      // story 10.8: reserve after the won mission: average level and the training ground's EP per reserve member
+      'res lv': m.reserve ? per(m.reserveLevel, m.reserve).toFixed(1) : '–',
+      'res EP': m.reserve ? per(m.reserveExp, m.reserve).toFixed(0) : '–',
       // story 10.1: room levels built above 1 before the mission (home heuristic)
       rooms: per(m.rooms, m.reached).toFixed(1),
       // story 10.6: material units held before the mission (the material curve of the chain)

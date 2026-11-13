@@ -60,38 +60,65 @@ export function levelCap(data: GameData, act = 1): number {
   return Math.min(campaignOfAct(data, act).levelCap ?? max, max);
 }
 
+/** What `addExp` did: the EP that counted, whether the act's cap was hit, and the stat gains of each level-up in order. */
+export interface ExpGain {
+  counted: number;
+  capped: boolean;
+  levelUps: Array<{ level: number; gains: Partial<Stats> }>;
+}
+
+/**
+ * The EP core shared by the battle (`grantExp`) and the training ground's reserve (story 10.8): adds `amount` EP to a unit up
+ * to the act's level cap `cap`, levelling up with `rng` as often as needed. At the cap further EP are forfeited (`capped`).
+ */
+export function addExp(data: GameData, u: UnitRecord, amount: number, rng: RngState, cap: number): ExpGain {
+  const e = data.balance.experience;
+  const out: ExpGain = { counted: 0, capped: false, levelUps: [] };
+  if (amount <= 0) return out;
+  if (u.level >= cap) {
+    u.exp = 0;
+    out.capped = true;
+    return out;
+  }
+  const room = (cap - u.level) * e.levelUpAt - u.exp;
+  out.counted = Math.min(amount, room);
+  out.capped = out.counted === room;
+  u.exp += out.counted;
+  while (u.exp >= e.levelUpAt && u.level < cap) {
+    u.exp -= e.levelUpAt;
+    out.levelUps.push({ level: u.level + 1, gains: levelUp(data, u, rng) });
+  }
+  if (u.level >= cap) u.exp = 0;
+  return out;
+}
+
+/** Scales EP by a percent share (haunts, story 5.6; the reserve, story 10.8); a gain that counts is never rounded down to nothing. */
+export function expShare(amount: number, percent: number): number {
+  return percent !== 100 && amount > 0 ? Math.max(1, Math.round((amount * percent) / 100)) : amount;
+}
+
 /**
  * Grants EXP, levelling up as often as needed. At the act's level cap further EXP are forfeited:
  * the `exp` event reports `capped` and only the EXP that still counted go into `battleExp`.
  */
 export function grantExp(data: GameData, u: BattleUnit, amount: number, rng: RngState, events: GameEvent[], percent = 100, act = 1): void {
-  const e = data.balance.experience;
-  // a haunt pays a part of the EP (story 5.6, `expPercent`); a gain that counts is never rounded down to nothing
-  if (percent !== 100 && amount > 0) amount = Math.max(1, Math.round((amount * percent) / 100));
-  const cap = levelCap(data, act);
+  // a haunt pays a part of the EP (story 5.6, `expPercent`)
+  amount = expShare(amount, percent);
   if (amount <= 0) return;
-  const before = u.exp;
-  if (u.level >= cap) {
-    u.exp = 0;
+  const before = u.level >= levelCap(data, act) ? 0 : u.exp;
+  const hpBefore = u.stats.hp;
+  if (u.level < levelCap(data, act)) u.levelAtExpStart ??= u.level;
+  const gain = addExp(data, u, amount, rng, levelCap(data, act));
+  if (gain.counted === 0 && gain.capped) {
     events.push({ t: 'exp', unit: u.uid, amount, before: 0, after: 0, capped: true });
     return;
   }
-  const room = (cap - u.level) * e.levelUpAt - u.exp;
-  const counted = Math.min(amount, room);
-  u.exp += counted;
-  u.levelAtExpStart ??= u.level;
-  u.battleExp = (u.battleExp ?? 0) + counted;
-  const ev: GameEvent = { t: 'exp', unit: u.uid, amount, before, after: Math.min(u.exp, e.levelUpAt) };
-  if (counted === room) ev.capped = true;
+  u.battleExp = (u.battleExp ?? 0) + gain.counted;
+  const ev: GameEvent = { t: 'exp', unit: u.uid, amount, before, after: Math.min(before + gain.counted, data.balance.experience.levelUpAt) };
+  if (gain.capped) ev.capped = true;
   events.push(ev);
-  while (u.exp >= e.levelUpAt && u.level < cap) {
-    u.exp -= e.levelUpAt;
-    const hpBefore = u.stats.hp;
-    const gains = levelUp(data, u, rng);
-    u.hp += u.stats.hp - hpBefore;
-    events.push({ t: 'levelUp', unit: u.uid, level: u.level, gains });
-  }
-  if (u.level >= cap) u.exp = 0;
+  for (const l of gain.levelUps) events.push({ t: 'levelUp', unit: u.uid, level: l.level, gains: l.gains });
+  u.hp += u.stats.hp - hpBefore;
 }
 
 /**
@@ -102,8 +129,12 @@ export function grantExp(data: GameData, u: BattleUnit, amount: number, rng: Rng
 export function expPercent(data: GameData, s: Pick<BattleState, 'hauntId' | 'hauntLevel'>, u: BattleUnit): number {
   if (!s.hauntId) return 100;
   const cfg = data.balance.haunt;
-  const level = effectiveLevel(data, { classId: u.classId, level: u.levelAtExpStart ?? u.level } as UnitRecord);
-  return s.hauntLevel !== undefined && level > s.hauntLevel ? Math.round((cfg.expPct * cfg.catchUpExpPct) / 100) : cfg.expPct;
+  return hauntCatchUp(data, s, u.classId, u.levelAtExpStart ?? u.level) ? Math.round((cfg.expPct * cfg.catchUpExpPct) / 100) : cfg.expPct;
+}
+
+/** A unit of class `classId` at `level` stands above the expected army level of a haunt: it earns only `haunt.catchUpExpPct` (story 5.6). */
+export function hauntCatchUp(data: GameData, s: Pick<BattleState, 'hauntId' | 'hauntLevel'>, classId: string, level: number): boolean {
+  return !!s.hauntId && s.hauntLevel !== undefined && effectiveLevel(data, { classId, level } as UnitRecord) > s.hauntLevel;
 }
 
 /** Lieutenants count like bosses for EP (GDD: "Boss oder Leutnant +20"). */

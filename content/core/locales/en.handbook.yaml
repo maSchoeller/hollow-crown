@@ -159,6 +159,9 @@ handbook:
     bombOre: "Iron ore per fire bomb"
     bombGold: "Gold per fire bomb"
     perAct: "Lessons per act"
+    reserve1: "Reserve at the first level"
+    reserve2: "Reserve at the second level"
+    reserve3: "Reserve at the third level"
     runeMoon: "Moonsteel per rune"
     foot: "Carry on foot"
     armored: "Carry armored"
@@ -401,6 +404,11 @@ handbook:
       text: "In the memorial hall a stone passes on the heritage of a fallen comrade as a lesson to a living companion, {perAct}× per act; a lesson not given in an act is lost. Every stone passes on only once, every companion carries one lesson at most. It always works like a passive skill, without a loadout place. At the hall's first level it is the fixed lesson of the fallen one's role, from the second one of two, at the third any. When the bearer falls, the lesson goes with them."
       where: "The memorial hall is a room of the castle; lessons come in the second act. In the troop the lesson stands with its origin under the skills."
       keywords: "lesson, memorial hall, memorial stone, heritage, pass on, fallen"
+    training:
+      title: "Training ground"
+      text: "After every mission won the reserve learns along on the training ground: every living member of the company who was not deployed, mercenaries too, gets a share of the average EXP of the deployed survivors: {reserve1} at level one, {reserve2} at level two, {reserve3} at level three. The act's level cap applies here as well; after a defeat there is nothing."
+      where: "The training ground is a room of the castle in the second act; the mission result names the reserve EXP, the panel the reserve of the last mission."
+      keywords: "training ground, reserve, EXP, experience, bench, not deployed, mercenaries"
     ember_spark:
       title: "Ember spark and promotion"
       text: "With an ember spark a unit from level {level} promotes in the academy to one of the two pro paths of its role and starts again at level one. Ember sparks are rare: from the finale and side quests, later at the merchant for {price} gold."

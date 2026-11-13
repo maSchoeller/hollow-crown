@@ -1,7 +1,7 @@
 import type { HomeKind } from '../defs';
 import type { GameData } from '../gameData';
 import type { Effect } from '../storyDefs';
-import type { BattleState, CampaignState, ItemInstance } from '../state';
+import type { BattleState, CampaignState, ItemInstance, ReserveGain } from '../state';
 import { findUnit } from '../util';
 import type { BattleResult, BountyResult } from './campaign';
 
@@ -45,6 +45,8 @@ export interface MissionResultView {
   supportsReady: boolean;
   /** set after a haunt (story 5.6): the screen names it and says when the gold was halved or EP were capped */
   haunt: BattleResult['haunt'] | null;
+  /** the training ground's line (story 10.8): EP of the reserve and the members who levelled up; null when it gave nothing */
+  reserve: { exp: number; leveled: ReserveGain[] } | null;
 }
 
 /** One thing the mission's own reward put into the convoy or the chronicle: an item (several of one kind counted together) or a chronicle page. */
@@ -116,7 +118,14 @@ export function missionResultView(result: BattleResult): MissionResultView {
     scars: result.scars,
     supportsReady: result.supportsReady.length > 0,
     haunt: result.haunt ?? null,
+    reserve: reserveLine(result.reserve ?? []),
   };
+}
+
+/** The training ground's line: the most EP a reserve member got (the share; one at the cap or on a haunt's catch-up gets less), and who levelled up. */
+export function reserveLine(reserve: readonly ReserveGain[]): MissionResultView['reserve'] {
+  const exp = Math.max(0, ...reserve.map((r) => r.exp));
+  return exp > 0 ? { exp, leveled: reserve.filter((r) => r.levelAfter > r.levelBefore) } : null;
 }
 
 /** The one-sentence reason of a defeat: which sentence, and what fills its blanks. */

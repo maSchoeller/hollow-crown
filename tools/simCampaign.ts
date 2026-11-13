@@ -109,6 +109,10 @@ export interface MissionSim {
   materials: number;
   /** companions lost for good in the won attempt */
   deaths: number;
+  /** story 10.8, won attempts: reserve members (living, not deployed), their summed levels after the mission and the EP the training ground gave them */
+  reserve: number;
+  reserveLevel: number;
+  reserveExp: number;
   /** story 15.10, first attempts won: rounds, player actions (move, act, pursue) and units deployed at the start, summed */
   turns: number;
   actions: number;
@@ -158,6 +162,11 @@ export interface MissionFlags {
 const AVATAR = { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' } as const;
 /** first try plus three restarts */
 const MAX_ATTEMPTS = 4;
+
+/** Story 10.8: the reserve of a mission, company members who were not in the battle (the training ground's rule). */
+function reserveOf(c: CampaignState, inBattle: Set<string>): CampaignState['roster'] {
+  return c.roster.filter((u) => !inBattle.has(u.id));
+}
 
 /** Effective army level: average of the strongest `simulation.armySize` units (GDD Figurensystem). */
 export function armyLevel(data: GameData, c: CampaignState): number {
@@ -521,7 +530,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
         missions.get(id) ??
         missions
           .set(id, {
-            node: id, map: node.map, expectedLevel: nodeLevel(data, c, node), reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, rooms: 0, materials: 0, deaths: 0,
+            node: id, map: node.map, expectedLevel: nodeLevel(data, c, node), reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, rooms: 0, materials: 0, deaths: 0, reserve: 0, reserveLevel: 0, reserveExp: 0,
             turns: 0, actions: 0, deployed: 0, phases: 0, phaseSingle: 0, phaseMarch: 0, phaseSingleMax: 0, phaseMarchMax: 0, phaseShown: 0, phaseShownMax: 0,
             winTurns: [], side: Object.fromEntries(data.maps[node.map]!.objectives.side.map((s) => [s.id, 0])),
           })
@@ -531,7 +540,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
       m.rooms += roomUpgrades(data, c);
       m.materials += materialUnits(c);
       o.onMission?.(id, c, run);
-      let won: { campaign: CampaignState; result: BattleResult } | null = null;
+      let won: { campaign: CampaignState; result: BattleResult; deployed: Set<string> } | null = null;
       for (let attempt = 0; attempt < MAX_ATTEMPTS && !won; attempt++) {
         // a restart plays the mission again with fresh luck (the battle RNG derives from the campaign seed; the real restart
         // keeps it, but a player plays differently). The campaign keeps its own seed afterwards.
@@ -560,7 +569,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
           m.downs += state.stats.downs; // every fall to 0 HP, also the ones rescued later
         }
         if (state.outcome === 'victory') {
-          won = finishBattle(data, from, state);
+          won = { ...finishBattle(data, from, state), deployed: new Set(state.units.map((u) => u.id)) };
           applyNodeRewards(data, won.campaign, id);
           won.campaign.seed = c.seed;
         }
@@ -573,6 +582,13 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
       m.gold += won.result.gold;
       m.sideGold += sideGoldOf(won.result);
       m.deaths += won.result.fallen.length;
+      // story 10.8: the reserve of the won attempt, also without a training ground (then it got no EP)
+      const given = new Map(won.result.reserve.map((r) => [r.unit, r.exp]));
+      for (const u of reserveOf(won.campaign, won.deployed)) {
+        m.reserve++;
+        m.reserveLevel += u.level;
+        m.reserveExp += given.get(u.id) ?? 0;
+      }
       for (const so of won.result.side) if (so.done) m.side[so.id] = (m.side[so.id] ?? 0) + 1;
       // story 11.28: hire for the next mission's places; mercenaries join only through the tavern, so the difference is the hires
       const mercs = (x: CampaignState) => x.roster.filter(isMercenary).length;

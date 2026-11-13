@@ -83,7 +83,7 @@ describe('level cap (story 6.5)', () => {
     u.level = 9;
     expect(expProgress(data, u)).toMatchObject({ full: false, capped: false });
     const r = { units: [{ id: 'lucan', nameKey: 'unit.lucan.name', levelBefore: 9, levelAfter: 10, exp: 30, capped: true, mastered: [] }], fallen: [] };
-    const v = missionResultView({ ...r, outcome: 'victory', nodeId: 'prologue', turns: 3, side: [], gold: 0, materials: {}, items: [], bounty: [], scars: [], recruited: [], supportsReady: [], granted: [] } as BattleResult);
+    const v = missionResultView({ ...r, outcome: 'victory', nodeId: 'prologue', turns: 3, side: [], gold: 0, materials: {}, items: [], bounty: [], scars: [], recruited: [], supportsReady: [], granted: [], reserve: [] } as BattleResult);
     expect(v.figures[0]).toMatchObject({ capped: true, leveledUp: true });
   });
 });
