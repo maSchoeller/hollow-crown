@@ -432,7 +432,7 @@ export function prepareActData(
  * companion who joins at a node of an earlier act is in the company, those nodes are done with their rewards (castle, sparks), and
  * the move to the act follows from the finale. Gold comes from `simulation.startExpected`; the levels are raised by the caller.
  */
-function entryCampaign(data: GameData, seed: number, o: Pick<CampaignSimOptions, 'act' | 'flags' | 'difficulty' | 'deathMode'>): CampaignState {
+export function entryCampaign(data: GameData, seed: number, o: Pick<CampaignSimOptions, 'act' | 'flags' | 'difficulty' | 'deathMode'>): CampaignState {
   const act = o.act ?? 1;
   const c = newCampaign(data, seed, { difficulty: o.difficulty, deathMode: o.deathMode }, { ...AVATAR });
   Object.assign(c.flags, parseFlags(data, o.flags));
