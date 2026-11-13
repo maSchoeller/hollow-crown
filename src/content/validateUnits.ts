@@ -17,6 +17,13 @@ export function validateUnits(data: GameData, err: Err, { item, conditions, batt
       else if (!id.startsWith('pro_') || sk.source !== 'class') err('classes.yaml', `${c.id}: pro skill ${id} needs the prefix pro_ and source: class`);
     }
     if (c.tier === 'pro' && c.playable && !(c.proSkills?.length)) err('classes.yaml', `${c.id}: a playable pro class needs 1–2 proSkills`);
+    // attached part of a pro path (story 10.13): only on pro classes, and the render settings must know its model and socket
+    if (c.proPart) {
+      if (c.tier !== 'pro') err('classes.yaml', `${c.id}: proPart only on pro classes`);
+      if (!data.render.gear.proParts[c.proPart]) err('classes.yaml', `${c.id}: unknown proPart ${c.proPart} (render.yaml gear.proParts)`);
+    } else if (c.tier === 'pro') {
+      err('classes.yaml', `${c.id}: a pro class needs a proPart`);
+    }
     if (c.tier === 'pro') {
       const base = data.classes[c.role];
       // the role a pro path comes from: a base role, or the unique role of Avatar and Lucan (story 10.3)
@@ -34,6 +41,11 @@ export function validateUnits(data: GameData, err: Err, { item, conditions, batt
     const c = data.classes[r];
     if (!c || c.role !== r || c.tier === 'pro') err('classes.yaml', `missing role ${r}`);
   }
+  // story 10.13: exactly one pro path per attached part — no part is shared and none is left over
+  const partUsers = new Map<string, string[]>();
+  for (const c of Object.values(data.classes)) if (c.proPart) partUsers.set(c.proPart, [...(partUsers.get(c.proPart) ?? []), c.id]);
+  for (const [part, users] of partUsers) if (users.length > 1) err('classes.yaml', `proPart ${part} is used by ${users.join(', ')}`);
+  for (const part of Object.keys(data.render.gear.proParts)) if (!partUsers.has(part)) err('render.yaml', `gear.proParts: ${part} belongs to no pro class`);
   // Nebel (story 2.6): bonuses name roles that exist, blockers name terrain that exists
   for (const r of Object.keys(data.balance.fog.roleBonus)) if (!(CORE_ROLES as readonly string[]).includes(r)) err('balance.yaml', `fog.roleBonus: unknown role ${r}`);
   for (const t of data.balance.fog.blockers) if (!data.terrain[t]) err('balance.yaml', `fog.blockers: unknown terrain ${t}`);

@@ -4,7 +4,7 @@
  */
 import { timerLook } from './aiPacing';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-import type { BattleState, BattleUnit, GearPiece, Pos, StatusId } from '../../core';
+import type { BattleState, BattleUnit, FigurePiece, GearPiece, PartPiece, Pos, StatusId } from '../../core';
 import { bleedsOut, itemDef, maxHpOf, modelId, shadowHidden, unitFigureId, unitVatPath } from '../../core';
 import { loadManifest, loadUnitSheet } from '../shared/assets';
 import { loadUnitModel } from '../shared/models';
@@ -31,8 +31,17 @@ export abstract class BoardUnits extends BoardProps {
     return main ? this.data.render.gear.weapons[main] : undefined;
   }
 
-  /** Weapon models for the equipped weapon group and off-hand item (GA9); one piece per hand, the weapon first. */
-  protected gearOf(u: BattleUnit): GearPiece[] {
+  /** Attached part of the unit's pro path (story 10.13); undefined for a class without one or an unknown part. */
+  protected proPartOf(u: BattleUnit): PartPiece | undefined {
+    const part = this.data.classes[u.classId]?.proPart;
+    return part ? this.data.render.gear.proParts[part] : undefined;
+  }
+
+  /**
+   * What hangs on the figure: the weapon of the equipped weapon group and the off-hand item (GA9, one piece per hand,
+   * the weapon first) and the attached part of the pro path (story 10.13).
+   */
+  protected gearOf(u: BattleUnit): FigurePiece[] {
     const { offHand } = this.data.render.gear;
     const out: GearPiece[] = [];
     const w = this.weaponOf(u);
@@ -40,12 +49,13 @@ export abstract class BoardUnits extends BoardProps {
     const group = u.equip.offHand && itemDef(this.data, u.equip.offHand).group;
     const off = group && offHand[group];
     if (off && !out.some((p) => p.hand === off.hand)) out.push(off);
-    return out;
+    const part = this.proPartOf(u);
+    return part ? [...out, part] : out;
   }
 
   protected gearKey(u: BattleUnit): string {
     return this.gearOf(u)
-      .map((p) => `${p.model}@${p.hand}`)
+      .map((p) => ('socket' in p ? `${p.model}@${p.socket}` : `${p.model}@${p.hand}`))
       .join();
   }
 

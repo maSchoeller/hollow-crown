@@ -4,7 +4,7 @@
  * `largeFactor` times as much. Reports outliers as a warning table, never fails (the build calls it from
  * check-bundle-size.mjs, tools/art/tripo_units.py after packing a figure).
  *
- *   node tools/figure-budget.mjs [<dir or .glb> ...]        default: every dist/assets/<pack>/models/units
+ *   node tools/figure-budget.mjs [<dir or .glb> ...]        default: every dist/assets/<pack>/models/units plus dist/assets/models/parts
  *
  * A figure's transfer is its model plus the baked animation file beside it (`<id>.vat`, story 7.8, tools/art/bake_vat.py), which is
  * a gzip stream already and counts as it is.
@@ -24,6 +24,13 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 export function readFigureBudget(rootDir = root) {
   const b = parse(readFileSync(join(rootDir, 'content', 'packs.yaml'), 'utf8')).figureBudget;
   if (!b) throw new Error('content/packs.yaml has no figureBudget');
+  return b;
+}
+
+/** `partBudget` of content/packs.yaml (the attached parts of the pro paths, story 10.13) */
+export function readPartBudget(rootDir = root) {
+  const b = parse(readFileSync(join(rootDir, 'content', 'packs.yaml'), 'utf8')).partBudget;
+  if (!b) throw new Error('content/packs.yaml has no partBudget');
   return b;
 }
 
@@ -110,6 +117,35 @@ export function checkFigures(files, budget = readFigureBudget()) {
   return { rows, outliers: rows.filter((r) => r.why.length) };
 }
 
+/**
+ * Measures the attached parts of the pro paths (story 10.13) against `partBudget`; a row is
+ * { id, triangles, bytes (gzip), why[] }. They carry no texture: the board shades them from their vertex colours.
+ */
+export function checkParts(files, budget = readPartBudget()) {
+  const rows = files.map((f) => {
+    const buf = readFileSync(f);
+    const { triangles, texture } = measureGlb(buf);
+    const bytes = gzipSync(buf).length;
+    const why = [];
+    if (triangles > budget.triangles) why.push(`triangles > ${budget.triangles}`);
+    if (bytes > budget.transferKb * 1024) why.push(`transfer > ${budget.transferKb} KB`);
+    if (texture) why.push('has a texture (vertex colours only)');
+    return { id: basename(f, '.glb'), triangles, bytes, why };
+  });
+  return { rows, outliers: rows.filter((r) => r.why.length) };
+}
+
+/** Prints the parts over `partBudget` as warnings; `all` also prints the rows that are within budget */
+export function reportParts(files, { all = false, budget } = {}) {
+  const b = budget ?? readPartBudget();
+  const { rows, outliers } = checkParts(files, b);
+  const line = (r) => `${r.id.padEnd(16)} ${String(r.triangles).padStart(5)} tris  ${(r.bytes / 1024).toFixed(1).padStart(5)} KB gz`;
+  if (all) for (const r of rows.filter((x) => !x.why.length)) console.log(`  ${line(r)}`);
+  console.log(`pro-path parts: ${rows.length} checked, ${outliers.length} over budget (${b.triangles} tris, ${b.transferKb} KB gz)`);
+  for (const r of outliers) console.warn(`warning: part ${line(r)}  -> ${r.why.join(', ')}`);
+  return outliers;
+}
+
 const fmt = (r) =>
   `${r.id.padEnd(16)} ${String(r.triangles).padStart(6)} tris  ${(r.texture ? `${r.texture[0]}x${r.texture[1]}` : 'n/a').padStart(9)}  ${(r.bytes / 1024 / 1024).toFixed(2).padStart(5)} MB gz${r.large ? '  (large)' : ''}`;
 
@@ -133,4 +169,8 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   const dirs = args.length ? args : [join(assets, 'models', 'units'), ...packed];
   const files = dirs.filter((d) => existsSync(d)).flatMap(glbs);
   reportFigures(files, { all: true });
+  if (!args.length) {
+    const parts = join(assets, 'models', 'parts');
+    if (existsSync(parts)) reportParts(glbs(parts), { all: true });
+  }
 }

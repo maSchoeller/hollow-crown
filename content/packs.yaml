@@ -21,6 +21,13 @@ figureBudget:
   largeFactor: 2
   large: []
 
+# Budget je Anhängeteil eines Profi-Wegs (Story 10.13, tools/art/blender_proparts.py): die Teile hängen zusätzlich an
+# einer Figur, bleiben also klein wie die Waffenbibliothek – nur Vertex-Farben, keine Textur. Geprüft von
+# tools/figure-budget.mjs (Warnung, kein Abbruch) und von tests/unit/pro-parts.test.ts. [ASSUMPTION]
+partBudget:
+  triangles: 600
+  transferKb: 8
+
 packs:
   - id: core
     released: true

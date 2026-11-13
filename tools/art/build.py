@@ -102,9 +102,10 @@ def unshipped_props():
 
 def build_models():
     """art/models/units/<id>.glb (+ <id>.vat) → public/assets/<pack>/models/units/ (the pack of the figure's first appearance,
-    tools/art/model_packs.py; manifest `models.vat` lists the ids that have a baked animation); art/models/props/<id>_<state>.glb and art/models/weapons/<id>.glb → public/assets/models/
+    tools/art/model_packs.py; manifest `models.vat` lists the ids that have a baked animation); art/models/props/<id>_<state>.glb,
+    art/models/weapons/<id>.glb and art/models/parts/<id>.glb (story 10.13) → public/assets/models/
     (props: the pack of a prop is only a matter of the first download, content/packs.yaml `props`, manifest `models.propPacks`)."""
-    result = {'units': [], 'unitPacks': {}, 'vat': [], 'props': {}, 'propPacks': {}, 'weapons': []}
+    result = {'units': [], 'unitPacks': {}, 'vat': [], 'props': {}, 'propPacks': {}, 'weapons': [], 'parts': []}
     base = os.path.join(ART, 'models')
     src = os.path.join(base, 'units')
     ids = sorted(f[:-4] for f in os.listdir(src) if f.endswith('.glb') and 'preview' not in f) if os.path.isdir(src) else []
@@ -119,14 +120,14 @@ def build_models():
                 result['vat'].append(mid)
     result['units'] = ids
     result['unitPacks'] = packs
-    for kind in ('props', 'weapons'):
+    for kind in ('props', 'weapons', 'parts'):
         files = copy_tree_files(os.path.join(base, kind), os.path.join(OUT, 'models', kind), {'.glb'})
         for f in files:
             name = f[:-4]
             if kind == 'props' and name in unshipped_props():
                 os.remove(os.path.join(OUT, 'models', kind, f))
                 continue
-            if kind == 'weapons':
+            if kind in ('weapons', 'parts'):
                 result[kind].append(name)
             else:
                 pid, _, state = name.partition('_')
