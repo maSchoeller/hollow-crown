@@ -16,7 +16,7 @@ fog: true
 legend:
   ".": vault
   "_": road
-  "^": mountain
+  "^": cave_rock
   "R": ruins
   "X": sarcophagus
   "h": relief

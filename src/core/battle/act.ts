@@ -96,7 +96,7 @@ function grantReward(data: GameData, s: BattleState, u: BattleUnit, r: Reward | 
   if (r.recruit) {
     const def = data.chars[r.recruit];
     if (def && u.pos) {
-      const at = freeTileNear(s, u.pos) ?? u.pos;
+      const at = freeTileNear(data, s, u.pos, data.classes[def.class]!.moveType) ?? u.pos;
       spawnUnits(data, s, [{ char: r.recruit, team: 'player', class: def.class, level: def.level, at, items: [] }], false, events);
       const nu = s.units[s.units.length - 1]!;
       nu.uid = r.recruit;
