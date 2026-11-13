@@ -78,7 +78,7 @@ export function wallPieces(at: TerrainAt, gx: number, gy: number): KitPiece[] {
 
 /** Turn of a door or one-tile gate: it faces along the wall it stands in; in a vault the rock is that wall. */
 export function faceRot(at: TerrainAt, gx: number, gy: number): number {
-  const closes = (id: string | null) => closesWall(id) || id === 'mountain';
+  const closes = (id: string | null) => closesWall(id) || id === 'mountain' || id === 'cave_rock';
   return closes(at(gx, gy - 1)) || closes(at(gx, gy + 1)) ? EAST : SOUTH;
 }
 

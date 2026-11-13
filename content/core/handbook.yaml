@@ -140,7 +140,7 @@ entries:
   - id: terrain_blocked
     category: terrain
     graphic: terrain
-    terrain: [wall, wagon, stall, brazier, well, fence, paddock, paddock_gate, farm, building, sarcophagus]
+    terrain: [wall, cave_rock, wagon, stall, brazier, well, fence, paddock, paddock_gate, farm, building, sarcophagus]
     see: [doors, rockwall, fog]
   - id: doors
     category: terrain
