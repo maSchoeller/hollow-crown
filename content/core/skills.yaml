@@ -111,3 +111,20 @@
 # --- Item-Skill der Signatur Erbstück (Story 9.12) ---
 - { id: young_heroes, source: item, trigger: passive, condition: { allyDownedWithin: 2 }, effect: { damageBonus: 3 } }   # Erbstück (Tobin): „Helden sterben jung“ – +3 Schaden, solange ein Verbündeter in Reichweite 2 niedergestreckt ist [C]
 - { id: white_wolf_sight, source: item, trigger: passive, effect: { visionBonus: 3 } }   # Weißwolf (Ilka, Story 11.20): „Nebel und Schnee kosten keine Sicht“ – unter Nebel 3 Felder weiter [ASSUMPTION]
+
+# --- Lektionen der Gedächtnishalle (Story 10.7, Quelle heritage; Zuordnung zu den Rollen in heritage.yaml) [ASSUMPTION] ---
+# Etwa halb so stark wie persönliche Skills, nur vorhandene Bausteine (Lückenanalyse §3.7); wirken ohne Loadout-Platz.
+- { id: heritage_shield_wall,  source: heritage, trigger: passive,   condition: { adjacentAllies: 1 }, effect: { stats: { def: 2 } } }
+- { id: heritage_tough,        source: heritage, trigger: passive,   effect: { stats: { hp: 3 } } }
+- { id: heritage_quick_blade,  source: heritage, trigger: passive,   effect: { critBonus: 5 } }
+- { id: heritage_nimble,       source: heritage, trigger: passive,   effect: { avoidBonus: 5 } }
+- { id: heritage_steady_hand,  source: heritage, trigger: passive,   effect: { hitBonus: 5 } }
+- { id: heritage_far_aim,      source: heritage, trigger: on_attack, condition: { distanceAtLeast: 2 }, effect: { damageBonus: 1 } }
+- { id: heritage_ember_sense,  source: heritage, trigger: passive,   effect: { statusChanceBonus: 10 } }
+- { id: heritage_focus,        source: heritage, trigger: passive,   effect: { stats: { mag: 1 } } }
+- { id: heritage_gentle_hands, source: heritage, trigger: passive,   effect: { healBonus: 3 } }
+- { id: heritage_prayer,       source: heritage, trigger: passive,   effect: { stats: { res: 2 } } }
+- { id: heritage_light_step,   source: heritage, trigger: passive,   effect: { terrainCost: { forest: 1 } } }
+- { id: heritage_cover,        source: heritage, trigger: passive,   condition: { selfOnTerrain: forest }, effect: { avoidBonus: 10 } }
+- { id: heritage_luck,         source: heritage, trigger: passive,   effect: { stats: { lck: 3 } } }
+- { id: heritage_cheer,        source: heritage, trigger: passive,   aura: { radius: 1 }, effect: { hitBonus: 5 } }

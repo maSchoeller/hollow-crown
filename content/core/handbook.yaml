@@ -329,6 +329,14 @@ entries:
       - { id: bombGold, ref: recipes.fire_bomb.gold, icon: gold }
       - { id: runeMoon, ref: recipes.fire_rune_1.materials.moonsteel }
     see: [runes, rooms_upgrade]
+  # story 10.7: lessons of the memorial hall; the lessons themselves stand in heritage.yaml and skills.yaml
+  - id: heritage
+    category: home
+    icon: stone
+    fromAct: 2
+    values:
+      - { id: perAct, ref: balance.memorial.heritagePerAct }
+    see: [rooms_upgrade]
   - id: ember_spark
     category: home
     icon: star

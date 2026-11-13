@@ -13,6 +13,7 @@ import type { CampaignState } from '../state';
 import { clone } from '../util';
 import { changePathError, craftCost, dismissError, mergeError, hireCost, promoteError, roomBuild, scarCost, secondPathError, sealOf, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { shopPrice } from './aid';
+import { heritageError } from './heritage';
 import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
 import { actFinished, enterNextAct, isAvailable, noteRoles } from './graph';
@@ -106,6 +107,8 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       return mergeError(data, c, cmd.rune);
     case 'craft':
       return craftCost(data, c, cmd.recipe).error;
+    case 'inheritHeritage':
+      return heritageError(data, c, cmd.from, cmd.to, cmd.skill);
     case 'healScar': {
       const u = c.roster.find((r) => r.id === cmd.unit);
       if (!u || !u.scars[cmd.index]) return 'unknown_unit';
@@ -418,6 +421,13 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       }
       u.secondPath = otherProPath(data, u.classId);
       events.push({ t: 'secondPathLearned', unit: u.id, path: u.secondPath! });
+      break;
+    }
+    case 'inheritHeritage': {
+      const u = c.roster.find((r) => r.id === cmd.to)!;
+      u.heritage = { skill: cmd.skill, from: cmd.from };
+      c.heritageGiven.push({ act: c.act, from: cmd.from, to: cmd.to, skill: cmd.skill });
+      events.push({ t: 'heritageInherited', from: cmd.from, to: cmd.to, skill: cmd.skill });
       break;
     }
     case 'buildRoom': {

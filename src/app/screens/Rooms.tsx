@@ -18,14 +18,12 @@ import {
   hireError,
   itemDef,
   locateItem,
-  memorialStones,
   merchantStock,
   shopPrice,
   roomBuild,
   scarCost,
   rerollAllowed,
   rerollCost,
-  roomUnlocks,
   mergeError,
   mergeLevelFor,
   runeMerge,
@@ -40,7 +38,6 @@ import {
   type CampaignCommand,
   type Condition,
   type ItemInstance,
-  type MemorialStone,
   type RoomDef,
   type UnitRecord,
 } from '../../core';
@@ -48,13 +45,14 @@ import { t } from '../../i18n';
 import { Icon } from '../../ui/icons';
 import { ItemLine, itemName, unitName } from '../../ui/components';
 import { ItemInfoButton } from '../../ui/ItemSheet';
-import { Amount, ItemImage, Piece, PrimaryButton, QuietButton, SecondaryButton, Tabs } from '../../ui/pieces';
+import { Amount, ItemImage, Piece, PrimaryButton, SecondaryButton, Tabs } from '../../ui/pieces';
 import { nodeShort } from '../campaignInfo';
 import { Scene } from './Scene';
 import { AcademyRoom } from './Academy';
 import { WorkshopRoom } from './Workshop';
+import { MemorialRoom } from './Memorial';
 import { campaign, data } from '../state/session';
-import { StoneImage, UnitHead } from './unitArt';
+import { UnitHead } from './unitArt';
 import '../../ui/camp.css';
 
 export type Apply = (cmd: CampaignCommand, okText?: string) => boolean;
@@ -639,58 +637,6 @@ export function EnchanterRoom({ room, apply, onClose }: { room: RoomDef; apply: 
           <SecondaryButton disabled={c.gold < shopPrice(data, c, r.price ?? 0)} onClick={() => apply({ type: 'buy', item: r.id }, t('ui.camp.bought'))}>
             <Amount resource="gold" value={shopPrice(data, c, r.price ?? 0)} short={c.gold < shopPrice(data, c, r.price ?? 0)} />
           </SecondaryButton>
-        </div>
-      ))}
-    </RoomPanel>
-  );
-}
-
-// ---------------------------------------------------------------- memorial hall
-
-/** One memorial stone: round at the top, flat at the bottom, grey; name, place and role under it (mockup 04, story 6.9). */
-function Grave({ stone, selected, onSelect }: { stone: MemorialStone; selected: boolean; onSelect: () => void }) {
-  const name = unitName({ name: stone.name, nameKey: stone.nameKey });
-  const place = stone.placeKey ? t(stone.placeKey) : t('ui.memorial.fell', { place: stone.node ? nodeShort(stone.node) : '' });
-  const role = stone.roleKey ? t(stone.roleKey) : stone.classId ? t(`class.${stone.classId}.name`) : '';
-  return (
-    <button type="button" class={`hm-grave ${stone.mercenary ? 'is-mercenary' : ''}`} aria-pressed={selected} onClick={onSelect}>
-      <span class="hm-grave__m">
-        <StoneImage portrait={stone.mercenary ? undefined : stone.portrait} classId={stone.mercenary ? undefined : stone.classId} name={name} />
-      </span>
-      <b>{name}</b>
-      <span class="hm-grave__s">
-        {place}
-        <br />
-        {stone.mercenary ? t('ui.memorial.mercenary', { role }) : role}
-      </span>
-      <span class="hm-grave__ember" aria-hidden="true" />
-    </button>
-  );
-}
-
-/**
- * Memorial hall (story 6.9, UX-DR11 part): the fixed stones of the act first, then the fallen in the order they fell,
- * mercenaries too. The quote under the stones belongs to the chosen one. The lessons stay locked until act 2 (Story 10.6).
- */
-export function MemorialRoom({ room, onClose }: { room: RoomDef; apply: Apply; onClose: () => void }) {
-  const c = campaign.value!;
-  const stones = memorialStones(data, c);
-  const [sel, setSel] = useState<string | null>(null);
-  const cur = stones.find((s) => s.key === sel) ?? stones[0];
-  return (
-    <RoomPanel room={room} tone="mourn" onClose={onClose} actions={<QuietButton onClick={onClose}>{t('ui.back')}</QuietButton>}>
-      {stones.length === 0 && <div class="hm-none">{t('ui.memorial.none')}</div>}
-      <div class="hm-graves" role="group" aria-label={t('ui.memorial.stones')}>
-        {stones.map((s) => (
-          <Grave key={s.key} stone={s} selected={s.key === cur?.key} onSelect={() => setSel(s.key)} />
-        ))}
-      </div>
-      {cur?.quoteKey && <p class="hm-quote">{t('ui.memorial.quote', { text: t(cur.quoteKey), name: unitName({ name: cur.name, nameKey: cur.nameKey }) })}</p>}
-      {roomUnlocks(data, c, room).map((u) => (
-        <div key={u.id} class={`hm-lesson ${u.open ? '' : 'is-locked'}`}>
-          <Icon name={u.open ? 'forward' : 'lock'} size={18} />
-          <b>{t(`room.${room.id}.unlock.${u.id}`)}</b>
-          {!u.open && <span>{lockReason(u.unmet)}</span>}
         </div>
       ))}
     </RoomPanel>

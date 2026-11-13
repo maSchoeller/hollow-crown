@@ -6,6 +6,7 @@ import {
   computeStats,
   EQUIP_SLOTS,
   expProgress,
+  heritageStone,
   isMercenary,
   itemDef,
   loadoutSlots,
@@ -171,6 +172,8 @@ export function Figure({
   const promotable = canPromote(data, c, unit);
   const academy = Object.values(data.rooms).find((r) => r.function === 'academy');
   const second = unit.secondPath ? data.classes[unit.secondPath] : undefined;
+  // the lesson of the memorial hall (story 10.7), with the stone it came from
+  const heritage = unit.heritage ? { skill: unit.heritage.skill, from: heritageStone(data, c, unit.heritage.from) } : null;
   const apply = (cmd: CampaignCommand) => {
     const r = campaignCommand(cmd);
     if (r.ok) audio.sfx('confirm');
@@ -333,10 +336,16 @@ export function Figure({
         )}
         <span class="trp-chips" style={{ color: 'var(--hc-soft)' }}>
           {activeSkillIds(data, unit, campaignRelics.value)
+            .filter((id) => id !== heritage?.skill)
             .map((id) => t(`skill.${id}.name`))
             .join(' · ')}
         </span>
         {second && <span class="trp-chips">{t('ui.figure.also', { effect: t(`class.${second.id}.effect`) })}</span>}
+        {heritage && (
+          <span class="trp-chips" title={t(`skill.${heritage.skill}.desc`)}>
+            {t('ui.figure.heritage', { skill: t(`skill.${heritage.skill}.name`), from: heritage.from ? unitName({ name: heritage.from.name, nameKey: heritage.from.nameKey }) : '' })}
+          </span>
+        )}
       </Piece>
       {promotable && !readOnly && c.roster.some((u) => u.id === unit.id) && (
         <div class="hc-btns">

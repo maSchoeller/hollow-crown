@@ -114,6 +114,12 @@ export const recipeSchema = z.strictObject({
   gold: z.number().int().min(0).default(0),
 });
 
+/** Lessons of the memorial hall (story 10.7, `heritage.yaml`): two per core role, the first is the fixed one. */
+export const heritageSchema = z.strictObject({
+  role: z.string(),
+  lessons: z.tuple([z.string(), z.string()]),
+});
+
 export const setSchema = z.object({
   id: z.string(),
   pieces: z.array(z.string()),
@@ -199,7 +205,7 @@ const skillCondition = z
 
 export const skillSchema = z.object({
   id: z.string(),
-  source: z.enum(['class', 'personal', 'item', 'grudge']),
+  source: z.enum(['class', 'personal', 'item', 'grudge', 'heritage']),
   trigger: z.enum(['passive', 'on_attack', 'on_defend', 'on_hit', 'on_turn_start', 'action', 'after_action', 'on_lethal']),
   condition: skillCondition.optional(),
   effect: z

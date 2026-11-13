@@ -67,6 +67,7 @@ export function validateUnits(data: GameData, err: Err, { item, conditions, batt
     if (itemImages && !itemImages.has(image)) err(it.kind === 'rune' ? 'runes.yaml' : 'items.yaml', `${it.id}: no image art/items/${image}.png`);
   }
   validateRecipes(data, err, itemImages);
+  validateHeritage(data, err);
   for (const s of Object.values(data.sets)) {
     for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);
   }
@@ -84,4 +85,30 @@ export function validateRecipes(data: GameData, err: Err, itemImages?: Set<strin
       else if (itemImages && !itemImages.has(d.image ?? d.id)) err('recipes.yaml', `${r.id}: material ${m} has no image art/items/${d.image ?? d.id}.png`);
     }
   }
+}
+
+/** Roles with lessons (story 10.7): the seven core roles, without the single roles of avatar and Lucan. */
+export const HERITAGE_ROLES: readonly string[] = CORE_ROLES.filter((r) => r !== 'tactician' && r !== 'captain');
+
+/**
+ * Lessons of the memorial hall (story 10.7): every core role has exactly two, each a passive skill (no action, no uses) with
+ * `source: heritage` and every such skill is a lesson; a fixed stone's `heritage` is a lesson.
+ */
+export function validateHeritage(data: GameData, err: Err): void {
+  const f = 'heritage.yaml';
+  const lessons = new Set<string>();
+  for (const role of HERITAGE_ROLES) if (!data.heritage[role]) err(f, `role ${role} has no lessons`);
+  for (const h of Object.values(data.heritage)) {
+    if (!HERITAGE_ROLES.includes(h.role)) err(f, `${h.role}: not a core role`);
+    for (const id of h.lessons) {
+      if (lessons.has(id)) err(f, `${h.role}: lesson ${id} is listed twice`);
+      lessons.add(id);
+      const sk = data.skills[id];
+      if (!sk) err(f, `${h.role}: unknown skill ${id}`);
+      else if (sk.source !== 'heritage' || !id.startsWith('heritage_')) err(f, `${h.role}: lesson ${id} needs the prefix heritage_ and source: heritage`);
+      else if (sk.trigger === 'action' || sk.usesPerMap !== undefined || sk.area) err(f, `${h.role}: lesson ${id} must be passive (no action, uses or area)`);
+    }
+  }
+  for (const sk of Object.values(data.skills)) if (sk.source === 'heritage' && !lessons.has(sk.id)) err('skills.yaml', `${sk.id}: source heritage, but no role lists it in heritage.yaml`);
+  for (const m of Object.values(data.memorials)) if (m.heritage && !lessons.has(m.heritage)) err('memorials.yaml', `${m.id}: heritage ${m.heritage} is no lesson of heritage.yaml`);
 }

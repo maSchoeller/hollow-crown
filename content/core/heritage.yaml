@@ -1,0 +1,11 @@
+# Lektionen der Gedächtnishalle (Story 10.7): je Kernrolle zwei Lektionen, die erste ist die feste.
+# Jede Lektion ist ein passiver Skill mit source: heritage in skills.yaml (Werte dort, Texte skill.<id>.name|desc).
+# Gedächtnishalle Stufe 1: nur die feste Lektion der Rolle des Gefallenen, Stufe 2: eine der zwei, Stufe 3: jede
+# (balance.memorial.heritageChoiceByLevel). Sichtbar heißt es „Lektion“; „heritage“, weil „legacy“ im Code belegt ist.
+- { role: vanguard,     lessons: [heritage_shield_wall, heritage_tough] }
+- { role: skirmisher,   lessons: [heritage_quick_blade, heritage_nimble] }
+- { role: marksman,     lessons: [heritage_steady_hand, heritage_far_aim] }
+- { role: elementalist, lessons: [heritage_ember_sense, heritage_focus] }
+- { role: healer,       lessons: [heritage_gentle_hands, heritage_prayer] }
+- { role: scout,        lessons: [heritage_light_step, heritage_cover] }
+- { role: minstrel,     lessons: [heritage_luck, heritage_cheer] }

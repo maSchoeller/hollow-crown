@@ -158,6 +158,7 @@ handbook:
     limit3: "Bis Rune auf Stufe III"
     bombOre: "Eisenerz je Feuerbombe"
     bombGold: "Gold je Feuerbombe"
+    perAct: "Lektionen je Akt"
     runeMoon: "Mondstahl je Rune"
     foot: "Tragkraft Fuß"
     armored: "Tragkraft gepanzert"
@@ -395,6 +396,11 @@ handbook:
       text: "In der Werkstatt der Burg wird aus Material ein Verbrauchsgut oder eine Rune für den Konvoi. Auf der ersten Stufe entstehen Feuerbomben ({bombOre} Eisenerz und {bombGold} Gold) und Schlüssel, ab der zweiten Schriftrollen der Hast und Starkes Gegengift, auf der dritten Fallen-Sets und Element-Runen der ersten Stufe ({runeMoon} Mondstahl). Starkes Gegengift und Fallen-Set gibt es nur hier. Material bringen Kopfgelder und Heimsuchungen."
       where: "Die Werkstatt ist ein Raum der Burg im zweiten Akt; jedes Rezept nennt Material und Gold."
       keywords: "Werkstatt, herstellen, Rezept, Material, Eisenerz, Mondstahl, Fallen-Set, Gegengift"
+    heritage:
+      title: "Lektionen"
+      text: "In der Gedächtnishalle gibt ein Gedenkstein das Erbe eines Gefallenen als Lektion an einen lebenden Gefährten weiter, {perAct}× je Akt; was in einem Akt nicht vergeben wurde, verfällt. Jeder Stein vererbt nur einmal, jeder Gefährte trägt höchstens eine Lektion. Sie wirkt immer wie ein passiver Skill, ohne Platz im Loadout. Auf der ersten Stufe der Halle gibt es die feste Lektion der Rolle des Gefallenen, ab der zweiten eine von zwei, auf der dritten jede. Fällt der Träger, geht die Lektion mit ihm."
+      where: "Die Gedächtnishalle ist ein Raum der Burg; Lektionen gibt es ab dem zweiten Akt. In der Truppe steht die Lektion mit ihrer Herkunft unter den Skills."
+      keywords: "Lektion, Gedächtnishalle, Gedenkstein, Erbe, vererben, Gefallene"
     ember_spark:
       title: "Glutfunke und Aufstieg"
       text: "Mit einem Glutfunken steigt eine Figur ab Stufe {level} in der Akademie zu einem der zwei Profi-Wege ihrer Rolle auf und beginnt wieder bei Stufe eins. Glutfunken sind selten: aus dem Finale und aus Nebenquests, später beim Händler für {price} Gold."

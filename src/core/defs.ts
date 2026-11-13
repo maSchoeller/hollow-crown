@@ -117,6 +117,12 @@ export interface ItemDef {
   stages?: ItemStage[];
 }
 
+/** The two lessons of a core role (story 10.7, `content/core/heritage.yaml`): `lessons[0]` is the fixed one. */
+export interface HeritageDef {
+  role: string;
+  lessons: [string, string];
+}
+
 /** A recipe of the workshop (story 10.6, `content/core/recipes.yaml`): materials and gold for one `item` from workshop level `roomLevel`. */
 export interface RecipeDef {
   id: string;
@@ -338,7 +344,7 @@ export interface SkillEffect {
 
 export interface SkillDef {
   id: string;
-  source: 'class' | 'personal' | 'item' | 'grudge';
+  source: 'class' | 'personal' | 'item' | 'grudge' | 'heritage';
   trigger: SkillTrigger;
   condition?: SkillCondition;
   effect: SkillEffect;

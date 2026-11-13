@@ -35,6 +35,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     avatar: clone(avatar),
     roster: [],
     fallen: [],
+    heritageGiven: [],
     convoy: [],
     gold: campaignOfAct(data, 1).startGold,
     materials: {},
@@ -107,7 +108,9 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     home: c.home ?? { kind: 'camp', rooms: {} },
     // keys stack into one bag entry (key ring, decision 2026-10-27); older saves held one entry per key
     // story 10.2: promotion gain and second pro path, absent in saves from before the academy
-    roster: c.roster.map((u) => ({ ...u, bag: stackKeys(data, u.bag), promotionGain: u.promotionGain ?? {}, secondPath: u.secondPath ?? null })),
+    // story 10.7: lessons of the memorial hall, absent in saves from before them
+    roster: c.roster.map((u) => ({ ...u, bag: stackKeys(data, u.bag), promotionGain: u.promotionGain ?? {}, secondPath: u.secondPath ?? null, heritage: u.heritage ?? null })),
+    heritageGiven: (c as Partial<CampaignState>).heritageGiven ?? [],
     tavern: (c.tavern ?? []).map((u) => ({ ...u, bag: stackKeys(data, u.bag) })),
     // pairs of content added since the save (a later act) start empty
     supports: { ...Object.fromEntries(Object.keys(data.supports).map((k) => [k, { points: 0, rank: null }])), ...c.supports },
@@ -256,6 +259,7 @@ function toRecord(u: BattleUnit): UnitRecord {
     grief: u.grief,
     promotionGain: clone(u.promotionGain ?? {}),
     secondPath: u.secondPath ?? null,
+    heritage: u.heritage ? { ...u.heritage } : null,
   };
   return rec;
 }
@@ -479,6 +483,7 @@ export function refreshTavern(data: GameData, c: CampaignState): void {
       sp: {},
       promotionGain: {},
       secondPath: null,
+      heritage: null,
     };
     autoEquip(data, rec, kind.items.map((id) => newItem(c, id, data)));
     c.tavern.push(rec);

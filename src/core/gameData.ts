@@ -1,6 +1,6 @@
 /** All content of the game in one object, as the content layer (src/content) builds it from the YAML. */
 import type { Balance } from './balanceDefs';
-import type { AffixDef, CharDef, ClassDef, HomeKind, ItemDef, RecipeDef, RuneDef, SetDef, SkillDef } from './defs';
+import type { AffixDef, CharDef, ClassDef, HeritageDef, HomeKind, ItemDef, RecipeDef, RuneDef, SetDef, SkillDef } from './defs';
 import type { HauntPoolsDef, MapDef, TerrainDef } from './mapDefs';
 import type { HandbookDef, RenderDef, WorldDef } from './renderDefs';
 import type { CampaignDef, ChroniclePageDef, FlagDef, HomeViewDef, LieutenantDef, MemorialDef, RoomDef, SceneDef, SupportPairDef } from './storyDefs';
@@ -16,6 +16,8 @@ export interface GameData {
   runes: Record<string, RuneDef>;
   /** recipes of the workshop (`content/core/recipes.yaml`, story 10.6) in file order */
   recipes: Record<string, RecipeDef>;
+  /** lessons of the memorial hall by core role (`content/core/heritage.yaml`, story 10.7) in file order */
+  heritage: Record<string, HeritageDef>;
   sets: Record<string, SetDef>;
   /** home rooms in display order (`content/core/rooms.yaml`) */
   rooms: Record<string, RoomDef>;

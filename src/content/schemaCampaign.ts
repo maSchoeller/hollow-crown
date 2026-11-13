@@ -117,6 +117,8 @@ export const memorialSchema = z.strictObject({
   place: z.string().min(1),
   role: z.string().min(1),
   quote: z.string().min(1).optional(),
+  /** the lesson this stone passes on (story 10.7): a skill of `heritage.yaml`; its role is the stone's role */
+  heritage: z.string().optional(),
   requires: z.array(conditionSchema).default([]),
 });
 

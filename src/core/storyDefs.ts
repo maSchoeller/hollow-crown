@@ -241,6 +241,8 @@ export interface MemorialDef {
   place: string;
   role: string;
   quote?: string;
+  /** the lesson this stone passes on (story 10.7, a skill of `heritage.yaml`) */
+  heritage?: string;
   /** the stone stands once these hold */
   requires: Condition[];
 }

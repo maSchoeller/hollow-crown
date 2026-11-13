@@ -41,6 +41,8 @@ export interface MemorialStone {
   node?: string;
   /** the quote below the stones: the `last` line of the farewell scene, or the line of the fixed stone */
   quoteKey?: string;
+  /** fixed stone: the lesson it passes on (story 10.7) */
+  heritage?: string;
 }
 
 /**
@@ -61,6 +63,7 @@ export function memorialStones(data: GameData, c: CampaignState): MemorialStone[
       placeKey: stoneKey(m.id, 'place'),
       roleKey: stoneKey(m.id, 'role'),
       quoteKey: m.quote ? stoneKey(m.id, 'quote') : undefined,
+      heritage: m.heritage,
     }));
   const fallen: MemorialStone[] = c.fallen.map((f) => {
     const mercenary = !!f.mercenary;
