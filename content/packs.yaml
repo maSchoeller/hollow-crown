@@ -54,10 +54,10 @@ packs:
       - core/**
 
   # Akt 2 (Epic 11). Steht vor act1 (Story 11.3): eine Datei gehört zum ersten passenden Paket, so greift act1s `world/**` die
-  # Bilder von Akt 2 nicht. Geladen wird trotzdem act1 vor act2 (duePacks ordnet nach Akt). Veröffentlicht wird es mit dem ersten
-  # Live-Schritt nach dem Release von Akt 1 (9.14); bis dahin lädt es nur der Dev-Server mit `pnpm dev:act2` (VITE_HC_PACKS).
+  # Bilder von Akt 2 nicht. Geladen wird trotzdem act1 vor act2 (duePacks ordnet nach Akt). Seit 2026-11-13 im Build (Produktinhaber:
+  # Akt 2 auf dem Handy spielen und abnehmen); gesperrt wird wie bei act1 erst mit dem echten Release (`content:lock`, 9.14/11.27).
   - id: act2
-    released: false
+    released: true
     load: background
     act: 2
     # [ASSUMPTION] wie act1; 11.26 (Leistung von Akt 2) misst nach
