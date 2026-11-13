@@ -200,6 +200,7 @@ packs:
       - locations/rhen_confession.webp
       - locations/paktwacht_ruine.webp
       - locations/paktwacht_heimat.webp
+      - locations/paktwacht_spaetsommer.webp
       - locations/paktwacht_gewoelbe.webp
       - locations/paktwacht_banner.webp
       - locations/glutfunken.webp

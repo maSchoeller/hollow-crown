@@ -3,7 +3,7 @@
 # läuft keine von beiden und die Szene bleibt stimmig. Keine Kartenvariante. Grosk wird nicht erwähnt (er kommt nur, wenn er nicht beigetreten ist).
 # Ersatzsprecher-Ketten enden bei Rhen (avatar), damit die Zeile immer läuft.
 id: scn.m1_8.intro
-background: paktwacht_heimat
+background: paktwacht_spaetsommer
 music: tense
 lines:
   - id: l01

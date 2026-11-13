@@ -1,7 +1,7 @@
 # Mission 1-7, Szene nach dem Sieg: Heimkehr in die Burg, die versiegelte Chronik kommt ins Burgarchiv (das Flag wardens_chronicle setzt die Knotenwirkung an m1_7, campaign.yaml);
 # Entziffert wird sie später in Akt 2 (Beat 10, Ysolde/Liora). Ausblick auf das Finale 1-8. Ersatzsprecher-Kette: Ysolde, sonst Liora, sonst Rhen.
 id: scn.m1_7.outro
-background: paktwacht_heimat
+background: paktwacht_spaetsommer
 music: camp
 lines:
   - id: l01

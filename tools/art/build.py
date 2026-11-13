@@ -44,7 +44,7 @@ HIGH = '--quality' in sys.argv and sys.argv[sys.argv.index('--quality') + 1] == 
 LOCATION_SIZE = (1920, 1080) if HIGH else (1280, 720)
 # places of act 1: the camp is the app shell (pack core), the rest are dialogue backdrops and ship with act1 (Epic 7, initial-download budget);
 # paktwacht_heimat (autumn) belongs to act 2, the other moodboard places to later acts
-ACT1_LOCATIONS = {'lager_unterwegs', 'varnhold', 'erlbach', 'hungerlager', 'silberbach', 'wolfslager', 'rhen_confession', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_gewoelbe', 'paktwacht_banner', 'glutfunken', 'grabreliefs', 'paktnacht_glutdom', 'wachturm', 'varnhold_nacht', 'aureklamm_lastkahn', 'pachthof'}
+ACT1_LOCATIONS = {'lager_unterwegs', 'varnhold', 'erlbach', 'hungerlager', 'silberbach', 'wolfslager', 'rhen_confession', 'paktwacht_ruine', 'paktwacht_heimat', 'paktwacht_spaetsommer', 'paktwacht_gewoelbe', 'paktwacht_banner', 'glutfunken', 'grabreliefs', 'paktnacht_glutdom', 'wachturm', 'varnhold_nacht', 'aureklamm_lastkahn', 'pachthof'}
 # story 11.3: the places of act 2 (pack act2 in content/packs.yaml names each locations/<id>.webp, so they stay out of act1)
 ACT2_LOCATIONS = {'grauwacht', 'salzpass', 'brandhang', 'kronfeld', 'windscharte', 'rabenweide', 'brandschneise', 'kraehenholm', 'kontor', 'clanlager', 'kupfermine', 'auemarkt', 'silberquell', 'aschedorf'}
 TITLE_PX = (1024, 1536)

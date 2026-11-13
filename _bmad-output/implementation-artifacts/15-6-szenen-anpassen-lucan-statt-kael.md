@@ -61,6 +61,11 @@ damit die überarbeitete Geschichte ankommt.
 - **Abnahme durch den Produktinhaber offen** für `aureklamm_lastkahn`, `pachthof`, `hungerlager`, `wachturm` (`art/prompts/loc_*.md`, „Abnahme durch den Produktinhaber: offen“).
 - Beide Punkte stehen in der Release-Checkliste von Story 9.14.
 
+### Stand 2026-11-13 (bleibt in-progress)
+
+- **AK 3 erfüllt:** Neues Ortsbild `paktwacht_spaetsommer` (eroberte, unausgebaute Ruine im Spätsommer; Protokoll `art/prompts/loc_paktwacht_spaetsommer.md`) in `scn.m1_6.outro`, `scn.m1_7.outro`, `scn.m1_8.intro`, `scn.m1_8.outro` und als `place` von 1-8; `paktwacht_heimat` bleibt den Szenen ab Akt 2.
+- **Offen:** Abnahme durch den Produktinhaber für die fünf Ortsbilder `aureklamm_lastkahn`, `pachthof`, `hungerlager`, `wachturm`, `paktwacht_spaetsommer`.
+
 ## Dev Notes
 
 ### Quellenrang
