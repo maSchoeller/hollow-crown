@@ -96,6 +96,11 @@ academy:
   changePathGold: 1500
   secondPathFromLevel: 3
   secondPathSparks: 1
+# Lektionen der Gedächtnishalle (Story 10.7, Produktinhaber 2026-10-31): je Akt so viele Lektionen; welche Lektion je
+# Hallen-Stufe wählbar ist: fixed = die feste der Rolle des Gefallenen, role = eine der zwei seiner Rolle, all = jede
+memorial:
+  heritagePerAct: 1
+  heritageChoiceByLevel: [fixed, role, all]
 death:
   scarsUntilInstantDeath: 2
   # own phases a downed unit lasts in Standard before it dies (GDD: 3; 01-decisions O2 is settled by GDD/epic 1.6)

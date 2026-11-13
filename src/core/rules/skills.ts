@@ -23,7 +23,7 @@ export function setBonuses(data: GameData, unit: UnitRecord) {
   return out;
 }
 
-/** All skill ids currently active on a unit: personal, class, equipped item skills, loadout, set skills. */
+/** All skill ids currently active on a unit: personal, class, equipped item skills, loadout, lesson, set skills. */
 export function activeSkillIds(data: GameData, unit: UnitRecord, rc: RelicCtx): string[] {
   const ids = new Set<string>();
   if (unit.personalSkill) ids.add(unit.personalSkill);
@@ -37,6 +37,8 @@ export function activeSkillIds(data: GameData, unit: UnitRecord, rc: RelicCtx): 
     for (const id of stageSkills(data, inst, rc)) ids.add(id);
   }
   for (const s of unit.loadout) if (unit.mastered.includes(s)) ids.add(s);
+  // the lesson of the memorial hall (story 10.7): always on, without a loadout place
+  if (unit.heritage) ids.add(unit.heritage.skill);
   for (const m of setBonuses(data, unit)) if (m.grantSkill) ids.add(m.grantSkill);
   return [...ids].filter((id) => !!data.skills[id]);
 }

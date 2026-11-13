@@ -158,6 +158,7 @@ handbook:
     limit3: "Up to rune at level III"
     bombOre: "Iron ore per fire bomb"
     bombGold: "Gold per fire bomb"
+    perAct: "Lessons per act"
     runeMoon: "Moonsteel per rune"
     foot: "Carry on foot"
     armored: "Carry armored"
@@ -395,6 +396,11 @@ handbook:
       text: "The castle's workshop turns material into a consumable or a rune for the convoy. At its first level it makes fire bombs ({bombOre} iron ore and {bombGold} gold) and keys, from the second scrolls of haste and strong antidotes, at the third trap kits and element runes of the first tier ({runeMoon} moonsteel). Strong antidotes and trap kits are made only here. Bounties and hauntings bring the material."
       where: "The workshop is a room of the castle in the second act; every recipe names its material and gold."
       keywords: "workshop, make, craft, recipe, material, iron ore, moonsteel, trap kit, antidote"
+    heritage:
+      title: "Lessons"
+      text: "In the memorial hall a stone passes on the heritage of a fallen comrade as a lesson to a living companion, {perAct}× per act; a lesson not given in an act is lost. Every stone passes on only once, every companion carries one lesson at most. It always works like a passive skill, without a loadout place. At the hall's first level it is the fixed lesson of the fallen one's role, from the second one of two, at the third any. When the bearer falls, the lesson goes with them."
+      where: "The memorial hall is a room of the castle; lessons come in the second act. In the troop the lesson stands with its origin under the skills."
+      keywords: "lesson, memorial hall, memorial stone, heritage, pass on, fallen"
     ember_spark:
       title: "Ember spark and promotion"
       text: "With an ember spark a unit from level {level} promotes in the academy to one of the two pro paths of its role and starts again at level one. Ember sparks are rare: from the finale and side quests, later at the merchant for {price} gold."

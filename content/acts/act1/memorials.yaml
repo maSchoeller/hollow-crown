@@ -1,6 +1,7 @@
 # Feste Gedenksteine der Gedächtnishalle (Story 6.9): Gefallene der Geschichte, die vor der ersten Mission der Truppe fielen.
 # Die Steine der Gefallenen aus c.fallen kommen danach, aus dem Spielstand (Name, Ort, Rolle, Abschiedszeile).
-# Je Stein: id, portrait (Kopf aus art/mockups/characters-s1), name, place, role, quote (optional), requires (Bedingungen, Standard: keine).
+# Je Stein: id, portrait (Kopf aus art/mockups/characters-s1), name, place, role, quote (optional), heritage (Lektion, die der
+# Stein vererbt, Story 10.7; ihre Rolle in heritage.yaml ist die Rolle des Steins), requires (Bedingungen, Standard: keine).
 # Deutsch steht hier, Englisch in content/locales/en/act1.memorials.yaml unter memorial.<id>.name|place|role|quote.
 - id: gerrit
   portrait: gerrit
@@ -9,4 +10,5 @@
   role: "Bannerträger"
   # [C] vorläufig bis Story 9.1
   quote: "Solang das Banner steht, ist die Kompanie zu Hause."
+  heritage: heritage_shield_wall
   requires: [{ completed: prologue }]

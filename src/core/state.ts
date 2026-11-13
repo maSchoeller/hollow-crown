@@ -45,6 +45,25 @@ export interface UnitRecord {
   promotionGain?: Partial<Stats>;
   /** the other pro path of the role, learned in the academy at level 3 (story 10.2): its proSkills count too; default null */
   secondPath?: string | null;
+  /** the lesson passed on to this unit in the memorial hall (story 10.7): skill and memorial stone key; default null */
+  heritage?: UnitHeritage | null;
+}
+
+/** A lesson of the memorial hall on a unit (story 10.7): the `heritage` skill and the key of the stone it came from. */
+export interface UnitHeritage {
+  skill: string;
+  /** memorial stone key (`fixed:<id>` or `fallen:<unit id>`, see `memorialStones`) */
+  from: string;
+}
+
+/** One passed-on lesson as the campaign keeps it (story 10.7): one per act, a stone passes on once. */
+export interface HeritageRecord {
+  act: number;
+  /** memorial stone key */
+  from: string;
+  /** roster id of the receiver */
+  to: string;
+  skill: string;
 }
 
 export interface Buff {
@@ -285,6 +304,8 @@ export interface CampaignState {
   roster: UnitRecord[];
   /** the fallen, for their memorial stones (story 6.7; mercenaries get one too) */
   fallen: Array<{ id: string; nameKey: string; name?: string; node: string; classId?: string; portrait?: string; mercenary?: true }>;
+  /** lessons passed on in the memorial hall (story 10.7), in order; default [] */
+  heritageGiven: HeritageRecord[];
   convoy: ItemInstance[];
   gold: number;
   materials: Record<string, number>;

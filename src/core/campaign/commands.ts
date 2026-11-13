@@ -34,6 +34,8 @@ export type CampaignCommand =
   | { type: 'mergeRunes'; rune: string }
   /** make the item of workshop recipe `recipe` from materials and gold (story 10.6, `craftCost`) */
   | { type: 'craft'; recipe: string }
+  /** pass the lesson `skill` of memorial stone `from` (stone key) on to the story companion `to` (story 10.7, `heritageError`) */
+  | { type: 'inheritHeritage'; from: string; to: string; skill: string }
   | { type: 'healScar'; unit: string; index: number; herb?: boolean }
   | { type: 'unlockSupport'; pair: string }
   | { type: 'setLoadout'; unit: string; skills: string[] }
@@ -138,6 +140,8 @@ export type CampaignEvent =
   | { t: 'promoted'; unit: string; from: string; to: string; gain: Partial<Stats> }
   | { t: 'proPathChanged'; unit: string; from: string; to: string }
   | { t: 'secondPathLearned'; unit: string; path: string }
+  /** a lesson of the memorial hall went from stone `from` to `to` (story 10.7) */
+  | { t: 'heritageInherited'; from: string; to: string; skill: string }
   | { t: 'supportUnlocked'; pair: string; rank: SupportRank }
   /** a room of the castle reached `level` (story 10.1) */
   | { t: 'roomBuilt'; room: string; level: number }

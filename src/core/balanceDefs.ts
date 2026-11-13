@@ -84,6 +84,8 @@ export interface Balance {
   skills: { spPerCombat: number; spPerMissionEnd: number; loadoutBase: number; loadoutAdvanced: number };
   /** the academy (story 10.2): change the pro path from this room level for gold, learn the second path from that level for sparks */
   academy: { changePathFromLevel: number; changePathGold: number; secondPathFromLevel: number; secondPathSparks: number };
+  /** lessons of the memorial hall (story 10.7): how many per act, and which lessons each hall level offers */
+  memorial: { heritagePerAct: number; heritageChoiceByLevel: Array<'fixed' | 'role' | 'all'> };
   death: { scarsUntilInstantDeath: number; bleedOutTurns: number };
   /** the day change (story 5.4): new day at this local hour, at most `catchUp` day packets for days away */
   day: { resetHour: number; catchUp: number };

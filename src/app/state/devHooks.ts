@@ -229,6 +229,30 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'camp', ...(mode === 'talk' ? { tab: 'campfire' } : {}) };
       },
       /**
+       * story 10.7: the memorial hall of act 2 at `level` with Gerrit's stone, fallen Fenn (scout) and a fallen mercenary marksman,
+       * ready to pass on a lesson; `given = true` passes Fenn's lesson to Tobin first. Unsaved campaign.
+       */
+      devMemorial: (level = 2, given = false) => {
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { kind: 'castle', rooms: level > 1 ? { memorial: level } : {} };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        c.fallen = [
+          { id: 'fenn', nameKey: 'unit.fenn.name', node: 'm1_3', classId: 'scout', portrait: 'fenn' },
+          { id: 'merc9', nameKey: 'unit.merc.name', name: 'Odo', node: 'm1_4', classId: 'marksman', mercenary: true },
+        ];
+        if (given) {
+          const tobin = c.roster.find((u) => u.id === 'tobin');
+          if (tobin) tobin.heritage = { skill: 'heritage_light_step', from: 'fallen:fenn' };
+          c.heritageGiven = [{ act: 2, from: 'fallen:fenn', to: 'tobin', skill: 'heritage_light_step' }];
+        }
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'camp', tab: 'memorial' };
+      },
+      /**
        * a lieutenant changes sides (story 3.7): `devJoin(view, full)` with view `card` (default: plays a test decision whose answer is
        * `recruit: { lt: grosk }` and shows the consequence card), `troop` (applies the effect, opens his figure), `wanted` (the list of
        * wanted posters with the mark "In der Truppe"), `map` or `camp` (the world map with the army-limit notice and the locked buttons /

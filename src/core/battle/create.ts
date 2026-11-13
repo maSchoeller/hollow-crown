@@ -67,6 +67,7 @@ export function recordFromChar(data: GameData, def: CharDef, src: UidSource, ava
     sp: {},
     promotionGain: {},
     secondPath: null,
+    heritage: null,
     portrait: def.portrait ?? def.id,
     sprite: def.sprite ?? def.id,
   };
