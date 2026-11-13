@@ -155,8 +155,9 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       if (!startable(c, data, cmd.node, cmd.haunt)) return 'node_unavailable';
       return c.settings.deathMode === 'classic' ? 'restart_forbidden' : null;
     case 'markBackupReminded':
-      // only the running act, and only once its finale is done
-      return cmd.act === actOf(c) && actFinished(data, c) ? null : 'not_available';
+      // the act that was FINISHED, up to the one the company is in: with the next act released the company moves on at
+      // once (story 11.1), so a rule bound to the running act would never let the reminder of the act before fire
+      return cmd.act <= actOf(c) && actFinished(data, { completed: c.completed, act: cmd.act }) ? null : 'not_available';
     case 'markActTitleSeen':
       // only the act the company is in (a later act cannot be seen before it is reached)
       return cmd.act === actOf(c) ? null : 'not_available';

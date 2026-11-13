@@ -25,6 +25,19 @@ export function actFinished(data: GameData, c: Pick<CampaignState, 'completed'> 
 }
 
 /**
+ * The act whose backup reminder is due (story 7.3): the earliest act up to the one the campaign is in whose finale is done and
+ * that is not noted in `backupReminded` yet, or `null`. It is the act that was finished, not the act the company is in — with
+ * the next act released the company moves on the moment the finale is over (story 11.1), so the reminder of the act before it
+ * has to stay due across the move.
+ */
+export function backupDueAct(data: GameData, c: Pick<CampaignState, 'completed' | 'backupReminded'> & { act?: number }): number | null {
+  for (let act = 1; act <= actOf(c); act++) {
+    if (!c.backupReminded.includes(act) && actFinished(data, { completed: c.completed, act })) return act;
+  }
+  return null;
+}
+
+/**
  * The move to the next act (story 11.1, architecture §5.4): once the finale of the act is done and the next act is released in this
  * build, `c.act` goes up by one and `actReached` is reported. Otherwise nothing changes (story 7.3, "coming soon"). Changes `c` in
  * place; returns whether it moved. Called by `finishMission` after a victory and by `normalizeCampaign` for saves of an older build.

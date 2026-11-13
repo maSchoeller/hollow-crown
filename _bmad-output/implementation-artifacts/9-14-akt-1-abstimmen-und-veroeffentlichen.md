@@ -36,9 +36,31 @@ Reihenfolge nach „Akt-Release“ in `AGENTS.md`. ✅ = am 2026-11-07 erledigt,
 - [x] `pnpm check` grün auf dem Stand vom 2026-11-07
 - [x] Playtest-Plan `concept/21-gdd/playtest-akt1.md` mit Spielzeit-Messung (AK 2)
 - [x] Alte IDs vor der ersten Sperre aufgeräumt (Produktinhaber 2026-11-07): `promotion_seal` entfernt (Item, Locales, Bild), Skills `sol` → `pro_duel`, `impale` → `pro_guard`, `longshot` → `pro_far_shot` umbenannt, Wirkung unverändert. Kein Akt-1-Spielstand kann sie tragen: das Siegel steht in keinem Händler, keiner Beute und keiner Wirkung von `act1`, Profiklassen entstehen nur per Aufstieg mit `use.promote` (in Akt 1 hat kein erhältliches Item das), Klassen-Skills folgen aus `classId` und stehen nicht im Spielstand. Damit entfallen Migration und `renames.yaml` in Story 10.2 und 10.4.
-- [ ] Nach Abschluss von A: `pnpm check`, `pnpm sim --campaign act1 --runs 50` auf Leicht und Normal erneut, Tabelle in diese Story
+- [x] Nach Abschluss von A: `pnpm check` grün, `pnpm sim --campaign act1 --runs 50` auf Leicht und Normal erneut gemessen am 2026-11-13 (nach Story 11.28, die in der Simulation Söldner anwirbt). Tabelle unten; `balance.yaml` dabei nicht geändert.
+
+#### Messung 2026-11-13 (nach Story 11.28)
+
+| Mission | Leicht: Sieg % / Ohnm. / Gold / Stufe (erw.) | Normal: Sieg % / Ohnm. / Gold / Stufe (erw.) |
+| --- | --- | --- |
+| Prolog | 100 / 0,00 / 398 / 1,5 (1) | 88 / 0,12 / 380 / 1,5 (1) |
+| 1-1 | 100 / 0,02 / 1348 / 1,6 (2) | 98 / 0,48 / 1382 / 1,8 (2) |
+| 1-2 | 100 / 0,04 / 1600 / 2,7 (3) | 96 / 0,40 / 1600 / 3,1 (3) |
+| 1-3 | 100 / 0,26 / 1100 / 3,5 (3) | 98 / 1,00 / 1100 / 3,9 (3) |
+| 1-4 | 100 / 0,16 / 1000 / 4,1 (4) | 98 / 0,98 / 1098 / 4,9 (4) |
+| 1-5 | 100 / 0,48 / 900 / 5,1 (5) | 100 / 0,82 / 900 / **6,2 ↑** (5) |
+| 1-6 | 100 / **0,80 ↑** / 1462 / 6,6 (6) | 100 / **1,57 ↑** / 1590 / **7,2 ↑** (6) |
+| 1-7 | 100 / 0,22 / 1160 / 7,7 (8) | 100 / 0,41 / 965 / 8,1 (8) |
+| 1-8 | 100 / 0,18 / 1200 / 8,4 (9) | 98 / 1,00 / 1200 / 8,9 (9) |
+
+Abschluss: Leicht 50/50 Läufe, Endgold 2501, Endstufe 8,8, Kampfzeit rund 2,2 h. Normal 49/50 (ein Lauf scheitert in 1-2), Endgold 2151, Endstufe 9,2, Kampfzeit rund 2,4 h.
+
+Auffällig:
+- **Söldner (neu):** die Heimat wirbt jetzt 3,5 bis 3,6 Söldner je Lauf an und gibt dafür 4716 Gold (Normal) bzw. 5067 Gold (Leicht) aus – der größte Posten, vor Heilen (2500 / 2150). Das Endgold liegt damit unter den Zahlen von vor Story 11.28; die Truppe ist größer statt reicher.
+- **Armeestufe über Erwartung** auf Normal in 1-5 (6,2 statt 5) und 1-6 (7,2 statt 6): Folge der angeworbenen Söldner. Ab 1-7 ist der Korridor wieder eingehalten – die Mitte des Akts ist leichter geworden, das Ende nicht.
+- **Ohnmachten über Korridor in 1-6** auf beiden Stufen (0,80 bzw. 1,57). Bekannt und unverändert: 1-6 ist die längste Karte (17 bis 19 Runden).
+- **Nebenziel-Gold unter der GDD-Kurve** in 1-1, 1-3 und 1-5 auf beiden Stufen – unverändert gegenüber der Messung vom 2026-11-07, keine Folge von 11.28.
+- Werte in `balance.yaml` wurden nicht geändert. Ob die leichtere Aktmitte so bleiben soll, entscheidet der Produktinhaber.
 - [x] **EP vor 1-8:** bleibt bei 8,6 auf Normal, 1-7 bekommt keine eigene EP-Quelle (Produktinhaber 2026-11-07, GDD-Log)
-- [ ] **Alte IDs vor der Sperre aufräumen** (Produktinhaber 2026-11-07, Frage 2 in `concept/26-epics/fragen-po-2026-11-07.md`; eigene Session): `promotion_seal` entfernen, `sol`/`impale`/`longshot` in `pro_duel`/`pro_guard`/`pro_far_shot` umbenennen; prüfen, dass kein Akt-1-Spielstand diese IDs tragen kann. Danach brauchen 10.2 und 10.4 weder `renames.yaml` noch Migration
 - [ ] 👤 **Rechtliche Prüfung Nemesis-Patent** vor der Veröffentlichung (GDD „Risiken“, `[ASSUMPTION: Prüfung nötig]`)
 
 ### C. Sperren und veröffentlichen (🔒, erst nach A und B)
