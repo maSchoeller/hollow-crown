@@ -531,3 +531,23 @@ Akt 2 ist zu diesem Zeitpunkt schon live, Mission für Mission (F1). Diese Story
 **Dann** sperrt `pnpm content:lock` alle restlichen IDs, Fixtures aus dem Akt-1-Release und aus jedem Live-Schritt von Akt 2 laden ohne Verlust; ändert sich das Speicherformat, gibt es Migration und Fixture
 **Und** Wertänderungen der Abstimmung gelten für laufende Spielstände ab der nächsten Mission, ohne Migration
 **Und** ein Playtest-Plan für Akt 2 (Folge, Verrat in Kronfeld, Balliste, Höhen) liegt vor (`gds-playtest-plan`); alle Prüfungen sind grün, der Pull Request gegen `main` nennt die Ergebnisse.
+
+### Story 11.28: Die Simulation wirbt an
+
+Als Produktinhaber
+möchte ich, dass die verkettete Kampagnen-Simulation Söldner anwirbt wie ein vernünftiger Spieler,
+damit die Messung über die ganze Kampagne (vor allem 2-8) eine Truppe in voller Stärke zeigt und Akt 2 nach Epic 10 belastbar neu abgestimmt werden kann.
+
+Folge-Story aus 11.27 (Antwort 6 B vom 2026-11-10): verkettet lag 2-8 auf Normal bei 5 %, im Lab mit voller Truppe bei 85 %, weil die Sim-KI kaum anwirbt.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** die Heimat-Heuristik der Kampagnen-Simulation (`tools/simCampaign.ts`)
+**Wenn** zwischen zwei Missionen die Taverne Angebote hat und die Truppe kleiner ist als das Einsatz-Limit der nächsten Mission
+**Dann** wirbt sie Söldner an (höchste Stufe zuerst), solange mindestens `simulation.hire.reserve` Gold übrig bleibt, und zwar nach dem Heilen der Narben und vor Heiltränken und Aufwertungen
+**Und** die Angebote kommen aus dem Seed-RNG der Kampagne, gleiche Seeds geben gleiche Läufe; der Bericht nennt Söldner und Anwerbe-Gold je Lauf.
+
+**Angenommen** die neue Heuristik
+**Wenn** `pnpm sim --campaign act1` und `--campaign act2` auf Leicht, Normal und Schwer mit 50 Läufen laufen
+**Dann** steht die Messtabelle mit dem Vergleich zu 11.27 in der Story; `balance.yaml` ändert keine Spielwerte, Auffälligkeiten gehen als Bericht an den Produktinhaber.
+

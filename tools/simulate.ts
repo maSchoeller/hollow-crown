@@ -184,7 +184,8 @@ async function runCampaign(act: string) {
   console.log(`battle time of the act ≈ ${(battleMin / 60).toFixed(1)} h (${actionS} s per unit action, AI phases as shown with „Gemeinsam“, first attempts won)`);
   console.log(
     `finished ${sim.finished}/${runs}, end gold ${per(sim.endGold, sim.finished).toFixed(0)}, end army lv ${per(sim.endArmyLevel, sim.finished).toFixed(1)}; ` +
-      `home spent per run: heal ${per(sim.spent.heal, runs).toFixed(0)}, buy ${per(sim.spent.buy, runs).toFixed(0)}, upgrade ${per(sim.spent.upgrade, runs).toFixed(0)}, rooms ${per(sim.spent.rooms, runs).toFixed(0)}`,
+      `home spent per run: heal ${per(sim.spent.heal, runs).toFixed(0)}, buy ${per(sim.spent.buy, runs).toFixed(0)}, upgrade ${per(sim.spent.upgrade, runs).toFixed(0)}, rooms ${per(sim.spent.rooms, runs).toFixed(0)}, ` +
+      `hire ${per(sim.spent.hire, runs).toFixed(0)} (${per(sim.hired, runs).toFixed(1)} mercenaries)`,
   );
   if (actNo > 1) {
     const e = sim.entry;
@@ -228,6 +229,7 @@ async function runCampaign(act: string) {
     endGold: per(sim.endGold, sim.finished),
     endArmyLevel: per(sim.endArmyLevel, sim.finished),
     spentPerRun: Object.fromEntries(Object.entries(sim.spent).map(([k, v]) => [k, per(v, runs)])),
+    hiredPerRun: per(sim.hired, runs),
     ...(haunts
       ? { haunts: { perRun: per(sim.haunts.played, runs), winRate: per(sim.haunts.won, sim.haunts.played), goldPerRun: per(sim.haunts.gold, runs), fallenPerRun: per(sim.haunts.fallen, runs) } }
       : {}),
@@ -251,6 +253,7 @@ async function runCampaign(act: string) {
       rounds: per(m.turns, m.wins),
       turns: turnStats(m.winTurns),
       actions: per(m.actions, m.wins),
+      deployed: per(m.deployed, m.wins),
       side: Object.fromEntries(Object.entries(m.side).map(([id, n]) => [id, { done: n, rate: per(n, m.cleared) }])),
       flags: missionFlags(actData, m, difficulty),
     })),

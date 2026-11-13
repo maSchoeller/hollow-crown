@@ -86,6 +86,7 @@ export const balanceSchema = z.object({
     }),
     startExpected: z.record(z.string(), z.object({ gold: z.number().int().min(0) })).default({}),
     roomOrder: z.array(z.string()).default([]),
+    hire: z.object({ reserve: z.number().int().min(0) }).default({ reserve: 0 }),
   }),
   elevation: z.object({
     rangedBonus: z.number().int().min(0),

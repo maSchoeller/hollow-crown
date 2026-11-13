@@ -45,7 +45,7 @@
 # - Story keys: German titles in kebab-case, umlauts transliterated (ä→ae, ö→oe, ü→ue, ß→ss)
 
 generated: 2026-10-23
-last_updated: 2026-11-11
+last_updated: 2026-11-13
 project: Hollow Crown
 project_key: NOKEY
 tracking_system: file-system
@@ -221,6 +221,7 @@ development_status:
   11-25-brettfigur-rowena: review  # Brettfigur Rowena: altes Tripo-Modell abgenommen (PO 2026-11-11), kein Neubau, 0 Credits
   11-26-leistung-von-akt-2: review  # Leistung von Akt 2
   11-27-akt-2-abstimmen-und-abschliessen: review  # Akt 2 abstimmen und abschließen
+  11-28-simulation-wirbt-an: review  # Folge-Story aus 11.27 (Antwort 6 B): die Kampagnen-Simulation wirbt Söldner an
   epic-11-retrospective: optional
 
   # Epic 12: Akt 3 „Krone“ und Staffelende – grob

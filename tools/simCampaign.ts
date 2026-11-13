@@ -21,6 +21,9 @@ import {
   actOf,
   enterNextAct,
   findNode,
+  hireCost,
+  hireError,
+  isMercenary,
   applyCampaign,
   applyEffects,
   availableNodes,
@@ -131,7 +134,9 @@ export interface CampaignSim {
   endGold: number;
   endArmyLevel: number;
   /** spent by the home heuristic over the act (all runs) */
-  spent: { heal: number; buy: number; upgrade: number; rooms: number };
+  spent: { heal: number; buy: number; upgrade: number; rooms: number; hire: number };
+  /** story 11.28: mercenaries the home heuristic hired over the act (all runs) */
+  hired: number;
   /** haunts played between the missions (all runs): played, won, gold they paid, fallen companions */
   haunts: { played: number; won: number; gold: number; fallen: number };
   /** story 11.4: runs that reached the aimed act, summed army level and gold when its first node comes up (after the camp and haunts) */
@@ -174,6 +179,34 @@ export function applyNodeRewards(data: GameData, c: CampaignState, nodeId: strin
   enterNextAct(data, c);
 }
 
+/**
+ * Story 11.28: hire tavern mercenaries like a sensible player. While the company is smaller than the deploy limit of the next
+ * mission (`next`) and the offer leaves `simulation.hire.reserve` gold, the highest-level offer joins (the first of equals, in
+ * tavern order). The offers come from the campaign's seed RNG (`refreshTavern`), so this is as deterministic as the run.
+ * Returns how many joined.
+ */
+export function hireMercenaries(data: GameData, c0: CampaignState, next: string | undefined, spent: CampaignSim['spent']): { campaign: CampaignState; hired: number } {
+  let c = c0;
+  let hired = 0;
+  const map = next ? data.maps[findNode(data, next)?.map ?? ''] : undefined;
+  if (!map) return { campaign: c, hired };
+  const limit = Math.min(map.deploy.max, map.deploy.slots.length);
+  const reserve = data.balance.simulation.hire.reserve;
+  while (c.roster.length < limit) {
+    const offer = [...c.tavern]
+      .filter((u) => !hireError(data, c, u.id) && c.gold - hireCost(data, u.level) >= reserve)
+      .sort((a, b) => b.level - a.level)[0];
+    if (!offer) break;
+    const g = c.gold;
+    const after = tryCmd(data, c, { type: 'hire', offer: offer.id });
+    if (after === c) break;
+    c = after;
+    spent.hire += g - c.gold;
+    hired++;
+  }
+  return { campaign: c, hired };
+}
+
 /** Room levels built above level 1 (story 10.1: the sim shows them next to the gold). */
 export const roomUpgrades = (data: GameData, c: CampaignState): number => Object.keys(data.rooms).reduce((n, id) => n + Math.max(0, roomLevel(c, id) - 1), 0);
 
@@ -203,8 +236,11 @@ export function buildRooms(data: GameData, c0: CampaignState, reserveUpgrade: nu
   return c;
 }
 
-/** Between missions: unlock ready supports, promote, build rooms up, heal scars, buy one healing item per strong unit, then upgrade weapons. */
-export function homeHeuristic(data: GameData, c0: CampaignState, spent: CampaignSim['spent']): CampaignState {
+/**
+ * Between missions: unlock ready supports, promote, build rooms up, heal scars, hire mercenaries up to the next mission's deploy
+ * limit (story 11.28, `next` = that mission's node), buy one healing item per strong unit, then upgrade weapons.
+ */
+export function homeHeuristic(data: GameData, c0: CampaignState, spent: CampaignSim['spent'], next?: string): CampaignState {
   let c = c0;
   const pay = (key: keyof CampaignSim['spent'], before: number) => (spent[key] += before - c.gold);
   for (const pair of Object.keys(c.supports)) c = tryCmd(data, c, { type: 'unlockSupport', pair });
@@ -237,6 +273,8 @@ export function homeHeuristic(data: GameData, c0: CampaignState, spent: Campaign
       pay('heal', g);
     }
   }
+  // hire (story 11.28): fill the places of the next mission before gold goes into items and upgrades
+  c = hireMercenaries(data, c, next, spent).campaign;
   // buy: the cheapest healing item in stock for each strong unit without one
   const stock = merchantStock(data, currentTier(data, c), actOf(c))
     .filter((id) => itemDef(data, id).use?.heal)
@@ -384,7 +422,8 @@ const emptySim = (): CampaignSim => ({
   finished: 0,
   endGold: 0,
   endArmyLevel: 0,
-  spent: { heal: 0, buy: 0, upgrade: 0, rooms: 0 },
+  spent: { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0 },
+  hired: 0,
   haunts: { played: 0, won: 0, gold: 0, fallen: 0 },
   entry: { runs: 0, armyLevel: 0, gold: 0 },
   skipped: {},
@@ -509,7 +548,10 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
       m.sideGold += sideGoldOf(won.result);
       m.deaths += won.result.fallen.length;
       for (const so of won.result.side) if (so.done) m.side[so.id] = (m.side[so.id] ?? 0) + 1;
-      c = homeHeuristic(data, won.campaign, out.spent);
+      // story 11.28: hire for the next mission's places; mercenaries join only through the tavern, so the difference is the hires
+      const mercs = (x: CampaignState) => x.roster.filter(isMercenary).length;
+      c = homeHeuristic(data, won.campaign, out.spent, nextNode(data, won.campaign, o.order));
+      out.hired += mercs(c) - mercs(won.campaign);
       if (o.haunts) c = playHaunts(data, c, 1000 + day++, out.haunts);
     }
     if (finished) {
@@ -536,6 +578,7 @@ export function mergeCampaignSims(parts: CampaignSim[]): CampaignSim {
     out.finished += p.finished;
     out.endGold += p.endGold;
     out.endArmyLevel += p.endArmyLevel;
+    out.hired += p.hired;
     sumInto(out.spent, p.spent);
     sumInto(out.haunts, p.haunts);
     sumInto(out.entry, p.entry);
