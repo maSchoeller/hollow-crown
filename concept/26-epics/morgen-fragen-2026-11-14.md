@@ -69,3 +69,25 @@ Die Stories 10.5 bis 10.13 tragen einzelne `[ASSUMPTION]`-Werte, die in den jewe
 ### 12. Story 10.14 „Burg-Grafik“
 
 Weiter offen: `homeObject`, `castleScene` und eine Messung auf dem echten Gerät. Sie blockiert Akt 2 nicht, gehört aber vor den Abschluss von Epic 10.
+
+### 13. Nebenquests öffnen jetzt auch ohne den Gefährten (nachts angenommen)
+
+N4 „Der Clan im Schnee“ und N6 „Die Gauklertruppe“ blieben für immer verschlossen, wenn Ilka bzw. Jory nie angesprochen und damit nie angeworben wurde — Glutfunke, Weißwolf und „Letzter Vorhang“ fielen ohne Hinweis weg (QA-Durchlauf, PR 213).
+
+- **A (nachts angenommen):** Die Quest ist auch offen, wenn die Figur nie angeworben wurde; nur „gegangen“ schließt sie. Dafür gibt es eine neue Bedingung `recruited: <gefährte>` und zu jeder Zeile, die Ilka bzw. Jory trägt, eine Ersatzzeile ohne sie. Die Ersatzzeilen sind Textvorschläge und brauchen deine Abnahme beim Durchspielen.
+- **B:** Die Quest bleibt an den Gefährten gebunden, bekommt aber einen Hinweis auf der Weltkarte, dass sie verpasst wurde.
+
+### 14. Ein Schlüssel je Truhe als Regel (nachts angenommen)
+
+In 2-2 „Das Siegel im Salzpass“ gab es einen Türschlüssel für drei Truhen, während der Sieg an `c_seal` hängt: falsche Truhe plus kein Fenn dabei heißt, die Mission ist nur per Abbruch zu retten.
+
+- **A (nachts angenommen):** Jede Truhe hat einen Schlüsselträger (in 2-2 Zahlmeister, Schütze n3, Kundschafter k1), und `content:check` verlangt das für jede Truhenjagd-Karte ohne eigenen Späher. 1-7, N2 und N5 hielten die Regel schon.
+- **B:** Der Schlüssel öffnet nur die siegentscheidende Truhe. Das bräuchte eine neue Regel im Code und ändert das Gefühl der Truhenjagd.
+
+### 15. Platzhalterfigur „cleric“ in Akt 2
+
+Auf 2-1, 2-3, 2-5, 2-6 und 2-7 stehen die Heiler-Gegner noch als Platzhalter. Eigene Figur vor der Abnahme von Akt 2, oder reicht der Platzhalter bis Staffel 1 fertig ist?
+
+### 16. Vier optionale Hebel nutzt das Autoplay nie
+
+Kranhebel in 2-7, Furt in 2-8, Gatterhebel in N5 und Bühne in N6: Felder und Trigger sind erreichbar und funktionieren, nur die Kampf-KI geht nie hin. Für deinen Durchlauf heißt das, diese vier Wege sind ungetestet — bitte bewusst mitnehmen.
