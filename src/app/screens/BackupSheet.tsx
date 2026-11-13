@@ -1,17 +1,17 @@
 /**
  * Backup reminder after an act's finale (story 7.3, architecture §5.15 "Speicherschutz", AR21): once per campaign and act, a
  * sheet on the world map offers to export the save. "Exportieren" downloads it like the save sheet does, "Später" (or
- * closing the sheet) only puts the reminder off for good; both note the act with `markBackupReminded`.
+ * closing the sheet) only puts the reminder off for good; both note the act with `markBackupReminded`. The act is the one that
+ * was finished (`backupDueAct`), not the one the company is in: with the next act released the move happens at once.
  */
 import { t } from '../../i18n';
 import { PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { Sheet } from '../../ui/Sheet';
-import { actOf } from '../../core';
-import { campaign, campaignCommand, currentSaveRecord } from '../state/session';
+import { campaignCommand, currentSaveRecord } from '../state/session';
 import { downloadSave } from './Menus';
 
-export function BackupSheet() {
-  const note = () => void campaignCommand({ type: 'markBackupReminded', act: actOf(campaign.value) });
+export function BackupSheet({ act }: { act: number }) {
+  const note = () => void campaignCommand({ type: 'markBackupReminded', act });
   const exportSave = () => {
     note(); // first, so the exported file already carries the note and does not ask again after an import
     const rec = currentSaveRecord();

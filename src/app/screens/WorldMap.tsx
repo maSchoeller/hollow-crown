@@ -8,7 +8,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { t } from '../../i18n';
 import { goalKey } from '../../ui/goalText';
-import { actFinished, actOf, armyOverLimit, availableNodes, findNode, nodesUpTo, nodeLevel, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, storyNodeOf, wantedList } from '../../core';
+import { actFinished, actOf, armyOverLimit, backupDueAct, availableNodes, findNode, nodesUpTo, nodeLevel, bountyMaterialId, conditionContext, hauntGold, hauntHalved, hauntMap, itemDef, storyNodeOf, wantedList } from '../../core';
 import { assetUrl } from '../../render/shared/assets';
 import { Toast } from '../../ui/components';
 import { Icon } from '../../ui/icons';
@@ -170,7 +170,8 @@ export function WorldMap() {
   );
   // the act is over (story 7.3): the backup reminder, once; and without the next act in this build its region says "coming soon"
   const finished = actFinished(data, c);
-  const backupDue = finished && !c.backupReminded.includes(act);
+  // the reminder belongs to the act that was finished: with act 2 released the company is already in it when it is due
+  const backupAct = backupDueAct(data, c);
   const waiting = moreMissionsFollow(open.length, finished, loadingActPack() !== null);
   const soonAct = finished && !nextActInBuild() ? act + 1 : null;
 
@@ -616,8 +617,8 @@ export function WorldMap() {
           </>
         )}
       </div>
-      {lift === 'title' && <ActTitle act={act} onDone={closeTitle} />}
-      {backupDue && !saving && <BackupSheet />}
+      {backupAct === null && lift === 'title' && <ActTitle act={act} onDone={closeTitle} />}
+      {backupAct !== null && !saving && <BackupSheet act={backupAct} />}
       {saving && <SaveSheet onClose={() => setSaving(false)} onToast={setToast} />}
       {toast && <Toast text={toast} onDone={() => setToast(null)} />}
     </div>
