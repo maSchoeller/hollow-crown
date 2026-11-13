@@ -1,0 +1,71 @@
+# Fragen an den Produktinhaber: Morgen nach der Nachtschicht (2026-11-13 auf 14)
+
+> Entstanden in der Nacht vom 13. auf den 14. November 2026, während Akt 2 freigeschaltet und Epic 10 fertiggebaut wurde.
+> Die orchestrierende Session stellt diese Fragen morgens gebündelt per Fragetool; nichts davon wurde nachts entschieden.
+> Umgesetzte Empfehlungen tragen im Code `[ASSUMPTION]` und sind hier als „nachts angenommen“ vermerkt.
+
+## A. Blockiert den Abschluss von Akt 2
+
+### 1. Sicherungs-Erinnerung nach Akt 1
+
+Seit Akt 2 im Build ist, zieht die Truppe nach dem Finale von 1-8 sofort weiter. Die Erinnerung, den Spielstand zu sichern (Story 7.3), gilt nur für den *laufenden* Akt nach dessen Finale — sie feuert für Akt 1 damit nie mehr.
+
+- **A (nachts angenommen):** Die Erinnerung gilt für den gerade *abgeschlossenen* Akt und erscheint beim Übergang, zusammen mit der Titeltafel von Akt 2.
+- **B:** Sie entfällt beim Übergang und kommt erst am Ende des letzten veröffentlichten Akts.
+- **C:** Sie wird zu einem eigenen Hinweis im Optionen-Menü, ohne Bindung an einen Akt.
+
+### 2. 2-8 „Kronfeld“ verkettet auf Normal
+
+Mit der anwerbenden Simulation (Story 11.28) steigt die Siegquote von 7 auf 28 %. Der Korridor ist 30–70 %, im Lab mit voller Truppe liegt sie bei 85 %.
+
+- **A:** In der zweiten Abstimmungsrunde (11.27) nach Epic 10 anheben, bis der Korridor erreicht ist.
+- **B:** Hinnehmen: Das Finale darf härter sein, der Lab-Wert zählt.
+- **C:** Erst deinen Handytest abwarten und danach entscheiden.
+
+### 3. Abnahme der Stories von Akt 2 (11.1 bis 11.26)
+
+Alle stehen auf `review`. Du wolltest sie nach dem Durchspielen gemeinsam durchgehen.
+
+- Nach deinem Handy-Durchlauf: gesammelt abnehmen, oder einzeln durchgehen?
+
+### 4. N4 „Der Clan im Schnee“
+
+Offen aus 11.27: Wenn dein Test bestätigt, dass die Clanälteste fällt, wird `d2` auf Normal gestrichen (Antwort 4 A). Auf Normal liegen noch 1,57 Niedergestreckte vor.
+
+### 5. Spielzeit von Akt 2
+
+Ziel sind 10 bis 12 Stunden. Miss sie beim Durchspielen mit.
+
+## B. Blockiert das Release von Akt 1 (Story 9.14)
+
+### 6. Tonbruch-Test (Story 8.1)
+
+Ohne bestandenen Test kein Release. Nötig sind die Bögen von dir und 2 bis 3 Testern (`concept/23-art-direction/tonbruch-test.md`).
+
+### 7. Rechtliche Prüfung Nemesis-Patent
+
+Steht im GDD als `[ASSUMPTION: Prüfung nötig]` und blockiert die Veröffentlichung.
+
+### 8. Handy-Tests 15.11 und 15.12
+
+Leistung großer Karten sowie flüssige Weltkarte mit der Paktwacht als Ruine. Du hast Akt 1 auf dem Handy durchgespielt — reicht dir das als Abnahme?
+
+### 9. Ortsbilder
+
+Abzunehmen sind die vier neuen Ortsbilder aus 15.6 und das Spätsommer-Bild der eroberten Paktwacht (`art/prompts/loc_paktwacht_spaetsommer.md`, in der Nacht gemergt).
+
+## C. Zur Kenntnis, Widerspruch möglich
+
+### 10. Akt 2 steht im Build, obwohl Akt 1 noch nicht veröffentlicht ist
+
+Entscheidung F1 sah vor, Akt 2 erst nach dem Release von Akt 1 Stück für Stück live zu schalten. Du wolltest ihn auf dem Handy spielen, deshalb steht `act2` seit dem 13. November auf `released: true` (Eintrag im Decision-Log). Gesperrt ist nichts: `pnpm content:lock`, die Fixture-Spielstände und die Rabatt-Prüfung gehören weiter zum echten Release.
+
+- Bleibt das so bis zum Release, oder soll Akt 2 nach deinem Durchlauf wieder aus dem Build?
+
+### 11. Offene Annahmen aus Epic 10
+
+Die Stories 10.5 bis 10.13 tragen einzelne `[ASSUMPTION]`-Werte, die in den jeweiligen Story-Dateien unter `_bmad-output/implementation-artifacts/` stehen. Sie werden in der zweiten Abstimmungsrunde ohnehin gemessen; Widerspruch lohnt nur, wo dir ein Wert grundsätzlich falsch vorkommt.
+
+### 12. Story 10.14 „Burg-Grafik“
+
+Weiter offen: `homeObject`, `castleScene` und eine Messung auf dem echten Gerät. Sie blockiert Akt 2 nicht, gehört aber vor den Abschluss von Epic 10.
