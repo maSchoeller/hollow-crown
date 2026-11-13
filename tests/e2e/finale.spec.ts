@@ -110,6 +110,6 @@ test('the finale ends act 1: outro, panel, sparks, card "2 x ember spark", world
     .toBe(true);
   await page.getByRole('button', { name: /To the world map|Zur Weltkarte/ }).click();
 
-  // act 2 is in the build since 2026-11-13, so the world map opens act 2 instead of the "coming soon" hint of story 7.3
-  await expect(page.getByText(/Akt 2|Act 2/)).toBeVisible({ timeout: 20_000 });
+  // act 2 is in the build since 2026-11-13: its title card comes up (story 11.3) instead of the "coming soon" hint of story 7.3
+  await expect(page.locator('#act-title-name')).toHaveText(/Akt 2|Act 2/, { timeout: 20_000 });
 });
