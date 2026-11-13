@@ -90,6 +90,11 @@ export function validateCampaign(data: GameData, locales: Locales, err: Err, { c
   for (const r of Object.values(data.rooms)) {
     conditions('rooms.yaml', r.requires, `${r.id}.requires`);
     r.levels.forEach((l, i) => conditions('rooms.yaml', l.requires, `${r.id}.levels[${i}].requires`));
+    // story 10.1: every castle room builds up to level 3, and level 3 never costs less than level 2
+    if (r.homes.includes('castle')) {
+      if (r.levels.length !== 2) err('rooms.yaml', `${r.id}: a castle room needs exactly two levels (2 and 3), has ${r.levels.length}`);
+      else if (r.levels[1]!.cost.gold < r.levels[0]!.cost.gold) err('rooms.yaml', `${r.id}: level 3 costs less than level 2`);
+    }
     for (const u of r.unlocks) conditions('rooms.yaml', u.requires, `${r.id}.unlocks.${u.id}.requires`);
   }
   homeChecks();

@@ -372,7 +372,7 @@ lines:
 - Jede Interaktion ist genau ein Kampagnen-Command (≤ 2 Taps, GDD).
 - **Supports (Story 4.9):** feste Paare je Akt in `content/acts/actN/supports.yaml` (`core` = S-Kernpaar); das Lagerfeuer schaltet Ränge bis `balance.supports.campfireMaxRank[Stufe − 1]` frei (Lager: B).
 - Darstellung: Raum-Anker im Burg-Modell (`home.yaml`: Anker → Raum, Ausbauteile je Stufe, Platz für Gefährten-Gegenstände).
-- **Stand (Story 6.9):** `content/home/home.yaml` nennt je Heimat-Art (`camp`, `castle`) das Ortsbild (`image` unter `art/mockups/locations-s1`) und die Raum-Anker `{ room, at: [x%, y%] }` (Prozent des sichtbaren Bildausschnitts); die Burg ist vorerst ein gemaltes Bild (`paktwacht_ruine`) mit Steinen darüber, `render/home/` und das 3D-Diorama bleiben offen. `rooms.yaml` kennt je Raum `levels` (Bedingungen für Stufe 2 und 3) und `unlocks` (`{ id, requires }`, Name `room.<id>.unlock.<id>`); `nextRoomLevel` und `roomUnlocks` in `core/campaign/camp.ts` liefern die erste offene Bedingung. Die Gedächtnishalle ist der Raum `memorial` (`function: memorial`, nur Burg, `fromAct: 1`). Feste Gedenksteine stehen in `content/acts/actN/memorials.yaml` (Muster `chronicle.yaml`, DE im YAML, EN in `locales/en/actN.memorials.yaml`, beide im Paket `core`), `memorialStones(data, c)` in `core/campaign/memorial.ts` liefert erst diese (Bedingung `requires`), dann `c.fallen` in der Reihenfolge des Fallens; es gibt keinen neuen Spielstand.
+- **Stand (Story 6.9):** `content/home/home.yaml` nennt je Heimat-Art (`camp`, `castle`) das Ortsbild (`image` unter `art/mockups/locations-s1`) und die Raum-Anker `{ room, at: [x%, y%] }` (Prozent des sichtbaren Bildausschnitts); die Burg ist vorerst ein gemaltes Bild (`paktwacht_ruine`) mit Steinen darüber, `render/home/` und das 3D-Diorama bleiben offen. `rooms.yaml` kennt je Raum `levels` (Bedingungen für Stufe 2 und 3) und `unlocks` (`{ id, requires }`, Name `room.<id>.unlock.<id>`); `roomBuild` (seit Story 10.1, ersetzt `nextRoomLevel`) und `roomUnlocks` in `core/campaign/camp.ts` liefern die erste offene Bedingung. Die Gedächtnishalle ist der Raum `memorial` (`function: memorial`, nur Burg, `fromAct: 1`). Feste Gedenksteine stehen in `content/acts/actN/memorials.yaml` (Muster `chronicle.yaml`, DE im YAML, EN in `locales/en/actN.memorials.yaml`, beide im Paket `core`), `memorialStones(data, c)` in `core/campaign/memorial.ts` liefert erst diese (Bedingung `requires`), dann `c.fallen` in der Reihenfolge des Fallens; es gibt keinen neuen Spielstand.
 
 ### 5.11 Fortschritt und Wirtschaft
 
@@ -637,16 +637,24 @@ Diese Muster sind verbindlich, damit verschiedene Agenten gleich bauen.
 5. Feste Prüfreihenfolge, der erste Fehler gewinnt: Id unbekannt → Verfügbarkeit (Stufe, Bedingungen, Raum offen) → Ressourcen (Material, Gold, Platz); so ist „genau ein Fehlercode“ eindeutig testbar.
 
 ```ts
-case 'buildRoom': {
-  const step = roomBuild(data, c, cmd.room);         // auch von der UI genutzt
-  if (!step) return err('unknown_room');
-  if (step.maxed) return err('max_level');
-  if (!evalCondition(ctxOf(c), step.requires)) return err('room_locked'); // Akt, ab Stufe 3 Raum-Gefährte
-  if (c.gold < step.cost.gold) return err('not_enough_gold');
-  const next = clone(c);
-  next.gold -= step.cost.gold;
-  next.home.rooms[cmd.room] = roomLevel(c, cmd.room) + 1; // roomLevel liefert ohne Eintrag 1, nie `?? 0`
-  return ok(next, [{ t: 'roomBuilt', room: cmd.room, level: next.home.rooms[cmd.room]! }]);
+// camp.ts: eine reine Funktion für Ausbau-Band, Raumsteine und Command (Story 10.1)
+export function roomBuild(data, c, roomId): RoomBuild {   // { level, gold, unmet?, error }
+  const st = homeRooms(data, c).find((r) => r.room.id === roomId);
+  if (!st?.open) return none('unknown_room');            // Id unbekannt, nicht in dieser Heimat, noch nicht offen
+  const level = roomLevel(c, roomId);                    // ohne Eintrag 1, nie `?? 0`
+  const step = st.room.levels[level - 1];
+  if (!step) return none('max_level');
+  const unmet = step.requires.find((x) => !evalCondition(ctx, x)); // Akt, ab Stufe 3 Raum-Gefährte
+  if (unmet || c.home.kind !== 'castle') return { level: level + 1, gold: step.cost.gold, unmet, error: 'room_locked' };
+  return { level: level + 1, gold: step.cost.gold, error: c.gold < step.cost.gold ? 'not_enough_gold' : null };
+}
+// apply.ts
+case 'buildRoom': return roomBuild(data, c, cmd.room).error;      // validateCampaign
+case 'buildRoom': {                                               // applyCampaign (auf der Kopie)
+  const b = roomBuild(data, c, cmd.room);
+  c.gold -= b.gold;                                               // goldChanged leitet resourceEvents ab
+  c.home.rooms[cmd.room] = b.level;                               // = roomLevel(c, room) + 1
+  events.push({ t: 'roomBuilt', room: cmd.room, level: b.level });
 }
 ```
 

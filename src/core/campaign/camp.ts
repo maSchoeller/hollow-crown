@@ -124,21 +124,53 @@ export function homeRooms(data: GameData, c: CampaignState): RoomStatus[] {
     });
 }
 
-/** The next build-up step of a room: its level and the first condition that is still open (none: it could be built). */
-export interface RoomUpgrade {
+/** Why a room cannot be built up now, in the order `buildRoom` checks (architecture §8.1: id, availability, resources). */
+export type RoomBuildError = 'unknown_room' | 'max_level' | 'room_locked' | 'not_enough_gold';
+
+/**
+ * The next build-up step of a room (story 10.1): the level it reaches, its gold, the first condition of that step that is
+ * still open and the error `buildRoom` would give (null: it can be built now). `level` and `gold` are 0 when there is no
+ * next step (unknown room, top level).
+ */
+export interface RoomBuild {
   level: number;
+  gold: number;
   unmet?: Condition;
+  error: RoomBuildError | null;
 }
 
 /**
- * The next level of a room of the current home from the data (`levels` of rooms.yaml, level 2 first), or null at the top
- * or when the room has no build-up. Story 6.9 only shows it; the build command comes with Epic 10.
+ * The one function behind the build-up band, the room stones and `buildRoom` (story 10.1, replaces `nextRoomLevel`): only an
+ * open room of the current home builds up, one level at a time from `levels` of rooms.yaml, while every `requires` of that
+ * level holds and the gold is there. The camp never builds (its stations are the castle's rooms on level 1). The level
+ * comes from `c.home.rooms` alone: a room keeps its level when its companions fall or leave.
  */
-export function nextRoomLevel(data: GameData, c: CampaignState, room: RoomDef): RoomUpgrade | null {
-  const level = roomLevel(c, room.id);
-  const step = room.levels[level - 1];
-  if (!step) return null;
-  return { level: level + 1, unmet: step.requires.find((x) => !evalCondition(conditionContext(data, c), x)) };
+export function roomBuild(data: GameData, c: CampaignState, roomId: string): RoomBuild {
+  const none = (error: RoomBuildError): RoomBuild => ({ level: 0, gold: 0, error });
+  const st = data.rooms[roomId] ? homeRooms(data, c).find((r) => r.room.id === roomId) : undefined;
+  if (!st?.open) return none('unknown_room');
+  const level = roomLevel(c, roomId);
+  const step = st.room.levels[level - 1];
+  if (!step) return none('max_level');
+  const unmet = step.requires.find((x) => !evalCondition(conditionContext(data, c), x));
+  const out = { level: level + 1, gold: step.cost.gold, ...(unmet ? { unmet } : {}) };
+  if (unmet || c.home.kind !== 'castle') return { ...out, error: 'room_locked' };
+  return { ...out, error: c.gold < step.cost.gold ? 'not_enough_gold' : null };
+}
+
+/** Rooms of the current home that can be built up right now (head of the room list, "Räume 11 · n ausbaubar"). */
+export const buildableRooms = (data: GameData, c: CampaignState): number => homeRooms(data, c).filter((st) => roomBuild(data, c, st.room.id).error === null).length;
+
+/** Gold a scar costs at the healer of this home (`balance.economy.scarRemoval.goldByLevel` by healer level, story 10.1). */
+export function scarCost(data: GameData, c: CampaignState): number {
+  const g = data.balance.economy.scarRemoval.goldByLevel;
+  return g[Math.min(roomLevel(c, 'healer'), g.length) - 1]!;
+}
+
+/** Mercenaries the tavern offers per round (`balance.economy.tavern.offersByLevel` by tavern level, story 10.1). */
+export function tavernOfferCount(data: GameData, c: CampaignState): number {
+  const n = data.balance.economy.tavern.offersByLevel;
+  return n[Math.min(roomLevel(c, 'tavern'), n.length) - 1]!;
 }
 
 /** What a room opens later (the lessons of the memorial hall): each entry open, or locked by its first open condition. */

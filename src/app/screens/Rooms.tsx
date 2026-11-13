@@ -2,7 +2,8 @@
  * The room panels of the home (camp stations, story 6.3 and 6.4): convoy, merchant, smith, healer, tavern, campfire
  * and the enchanter. Every action is one campaign command and needs at most two taps: choose, then the main button.
  */
-import { useState } from 'preact/hooks';
+import { useContext, useState } from 'preact/hooks';
+import { createContext } from 'preact';
 import { createPortal } from 'preact/compat';
 import type { ComponentChildren } from 'preact';
 import {
@@ -20,7 +21,8 @@ import {
   memorialStones,
   merchantStock,
   shopPrice,
-  nextRoomLevel,
+  roomBuild,
+  scarCost,
   rerollAllowed,
   rerollCost,
   roomUnlocks,
@@ -54,24 +56,68 @@ import '../../ui/camp.css';
 
 export type Apply = (cmd: CampaignCommand, okText?: string) => boolean;
 
+/** Companions a condition asks to be in the company (`alive`, or `any` of them: the room companions of story 10.1), else null. */
+function companionsOf(cond: Condition): string[] | null {
+  if ('alive' in cond) return [cond.alive];
+  if (!('any' in cond)) return null;
+  const ids = cond.any.map((x) => ('alive' in x ? x.alive : null));
+  return ids.every((x): x is string => x !== null) ? ids : null;
+}
+
+const nameList = (ids: string[]) => ids.map((id) => t(`unit.${id}.name`)).join(t('ui.room.or'));
+
 /** Why a station is locked: the first condition that fails, in the player's words. */
 export function lockReason(unmet?: Condition): string {
   if (unmet && 'completed' in unmet) return t('ui.room.after', { node: nodeShort(unmet.completed) });
   if (unmet && 'act' in unmet) return t('ui.room.fromAct', { n: unmet.act });
+  const mates = unmet ? companionsOf(unmet) : null;
+  if (mates) return t('ui.room.needs', { names: nameList(mates) });
   return t('ui.room.locked');
 }
 
-/** The build-up band at the top of a castle room's panel (story 6.9): dashed while its conditions are open, with the reason. */
+/** The apply of the open room, for the build-up band in its panel head (provided by `Room`). */
+const RoomApply = createContext<Apply | null>(null);
+
+/**
+ * The build-up band at the top of a castle room's panel (stories 6.9 and 10.1, mockup 04): green with the next level's effect
+ * and the build button when it can be built now (one tap), dashed with the first open condition (or the gold in red when only
+ * gold is missing) otherwise, "highest level" at the top. Reads `roomBuild`, the function `buildRoom` checks with.
+ */
 function UpgradeBand({ room }: { room: RoomDef }) {
   const c = campaign.value!;
-  const up = c.home.kind === 'castle' ? nextRoomLevel(data, c, room) : null;
-  // the build command itself comes with Epic 10: until then only a locked step is shown
-  if (!up?.unmet) return null;
+  const apply = useContext(RoomApply);
+  if (c.home.kind !== 'castle' || !room.levels.length) return null;
+  const b = roomBuild(data, c, room.id);
+  if (b.error === 'unknown_room') return null;
+  if (b.error === 'max_level')
+    return (
+      <div class="hm-upband is-top">
+        <b>{t('ui.room.maxLevel')}</b>
+      </div>
+    );
+  if (b.error !== null)
+    return (
+      <div class="hm-upband is-locked">
+        <Icon name="lock" size={16} />
+        <b>{t('ui.room.upgradeTo', { n: b.level })}</b>
+        <span>{b.error === 'not_enough_gold' ? <Amount resource="gold" value={b.gold} short /> : lockReason(b.unmet)}</span>
+      </div>
+    );
+  // the companion that opens level 3: the first of the room's two who is in the company
+  const step = room.levels[b.level - 2]!;
+  const mates = step.requires.map(companionsOf).find((x) => x !== null) ?? [];
+  const mate = mates.find((id) => c.roster.some((u) => u.id === id));
+  const name = t(`room.${room.id}.name`);
   return (
-    <div class="hm-upband is-locked">
-      <Icon name="lock" size={16} />
-      <b>{t('ui.room.upgradeTo', { n: up.level })}</b>
-      <span>{lockReason(up.unmet)}</span>
+    <div class="hm-upband is-ready">
+      <div class="hm-upband__text">
+        <b>{t('ui.room.upgradeTo', { n: b.level })}</b>
+        <small>{t(`room.${room.id}.level.${b.level}`)}</small>
+        {mate && <small class="hm-upband__mate">{t('ui.room.mateReady', { name: t(`unit.${mate}.name`) })}</small>}
+      </div>
+      <PrimaryButton onClick={() => apply?.({ type: 'buildRoom', room: room.id }, t('ui.room.built', { room: name, n: b.level }))}>
+        {t('ui.room.build')} · <Amount resource="gold" value={b.gold} />
+      </PrimaryButton>
     </div>
   );
 }
@@ -362,6 +408,7 @@ function PersonLine({ unit, name, sub, side, selected, onClick, extra }: { unit?
 export function HealerRoom({ room, apply, onClose }: { room: RoomDef; apply: Apply; onClose: () => void }) {
   const c = campaign.value!;
   const cfg = data.balance.economy.scarRemoval;
+  const cost = scarCost(data, c);
   const [sel, setSel] = useState<string | null>(null);
   const scars = c.roster.flatMap((u) => u.scars.map((s, i) => ({ u, s, i, key: `${u.id}:${i}` })));
   const chosen = scars.find((x) => x.key === sel);
@@ -377,8 +424,8 @@ export function HealerRoom({ room, apply, onClose }: { room: RoomDef; apply: App
               <ItemImage data={data} item={cfg.altItem} size={24} />
             </SecondaryButton>
           )}
-          <PrimaryButton disabled={!chosen || c.gold < cfg.gold} onClick={() => chosen && apply({ type: 'healScar', unit: chosen.u.id, index: chosen.i }, t('ui.camp.healed')) && setSel(null)}>
-            {t('ui.room.healer.heal')} · <Amount resource="gold" value={cfg.gold} short={c.gold < cfg.gold} />
+          <PrimaryButton disabled={!chosen || c.gold < cost} onClick={() => chosen && apply({ type: 'healScar', unit: chosen.u.id, index: chosen.i }, t('ui.camp.healed')) && setSel(null)}>
+            {t('ui.room.healer.heal')} · <Amount resource="gold" value={cost} short={c.gold < cost} />
           </PrimaryButton>
         </>
       }
@@ -643,6 +690,14 @@ export function MemorialRoom({ room, onClose }: { room: RoomDef; apply: Apply; o
 
 /** Dispatch by room function. */
 export function Room({ room, apply, onClose, unit }: { room: RoomDef; apply: Apply; onClose: () => void; unit?: string }) {
+  return (
+    <RoomApply.Provider value={apply}>
+      <RoomBody room={room} apply={apply} onClose={onClose} unit={unit} />
+    </RoomApply.Provider>
+  );
+}
+
+function RoomBody({ room, apply, onClose, unit }: { room: RoomDef; apply: Apply; onClose: () => void; unit?: string }) {
   switch (room.function) {
     case 'convoy':
       return <ConvoyRoom room={room} apply={apply} onClose={onClose} />;
@@ -662,6 +717,14 @@ export function Room({ room, apply, onClose, unit }: { room: RoomDef; apply: App
       return <EnchanterRoom room={room} apply={apply} onClose={onClose} />;
     case 'academy':
       return <AcademyRoom room={room} apply={apply} onClose={onClose} unit={unit} />;
+    case 'workshop':
+    case 'training':
+      // their effects come with stories 10.7 and 10.9; until then the panel holds the build-up band and a line
+      return (
+        <RoomPanel room={room} onClose={onClose}>
+          <div class="hm-none">{t('ui.room.later')}</div>
+        </RoomPanel>
+      );
   }
 }
 

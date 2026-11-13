@@ -176,7 +176,7 @@ development_status:
 
   # Epic 10: Die Burg ausbauen (ab Akt 2) – verfeinert 2026-10-31, neu geschnitten nach Readiness 2026-10-31
   epic-10: in-progress  # nur durch 10-14 (Burg in 3D, PR 100); Reihenfolge sonst unverändert
-  10-1-raeume-ausbauen: backlog  # Räume ausbauen
+  10-1-raeume-ausbauen: review  # Räume ausbauen
   10-2-akademie-und-aufstieg-mit-glutfunke: review  # Akademie und Aufstieg mit Glutfunke
   10-3-profi-klassen-und-werte: review  # Profi-Klassen und Werte
   10-4-wirkungen-der-profi-wege: review  # Wirkungen der Profi-Wege

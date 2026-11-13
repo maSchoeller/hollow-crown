@@ -5,13 +5,16 @@ import { conditionSchema, conditionsListSchema, effectSchema } from './schemaCon
 
 export const roomSchema = z.object({
   id: z.string(),
-  function: z.enum(['convoy', 'merchant', 'smith', 'healer', 'tavern', 'campfire', 'memorial', 'enchanter', 'academy']),
+  function: z.enum(['convoy', 'merchant', 'smith', 'healer', 'tavern', 'campfire', 'memorial', 'enchanter', 'academy', 'workshop', 'training']),
   icon: z.string(),
   fromAct: z.number().int().min(1).default(1),
   homes: z.array(z.enum(['camp', 'castle'])).min(1),
   requires: z.array(conditionSchema).default([]),
-  // level 2 and 3 of a castle room: one entry each, in order
-  levels: z.array(z.strictObject({ requires: z.array(conditionSchema).default([]) })).max(2).default([]),
+  // level 2 and 3 of a castle room: one entry each, in order, with its gold (story 10.1)
+  levels: z
+    .array(z.strictObject({ cost: z.strictObject({ gold: z.number().int().positive() }), requires: z.array(conditionSchema).default([]) }))
+    .max(2)
+    .default([]),
   unlocks: z.array(z.strictObject({ id: z.string().regex(/^[a-z][a-z0-9_]*$/), requires: z.array(conditionSchema).default([]) })).default([]),
 });
 
