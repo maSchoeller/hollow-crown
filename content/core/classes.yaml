@@ -6,6 +6,8 @@
 # classAction  Klassen-Aktion als Daten (Story 2.3 ff. setzen sie um): id, kind passive|active, perMap = Einsätze je Karte.
 # proPaths  die zwei Profi-Wege (Akademie, Epic 10); nicht spielbare Wege (playable: false) zeigt die Akademie gesperrt mit „folgt“.
 # proSkills Profi-Skills eines Profi-Wegs (Präfix pro_, Story 10.3); Akademie-Stufe 3 gibt sie als zweiten Weg mit.
+# proPart   sichtbares Anhängeteil des Profi-Wegs auf dem Brett (Story 10.13); Modell und Körper-Sockel in
+#           content/core/render.yaml unter gear.proParts, Name als part.<classId>.name in den Locales.
 # base/growth/growthMod/caps: Startwerte [C], aus den PoC-Klassen abgeleitet (GDD-Annahme 3, Herleitung im Story-Log 2.2).
 #   growthMod wird zur Charakter-Wachstumsrate addiert (Prozentpunkte); base/growth gelten für generische Einheiten.
 # art       Porträt generischer Einheiten: art/mockups/characters-s1/class_<art>.png (Standard: die Klassen-Id).
@@ -223,6 +225,7 @@
   tags: []
   skill: counter_instinct
   proSkills: [pro_duel]
+  proPart: feather_beret
   base: { hp: 28, str: 9, mag: 1, skl: 11, spd: 11, lck: 4, def: 8, res: 3 }
   growth: { hp: 85, str: 50, mag: 5, skl: 50, spd: 50, lck: 25, def: 30, res: 15 }
   growthMod: { hp: 15, str: 10, mag: 0, skl: 10, spd: 10, lck: 0, def: 5, res: 0 }
@@ -247,6 +250,7 @@
   tags: []
   skill: phalanx
   proSkills: [pro_guard]
+  proPart: tower_shield
   base: { hp: 29, str: 9, mag: 0, skl: 8, spd: 7, lck: 3, def: 11, res: 3 }
   growth: { hp: 85, str: 50, mag: 5, skl: 40, spd: 35, lck: 25, def: 45, res: 15 }
   growthMod: { hp: 15, str: 10, mag: 0, skl: 5, spd: 5, lck: 0, def: 15, res: 0 }
@@ -271,6 +275,7 @@
   tags: []
   skill: phalanx
   proSkills: [pro_knockback]
+  proPart: ram_axe
   base: { hp: 32, str: 11, mag: 0, skl: 7, spd: 7, lck: 2, def: 7, res: 2 }
   growth: { hp: 95, str: 55, mag: 0, skl: 40, spd: 35, lck: 25, def: 30, res: 10 }
   growthMod: { hp: 20, str: 15, mag: 0, skl: 5, spd: 0, lck: 0, def: 5, res: -5 }
@@ -295,6 +300,7 @@
   tags: []
   skill: eagle_eye
   proSkills: [pro_far_shot]
+  proPart: feather_hat
   base: { hp: 26, str: 8, mag: 1, skl: 12, spd: 9, lck: 3, def: 6, res: 3 }
   growth: { hp: 75, str: 45, mag: 5, skl: 60, spd: 45, lck: 25, def: 25, res: 15 }
   growthMod: { hp: 10, str: 5, mag: 0, skl: 20, spd: 10, lck: 0, def: 5, res: 0 }
@@ -318,6 +324,7 @@
   tags: []
   skill: elemental_focus
   proSkills: [pro_wide_cast]
+  proPart: pointed_hat
   base: { hp: 24, str: 1, mag: 10, skl: 8, spd: 8, lck: 3, def: 3, res: 8 }
   growth: { hp: 65, str: 5, mag: 60, skl: 45, spd: 45, lck: 25, def: 15, res: 40 }
   growthMod: { hp: 5, str: 0, mag: 20, skl: 5, spd: 5, lck: 0, def: 0, res: 15 }
@@ -341,6 +348,7 @@
   tags: [holy]
   skill: blessing
   proSkills: [pro_wide_heal]
+  proPart: mitre
   base: { hp: 24, str: 1, mag: 9, skl: 6, spd: 8, lck: 7, def: 3, res: 10 }
   growth: { hp: 65, str: 5, mag: 55, skl: 35, spd: 45, lck: 50, def: 15, res: 50 }
   growthMod: { hp: 5, str: 0, mag: 15, skl: 0, spd: 5, lck: 15, def: 0, res: 20 }
@@ -367,6 +375,7 @@
   tags: []
   skill: counter_instinct
   proSkills: [pro_blade_dance]
+  proPart: second_blade
   base: { hp: 27, str: 8, mag: 1, skl: 11, spd: 12, lck: 5, def: 6, res: 3 }
   growth: { hp: 80, str: 45, mag: 5, skl: 55, spd: 60, lck: 30, def: 25, res: 15 }
   growthMod: { hp: 10, str: 5, mag: 0, skl: 10, spd: 15, lck: 5, def: 0, res: 0 }
@@ -389,6 +398,7 @@
   tags: []
   skill: eagle_eye
   proSkills: [pro_woodsman]
+  proPart: leaf_cloak
   base: { hp: 26, str: 8, mag: 1, skl: 10, spd: 9, lck: 4, def: 6, res: 3 }
   growth: { hp: 75, str: 45, mag: 5, skl: 55, spd: 50, lck: 25, def: 25, res: 15 }
   growthMod: { hp: 10, str: 5, mag: 0, skl: 15, spd: 10, lck: 0, def: 0, res: 0 }
@@ -411,6 +421,7 @@
   tags: []
   skill: elemental_focus
   proSkills: [pro_hex]
+  proPart: raven_collar
   base: { hp: 24, str: 1, mag: 11, skl: 8, spd: 7, lck: 3, def: 2, res: 8 }
   growth: { hp: 65, str: 5, mag: 65, skl: 45, spd: 40, lck: 25, def: 15, res: 40 }
   growthMod: { hp: 5, str: 0, mag: 20, skl: 5, spd: 5, lck: 0, def: 0, res: 15 }
@@ -433,6 +444,7 @@
   tags: [holy]
   skill: blessing
   proSkills: [pro_battle_faith]
+  proPart: war_hammer
   base: { hp: 26, str: 4, mag: 8, skl: 6, spd: 7, lck: 6, def: 5, res: 8 }
   growth: { hp: 70, str: 30, mag: 45, skl: 35, spd: 40, lck: 45, def: 30, res: 45 }
   growthMod: { hp: 5, str: 10, mag: 5, skl: 0, spd: 5, lck: 5, def: 5, res: 10 }
@@ -454,6 +466,7 @@
   proPaths: []
   tags: []
   proSkills: [pro_song]
+  proPart: great_lute
   base: { hp: 25, str: 4, mag: 5, skl: 8, spd: 10, lck: 7, def: 3, res: 6 }
   growth: { hp: 75, str: 23, mag: 35, skl: 45, spd: 50, lck: 40, def: 20, res: 35 }
   growthMod: { hp: 5, str: 3, mag: 5, skl: 5, spd: 10, lck: 10, def: 0, res: 10 }
@@ -475,6 +488,7 @@
   proPaths: []
   tags: []
   proSkills: [pro_banner]
+  proPart: back_banner
   base: { hp: 27, str: 6, mag: 3, skl: 8, spd: 8, lck: 6, def: 6, res: 5 }
   growth: { hp: 80, str: 33, mag: 30, skl: 40, spd: 45, lck: 35, def: 30, res: 30 }
   growthMod: { hp: 10, str: 5, mag: 0, skl: 5, spd: 5, lck: 5, def: 5, res: 5 }
@@ -497,6 +511,7 @@
   tags: []
   skill: climber
   proSkills: [pro_shadow]
+  proPart: half_mask
   base: { hp: 25, str: 8, mag: 1, skl: 10, spd: 12, lck: 5, def: 5, res: 3 }
   growth: { hp: 75, str: 45, mag: 5, skl: 55, spd: 55, lck: 30, def: 23, res: 15 }
   growthMod: { hp: 7, str: 5, mag: 0, skl: 12, spd: 13, lck: 5, def: 0, res: 0 }
@@ -519,6 +534,7 @@
   tags: []
   skill: climber
   proSkills: [pro_traps]
+  proPart: trap_belt
   base: { hp: 26, str: 7, mag: 1, skl: 11, spd: 9, lck: 4, def: 6, res: 3 }
   growth: { hp: 80, str: 40, mag: 5, skl: 60, spd: 40, lck: 25, def: 30, res: 15 }
   growthMod: { hp: 10, str: 5, mag: 0, skl: 15, spd: 8, lck: 0, def: 5, res: 0 }
@@ -541,6 +557,7 @@
   tags: []
   skill: tactician_command
   proSkills: [pro_grand_command]
+  proPart: general_cloak
   base: { hp: 27, str: 7, mag: 7, skl: 8, spd: 8, lck: 6, def: 6, res: 6 }
   growth: { hp: 80, str: 45, mag: 45, skl: 50, spd: 45, lck: 40, def: 35, res: 35 }
   growthMod: { hp: 5, str: 5, mag: 5, skl: 5, spd: 5, lck: 5, def: 5, res: 5 }
@@ -562,6 +579,7 @@
   tags: []
   skill: rally
   proSkills: [pro_banner_lord]
+  proPart: standard
   base: { hp: 30, str: 9, mag: 2, skl: 9, spd: 9, lck: 6, def: 9, res: 4 }
   growth: { hp: 90, str: 50, mag: 10, skl: 45, spd: 45, lck: 35, def: 45, res: 25 }
   growthMod: { hp: 15, str: 5, mag: 0, skl: 5, spd: 5, lck: 5, def: 10, res: 0 }

@@ -14,7 +14,8 @@ are mapped by keyword to the board's animations and retimed to its sprite timing
 attack (and attack_<motion> per weapon group) = 0.5 s with the impact at 0.25 s (hitFrame 3 at 12 fps), hit = 0.5 s; idle, walk and downed (last frame)
 keep their length. --anims (repeatable; the first file wins on a name clash) fills the animations the export lacks from other Tripo exports
 (same Mixamo bone names), transferred relative to each rig's rest pose (retarget()); a new figure then needs only the Tripo auto-rig.
-Hand sockets (sockets()) carry the weapon layer (GA9): the renderer attaches the equipped weapon group at runtime.
+Sockets (sockets()) carry what the renderer attaches at runtime: the hand sockets the weapon layer (GA9), the body
+sockets `socket_back` and `socket_head` the attached part of a pro path (story 10.13).
 Usually run for all figures through `pnpm art:tripo` (tools/art/tripo_units.py).
 """
 import os
@@ -365,10 +366,29 @@ body.data.materials.append(mat)
 body.name = "body"
 
 
+def skin_top(bone_name):
+    """World z of the highest vertex whose strongest skin weight is `bone_name` (rest pose); None without any."""
+    top = None
+    for o in skinned:
+        index = {vg.index: vg.name for vg in o.vertex_groups}
+        for v in o.data.vertices:
+            best = max(v.groups, key=lambda g: g.weight, default=None)
+            if best is None or index.get(best.group) != bone_name:
+                continue
+            z = (o.matrix_world @ v.co).z
+            top = z if top is None else max(top, z)
+    return top
+
+
 def sockets():
-    """Empties `socket_r` / `socket_l` in the fists, parented to the hand bones: the renderer hangs the weapon library
-    (tools/art/blender_weapons.py) there by weapon group (GA9). Frame in the rest pose: +Y up along the hand towards the
-    forearm, +Z forward across the fist (the grip axis), +X = Y × Z (the figure's left); unit scale in board units."""
+    """Empties in the fists and on the body, parented to their bone; the renderer hangs a small model there at runtime:
+    `socket_r` / `socket_l` the weapon library (tools/art/blender_weapons.py) by weapon group (GA9), `socket_back` and
+    `socket_head` the attached part of a pro path (tools/art/blender_proparts.py, story 10.13).
+
+    Hand frame in the rest pose: +Y up along the hand towards the forearm, +Z forward across the fist (the grip axis),
+    +X = Y × Z (the figure's left). Body frame: +Y world up, +Z the figure's facing, +X its left — `socket_back` sits in
+    the middle of the upper chest (a part offsets itself backwards, towards -Z), `socket_head` on the crown.
+    Unit scale in board units throughout."""
     arm.data.pose_position = "REST"
     bpy.context.view_layer.update()
     fwd = Vector((0, -1, 0))
@@ -388,6 +408,29 @@ def sockets():
         ob.parent_type = "BONE"
         ob.parent_bone = bone.name
         ob.matrix_world = frame
+        made.append(ob)
+    # body sockets: axis-aligned to the figure, so a part is modelled the same way for every figure
+    y, z = Vector((0, 0, 1)), fwd
+    frame = Matrix((y.cross(z), y, z)).transposed().to_4x4()
+    chest = next((n for n in ("mixamorig:Spine2", "mixamorig:Spine1", "mixamorig:Spine") if n in arm.data.bones), None)
+    for name, bone_name, at in (("socket_back", chest, 0.5), ("socket_head", "mixamorig:Head", 1.0)):
+        if bone_name not in arm.data.bones:
+            raise SystemExit(f"sockets: no bone for {name}")
+        bone = arm.data.bones[bone_name]
+        f = frame.copy()
+        f.translation = arm.matrix_world @ (bone.head_local + (bone.tail_local - bone.head_local) * at)
+        if name == "socket_head":
+            # the head bone ends inside the big chibi head: put the socket on the top of the head mesh instead, so a
+            # hat sits on the hair and not in it. Vertices whose strongest weight is the head bone, in the rest pose.
+            top = skin_top(bone_name)
+            if top:
+                f.translation = Vector((f.translation.x, f.translation.y, top))
+        ob = bpy.data.objects.new(name, None)
+        bpy.context.scene.collection.objects.link(ob)
+        ob.parent = arm
+        ob.parent_type = "BONE"
+        ob.parent_bone = bone.name
+        ob.matrix_world = f
         made.append(ob)
     arm.data.pose_position = "POSE"
     return made

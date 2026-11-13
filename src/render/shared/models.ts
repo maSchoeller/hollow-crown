@@ -27,7 +27,7 @@ import '@babylonjs/loaders/glTF/2.0/Extensions/EXT_meshopt_compression';
 import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_mesh_quantization';
 import '@babylonjs/loaders/glTF/2.0/Extensions/KHR_texture_transform';
 import { MeshoptDecoder } from 'meshoptimizer/decoder';
-import { unitModelPath, type GearPiece, type Team } from '../../core';
+import { pieceFolder, socketName, unitModelPath, type FigurePiece, type Team } from '../../core';
 import type { AssetStore } from '../host';
 import { assetUrl } from './assets';
 import { FigurePlugin, type FigureLook } from './figurePlugin';
@@ -216,28 +216,30 @@ export function sharedFigureMaterial(cache: Map<string, StandardMaterial>, scene
 }
 
 /**
- * Hangs the weapon library models (GA9, tools/art/blender_weapons.py) on the figure's hand sockets (`socket_r`,
- * `socket_l` from tools/art/prepare_tripo_unit.py). Figures without sockets carry their weapon in the model.
+ * Hangs the small models on the figure's sockets (tools/art/prepare_tripo_unit.py): the weapon library (GA9,
+ * tools/art/blender_weapons.py) on the hand sockets `socket_r` / `socket_l`, the attached part of a pro path
+ * (story 10.13, tools/art/blender_proparts.py) on the body sockets `socket_back` / `socket_head`. Figures without
+ * sockets (the Blender figures) carry their weapon in the model and show no part.
  */
 async function attachGear(
   store: AssetStore,
   root: TransformNode,
-  gear: GearPiece[],
+  gear: FigurePiece[],
   ramp: readonly string[],
   name: string,
-  /** the node of a hand's socket, if the figure has one (a figure on baked animation makes it when the first weapon asks) */
-  socketOf: (hand: GearPiece['hand']) => TransformNode | undefined = (hand) =>
-    root.getDescendants(false).find((n) => n.name.endsWith(hand === 'right' ? ':socket_r' : ':socket_l')) as TransformNode | undefined,
+  /** the node of a socket, if the figure has it (a figure on baked animation makes it when the first piece asks) */
+  socketOf: (socket: string) => TransformNode | undefined = (socket) =>
+    root.getDescendants(false).find((n) => n.name.endsWith(`:${socket}`)) as TransformNode | undefined,
 ): Promise<{ meshes: Mesh[]; grips: UnitModel['grips'] }> {
   const meshes: Mesh[] = [];
   const grips: UnitModel['grips'] = [];
   for (const piece of gear) {
-    const socket = socketOf(piece.hand);
-    const c = socket && (await store.container(`models/weapons/${piece.model}.glb`));
+    const socket = socketOf(socketName(piece));
+    const c = socket && (await store.container(`models/${pieceFolder(piece)}/${piece.model}.glb`));
     if (!socket || !c || root.isDisposed()) continue;
     const grip = new TransformNode(`${name}:${piece.model}:grip`, store.scene);
     grip.parent = socket;
-    grips.push({ node: grip, hold: ((piece.hold ?? 0) * Math.PI) / 180 });
+    grips.push({ node: grip, hold: (('hold' in piece ? (piece.hold ?? 0) : 0) * Math.PI) / 180 });
     const inst = instantiate(c, store.scene, (n) => `${name}:${piece.model}:${n}`);
     for (const glRoot of inst.rootNodes) {
       // the socket already sits in the figure's glTF space: keep the meshes' glTF-local transforms and drop the
@@ -302,7 +304,7 @@ async function vatEntry(store: AssetStore, c: AssetContainer, handle: VatHandle)
 }
 
 /** A figure on baked animation: copies of the nodes above the joints, a body clone that shares its geometry with the team's, sockets for the weapons. */
-async function loadVatUnit(store: AssetStore, entry: VatEntry, team: Team, name: string, gear: GearPiece[]): Promise<UnitModel | null> {
+async function loadVatUnit(store: AssetStore, entry: VatEntry, team: Team, name: string, gear: FigurePiece[]): Promise<UnitModel | null> {
   const { scene } = store;
   const ramp = store.figureLook.teams[team];
   let tpl = entry.bodies.get(team);
@@ -333,8 +335,8 @@ async function loadVatUnit(store: AssetStore, entry: VatEntry, team: Team, name:
   manager.animationParameters.set(0, 0, 0, 1);
   body.bakedVertexAnimationManager = manager;
   const sockets: NonNullable<UnitModel['vat']>['sockets'] = [];
-  const socketOf = (hand: GearPiece['hand']): TransformNode | undefined => {
-    const index = entry.data.sockets.findIndex((k) => k.name === (hand === 'right' ? 'socket_r' : 'socket_l'));
+  const socketOf = (socket: string): TransformNode | undefined => {
+    const index = entry.data.sockets.findIndex((k) => k.name === socket);
     if (index < 0) return undefined;
     const have = sockets.find((k) => k.index === index);
     if (have) return have.node;
@@ -383,7 +385,7 @@ export async function loadUnitModel(
   id: string,
   team: Team,
   name: string,
-  gear: GearPiece[] = [],
+  gear: FigurePiece[] = [],
   unitPacks?: Readonly<Record<string, string>>,
   vatPath?: string,
 ): Promise<UnitModel | null> {

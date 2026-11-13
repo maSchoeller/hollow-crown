@@ -213,6 +213,8 @@ export interface ClassDef {
   skill?: string;
   /** skills of the pro path (story 10.2/10.3); a unit that learned this path second gets them too */
   proSkills?: string[];
+  /** story 10.13: the attached part of the pro path on the board (`gear.proParts` of render.yaml) */
+  proPart?: string;
   base: Stats;
   growth: Stats;
   growthMod: Partial<Stats>;
@@ -368,4 +370,24 @@ export interface GearPiece {
   motion?: string;
   /** degrees about the hand socket's X outside attacks: the model is built in its striking grip */
   hold?: number;
+}
+
+/** Story 10.13: the visible part of a pro path, hung on a body socket of the figure (`render.yaml` `gear.proParts`). */
+export interface PartPiece {
+  model: string;
+  socket: 'back' | 'head';
+}
+
+/** A small model the board hangs on a socket of a figure: a weapon in a hand (GA9) or the part of a pro path (story 10.13). */
+export type FigurePiece = GearPiece | PartPiece;
+
+/** The socket a piece hangs on, as `tools/art/prepare_tripo_unit.py` names it. */
+export function socketName(piece: FigurePiece): string {
+  if ('socket' in piece) return `socket_${piece.socket}`;
+  return piece.hand === 'right' ? 'socket_r' : 'socket_l';
+}
+
+/** The folder of a piece's model below `public/assets/models/`. */
+export function pieceFolder(piece: FigurePiece): 'weapons' | 'parts' {
+  return 'socket' in piece ? 'parts' : 'weapons';
 }

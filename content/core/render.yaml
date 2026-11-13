@@ -266,6 +266,27 @@ gear:
   offHand:
     shield: { model: shield, hand: left }
     lute: { model: lute, hand: left }   # nach Waffengruppe des Gegenstands (Nebenhand), nicht nach kind: Laute und Fokus sind beide Zubehör
+  # Story 10.13 (§4.2): sichtbares Anhängeteil je Profi-Weg, `proPart` der Klasse in content/core/classes.yaml.
+  # model = art/models/parts/<model>.glb (tools/art/blender_proparts.py), socket = Körper-Sockel der Figur
+  # (`socket_back` am oberen Brustwirbel, `socket_head` am Scheitel; tools/art/prepare_tripo_unit.py). Nur
+  # Bild-zu-3D-Figuren haben Sockel; Blender-Figuren zeigen kein Teil.
+  proParts:
+    tower_shield: { model: tower_shield, socket: back }      # Bollwerk
+    ram_axe: { model: ram_axe, socket: back }                # Brecher
+    second_blade: { model: second_blade, socket: back }      # Klingentänzer
+    feather_beret: { model: feather_beret, socket: head }    # Duellant
+    feather_hat: { model: feather_hat, socket: head }        # Scharfschütze (der Langbogen kommt aus der Waffe)
+    leaf_cloak: { model: leaf_cloak, socket: back }          # Waldläufer
+    pointed_hat: { model: pointed_hat, socket: head }        # Weiser
+    raven_collar: { model: raven_collar, socket: back }      # Hexer
+    mitre: { model: mitre, socket: head }                    # Bischof
+    war_hammer: { model: war_hammer, socket: back }          # Kampfpriester
+    great_lute: { model: great_lute, socket: back }          # Barde
+    back_banner: { model: back_banner, socket: back }        # Bannerträger
+    half_mask: { model: half_mask, socket: head }            # Schatten
+    trap_belt: { model: trap_belt, socket: back }            # Fallensteller
+    general_cloak: { model: general_cloak, socket: back }    # Großstratege
+    standard: { model: standard, socket: back }              # Bannerherr
 
 # D8: Qualitätsstufen. maxDpr = höchste Pixeldichte der Render-Auflösung, shadowMap = Kantenlänge der Schattenkarte (0 = keine Schatten)
 quality:

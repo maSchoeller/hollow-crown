@@ -149,6 +149,8 @@ export const classSchema = z.object({
   skill: z.string().optional(),
   /** skills of a pro path (story 10.2/10.3): active for the class and for a unit that learned it as its second path */
   proSkills: z.array(z.string()).max(2).default([]),
+  /** story 10.13: visible attached part of the pro path on the board (`gear.proParts` of render.yaml) */
+  proPart: z.string().regex(/^[a-z0-9_]+$/).optional(),
   base: statsSchema,
   growth: statsSchema,
   growthMod: partialStats,
