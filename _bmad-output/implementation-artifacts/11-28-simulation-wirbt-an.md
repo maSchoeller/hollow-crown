@@ -24,13 +24,14 @@ Siehe `concept/26-epics/epics/epic-11.md`, Story 11.28.
 - [x] Simulationsparameter `simulation.hire.reserve` (Schema, Typ, `balance.yaml`, Startwert 500 [ASSUMPTION]) (AC 1)
 - [x] Bericht: `hire` in „home spent per run“, Söldner je Lauf, JSON `hiredPerRun` und `deployed` je Mission (AC 2)
 - [x] Test in `tests/unit/sim-campaign.test.ts`: Limit, Reserve, höchste Stufe zuerst, gleiche Seeds geben gleiche Söldner, ohne nächste Mission kein Anwerben (AC 1, 2)
-- [x] Messung vorher/nachher (AC 3)
+- [x] Messung vorher/nachher, nach dem Merge von Story 10.1 wiederholt (AC 3)
 
 ## Dev Notes
 
 - Wer in den Kampf geht, bleibt unverändert: Die Sim stellt die Truppe in Roster-Reihenfolge auf, Gefährten zuerst, Söldner füllen die freien Plätze. So bleiben Figuren, die für Anwerbe-Gespräche gebraucht werden, im Einsatz.
 - Das Einsatz-Limit ist `min(deploy.max, Anzahl der Startfelder)` der Karte des nächsten Story-Knotens (`nextNode`, mit `--order`). Ohne Karte (Platzhalter) wird nicht angeworben.
 - Die Tavernen-Regeln (`hireError`: Söldner-Limit 6, Gold) gelten unverändert; die Heuristik ruft nur den Kampagnen-Command `hire`.
+- Reihenfolge der Heuristik nach dem Merge von Story 10.1: Supports, Aufstieg, Räume ausbauen, Narben heilen, Söldner anwerben, Heiltränke, Aufwertungen.
 - `tests/fixtures/saves/generate-act1-finale.ts` ruft `homeHeuristic` ohne nächsten Knoten auf und wirbt deshalb nicht an. Das Fixture bleibt unverändert.
 
 ### References
@@ -40,62 +41,67 @@ Siehe `concept/26-epics/epics/epic-11.md`, Story 11.28.
 
 ## Messung (2026-11-13)
 
-Stand `main` f1cfb3b0. Gemessen mit `pnpm sim --campaign act2 --runs 50 --difficulty <stufe>` (Seed 1), vorher ohne und nachher mit Anwerben. Je Zelle steht vorher → nachher. Die Spalte „Sieg“ ist der erste Versuch, „Einsatz“ die mittlere Zahl eigener Figuren beim Sieg.
+Seit Story 10.1 (PR #201, während dieser Story gemergt) baut die Heuristik vor dem Heilen Räume aus, und die Räume nehmen das meiste Gold. Maßgeblich ist deshalb Messung A auf dem gemergten Stand. Messung B ist der erste Lauf auf `main` f1cfb3b0, noch ohne Räume.
 
-### Normal
+### A: mit Raumausbau (Branch nach dem Merge von `main` ba9648b7)
+
+Je Stufe `pnpm sim --campaign act2 --runs 50 --difficulty <stufe>` (Seed 1). „Ohne“ ist derselbe Stand mit `--set simulation.hire.reserve=100000000`, also ohne Anwerben. Akt 1 läuft in jedem Lauf verkettet mit. Je Zelle steht ohne → mit Anwerben. Die Spalte „Sieg“ ist der erste Versuch, „Einsatz“ die mittlere Zahl eigener Figuren beim Sieg.
+
+**Normal**
 
 | Mission | Sieg | Niedergestreckte | Tote | Einsatz | Armee / P |
 |---|---|---|---|---|---|
-| 1-8 | 1,00 → 0,96 | 0,98 → 0,94 | 0,36 → 0,24 | 5,3 → 9,0 | 8,8 → 8,8 / 9 |
-| 2-1 | 0,96 → 0,98 | 1,26 → **2,78** | 0,45 → 0,78 | 5,0 → 8,5 | 12,0 → 11,2 / 12 |
-| 2-2 | 1,00 → 0,98 | 0,68 → **1,49** | 0,06 → 0,55 | 5,0 → 6,9 | 13,2 → 12,1 / 13 |
-| 2-3 | 1,00 → 1,00 | 0,53 → **2,10** | 0,13 → 0,88 | 5,0 → 8,4 | 14,6 → 13,3 / 14 |
-| 2-4 | 1,00 → 1,00 | 1,34 → **2,96** | 0,40 → 0,92 | 5,6 → 9,8 | 16,0 → 15,3 / 15 |
-| 2-5 | 1,00 → 0,98 | 0,32 → 0,82 | 0,04 → 0,20 | 5,1 → 8,4 | 18,4 → 17,0 / 16 |
-| 2-6 | 1,00 → 1,00 | 1,28 → **2,71** | 0,13 → 0,51 | 7,1 → 9,7 | 19,5 → 18,9 / 17 |
-| 2-7 | 0,85 → 0,82 | 0,72 → 1,33 | 0,14 → 0,47 | 7,0 → 9,7 | 21,2 → 20,5 / 18 |
-| **2-8** | **0,16 → 0,51** | 6,21 → 11,64 | 1,79 → 4,76 | 8,4 → 12,5 | 22,2 → 22,3 / 19 |
+| 1-8 | 0,94 → 0,98 | 0,96 → 1,00 | 0,38 → 0,37 | 5,3 → 9,1 | 8,8 → 8,9 / 9 |
+| 2-1 | 1,00 → 0,96 | 1,04 → **2,69** | 0,28 → 0,69 | 4,9 → 8,4 | 12,1 → 11,2 / 12 |
+| 2-2 | 1,00 → 1,00 | 0,55 → **1,47** | 0,11 → 0,47 | 5,2 → 6,9 | 13,2 → 12,2 / 13 |
+| 2-3 | 1,00 → 1,00 | 0,57 → **1,96** | 0,26 → 1,06 | 5,1 → 8,4 | 14,6 → 13,4 / 14 |
+| 2-4 | 1,00 → 1,00 | 1,23 → **3,45** | 0,36 → 1,43 | 5,5 → 9,0 | 16,1 → 15,1 / 15 |
+| 2-5 | 1,00 → 0,98 | 0,32 → 0,67 | 0,04 → 0,18 | 5,2 → 7,5 | 18,3 → 16,5 / 16 |
+| 2-6 | 1,00 → 1,00 | 1,28 → **2,59** | 0,06 → 0,29 | 7,1 → 9,1 | 19,4 → 18,7 / 17 |
+| 2-7 | 0,91 → 0,82 | 0,66 → 1,12 | 0,21 → 0,35 | 6,9 → 8,9 | 21,2 → 20,4 / 18 |
+| **2-8** | **0,07 → 0,28** | 6,42 → 8,87 | 1,64 → 3,00 | 7,7 → 10,1 | 22,1 → 21,4 / 19 |
 
-Akt 2 bis zum Ende geschafft (mit Neustarts): 14/50 → 34/50. Eintritt in Akt 2: Armee 12,0 → 11,2, Gold 5 882 → 1 655. Je Lauf 6,8 Söldner für 14 244 Gold.
+Akt 2 bis zum Ende geschafft (mit Neustarts): 11/50 → 26/50. Beim Eintritt in Akt 2: Armee 12,1 → 11,2, Gold 2 318 → 1 548. Je Lauf gehen 17 110 → 11 300 Gold in Räume und 0 → 7 218 Gold an 4,6 Söldner.
 
-### Leicht
+**Leicht und Schwer**
 
-| Mission | Sieg | Niedergestreckte | Einsatz |
-|---|---|---|---|
-| 1-8 | 1,00 → 1,00 | 0,20 → 0,16 | 6,6 → 10,2 |
-| 2-1 | 0,96 → 0,98 | 0,48 → 0,90 | 6,6 → 9,0 |
-| 2-4 | 1,00 → 1,00 | 0,90 → 1,76 | 8,3 → 12,0 |
-| 2-6 | 1,00 → 1,00 | 0,48 → 1,64 | 9,5 → 10,0 |
-| 2-7 | 1,00 → 1,00 | 0,80 → 2,38 | 9,5 → 10,0 |
-| **2-8** | **0,96 → 0,78** | 3,20 → 5,54 | 9,6 → 14,8 |
+| | Leicht ohne → mit | Schwer ohne → mit |
+|---|---|---|
+| 2-8 Sieg | 0,86 → 0,84 | 0,00 → 0,09 |
+| 2-8 Einsatz | 9,6 → 12,6 | – → 8,0 |
+| 2-1 Sieg / Niedergestreckte | 1,00 / 0,42 → 0,98 / 0,92 | 0,88 / 2,04 → 0,70 / 5,48 |
+| 2-4 Sieg / Niedergestreckte | 1,00 / 0,94 → 1,00 / 1,78 | 0,59 / 1,53 → 0,76 / 1,72 |
+| 2-7 Sieg / Niedergestreckte | 1,00 / 0,60 → 1,00 / 2,16 | 0,92 / 0,00 → 1,00 / 0,82 |
+| 2-8 erreicht | 50 → 50 | 11 → 22 |
+| Akt 2 fertig | 50/50 → 50/50 | 0/50 → 2/50 |
+| Söldner je Lauf, Gold | 3,8, 5 706 | 3,8, 5 979 |
+| Räume je Lauf, Gold | 28 100 → 21 960 | 5 630 → 1 990 |
 
-Fertig: 50/50 → 50/50. Je Lauf 5,9 Söldner für 12 714 Gold.
+Auf Schwer gewinnt schon 1-1 nur 49 %, vor jedem Anwerben (unverändert).
 
-### Schwer
+### B: ohne Raumausbau (`main` f1cfb3b0, erster Lauf)
 
-| Mission | Sieg | Niedergestreckte | Einsatz | erreicht |
+| | 2-8 Sieg | 2-8 Einsatz | Akt 2 fertig | Söldner je Lauf |
 |---|---|---|---|---|
-| 1-8 | 0,75 → 0,71 | 0,50 → 1,00 | 4,0 → 5,8 | 28 → 34 |
-| 2-1 | 0,83 → 0,76 | 1,96 → 4,59 | 3,8 → 6,3 | 24 → 29 |
-| 2-4 | 0,58 → 0,65 | 1,37 → 2,13 | 4,4 → 5,9 | 19 → 23 |
-| 2-7 | 0,67 → 0,86 | 0,33 → 1,00 | 4,9 → 6,4 | 12 → 21 |
-| **2-8** | **0,00 → 0,00** | 3,78 → 6,60 | – | 9 → 20 |
+| Leicht | 0,96 → 0,78 | 9,6 → 14,8 | 50 → 50 | 5,9 |
+| Normal | 0,16 → 0,51 | 8,4 → 12,5 | 14 → 34 | 6,8 |
+| Schwer | 0,00 → 0,00 | – | 0 → 3 | 4,3 |
 
-Fertig: 0/50 → 3/50. Je Lauf 4,3 Söldner für 7 431 Gold. Schon 1-1 gewinnt auf Schwer nur 49 %, vor jedem Anwerben (unverändert).
-
-### Akt 1 (`--campaign act1`, Normal)
-
-Fertig: 47/50 → 49/50. Gold am Ende: 5 882 → 2 133. Je Lauf 3,5 Söldner für 4 716 Gold. Einsatz in 1-8: 5,3 → 9,0 von 14. Die Siegquoten aller Akt-1-Missionen bleiben im Korridor.
+`--campaign act1` auf Normal: fertig 47/50 → 49/50, Einsatz in 1-8 5,3 → 9,0 von 14, Gold am Ende 5 882 → 2 133, 3,5 Söldner je Lauf. Die Siegquoten von Akt 1 bleiben im Korridor.
 
 ### Vergleich mit 11.27 und Auffälligkeiten (für den Produktinhaber)
 
-1. **2-8 auf Normal:** verkettet 51 % statt 5 % in 11.27 (16 % auf dem heutigen `main`). Das Lab mit voller Truppe misst 85 %. Die Lücke bleibt, weil die Truppe in 2-8 im Mittel 12,5 statt 15 Figuren stellt (Söldner-Limit 6, Tote) und Söldner nur Eisenwaffen tragen.
-2. **Niedergestreckte auf Normal:** 2-1, 2-2, 2-3, 2-4 und 2-6 liegen jetzt über 1,3. Die neuen Figuren sind schwächer als die Kerntruppe und fallen häufiger. Söldner sterben auch öfter: 2-8 hat 4,8 Tote je Sieg.
-3. **Armee-Stufe:** Die Erfahrung verteilt sich auf mehr Köpfe. Beim Eintritt in Akt 2 liegt die Armee bei 11,2 statt 12,0 und damit unter P (12). Bis 2-5 holt sie auf.
-4. **2-8 auf Leicht** fällt von 96 auf 78 %, also unter den Korridor von 95 %. Mehr Figuren auf dem Feld machen das Leicht-Finale für die Sim-KI schwerer. Wahrscheinlich liegt das an der Autoplay-KI und nicht an der Karte. Das sollte geprüft werden, bevor Werte geändert werden.
-5. **Schwer:** Gold fehlt. Die Truppe stellt in Akt 2 nur 5–6 Figuren. Narben und Tote fressen das Gold, und das Anwerben scheitert an der Reserve. 2-8 bleibt bei 0 %. Die verkettete Schwer-Messung taugt weiter nur bedingt, das Lab bleibt für Schwer maßgeblich.
-6. **Gold beim Eintritt in Akt 2** fällt auf Normal von rund 5 900 auf 1 700. `simulation.startExpected['2'].gold: 6000` (`--start expected`) beruht auf der alten Messung ohne Anwerben und passt nicht mehr. Das wird vor der Neuabstimmung nach Epic 10 entschieden, hier wurde nichts geändert.
-7. **Heilen** kostet auf Normal weiter rund 13 000 Gold je Lauf (Narben zu 2 500). Die Heuristik heilt jede Narbe der sechs Stärksten. Ob ein Spieler das so macht, ist offen; der Wert bestimmt mit, wie viel fürs Anwerben bleibt.
+1. **2-8 auf Normal:** In 11.27 lag 2-8 verkettet bei 5 %, das Lab mit voller Truppe misst 85 %. Mit Anwerben steigt der Wert auf 28 % (mit Räumen) bzw. 51 % (ohne Räume). Die Truppe stellt in 2-8 im Mittel 10 von 15 Figuren. Was fehlt, liegt am Gold:
+   - Räume gehen in der Heuristik vor Narben und Söldnern.
+   - Narben kosten je 2 500.
+   - Das Söldner-Limit liegt bei 6.
+   - Söldner tragen nur Eisenwaffen.
+2. **Reihenfolge der Ausgaben:** Ob ein Spieler zuerst Räume ausbaut oder zuerst die Truppe füllt, bestimmt die Messung stark (Räume 17 110 → 11 300 Gold je Lauf). Das sollte vor der Neuabstimmung festgelegt werden. Die Heuristik folgt hier 10.1 (Räume zuerst).
+3. **Niedergestreckte auf Normal:** 2-1, 2-2, 2-3, 2-4 und 2-6 liegen mit Anwerben über 1,3. Die Söldner sind schwächer als die Kerntruppe und fallen häufiger; in 2-8 gibt es 3 Tote je Sieg.
+4. **Armee-Stufe:** Die Erfahrung verteilt sich auf mehr Köpfe. Beim Eintritt in Akt 2 liegt die Armee bei 11,2 statt 12,1 und damit unter P (12). Bis 2-5 holt sie auf.
+5. **2-8 auf Leicht** liegt mit 84–86 % unter dem Korridor von 95 %, mit und ohne Anwerben. Ohne Räume fiel der Wert mit Anwerben von 96 auf 78 %. Mehr Figuren auf dem Feld machen das Finale für die Autoplay-KI nicht leichter. Das sollte an der KI geprüft werden, bevor Werte geändert werden.
+6. **Schwer:** Es fehlt an Gold. Die Truppe stellt in Akt 2 nur 4–6 Figuren. 2-8 steigt von 0 auf 9 %, die verkettete Schwer-Messung taugt weiter nur bedingt.
+7. **Gold beim Eintritt in Akt 2:** Auf Normal sind es noch etwa 1 500. Der Wert `simulation.startExpected['2'].gold: 6000` (`--start expected`) beruht auf der alten Messung und passt nicht mehr. Hier wurde nichts geändert.
 
 Annahme: `simulation.hire.reserve: 500` [ASSUMPTION]. Das ist ein Parameter der Simulation, kein Spielwert.
 
@@ -107,7 +113,7 @@ Claude Opus 5.5
 
 ### Completion Notes List
 
-- Die Ausgangsmessung lief in einem zweiten Checkout auf `main` f1cfb3b0, die neue auf dem Story-Branch, beide mit Seed 1 und 50 Läufen.
+- Messung B lief in einem zweiten Checkout auf `main` f1cfb3b0, Messung A nach dem Merge von `main` (Story 10.1) auf dem Story-Branch. Beide liefen mit Seed 1 und 50 Läufen; „ohne Anwerben“ über `--set simulation.hire.reserve=100000000`.
 - Bis zum ersten Anwerben sind die Läufe vorher und nachher gleich (1-1 auf allen Stufen identisch). Das bestätigt den Determinismus.
 
 ### File List
@@ -117,7 +123,7 @@ Claude Opus 5.5
 - `src/content/schemaBalance.ts`
 - `src/core/balanceDefs.ts`
 - `content/core/balance.yaml` (nur `simulation.hire`)
-- `tests/unit/sim-campaign.test.ts`
+- `tests/unit/sim-campaign.test.ts`, `tests/unit/rooms-build.test.ts` (nur das neue Feld `hire` in `spent`)
 - `tests/fixtures/saves/generate-act1-finale.ts`
 - `concept/26-epics/epics/epic-11.md`, `concept/26-epics/decision-log.md`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
