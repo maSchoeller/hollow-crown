@@ -13,7 +13,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { parse } from 'yaml';
-import { reportFigures } from './figure-budget.mjs';
+import { reportFigures, reportParts } from './figure-budget.mjs';
 import { firstMissionFigures, isFirstMissionFile } from './build/first-mission.mjs';
 
 const dist = join(process.cwd(), 'dist');
@@ -98,6 +98,9 @@ for (const pack of manifest.packs) {
 
 // board figures against figureBudget of content/packs.yaml (art-direction §4.6): a warning, not a failure
 reportFigures(files.filter((p) => /^assets\/(?:[^/]+\/)?models\/units\/[^/]+\.glb$/.test(p)).map((p) => join(dist, p)));
+
+// the attached parts of the pro paths against partBudget of content/packs.yaml (story 10.13): a warning, not a failure
+reportParts(files.filter((p) => /^assets\/models\/parts\/[^/]+\.glb$/.test(p)).map((p) => join(dist, p)));
 
 if (total > BUDGET) {
   console.error('✗ first download (pack core) over budget');

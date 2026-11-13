@@ -1,5 +1,5 @@
 /** Render, legibility, handbook, look and world-map definitions (content/core/render.yaml and friends) as the core sees them. */
-import type { GearPiece, HomeKind, Season, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
+import type { GearPiece, PartPiece, HomeKind, Season, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
 import type { Condition } from './storyDefs';
 
 export interface PropVariant {
@@ -199,8 +199,15 @@ export interface RenderDef {
   };
   /** story 8.6: team colours, light by time of day, weather, season per act and the timing of the strike effects */
   look: LookDef;
-  /** GA9: weapon model per equipped weapon group / off-hand item weapon group, hung on a figure's hand socket */
-  gear: { weapons: Partial<Record<WeaponType, GearPiece>>; offHand: Partial<Record<WeaponGroup, GearPiece>> };
+  /**
+   * GA9: weapon model per equipped weapon group / off-hand item weapon group, hung on a figure's hand socket.
+   * `proParts` (story 10.13): the attached part of a pro path, keyed by the `proPart` of the class, on a body socket.
+   */
+  gear: {
+    weapons: Partial<Record<WeaponType, GearPiece>>;
+    offHand: Partial<Record<WeaponGroup, GearPiece>>;
+    proParts: Record<string, PartPiece>;
+  };
   /** epic 13: grid, range tiles, path arrow, danger tiers, target-tile lines, HP bars, whole-map view, double tap */
   legibility: LegibilityDef;
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;

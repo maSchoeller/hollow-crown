@@ -269,7 +269,8 @@ describe('baked figure files', () => {
     const v: VatData = parseVat(await inflateVat(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)));
     expect(v.fps).toBe(60);
     expect(v.names).toHaveLength(22);
-    expect(v.sockets.map((s) => s.name).sort()).toEqual(['socket_l', 'socket_r']);
+    // the hand sockets (GA9) and the body sockets of the attached parts (story 10.13)
+    expect(v.sockets.map((s) => s.name).sort()).toEqual(['socket_back', 'socket_head', 'socket_l', 'socket_r']);
     // durations x 60 (+ 1 unless a loop, which leaves out the row that comes round again); downed shows its last row only
     const rows = (n: string) => v.clips.get(n)!.rows;
     expect(rows('idle')).toBe(Math.round(15.3333 * 60));

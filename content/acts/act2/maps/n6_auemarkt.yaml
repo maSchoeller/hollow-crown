@@ -110,9 +110,11 @@ propVariants:
   - { at: [11, 12], model: tent_market_a }
 triggers:
   # Jory (oder, in der Gedenk-Variante, Lucan) spricht die Meisterin an, sobald eine eigene Figur die Bühne betritt
+  # QA Akt 2: der Bereich reichte bis x = 8 und damit auf die Marktwiese neben der Terrasse – wer westlich an der Bühne vorbeiging,
+  # bekam die Szene, ohne je hinaufzusteigen. Jetzt nur die Terrasse selbst (Stufe 1, über die Treppe [8,5]) [ASSUMPTION].
   - id: t_stage
     once: true
-    when: { type: unit_enters, team: player, area: { rect: [8, 4, 12, 6] } }
+    when: { type: unit_enters, team: player, area: { rect: [9, 4, 12, 6] } }
     then:
       - { action: dialogue, id: scn.n6.master_talk }
   - id: t_tide_warn

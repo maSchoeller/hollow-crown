@@ -1,0 +1,11 @@
+# QA Akt 2: die Bühne in N6 ist eine optionale Interaktion, die die Kampf-KI nie betritt (tests/unit/act2-optional-levers.test.ts).
+#   pnpm lab auemarkt-n6-buehne                      Lage vor der Bühne (Gegner entfernt, Rhen auf der Straße unter der Terrasse)
+#   pnpm lab auemarkt-n6-buehne --path avatar 9,5    Weg über die Treppe [8,5] auf die Bühnenterrasse (Stufe 1)
+#   pnpm lab auemarkt-n6-buehne --path lucan 9,5     derselbe Weg vom Aufstellfeld aus
+# Die Gegner sind entfernt, damit der Weg auf die Bühne ohne Kampf zu prüfen ist; das Siegziel ist `escort`, die Lage endet also nicht von selbst.
+question: Ist die Bühnenterrasse über die Treppe erreichbar, und spricht die Meisterin die Truppe an, sobald jemand oben steht?
+map: n6_auemarkt
+company: [lucan, jory]
+remove: [enemy:*]
+units:
+  avatar: { at: [7, 7] }

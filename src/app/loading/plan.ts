@@ -23,6 +23,8 @@ export interface MissionAssetInput {
   units: readonly MissionUnit[];
   /** weapon model files the manifest lists (`manifest.models.weapons`); without them no weapon file is needed */
   weaponModels?: readonly string[];
+  /** part model files the manifest lists (`manifest.models.parts`, story 10.13); without them no part file is needed */
+  partModels?: readonly string[];
   /** `GameData.items` and `GameData.render.gear`: which weapon model a weapon group or off-hand item shows */
   items?: GearItems;
   gear?: Gear;
@@ -93,7 +95,7 @@ export function gearModels(itemIds: readonly string[], items: GearItems, gear: G
  * figures (3D models and their weapon models, or sprite sheets for the 2D setting and units without a model) and the
  * images of the gear they hold.
  */
-export function missionAssets({ units, models, unitPacks, vatModels, classes, place, defaultPlace, weaponModels, items, gear, figures = '3d', sprites, music }: MissionAssetInput): string[] {
+export function missionAssets({ units, models, unitPacks, vatModels, classes, place, defaultPlace, weaponModels, partModels, items, gear, figures = '3d', sprites, music }: MissionAssetInput): string[] {
   const out = new Set<string>([placePath(place ?? defaultPlace)]);
   if (music) for (const id of BATTLE_MUSIC) if (music.includes(id)) out.add(musicPath(id));
   const use3d = figures !== '2d' && models !== undefined;
@@ -104,6 +106,10 @@ export function missionAssets({ units, models, unitPacks, vatModels, classes, pl
       if (vatModels?.includes(mid)) out.add(unitVatPath(mid, unitPacks));
       if (items && gear && weaponModels && u.gearItems)
         for (const w of gearModels(u.gearItems, items, gear)) if (weaponModels.includes(w)) out.add(`models/weapons/${w}.glb`);
+      // the attached part of the unit's pro path (story 10.13): one model per pro class, on a body socket
+      const part = u.classId ? classes[u.classId]?.proPart : undefined;
+      const piece = part && gear?.proParts[part];
+      if (piece && partModels?.includes(piece.model)) out.add(`models/parts/${piece.model}.glb`);
     } else {
       const sid = unitFigureId(u, classes);
       const sheet = sprites?.[sid];

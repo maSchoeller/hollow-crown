@@ -8,7 +8,7 @@ export interface FigureSource {
   classId?: string;
 }
 
-type ClassFigures = Readonly<Record<string, Pick<ClassDef, 'sprite' | 'art'> | undefined>>;
+type ClassFigures = Readonly<Record<string, Pick<ClassDef, 'sprite' | 'art' | 'proPart'> | undefined>>;
 
 /**
  * Id of the figure (3D model / sprite) of a unit: its own sprite or character, else the one its class names

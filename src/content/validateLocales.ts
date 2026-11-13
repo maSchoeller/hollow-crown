@@ -9,7 +9,11 @@ import { allUnits } from './validateWalk';
 /** i18n: names of all content and parity between DE and EN; chronicle limits; sprites of map units and classes. */
 export function validateLocales(data: GameData, locales: Locales, err: Err, spriteIds?: Set<string>): void {
   const need: string[] = [];
-  for (const c of Object.values(data.classes)) need.push(`class.${c.id}.name`);
+  for (const c of Object.values(data.classes)) {
+    need.push(`class.${c.id}.name`);
+    // story 10.13: the academy and the unit sheet name the attached part of a pro path
+    if (c.proPart) need.push(`part.${c.id}.name`);
+  }
   // the detail sheet shows a description of every item and the name of its set
   for (const i of Object.values(data.items)) need.push(`item.${i.id}.name`, `item.${i.id}.desc`);
   for (const st of Object.values(data.sets)) need.push(`set.${st.id}.name`);
