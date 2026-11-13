@@ -162,14 +162,15 @@ describe('side quests of act 2 (story 11.11, product owner 2026-11-09)', () => {
     for (const q of ['n4', 'n5', 'n6']) expect(node(q).kind).toBe('side');
   });
 
-  it('N4 opens after 2-3 with Ilka in the company or fallen, stays closed when she has gone', () => {
+  // QA act 2 (2026-11-13): "never recruited" opens the quest too; only "gone" keeps it closed, else Glutfunke and Weißwolf fall away unseen
+  it('N4 opens after 2-3 with Ilka in the company, fallen or never recruited, stays closed when she has gone', () => {
     for (const order of walked.orders) {
       const after = upTo(order, 'm2_3');
       expect(opens(after.slice(0, -1), 'n4', ['ilka', 'in'])).toBe(false);
       expect(opens(after, 'n4', ['ilka', 'in'])).toBe(true);
       expect(opens(after, 'n4', ['ilka', 'dead'])).toBe(true);
       expect(opens(after, 'n4', ['ilka', 'left'])).toBe(false);
-      expect(opens(after, 'n4', ['ilka', 'none'])).toBe(false);
+      expect(opens(after, 'n4', ['ilka', 'none'])).toBe(true);
     }
   });
 
@@ -181,7 +182,8 @@ describe('side quests of act 2 (story 11.11, product owner 2026-11-09)', () => {
     }
   });
 
-  it('N6 opens together with 2-7 (after 2-5 and 2-6) with Jory in the company or fallen, stays closed when he has gone', () => {
+  // QA act 2 (2026-11-13): as for N4, a company that never spoke to Jory still gets N6 and "Letzter Vorhang"
+  it('N6 opens together with 2-7 (after 2-5 and 2-6) with Jory in the company, fallen or never recruited, stays closed when he has gone', () => {
     for (const order of walked.orders) {
       const with27 = upTo(order, 'm2_7').slice(0, -1);
       expect(storyOpen(data, inAct2(with27))).toEqual(['m2_7']);
@@ -189,7 +191,7 @@ describe('side quests of act 2 (story 11.11, product owner 2026-11-09)', () => {
       expect(opens(with27, 'n6', ['jory', 'in'])).toBe(true);
       expect(opens(with27, 'n6', ['jory', 'dead'])).toBe(true);
       expect(opens(with27, 'n6', ['jory', 'left'])).toBe(false);
-      expect(opens(with27, 'n6', ['jory', 'none'])).toBe(false);
+      expect(opens(with27, 'n6', ['jory', 'none'])).toBe(true);
     }
   });
 

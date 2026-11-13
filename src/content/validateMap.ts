@@ -1,4 +1,4 @@
-import { type ItemRef, type Pos } from '../core/defs';
+import { type Difficulty, type ItemRef, type Pos } from '../core/defs';
 import type { GameData } from '../core/gameData';
 import type { Area, MapDef, MapUnitDef, Reward } from '../core/mapDefs';
 import type { Condition } from '../core/storyDefs';
@@ -10,7 +10,11 @@ import { validateHaunts } from './validateHaunts';
 import { validateUnitLevels } from './validateLevels';
 import { validatePhases } from './validatePhases';
 import type { ContentRefs } from './validateRefs';
-import { allUnits, companyMoveTypes, elevationOf, validateObjectAccess, walkable, type Terr } from './validateWalk';
+import { companyMoveTypes } from '../core/moveTypes';
+import { allUnits, elevationOf, validateObjectAccess, walkable, type Terr } from './validateWalk';
+
+/** The difficulties a map can gate a unit on; a key bearer must stand on the map on all of them. */
+const ALL_DIFFICULTIES: readonly Difficulty[] = ['easy', 'normal', 'hard'];
 
 /** Terrain grid, units, objects, objectives, triggers and reachability of one battle map. */
 export function validateMap(
@@ -254,18 +258,27 @@ function validateTreasure(
       if (!r.has(`${o.at[0]},${o.at[1]}`)) err(f, `treasure: chest ${id} not reachable on foot from deploy slot ${map.deploy.slots[i]}`);
     });
   }
-  const key = (refs: ItemRef[]) => refs.some((r) => data.items[r.def]?.use?.open?.includes('chest'));
   const scout = (cls: string) => data.classes[cls]?.classAction?.id === 'open_steal';
-  const opener =
-    map.units.some((u) => u.team === 'player' && (scout(u.class) || key(u.items))) ||
-    map.deploy.forced.some((id) => {
-      const c = data.chars[id];
-      return !!c && (scout(c.class) || key(c.items));
-    }) ||
-    map.objects.some((o) => o.type === 'village' && o.reward?.item && key([o.reward.item])) ||
-    // a foe on the map from the start who drops a key (story 9.8: looters carry the keys, so the hunt never depends on a scout)
-    map.units.some((u) => u.team === 'enemy' && (u.drops ?? []).some((i) => u.items[i] && key([u.items[i]!])));
+  // a scout the map brings itself, so the company never needs a key at all
+  const sureScout = map.units.some((u) => u.team === 'player' && scout(u.class)) || map.deploy.forced.some((id) => !!data.chars[id] && scout(data.chars[id]!.class));
+  /** key charges the map itself provides; a foe counts only when it stands on the map on every difficulty (story 9.8: looters carry the keys) */
+  const charges = (refs: ItemRef[]) => refs.reduce((n, r) => n + (data.items[r.def]?.use?.open?.includes('chest') ? (data.items[r.def]?.charges ?? 1) : 0), 0);
+  const keys =
+    map.units.filter((u) => u.team === 'player').reduce((n, u) => n + charges(u.items), 0) +
+    map.deploy.forced.reduce((n, id) => n + (data.chars[id] ? charges(data.chars[id]!.items ?? []) : 0), 0) +
+    map.objects.reduce((n, o) => n + (o.type === 'village' && o.reward?.item ? charges([o.reward.item]) : 0), 0) +
+    map.units
+      .filter((u) => u.team === 'enemy' && (!u.difficulty || ALL_DIFFICULTIES.every((d) => u.difficulty!.includes(d))))
+      .reduce((n, u) => n + (u.drops ?? []).reduce((m, i) => m + (u.items[i] ? charges([u.items[i]!]) : 0), 0), 0);
+  const opener = sureScout || keys > 0;
   if (!opener) err(f, 'treasure: no scout or key available (a player unit, a forced character, a village reward or a foe dropping one must bring it)');
+  // QA act 2 (2026-11-13): a key is spent on the chest it opens, so a map with fewer keys than chests can lose the victory for good
+  // when a key goes to the wrong chest and no scout is along (2-2 had one key for three chests). Without a scout the map brings one
+  // key per chest, as 1-7, N2 and N5 do and as a haunt hands them out (`createHauntBattle`).
+  if (!sureScout) {
+    const chests = map.objects.filter((o) => o.type === 'chest').length;
+    if (keys < chests) err(f, `treasure: ${keys} key(s) for ${chests} chests (a key is spent on the wrong chest and the victory is gone); bring one key per chest or a scout`);
+  }
 }
 
 /** Map triggers set flags of the register, waves read them. */

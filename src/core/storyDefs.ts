@@ -6,6 +6,11 @@ export type Condition =
   | { alive: string }
   | { dead: string }
   | { left: string }
+  /**
+   * the companion has ever been in the company: in the roster, fallen or gone. `not: { recruited: x }` is the case
+   * „never spoken to, never joined“, which `any: [alive, dead]` does not cover (QA act 2, 2026-11-13).
+   */
+  | { recruited: string }
   | { completed: string }
   | { storyCount: { min?: number; max?: number } }
   | { act: number }

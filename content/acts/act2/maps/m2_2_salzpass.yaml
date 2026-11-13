@@ -78,7 +78,9 @@ units:
   - { id: purser, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [8, 3], items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: guard } }
   - { id: n1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [11, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
   - { id: n2, nameKey: unit.smuggler.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [12, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
-  - { id: n3, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [10, 3], items: [{ def: iron_bow }], ai: { profile: hold } }
+  # [ASSUMPTION] QA Akt 2 2026-11-13: ein Schlüssel je Truhe (wie 1-7, N2 und N5, und wie die Heimsuchung sie austeilt). Vorher trug nur der
+  # Zahlmeister einen Schlüssel für drei Truhen: wurde er an c_page oder c_scouts verbraucht und fehlte Fenn, war der Sieg (c_seal) nicht mehr zu holen.
+  - { id: n3, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [10, 3], items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: hold } }
   # Felsleiste: Schützen schießen von Stufe 1 in die Mittelkammer
   - { id: l1, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [14, 9], items: [{ def: iron_bow }], ai: { profile: hold } }
   - { id: l2, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [14, 12], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
@@ -90,7 +92,7 @@ units:
   - { id: s1, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [5, 13], items: [{ def: iron_sword }], ai: { profile: guard } }
   - { id: s2, nameKey: unit.smuggler.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [6, 13], items: [{ def: iron_axe }], ai: { profile: guard }, difficulty: [normal, hard] }
   # Kundschafter aus Kharesh im Westwinkel bei ihrer Truhe (Saat); Profil des Entwurfs, der Winkel ist eine Sackgasse. Niemand tritt bei.
-  - { id: k1, nameKey: unit.kharesh_scout.name, team: enemy, class: scout, sprite: mercenary, levelOffset: -1, at: [4, 9], items: [{ def: iron_dagger }], ai: { profile: trigger, radius: 3, then: aggressive } }
+  - { id: k1, nameKey: unit.kharesh_scout.name, team: enemy, class: scout, sprite: mercenary, levelOffset: -1, at: [4, 9], items: [{ def: iron_dagger }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 3, then: aggressive } }
   - { id: k2, nameKey: unit.kharesh_scout.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -1, at: [3, 10], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 3, then: aggressive } }
   # Nur Schwer
   - { id: h1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [8, 10], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 3, then: aggressive }, difficulty: [hard] }
@@ -164,7 +166,7 @@ design:
     - { area: { tiles: [[12, 6], [12, 7]] }, label: Steinschlag R5, phase: p2 }
     - { area: { tiles: [[14, 7], [14, 8]] }, label: Steinschlag R8, phase: p3 }
   marks:
-    - { at: [4, 2], label: S, note: "Truhe mit dem Siegel. Fenn öffnet ohne Schlüssel, sonst der Schlüssel des Zahlmeisters." }
+    - { at: [4, 2], label: S, note: "Truhe mit dem Siegel. Fenn öffnet ohne Schlüssel, sonst einer der drei Schlüssel (Zahlmeister, Schütze der Nordkammer, Kundschafter)." }
     - { at: [14, 15], label: R, note: "Rampe auf die Felsleiste (Stufe 1), oben nur ein Feld breit." }
     - { at: [13, 5], label: T, note: "Treppe von der Leiste in die Nordkammer." }
     - { at: [3, 9], label: K, note: "Kundschafter aus Kharesh, in ihrer Truhe die Seekarte aus Silbermeer (Saat)." }
@@ -172,6 +174,7 @@ design:
     - "Stufen über levelOffset (Produktinhaber 2026-11-05: Start P−3, Wellen P−2, Elite P−1, Leutnants P+1, Boss P+2); P = 13 nach 2-1, 14 nach 2-1 und 2-3."
     - "Normal 16 Gegner (2 davon R6) gegen 7 eigene, P−3 bis P−1, Grell nach der Leutnant-Regel; Leicht 13, Schwer 19."
     - "Die Straße bleibt immer offen: Steinschlag engt nur ein, sperrt nie ganz. Laut Regel bleibt ein besetztes Feld unverändert."
+    - "Drei Truhen, drei Schlüsselträger (purser, n3, k1): der Sieg an c_seal kann nicht verloren gehen, wenn ein Schlüssel an der falschen Truhe verbraucht wird (QA 2026-11-13, [ASSUMPTION])."
     - "Das Siegel ist kein Gegenstand: die Truhe c_seal ist leer, Szene und Flag m2_2_seal tragen es. c_page trägt die Chronik-Seite a2_salzpass."
     - "Grell steht als Leutnant (lieutenants.yaml, skirmisher, Fraktion silver_sea); seine Signatur gold_hook ist Beute, nicht Kartenwaffe."
     - "Saat Kharesh und Zweifel „Wer schreibt der Prinzessin?“ stehen in den Szenen; die Kundschafter kamen per Schiff, Silbermeer verkaufte die Überfahrt."

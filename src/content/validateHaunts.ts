@@ -5,6 +5,7 @@ import { hauntEnemyCount } from '../core/campaign/haunts';
 import { hauntPlaces, standableTiles } from '../core/battle/hauntMap';
 import { areaTiles, posKey } from '../core/util';
 import type { Locales } from './load';
+import { companyMoveTypes } from '../core/moveTypes';
 import { walkable, type Terr } from './validateWalk';
 
 /**
@@ -33,7 +34,8 @@ export function validateHaunts(data: GameData, map: MapDef, err: (f: string, m: 
     };
     const deployOk = onMap(a.deploy, 'deploy');
     const spawnOk = onMap(a.enemySpawn, 'enemySpawn');
-    const deployTiles = deployOk ? standableTiles(data, map, a.deploy, 'foot') : [];
+    // the runtime picks the slots the same way (`buildHauntMap`): a slot has to be open to every move type of the company
+    const deployTiles = deployOk ? standableTiles(data, map, a.deploy, companyMoveTypes(data)) : [];
     if (deployOk && deployTiles.length < places) err(f, `${ctx}: ${deployTiles.length} deploy fields for ${places} places`);
     const spawnNeed = hauntEnemyCount(data, places, 'hard');
     if (spawnOk && standableTiles(data, map, a.enemySpawn, 'foot').length < spawnNeed)

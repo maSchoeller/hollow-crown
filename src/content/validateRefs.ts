@@ -60,6 +60,7 @@ export function contentRefs(data: GameData, err: Err) {
       case 'alive':
       case 'dead':
       case 'left':
+      case 'recruited':
         return companion(file, v as string, ctx);
       case 'completed':
         if (!nodeKnown(v as string)) err(file, `${ctx}: unknown node ${v as string}`);

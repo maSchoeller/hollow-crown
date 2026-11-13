@@ -21,6 +21,7 @@ export const conditionSchema: z.ZodType<Condition> = z.lazy(() =>
     z.strictObject({ alive: companion }),
     z.strictObject({ dead: companion }),
     z.strictObject({ left: companion }),
+    z.strictObject({ recruited: companion }),
     z.strictObject({ completed: z.string().min(1) }),
     z.strictObject({
       storyCount: z

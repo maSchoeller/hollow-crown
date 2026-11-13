@@ -1,0 +1,11 @@
+# QA Akt 2: der Gatterhebel in N5 ist eine optionale Interaktion, die die Kampf-KI nie bedient (tests/unit/act2-optional-levers.test.ts).
+#   pnpm lab kupfermine-n5-gatter                      Lage vor dem Hebel (Gegner entfernt, Rhen zwei Felder vom Hebelfeld)
+#   pnpm lab kupfermine-n5-gatter --path avatar 14,13  Weg auf das Feld neben dem Hebel
+#   pnpm lab kupfermine-n5-gatter --path lucan 14,13   derselbe Weg vom Aufstellfeld aus
+# Die Gegner sind entfernt, damit der Weg zum Hebel ohne Kampf zu prüfen ist; das Siegziel ist `treasure`, die Lage endet also nicht von selbst.
+question: Ist das Feld neben dem Gatterhebel erreichbar, und hebt der Hebel das Gatter vor der Knochenhalle?
+map: n5_kupfermine
+company: [lucan]
+remove: [enemy:*]
+units:
+  avatar: { at: [12, 13] }

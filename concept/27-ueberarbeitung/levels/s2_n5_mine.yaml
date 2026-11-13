@@ -51,16 +51,16 @@ deploy:
 units:
   # Unten im Hauptschacht
   - { id: a1, nameKey: unit.duchess_looter.name, team: enemy, class: brigand, level: 12, levelOffset: -3, at: [7, 15], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: a2, nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 12, levelOffset: -3, at: [8, 13], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
+  - { id: a2, nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 12, levelOffset: -3, at: [8, 13], items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: trigger, radius: 5, then: aggressive } }
   # Vorarbeiter im Westgang trägt den Türschlüssel
   - { id: foreman, nameKey: unit.foreman.name, team: enemy, class: brigand, level: 14, levelOffset: -1, at: [3, 13], items: [{ def: iron_axe }, { def: door_key }], ai: { profile: guard }, drops: [1] }
   - { id: b1, nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 12, levelOffset: -3, at: [5, 12], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
   - { id: b2, nameKey: unit.duchess_looter.name, team: enemy, class: marksman, level: 12, levelOffset: -3, at: [2, 14], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [normal, hard] }
   # Ostgang vor dem Hebel
-  - { id: c1, nameKey: unit.duchess_looter.name, team: enemy, class: brigand, level: 12, levelOffset: -3, at: [11, 12], items: [{ def: iron_axe }], ai: { profile: guard } }
+  - { id: c1, nameKey: unit.duchess_looter.name, team: enemy, class: brigand, level: 12, levelOffset: -3, at: [11, 12], items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: guard } }
   - { id: c2, nameKey: unit.duchess_looter.name, team: enemy, class: marksman, level: 12, levelOffset: -3, at: [13, 11], items: [{ def: iron_bow }], ai: { profile: hold } }
   # Knochenhalle im Norden
-  - { id: d1, nameKey: unit.duchess_looter.name, team: enemy, class: brigand, level: 13, levelOffset: -2, at: [4, 3], items: [{ def: iron_axe }], ai: { profile: guard } }
+  - { id: d1, nameKey: unit.duchess_looter.name, team: enemy, class: brigand, level: 13, levelOffset: -2, at: [4, 3], items: [{ def: iron_axe }, { def: door_key }], drops: [1], ai: { profile: guard } }
   - { id: d2, nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 13, levelOffset: -2, at: [11, 3], items: [{ def: iron_sword }], ai: { profile: guard } }
   - { id: d3, nameKey: unit.duchess_looter.name, team: enemy, class: marksman, level: 13, levelOffset: -2, at: [7, 4], items: [{ def: iron_bow }], ai: { profile: hold } }
   - { id: d4, nameKey: unit.duchess_looter.name, team: enemy, class: skirmisher, level: 13, levelOffset: -2, at: [12, 6], items: [{ def: iron_sword }], ai: { profile: guard }, difficulty: [normal, hard] }

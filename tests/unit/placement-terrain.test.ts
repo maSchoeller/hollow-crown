@@ -7,12 +7,12 @@
  */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { companyMoveTypes } from '../../src/content/validateWalk';
 import {
   applyCommand,
   autoCommand,
   beginBattle,
   buildHauntMap,
+  companyMoveTypes,
   computeStats,
   hauntUnitDefs,
   knockbackTarget,

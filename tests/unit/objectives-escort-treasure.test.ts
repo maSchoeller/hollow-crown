@@ -171,6 +171,11 @@ describe('content:check', () => {
 
   describe('treasure', () => {
     const base = () => devObjectiveMap('dev_treasure');
+    /** The map without its scout and without the keys of the vanguard. */
+    const strip = (m: MapDef) => {
+      m.units = m.units.filter((u) => u.class !== 'scout');
+      m.units.find((u) => u.id === 'dev_vanguard')!.items = [{ def: 'iron_lance' }];
+    };
     it('wants every chest to be a chest of the map, and each once', () => {
       const m = base();
       (m.objectives.victory as { chests: string[] }).chests.push('dev_chest_nope', 'dev_chest_a');
@@ -184,28 +189,38 @@ describe('content:check', () => {
       expect(issuesOf(m)).toContainEqual(expect.stringMatching(/chest dev_chest_d not reachable on foot from deploy slot 0,3/));
     });
     it('wants a scout or a key from the map: a player unit, a forced character or a village reward', () => {
-      const strip = (m: MapDef) => {
-        m.units = m.units.filter((u) => u.class !== 'scout');
-        m.units.find((u) => u.id === 'dev_vanguard')!.items = [{ def: 'iron_lance' }];
-      };
+      // the number of keys is its own rule (next test); here only whether the map brings an opener at all
+      const opener = (m: MapDef) => issuesOf(m).filter((x) => !/key\(s\) for/.test(x));
       const m = base();
       strip(m);
       expect(issuesOf(m)).toContainEqual(expect.stringMatching(/no scout or key available/));
       // a key in the bag of a player unit is enough
       m.units.find((u) => u.id === 'dev_marksman')!.items.push({ def: 'door_key' });
-      expect(issuesOf(m)).toEqual([]);
+      expect(opener(m)).toEqual([]);
       // so is a village that hands one out
       const v = base();
       strip(v);
       v.objects.push({ id: 'dev_village', type: 'village', at: [2, 6], reward: { item: { def: 'door_key' } } });
-      expect(issuesOf(v)).toEqual([]);
+      expect(opener(v)).toEqual([]);
       // or a foe on the map that drops one (story 9.8)
       const f = base();
       strip(f);
       f.units.find((u) => u.id === 'dev_brigand')!.items.push({ def: 'door_key' });
       expect(issuesOf(f)).toContainEqual(expect.stringMatching(/no scout or key available/));
       f.units.find((u) => u.id === 'dev_brigand')!.drops = [1];
-      expect(issuesOf(f)).toEqual([]);
+      expect(opener(f)).toEqual([]);
+    });
+
+    // QA act 2 (2026-11-13): a key is spent on the chest it opens, so without a scout of its own the map needs one key per chest
+    it('wants one key per chest when the map brings no scout', () => {
+      const m = base();
+      strip(m);
+      m.units.find((u) => u.id === 'dev_marksman')!.items.push({ def: 'door_key' });
+      expect(issuesOf(m)).toEqual(['treasure: 1 key(s) for 5 chests (a key is spent on the wrong chest and the victory is gone); bring one key per chest or a scout']);
+      for (let i = 0; i < 4; i++) m.units.find((u) => u.id === 'dev_marksman')!.items.push({ def: 'door_key' });
+      expect(issuesOf(m)).toEqual([]);
+      // the map's own scout opens every chest without a key, so the count does not matter
+      expect(issuesOf(base())).toEqual([]);
     });
   });
 });
