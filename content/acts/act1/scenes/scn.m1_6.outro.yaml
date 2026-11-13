@@ -3,7 +3,7 @@
 # Die Burg als Heimat ist die Knotenwirkung `setHome: castle` an m1_6 (campaign.yaml), nicht Teil der Szene.
 # Hintergrund = Gespräch (bewohnte Burg); die Tafel zeigt die Ruine.
 id: scn.m1_6.outro
-background: paktwacht_heimat
+background: paktwacht_spaetsommer
 music: camp
 lines:
   # Tafel 4 „Das Banner auf der Ruine“
