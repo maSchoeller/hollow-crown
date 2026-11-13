@@ -36,6 +36,7 @@ import { metaFromCampaign, migrate, type SaveRecord } from '../../src/persistenc
 let data: GameData;
 let locales: Locales;
 let open: GameData;
+let act1Only: GameData;
 
 const avatar = { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' } as const;
 const fresh = (seed = 5): CampaignState => newCampaign(data, seed, { difficulty: 'easy', deathMode: 'standard' }, avatar);
@@ -70,6 +71,8 @@ beforeAll(() => {
   data = loaded.data;
   locales = loaded.locales;
   open = { ...structuredClone(data), releasedActs: [1, 2] };
+  // act 2 is in the build since 2026-11-13, so `data` is already open; this stands in for a build that has act 1 alone
+  act1Only = { ...structuredClone(data), releasedActs: [1] };
 });
 
 describe('content of the acts', () => {
@@ -94,8 +97,8 @@ describe('content of the acts', () => {
     expect(data.chars.brenna!.act).toBe(1);
   });
 
-  it('only act 1 is released on disk (packs.yaml); the head files of act 2 are not in core', () => {
-    expect(data.releasedActs).toEqual([1]);
+  it('act 1 and act 2 are released on disk (packs.yaml); the head files of act 2 are not in core', () => {
+    expect(data.releasedActs).toEqual([1, 2]);
     const packs = parsePacks(parseYaml(readFileSync(join(process.cwd(), 'content', 'packs.yaml'), 'utf8')));
     expect(checkPacks(packs, contentFiles(), data.acts[1]!)).toEqual([]);
     const intoCore = packs.map((p) => (p.id === 'core' ? { ...p, content: [...p.content, 'acts/act2/campaign.yaml'] } : p));
@@ -198,7 +201,7 @@ describe('the move to act 2', () => {
 describe('a save from the act-1 release', () => {
   it('without c.act is in act 1; with the finale done it moves on once act 2 is released', () => {
     const { act: _a, ...old } = finaleDone();
-    const loadedNow = normalizeCampaign(data, structuredClone(old) as CampaignState);
+    const loadedNow = normalizeCampaign(act1Only, structuredClone(old) as CampaignState);
     expect(loadedNow.act).toBe(1);
     const later = normalizeCampaign(open, structuredClone(old) as CampaignState);
     expect(later.act).toBe(2);
@@ -212,7 +215,7 @@ describe('a save from the act-1 release', () => {
     expect((rec.payload.campaign as Partial<CampaignState>).act).toBeUndefined();
     expect(rec.payload.campaign.completed).toContain('m1_8');
     const out = migrate(rec);
-    const now = normalizeCampaign(data, out.payload.campaign);
+    const now = normalizeCampaign(act1Only, out.payload.campaign);
     expect(metaFromCampaign(now).act).toBe(1);
     const moved = normalizeCampaign(open, migrate(rec).payload.campaign);
     expect(moved.act).toBe(2);

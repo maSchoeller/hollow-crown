@@ -25,6 +25,9 @@ beforeAll(() => {
   data = clone(loadContentFromDisk().data);
   // a made-up act (fixtures, not the real act 1): an opening mission, a finale and a side quest
   data.acts[1]!.nodes = [node('a', { fixed: 'first' }), node('z', { fixed: 'finale' }), node('s', { kind: 'side' })];
+  // this file is about the end of the LAST released act: with act 2 in the build (2026-11-13) a finished act 1 moves straight on,
+  // so the reminder of the running act only has a case while its act is the last one. `hasPackForAct` above uses its own lists.
+  data.releasedActs = [1];
 });
 
 describe('actFinished', () => {

@@ -43,7 +43,7 @@ function finaleSave(): string {
   throw new Error('no seed reaches round 12 with the steward alive');
 }
 
-test('the finale ends act 1: outro, panel, sparks, card "2 x ember spark", world map says act 2 is coming', async ({ page }, testInfo) => {
+test('the finale ends act 1: outro, panel, sparks, card "2 x ember spark", world map moves on to act 2', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'iphone13', 'a long run on software WebGL: one project is enough');
   test.setTimeout(300_000);
   const save = finaleSave();
@@ -110,6 +110,6 @@ test('the finale ends act 1: outro, panel, sparks, card "2 x ember spark", world
     .toBe(true);
   await page.getByRole('button', { name: /To the world map|Zur Weltkarte/ }).click();
 
-  // the world map shows the hint for the act that has no pack (the backup reminder of a finished act sits over it, once)
-  await expect(page.getByText(/coming soon|erscheint bald/)).toBeVisible({ timeout: 20_000 });
+  // act 2 is in the build since 2026-11-13, so the world map opens act 2 instead of the "coming soon" hint of story 7.3
+  await expect(page.getByText(/Akt 2|Act 2/)).toBeVisible({ timeout: 20_000 });
 });
