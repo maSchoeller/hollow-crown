@@ -311,7 +311,12 @@ entries:
     values:
       - { id: level2, ref: rooms.smith.levels.0.cost.gold, icon: gold }
       - { id: level3, ref: rooms.smith.levels.1.cost.gold, icon: gold }
-    see: [rooms, ember_spark]
+      # story 10.9: the merchant's levels
+      - { id: discount, ref: balance.economy.merchantDiscountByLevel.2, format: percent, icon: gold }
+      - { id: maxDiscount, ref: balance.economy.maxDiscountPct, format: percent, icon: gold }
+      - { id: sparks, ref: balance.economy.emberShop.total, icon: star }
+      - { id: sparkPrice, ref: items.ember_spark.price, icon: gold }
+    see: [rooms, trade, ember_spark]
   - id: trade
     category: home
     icon: merchant

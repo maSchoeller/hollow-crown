@@ -21,6 +21,7 @@ import { availableSupportTalks, tavernOfferCount } from './camp';
 import { applyLieutenantOutcome, bountyMaterialId, lieutenantState, payBounties } from './lieutenants';
 import { hauntGold, hauntHalved } from './haunts';
 import { trainReserve } from './training';
+import { merchantLevel } from './aid';
 import { parseHauntMapId } from '../battle/hauntMap';
 
 export const SAVE_VERSION = 1;
@@ -38,6 +39,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     fallen: [],
     heritageGiven: [],
     reserveLast: [],
+    emberShop: { sold: 0, lastSoldAtStory: null },
     convoy: [],
     gold: campaignOfAct(data, 1).startGold,
     materials: {},
@@ -115,6 +117,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     heritageGiven: (c as Partial<CampaignState>).heritageGiven ?? [],
     // story 10.8: the reserve of the last mission, absent in saves from before the training ground
     reserveLast: (c as Partial<CampaignState>).reserveLast ?? [],
+    // story 10.9: the merchant's ember sparks, absent in saves from before them
+    emberShop: (c as Partial<CampaignState>).emberShop ?? { sold: 0, lastSoldAtStory: null },
     tavern: (c.tavern ?? []).map((u) => ({ ...u, bag: stackKeys(data, u.bag) })),
     // pairs of content added since the save (a later act) start empty
     supports: { ...Object.fromEntries(Object.keys(data.supports).map((k) => [k, { points: 0, rank: null }])), ...c.supports },
@@ -502,7 +506,7 @@ export function refreshTavern(data: GameData, c: CampaignState): void {
 
 /** Merchant special offers: 1–2 affixed items per chapter (concept/07 §1). */
 export function refreshOffers(data: GameData, c: CampaignState, tier: number): void {
-  const stock = merchantStock(data, tier, actOf(c)).filter((id) => {
+  const stock = merchantStock(data, tier, actOf(c), merchantLevel(data, c)).filter((id) => {
     const d = data.items[id]!;
     return ['weapon', 'armor', 'shield', 'accessory', 'tome'].includes(d.kind);
   });
@@ -517,12 +521,18 @@ export function refreshOffers(data: GameData, c: CampaignState, tier: number): v
   }
 }
 
-/** Items of the merchant up to `tier`, from the merchant of act `act` (story 11.1: each act has its own tiers). */
-export function merchantStock(data: GameData, tier: number, act = 1): string[] {
+/**
+ * Items of the merchant up to `tier`, from the merchant of act `act` (story 11.1: each act has its own tiers); a list with
+ * `roomLevel` only once the merchant has that level (`level`, story 10.9, default 1).
+ */
+export function merchantStock(data: GameData, tier: number, act = 1, level = 1): string[] {
   const out = new Set<string>();
-  for (const s of campaignOfAct(data, act).merchant) if (s.tier <= tier) for (const id of s.items) out.add(id);
+  for (const s of campaignOfAct(data, act).merchant) if (s.tier <= tier && (s.roomLevel ?? 1) <= level) for (const id of s.items) out.add(id);
   return [...out];
 }
+
+/** What the merchant of the running campaign sells now: its act, its tier and its level (story 10.9). */
+export const shopStock = (data: GameData, c: CampaignState): string[] => merchantStock(data, currentTier(data, c), actOf(c), merchantLevel(data, c));
 
 /**
  * The shop tier: the highest `merchantTier` of the finished nodes of the running act, or a tier whose `storyCount` of finished story

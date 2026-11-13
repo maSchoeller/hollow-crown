@@ -12,9 +12,9 @@ import { relicCtx } from './relics';
 import type { CampaignState } from '../state';
 import { clone } from '../util';
 import { changePathError, craftCost, dismissError, mergeError, hireCost, promoteError, roomBuild, scarCost, secondPathError, sealOf, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
-import { shopPrice } from './aid';
+import { dailyOffersOpen, emberSparkOffered, emberSparkPrice, shopPrice, storiesDone } from './aid';
 import { heritageError } from './heritage';
-import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
+import { finishBattle, normalizeCampaign, shopStock } from './campaign';
 import { replayBattle } from './restart';
 import { actFinished, enterNextAct, isAvailable, noteRoles } from './graph';
 import { actOf, findNode } from './acts';
@@ -24,7 +24,7 @@ import { conditionContext, evalConditions } from './conditions';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
 
 function buyPrice(data: GameData, c: CampaignState, defId: string): number | null {
-  const stock = merchantStock(data, currentTier(data, c), actOf(c));
+  const stock = shopStock(data, c);
   const runeForSale = data.runes[defId]?.price !== undefined && (data.runes[defId]?.tier ?? 0) <= 1;
   if (!stock.includes(defId) && !runeForSale) return null;
   return shopPrice(data, c, itemDef(data, defId).price);
@@ -42,8 +42,14 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
     }
     case 'buyOffer': {
       const offer = c.offers.find((o) => o.uid === cmd.uid);
-      if (!offer) return 'not_for_sale';
+      // story 10.9: the deal of the day is on sale only from the merchant level `dailyOfferFromMerchantLevel`
+      if (!offer || !dailyOffersOpen(data, c)) return 'not_for_sale';
       return c.gold < offerPrice(data, offer, c) ? 'not_enough_gold' : null;
+    }
+    case 'buyEmberSpark': {
+      if (!emberSparkOffered(data, c)) return 'not_available';
+      if (c.gold < emberSparkPrice(data)) return 'not_enough_gold';
+      return c.convoy.length >= data.balance.economy.convoySize ? 'convoy_full' : null;
     }
     case 'sell': {
       const loc = locateItem(c, cmd.uid);
@@ -257,6 +263,15 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       c.offers = c.offers.filter((o) => o.uid !== cmd.uid);
       c.convoy.push(offer);
       gained(offer.uid, offer.def);
+      break;
+    }
+    case 'buyEmberSpark': {
+      const price = emberSparkPrice(data);
+      c.gold -= price;
+      const inst = newItem(c, data.balance.economy.emberShop.item, data);
+      c.convoy.push(inst);
+      gained(inst.uid, inst.def);
+      c.emberShop = { sold: c.emberShop.sold + 1, lastSoldAtStory: storiesDone(data, c) };
       break;
     }
     case 'sell': {

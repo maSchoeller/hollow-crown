@@ -280,7 +280,8 @@ export interface CampaignDef {
   startGold: number;
   startConvoy: ItemRef[];
   /** `storyCount`: the tier also opens once that many story missions of the act are done, whichever they are (besides the `merchantTier` of the nodes) */
-  merchant: Array<{ tier: number; items: string[]; storyCount?: number }>;
+  /** `roomLevel` (story 10.9): the list is on sale only from this merchant level on (default 1) */
+  merchant: Array<{ tier: number; items: string[]; storyCount?: number; roomLevel?: number }>;
   scars: Array<{ id: string; mods: StatMods & { hit?: number; crit?: number; avoid?: number } }>;
 }
 

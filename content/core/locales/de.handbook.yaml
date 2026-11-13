@@ -141,6 +141,10 @@ handbook:
     cost: "Narbe entfernen"
     level2: "Ausbau auf die zweite Stufe"
     level3: "Ausbau auf die dritte Stufe"
+    discount: "Händler-Rabatt auf höchster Stufe"
+    maxDiscount: "Rabatt höchstens"
+    sparks: "Glutfunken beim Händler"
+    sparkPrice: "Preis je Glutfunke"
     sell: "Verkaufspreis"
     convoy: "Konvoi-Plätze"
     level: "Aufstieg ab Stufe"
@@ -381,7 +385,7 @@ handbook:
       keywords: "Raum, Händler, Schmied, Heiler, Taverne, Lagerfeuer, Konvoi, Gedächtnishalle"
     rooms_upgrade:
       title: "Ausbau der Burg"
-      text: "Die Räume der Burg wachsen in drei Stufen. Die zweite kostet ab dem zweiten Akt nur Gold ({level2}), die dritte {level3} Gold und einen der zwei Gefährten des Raums in der Truppe; welche das sind, nennt das Ausbau-Band. Jede Stufe schaltet mehr frei, etwa höhere Aufwertungen beim Schmied oder die Ränge A und S am Lagerfeuer. Dazu kommen Akademie, Werkstatt, Verzauberer und Übungsplatz. Ein ausgebauter Raum behält seine Stufe, auch wenn seine Gefährten gehen."
+      text: "Die Räume der Burg wachsen in drei Stufen. Die zweite kostet ab dem zweiten Akt nur Gold ({level2}), die dritte {level3} Gold und einen der zwei Gefährten des Raums in der Truppe; welche das sind, nennt das Ausbau-Band. Jede Stufe schaltet mehr frei, etwa höhere Aufwertungen beim Schmied oder die Ränge A und S am Lagerfeuer. Der Händler führt ab Stufe zwei ein größeres Sortiment; auf Stufe drei gibt er {discount} Rabatt (mit Rabatten aus Entscheidungen höchstens {maxDiscount}), zeigt das Angebot des Tages und verkauft insgesamt {sparks} Glutfunken für je {sparkPrice} Gold, höchstens einen je Story-Mission. Dazu kommen Akademie, Werkstatt, Verzauberer und Übungsplatz. Ein ausgebauter Raum behält seine Stufe, auch wenn seine Gefährten gehen."
       where: "Der Ausbau steht in jedem Raum der Burg."
       keywords: "Ausbau, Stufe, Burg, Akademie, Werkstatt, Übungsplatz"
     trade:

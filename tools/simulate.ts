@@ -40,7 +40,7 @@
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { autoplay, createHauntBattle, hauntLevel, makeHaunt, seedRng, startBattle, storyNodeOf, type DeathMode, type Difficulty } from '../src/core';
+import { autoplay, createHauntBattle, emberSparkPrice, hauntLevel, makeHaunt, seedRng, startBattle, storyNodeOf, type DeathMode, type Difficulty } from '../src/core';
 import { mergeCampaignSims, missionFlags, prepareActData, simulateCampaign, type CampaignSim, type MissionFlags } from './simCampaign';
 import { campaignChained, printMap, simulateMapRun, summarizeMap, turnStats, type MapRun, type MapSimOptions } from './simMap';
 import { loadContentWithSets, parseSets } from './simOverrides';
@@ -190,6 +190,7 @@ async function runCampaign(act: string) {
   console.log(
     `finished ${sim.finished}/${runs}, end gold ${per(sim.endGold, sim.finished).toFixed(0)}, end army lv ${per(sim.endArmyLevel, sim.finished).toFixed(1)}; ` +
       `home spent per run: heal ${per(sim.spent.heal, runs).toFixed(0)}, buy ${per(sim.spent.buy, runs).toFixed(0)}, upgrade ${per(sim.spent.upgrade, runs).toFixed(0)}, rooms ${per(sim.spent.rooms, runs).toFixed(0)}, craft ${per(sim.spent.craft, runs).toFixed(0)}, ` +
+      `ember sparks ${per(sim.spent.sparks, runs).toFixed(0)} (${per(sim.spent.sparks / Math.max(1, emberSparkPrice(data)), runs).toFixed(2)} bought), ` +
       `hire ${per(sim.spent.hire, runs).toFixed(0)} (${per(sim.hired, runs).toFixed(1)} mercenaries)`,
   );
   if (actNo > 1) {

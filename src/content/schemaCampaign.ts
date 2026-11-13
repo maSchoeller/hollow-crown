@@ -172,7 +172,10 @@ export const campaignSchema = z.object({
       }),
     )
     .default([]),
-  merchant: z.array(z.object({ tier: z.number().int(), items: z.array(z.string()), storyCount: z.number().int().min(1).optional() })),
+  // roomLevel (story 10.9): the list is on sale only from this merchant level on (default 1)
+  merchant: z.array(
+    z.object({ tier: z.number().int(), items: z.array(z.string()), storyCount: z.number().int().min(1).optional(), roomLevel: z.number().int().min(1).max(3).optional() }),
+  ),
   scars: z.array(
     z.object({
       id: z.string(),

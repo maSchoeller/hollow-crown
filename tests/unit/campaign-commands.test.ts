@@ -85,7 +85,10 @@ describe('campaign commands', () => {
 
   it('buyOffer and sell', () => {
     const c = rich({ gold: 100000 });
+    // story 10.9: the deal of the day is on sale from merchant level 3 only
     c.offers = [newItem(c, 'iron_sword', data)];
+    expect(validateCampaign(data, c, { type: 'buyOffer', uid: c.offers[0]!.uid })).toBe('not_for_sale');
+    c.home = { ...c.home, rooms: { ...c.home.rooms, merchant: data.balance.economy.dailyOfferFromMerchantLevel } };
     const offer = c.offers[0]!.uid;
     const bought = run(c, { type: 'buyOffer', uid: offer });
     expect(bought.campaign.offers).toEqual([]);

@@ -661,3 +661,25 @@
   font-family: var(--hc-font-label);
   font-weight: 700;
 }
+/* merchant (story 10.9): the panel holds the ember moment; the total discount stands as a mark beside the tabs */
+.hm-merchant {
+  position: relative;
+}
+.hm-merchant__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hm-merchant__head > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+.hm-discount {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--hc-positive-soft);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+}

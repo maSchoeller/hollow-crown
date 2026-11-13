@@ -204,7 +204,7 @@ describe('home heuristic of the simulation (story 10.1, fixture instead of pnpm 
   it('builds smith, academy, healer, training ground first, and only while a scar and an upgrade stay paid', () => {
     // just enough for the smith, a scar (2 500 at healer level 1) and an upgrade of 1 000
     const c = act2Castle(1500 + 2500 + 1000);
-    const spent = { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0 };
+    const spent = { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0, sparks: 0 };
     const one = buildRooms(data, c, 1000, spent);
     expect(one.home.rooms).toEqual({ smith: 2 });
     expect(spent.rooms).toBe(1500);
@@ -219,7 +219,7 @@ describe('home heuristic of the simulation (story 10.1, fixture instead of pnpm 
 
   it('builds nothing in act 1 and is part of the whole home heuristic', () => {
     expect(buildRooms(data, { ...act2Castle(), act: 1 }, 0).home.rooms).toEqual({});
-    const spent = { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0 };
+    const spent = { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0, sparks: 0 };
     const after = homeHeuristic(data, act2Castle(9000), spent);
     expect(spent.rooms).toBeGreaterThan(0);
     expect(spent.heal + spent.buy + spent.upgrade + spent.rooms).toBe(9000 - after.gold);

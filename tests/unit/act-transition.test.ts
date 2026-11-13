@@ -83,7 +83,7 @@ describe('content of the acts', () => {
     expect(a2.nodes.map((n) => n.id)).toEqual(['m2_1', 'm2_2', 'm2_3', 'm2_4', 'm2_5', 'm2_6', 'm2_7', 'm2_8', 'n4', 'n5', 'n6']);
     for (const n of a2.nodes) expect(!!data.maps[n.map], n.id).toBe(['m2_1', 'm2_2', 'm2_3', 'm2_4', 'm2_5', 'm2_6', 'm2_7', 'm2_8', 'n4', 'n5', 'n6'].includes(n.id));
     expect(a2.scars).toEqual(data.acts[1]!.scars);
-    expect(a2.merchant.map((m) => m.tier)).toEqual([0, 1, 2]);
+    expect(a2.merchant.map((m) => m.tier)).toEqual([0, 1, 2, 0]); // the last list: roomLevel 2 (story 10.9)
   });
 
   it('loads the companions of act 2 with names in German and English', () => {

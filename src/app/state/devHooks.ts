@@ -3,7 +3,7 @@
  * story nodes, auto-win and the fault and save-failure switches. Imported once by App.tsx.
  */
 import { SEASONS, type Season } from '../../core/defs';
-import { CoreInvariantError, beginBattle, type MapDef, armyCount, firstNode, makeHaunt, seedRng, storyNodeOf, newCampaign, addToRoster, levelUp, nodeLevel, type BattleSettings, type BattleState, type BattleUnit, type GameEvent, filterEvents, visibleState, type Effect, type SceneDef, type FlagDef, type ChroniclePageDef, type CampaignDef, chronicleTexts, sceneTexts } from '../../core';
+import { CoreInvariantError, beginBattle, type MapDef, armyCount, firstNode, makeHaunt, seedRng, storyNodeOf, newCampaign, addToRoster, levelUp, refreshOffers, currentTier, nodeLevel, type BattleSettings, type BattleState, type BattleUnit, type GameEvent, filterEvents, visibleState, type Effect, type SceneDef, type FlagDef, type ChroniclePageDef, type CampaignDef, chronicleTexts, sceneTexts } from '../../core';
 import { autosave, campaign, data } from './session';
 import { abandonBattle, battle, canAbandon, canRestart, command, pendingEvents, restartBattle } from './battle';
 import { reportFault } from './fault';
@@ -232,6 +232,22 @@ if (import.meta.env.DEV) {
        * story 10.7: the memorial hall of act 2 at `level` with Gerrit's stone, fallen Fenn (scout) and a fallen mercenary marksman,
        * ready to pass on a lesson; `given = true` passes Fenn's lesson to Tobin first. Unsaved campaign.
        */
+      devMerchant: async (level = 3, discounts = 1) => {
+        // story 10.9: the merchant of act 2 at `level` with `discounts` priceMods of −10 %, deals of the day and gold. Unsaved campaign.
+        if (data.releasedActs?.includes(2)) await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { kind: 'castle', rooms: level > 1 ? { merchant: level } : {} };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        c.gold = 12000;
+        c.priceMods = Array.from({ length: discounts }, () => ({ pct: -10, act: 2 }));
+        refreshOffers(data, c, currentTier(data, c));
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'camp', tab: 'merchant' };
+      },
       devMemorial: (level = 2, given = false) => {
         const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
         c.completed = data.acts[1]!.nodes.map((n) => n.id);
