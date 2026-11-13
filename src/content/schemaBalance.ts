@@ -85,6 +85,7 @@ export const balanceSchema = z.object({
       sideShare: z.tuple([z.number(), z.number()]),
     }),
     startExpected: z.record(z.string(), z.object({ gold: z.number().int().min(0) })).default({}),
+    hire: z.object({ reserve: z.number().int().min(0) }).default({ reserve: 0 }),
   }),
   elevation: z.object({
     rangedBonus: z.number().int().min(0),

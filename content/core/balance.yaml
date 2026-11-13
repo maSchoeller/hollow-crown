@@ -168,6 +168,9 @@ simulation:
   # --start expected (Story 11.4): Gold der Truppe, die Akt N ohne die Akte davor beginnt; gemessen 2026-11-09 beim Eintritt in Akt 2
   # (Normal, ohne Heimsuchungen, nach dem Lager: 6 022; mit Heimsuchungen 15 555) [ASSUMPTION]
   startExpected: { '2': { gold: 6000 } }
+  # Story 11.28: die Heimat-Heuristik wirbt in der Taverne Söldner an, bis die Truppe das Einsatz-Limit der nächsten Mission füllt,
+  # und behält dabei mindestens reserve Gold (für Heiltränke und Narben) [ASSUMPTION]; nur die Simulation, kein Spielwert
+  hire: { reserve: 500 }
 # loading before missions (story 7.6): a download that stays silent this long counts as failed (shows the retry)
 loading:
   fetchTimeoutMs: 30000

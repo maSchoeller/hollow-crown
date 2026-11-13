@@ -152,6 +152,8 @@ export interface Balance {
     gold: { perNode: Record<string, [number, number]>; perAct: Record<string, [number, number]>; sideShare: [number, number] };
     /** `--start expected` (story 11.4): the gold of the company that starts act N without playing the acts before, by act */
     startExpected: Record<string, { gold: number }>;
+    /** story 11.28: the home heuristic hires tavern mercenaries up to the next mission's deploy limit, keeping `reserve` gold */
+    hire: { reserve: number };
   };
   /** Nebel (story 2.6): `baseVision` plus the highest of `roleBonus` (class role) and `moveTypeBonus`; sight ends behind `blockers` terrain */
   /** height levels (GDD): range bonus from above, move types free of the connectors, connectors a melee blow reaches over */

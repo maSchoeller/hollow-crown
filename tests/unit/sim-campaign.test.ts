@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { firstNode, newCampaign, type GameData } from '../../src/core';
-import { armyLevel, homeHeuristic, missionFlags, simulateCampaign, type MissionSim } from '../../tools/simCampaign';
+import { firstNode, hireCost, isMercenary, newCampaign, refreshTavern, type GameData } from '../../src/core';
+import { armyLevel, hireMercenaries, homeHeuristic, missionFlags, simulateCampaign, type MissionSim } from '../../tools/simCampaign';
 
 let data: GameData;
 
@@ -58,11 +58,45 @@ describe('chained act simulation (story 6.8)', () => {
     const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'R', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
     c.gold = 5000;
     c.materials = { ...c.materials, iron_ore: 10 };
-    const spent = { heal: 0, buy: 0, upgrade: 0 };
+    const spent = { heal: 0, buy: 0, upgrade: 0, hire: 0 };
     const after = homeHeuristic(data, c, spent);
     expect(after.gold).toBeGreaterThanOrEqual(0);
-    expect(spent.buy + spent.upgrade + spent.heal).toBe(5000 - after.gold);
+    expect(spent.buy + spent.upgrade + spent.heal + spent.hire).toBe(5000 - after.gold);
     expect(spent.upgrade).toBeGreaterThan(0);
+  });
+
+  it('hires tavern mercenaries up to the deploy limit of the next mission and keeps the gold reserve (story 11.28)', () => {
+    const fresh = () => {
+      const c = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'R', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+      refreshTavern(data, c);
+      return c;
+    };
+    const next = 'm1_8';
+    const map = data.maps['m1_8_paktwacht_halten']!;
+    const reserve = data.balance.simulation.hire.reserve;
+    const rich = fresh();
+    rich.gold = 100000;
+    const spent = { heal: 0, buy: 0, upgrade: 0, hire: 0 };
+    const { campaign, hired } = hireMercenaries(data, rich, next, spent);
+    const offers = rich.tavern.length;
+    expect(offers).toBeGreaterThan(0);
+    expect(hired).toBe(Math.min(offers, map.deploy.max - rich.roster.length));
+    expect(campaign.roster.filter(isMercenary)).toHaveLength(hired);
+    expect(spent.hire).toBe(100000 - campaign.gold);
+    // the highest offer first
+    expect(campaign.roster.find(isMercenary)!.level).toBe(Math.max(...rich.tavern.map((u) => u.level)));
+    // same seed, same hires
+    expect(hireMercenaries(data, fresh(), next, { heal: 0, buy: 0, upgrade: 0, hire: 0 }).campaign.roster.map((u) => u.id)).toEqual(
+      hireMercenaries(data, fresh(), next, { heal: 0, buy: 0, upgrade: 0, hire: 0 }).campaign.roster.map((u) => u.id),
+    );
+    // never below the reserve, never past the limit, nothing without a next mission
+    const poor = fresh();
+    poor.gold = reserve + Math.min(...poor.tavern.map((u) => hireCost(data, u.level))) - 1;
+    expect(hireMercenaries(data, poor, next, spent).hired).toBe(0);
+    const full = fresh();
+    full.gold = 100000;
+    expect(hireMercenaries(data, full, firstNode(data).id, spent).hired).toBe(Math.max(0, Math.min(full.tavern.length, data.maps[firstNode(data).map]!.deploy.max - full.roster.length)));
+    expect(hireMercenaries(data, full, undefined, spent).hired).toBe(0);
   });
 
   it('marks missions outside the NFR12 corridor and the GDD gold curve', () => {
