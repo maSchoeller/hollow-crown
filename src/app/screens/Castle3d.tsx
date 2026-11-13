@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import type { RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { Icon } from '../../ui/icons';
+import { Pips, UpArrow } from './roomStone';
 import { settings } from '../state/settings';
 import { data } from '../state/session';
 import type { CastleView } from '../../render/home/castle';
@@ -38,7 +39,7 @@ export function CastleDevBar({ tier, setTier }: { tier: number | null; setTier: 
  * The scene in the picture's place. `levelOf` gives a room's level (0: not there yet), `tier` the stage of walls and land,
  * `onRoom` is a tap on a building or stone (status null: a room the content does not have yet). `fallback` is the picture.
  */
-export function Castle3d({ rooms, levelOf, tier, onRoom, fallback, stats: showStats }: { rooms: RoomStatus[]; levelOf: (id: string) => number; tier: number; onRoom: (id: string, status: RoomStatus | null) => void; fallback: string; stats: boolean }) {
+export function Castle3d({ rooms, levelOf, tier, canBuild, onRoom, fallback, stats: showStats }: { rooms: RoomStatus[]; levelOf: (id: string) => number; tier: number; canBuild: (id: string) => boolean; onRoom: (id: string, status: RoomStatus | null) => void; fallback: string; stats: boolean }) {
   /** the host's canvas goes in here; Preact never renders into it */
   const stage = useRef<HTMLDivElement>(null);
   const view = useRef<CastleView | null>(null);
@@ -105,7 +106,10 @@ export function Castle3d({ rooms, levelOf, tier, onRoom, fallback, stats: showSt
           >
             <span class="hm-room__stone">
               <Icon name={st.open ? st.room.icon : 'lock'} size={18} />
+              {st.open && canBuild(st.room.id) && <UpArrow />}
             </span>
+            {/* story 10.1: the same dots and arrow as the list (UX log 2026-11-04) */}
+            {st.room.levels.length > 0 && st.open && <Pips level={levelOf(st.room.id)} max={st.room.levels.length + 1} />}
           </button>
         ))}
       {stats && <small class="c3d-stats">{t('ui.dev.castle3d.stats', { fps: stats.fps, calls: stats.drawCalls })}</small>}

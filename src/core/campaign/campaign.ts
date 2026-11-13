@@ -17,7 +17,7 @@ import { conditionContext, evalConditions } from './conditions';
 import { availableNodes, enterNextAct, noteRoles, storyCount } from './graph';
 import { actCampaign, actOf, campaignOfAct, findNode } from './acts';
 import { nodeLevel, positionNow, raiseOnJoin } from './position';
-import { availableSupportTalks } from './camp';
+import { availableSupportTalks, tavernOfferCount } from './camp';
 import { applyLieutenantOutcome, bountyMaterialId, lieutenantState, payBounties } from './lieutenants';
 import { hauntGold, hauntHalved } from './haunts';
 import { parseHauntMapId } from '../battle/hauntMap';
@@ -443,7 +443,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   return { campaign: c, result };
 }
 
-/** Tavern offers of a chapter (story 6.4): `tavernOffersPerChapter` mercenaries near the level of the next mission. */
+/** Tavern offers of a chapter (story 6.4): `tavernOfferCount` mercenaries (by tavern level, story 10.1) near the level of the next mission. */
 export function refreshTavern(data: GameData, c: CampaignState): void {
   const tav = data.balance.economy.tavern;
   const ctx = conditionContext(data, c);
@@ -452,7 +452,7 @@ export function refreshTavern(data: GameData, c: CampaignState): void {
   const expected = next ? nodeLevel(data, c, next) : Math.max(1, ...c.roster.map((u) => u.level));
   c.tavern = [];
   if (!classes.length) return;
-  for (let i = 0; i < data.balance.economy.tavernOffersPerChapter; i++) {
+  for (let i = 0, n = tavernOfferCount(data, c); i < n; i++) {
     const kind = pick(c.rng, classes);
     const level = Math.max(1, expected - nextInt(c.rng, tav.levelSpread + 1));
     const cls = data.classes[kind.class]!;

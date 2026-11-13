@@ -37,6 +37,7 @@ export const TERRAIN: Record<string, { fill: string; glyph?: string; dark?: bool
   forest: { fill: '#6f9d58', glyph: '♣', dark: true, name: 'Wald' },
   sand: { fill: '#efe1a8', glyph: '∴', name: 'Sand' },
   mountain: { fill: '#9b8f82', glyph: '▲', dark: true, name: 'Gebirge' },
+  cave_rock: { fill: '#6f665c', glyph: '▲', dark: true, name: 'Höhlenfels' },
   shallows: { fill: '#a9d6e3', glyph: '≈', name: 'Furt' },
   river: { fill: '#4f92c4', glyph: '~', dark: true, name: 'Fluss' },
   bridge: { fill: '#9c7448', glyph: '=', dark: true, name: 'Brücke' },

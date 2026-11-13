@@ -61,6 +61,8 @@ export function validateMap(
     else if (terr(l.at)?.cost.foot == null || terr(top)?.cost.foot == null) err(f, `ladder at ${l.at} up ${l.up}: foot or top not walkable`);
   }
   // a legacy terrain (the old ladder tile) is left for battles saved before it went; a map leans its ladders against the wall with `ladders:`
+  // fix 2026-11-13: under a roof the rock is a wall for everyone; `mountain` lets fliers and climbers (scouts) stand in it
+  if (map.interior) for (const [ch, t] of Object.entries(map.legend)) if (t === 'mountain') err(f, `legend '${ch}': an interior map uses cave_rock, not mountain`);
   for (const [ch, t] of Object.entries(map.legend)) if (data.terrain[t]?.legacy) err(f, `legend '${ch}': terrain ${t} is legacy${t === 'ladder' ? ', list the ladder under ladders: instead' : ''}`);
   for (const t of map.triggers)
     for (const a of t.then) if (a.action === 'set_terrain' && data.terrain[a.terrain]?.legacy) err(f, `${t.id}: set_terrain to legacy terrain ${a.terrain}`);
@@ -121,7 +123,12 @@ export function validateMap(
     }),
   );
   for (const t of map.triggers)
-    for (const a of t.then) if (a.action === 'spawn') for (const u of a.units) if (u.requires) err(f, `${t.id}: requires is only for the line-up units of a map`);
+    for (const a of t.then)
+      if (a.action === 'spawn')
+        a.units.forEach((u, j) => {
+          checkUnit(u, `${t.id} spawn ${j}`);
+          if (u.requires) err(f, `${t.id}: requires is only for the line-up units of a map`);
+        });
   validateUnitLevels(data, map, err);
   if (map.deploy.slots.length < map.deploy.max) err(f, 'deploy.slots < deploy.max');
   for (const s of map.deploy.slots) if (!inside(s)) err(f, `deploy slot ${s} out of bounds`);

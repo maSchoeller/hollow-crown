@@ -15,7 +15,7 @@ const avatar = { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 
 
 function play(seed: number): CampaignState | null {
   let c = newCampaign(data, seed, { difficulty: 'normal', deathMode: 'standard' }, avatar);
-  const spent = { heal: 0, buy: 0, upgrade: 0, hire: 0 };
+  const spent = { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0 };
   for (let id = availableNodes(data, c).find((n) => n.kind === 'story')?.id; id; id = availableNodes(data, c).find((n) => n.kind === 'story')?.id) {
     let won = false;
     for (let attempt = 0; attempt < 3 && !won; attempt++) {

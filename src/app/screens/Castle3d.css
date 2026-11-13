@@ -23,6 +23,20 @@
   width: 34px;
   height: 34px;
 }
+/* story 10.1: the level dots under the stone, on a small plate so they read over the scene */
+.c3d-pin {
+  justify-items: center;
+  gap: 2px;
+}
+.c3d-pin .hm-pips {
+  padding: 2px 4px;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+}
+.c3d-pin .hm-up {
+  width: 15px;
+  height: 15px;
+}
 .hm.has-room .c3d-pin {
   display: none;
 }

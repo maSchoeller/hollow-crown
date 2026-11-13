@@ -11,7 +11,7 @@ import { activeSkillIds } from '../rules/skills';
 import { relicCtx } from './relics';
 import type { CampaignState } from '../state';
 import { clone } from '../util';
-import { changePathError, dismissError, hireCost, promoteError, secondPathError, sealOf, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
+import { changePathError, dismissError, hireCost, promoteError, roomBuild, scarCost, secondPathError, sealOf, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { shopPrice } from './aid';
 import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
@@ -114,7 +114,7 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       if (!u || !u.scars[cmd.index]) return 'unknown_unit';
       const cfg = data.balance.economy.scarRemoval;
       if (cmd.herb) return c.convoy.some((i) => i.def === cfg.altItem) ? null : 'not_enough_materials';
-      return c.gold < cfg.gold ? 'not_enough_gold' : null;
+      return c.gold < scarCost(data, c) ? 'not_enough_gold' : null;
     }
     case 'unlockSupport':
       return unlockableRank(data, c, cmd.pair) ? null : 'not_available';
@@ -126,6 +126,8 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       return changePathError(data, c, cmd.unit, cmd.classId);
     case 'learnSecondPath':
       return secondPathError(data, c, cmd.unit);
+    case 'buildRoom':
+      return roomBuild(data, c, cmd.room).error;
     case 'hire':
       return hireError(data, c, cmd.offer);
     case 'dismiss':
@@ -358,7 +360,7 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
         const herb = c.convoy.find((i) => i.def === cfg.altItem)!;
         c.convoy = c.convoy.filter((i) => i.uid !== herb.uid);
         lost(herb.uid, herb.def);
-      } else c.gold -= cfg.gold;
+      } else c.gold -= scarCost(data, c);
       u.scars.splice(cmd.index, 1);
       events.push({ t: 'unitChanged', unit: u.id });
       break;
@@ -409,6 +411,13 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       }
       u.secondPath = otherProPath(data, u.classId);
       events.push({ t: 'secondPathLearned', unit: u.id, path: u.secondPath! });
+      break;
+    }
+    case 'buildRoom': {
+      const b = roomBuild(data, c, cmd.room);
+      c.gold -= b.gold;
+      c.home.rooms[cmd.room] = b.level;
+      events.push({ t: 'roomBuilt', room: cmd.room, level: b.level });
       break;
     }
     case 'hire': {

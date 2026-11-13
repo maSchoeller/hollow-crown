@@ -19,7 +19,7 @@ export function validateLocales(data: GameData, locales: Locales, err: Err, spri
   for (const m of Object.values(data.maps)) need.push(m.nameKey);
   for (const ch of Object.values(data.chars)) need.push(`unit.${ch.id}.name`);
   need.push(...data.balance.economy.tavern.names);
-  for (const r of Object.values(data.rooms)) need.push(`room.${r.id}.name`, `room.${r.id}.desc`, ...r.unlocks.map((u) => `room.${r.id}.unlock.${u.id}`));
+  for (const r of Object.values(data.rooms)) need.push(`room.${r.id}.name`, `room.${r.id}.desc`, ...r.unlocks.map((u) => `room.${r.id}.unlock.${u.id}`), ...r.levels.map((_, i) => `room.${r.id}.level.${i + 2}`));
   for (const m of Object.values(data.memorials)) need.push(...Object.keys(memorialTexts(m)));
   for (const k of HOME_KINDS) need.push(`home.${k}.name`, `home.${k}.title`);
   // every loaded act (story 11.1)

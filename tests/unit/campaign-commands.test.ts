@@ -197,7 +197,7 @@ describe('campaign commands', () => {
     u.scars = [data.acts[1]!.scars[0]!.id];
     const gold = run(c, { type: 'healScar', unit: u.id, index: 0 });
     expect(gold.campaign.roster[0]!.scars).toEqual([]);
-    expect(gold.campaign.gold).toBe(5000 - data.balance.economy.scarRemoval.gold);
+    expect(gold.campaign.gold).toBe(5000 - data.balance.economy.scarRemoval.goldByLevel[0]!);
     const herb = run(c, { type: 'healScar', unit: u.id, index: 0, herb: true });
     expect(herb.campaign.gold).toBe(5000);
     expect(herb.campaign.convoy.some((i) => i.def === 'seers_herb')).toBe(false);

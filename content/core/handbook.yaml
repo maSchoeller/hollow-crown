@@ -140,7 +140,7 @@ entries:
   - id: terrain_blocked
     category: terrain
     graphic: terrain
-    terrain: [wall, wagon, stall, brazier, well, fence, paddock, paddock_gate, farm, building, sarcophagus]
+    terrain: [wall, cave_rock, wagon, stall, brazier, well, fence, paddock, paddock_gate, farm, building, sarcophagus]
     see: [doors, rockwall, fog]
   - id: doors
     category: terrain
@@ -287,7 +287,7 @@ entries:
     icon: scar
     values:
       - { id: limit, ref: balance.death.scarsUntilInstantDeath, icon: scar }
-      - { id: cost, ref: balance.economy.scarRemoval.gold, icon: gold }
+      - { id: cost, ref: balance.economy.scarRemoval.goldByLevel.0, icon: gold }
     see: [rescue, rooms]
   - id: death_modes
     category: death
@@ -307,6 +307,10 @@ entries:
     category: home
     icon: castle
     fromAct: 2
+    # story 10.1: the cost of every room stands in rooms.yaml; the smith stands for all (same pattern)
+    values:
+      - { id: level2, ref: rooms.smith.levels.0.cost.gold, icon: gold }
+      - { id: level3, ref: rooms.smith.levels.1.cost.gold, icon: gold }
     see: [rooms, ember_spark]
   - id: trade
     category: home

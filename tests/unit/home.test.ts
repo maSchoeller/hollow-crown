@@ -12,7 +12,7 @@ import {
   homeRooms,
   memorialStones,
   newCampaign,
-  nextRoomLevel,
+  roomBuild,
   roomUnlocks,
   validateCampaign,
   validateEffects,
@@ -143,21 +143,27 @@ describe('the rooms of the castle (story 6.9)', () => {
 
   it('the build-up of every castle room is locked until act 2, the reason is the act condition', () => {
     const c = castle(base);
-    for (const { room } of homeRooms(data, c)) {
+    for (const { room, open } of homeRooms(data, c)) {
       expect(room.levels).toHaveLength(2);
-      expect(nextRoomLevel(data, c, room)).toEqual({ level: 2, unmet: { act: 2 } });
+      // a room that is not open yet has no build-up at all (story 10.1)
+      if (!open) {
+        expect(roomBuild(data, c, room.id).error).toBe('unknown_room');
+        continue;
+      }
+      expect(roomBuild(data, c, room.id)).toEqual({ level: 2, gold: room.levels[0]!.cost.gold, unmet: { act: 2 }, error: 'room_locked' });
     }
   });
 
   it('with act 2 reached the step is open, at level 3 there is no next step', () => {
     const d = structuredClone(data);
     const c = { ...castle(base), act: 2 };
-    expect(nextRoomLevel(d, c, d.rooms.smith!)).toEqual({ level: 2, unmet: undefined });
+    c.gold = 99999;
+    expect(roomBuild(d, c, 'smith')).toEqual({ level: 2, gold: d.rooms.smith!.levels[0]!.cost.gold, error: null });
     c.home.rooms = { smith: 3 };
-    expect(nextRoomLevel(d, c, d.rooms.smith!)).toBeNull();
+    expect(roomBuild(d, c, 'smith')).toEqual({ level: 0, gold: 0, error: 'max_level' });
     // a room without levels has no step at all
     d.rooms.smith!.levels = [];
-    expect(nextRoomLevel(d, { ...castle(base), act: 2 }, d.rooms.smith!)).toBeNull();
+    expect(roomBuild(d, { ...castle(base), act: 2 }, 'smith').error).toBe('max_level');
   });
 
   it('the lessons of the memorial hall are locked until act 2', () => {

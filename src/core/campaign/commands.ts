@@ -41,6 +41,8 @@ export type CampaignCommand =
   | { type: 'changeProPath'; unit: string; classId: string }
   /** a pro also learns the effect of the other path of its role (academy level 3, ember spark) */
   | { type: 'learnSecondPath'; unit: string }
+  /** build room `room` of the castle up by one level for its gold (story 10.1, `roomBuild`) */
+  | { type: 'buildRoom'; room: string }
   /** hire the tavern's mercenary `offer` (a record id `merc<n>` of `c.tavern`) */
   | { type: 'hire'; offer: string }
   /** let go of the hired mercenary `unit` (a record id `merc<n>` of `c.roster`); his gear goes to the convoy (story 3.7: the way out of an over-full company) */
@@ -100,6 +102,10 @@ export type CampaignError =
   | 'no_slot'
   | 'not_available'
   | 'convoy_full'
+  /** story 10.1: the room is unknown, not part of this home or not open yet */
+  | 'unknown_room'
+  /** story 10.1: a condition of the room's next level is open (act, room companion; the camp never builds) */
+  | 'room_locked'
   /** the company is at its limit (companions or mercenaries) */
   | 'army_full'
   | 'node_unavailable'
@@ -131,6 +137,8 @@ export type CampaignEvent =
   | { t: 'proPathChanged'; unit: string; from: string; to: string }
   | { t: 'secondPathLearned'; unit: string; path: string }
   | { t: 'supportUnlocked'; pair: string; rank: SupportRank }
+  /** a room of the castle reached `level` (story 10.1) */
+  | { t: 'roomBuilt'; room: string; level: number }
   | { t: 'flagSet'; flag: string; value: FlagValue }
   | { t: 'unitJoined'; unit: string }
   /** a lieutenant joined the company (effect `recruit: { lt }`, story 3.7); reported instead of `unitJoined` */

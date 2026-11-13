@@ -11,6 +11,8 @@
 - { id: forest,   def: 1, avoid: 20,  heal: 0,  flammable: true,  ground: grass, prop: tree, cost: { foot: 2, armored: 3, mounted: 3, flier: 1, monster: 2 }, surface: grass }
 - { id: sand,     def: 0, avoid: 5,   heal: 0,  flammable: false, ground: sand,  cost: { foot: 2, armored: 3, mounted: 3, flier: 1, monster: 2 }, surface: sand }
 - { id: mountain, def: 2, avoid: 30,  heal: 0,  flammable: false, ground: grass, prop: rock, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: 3 }, surface: grass, height: 0.75, cliff: rock }
+# Höhlenfels (Fix 2026-11-13): sieht aus wie mountain, ist aber für alle gesperrt, auch für Flieger und `climber` (Späher im Gewölbe 1-7 kletterten in die Wand).
+- { id: cave_rock, def: 0, avoid: 0,   heal: 0,  flammable: false, ground: grass, prop: rock, cost: { foot: null, armored: null, mounted: null, flier: null, monster: null }, surface: grass, height: 0.75, cliff: rock }
 - { id: shallows, def: 0, avoid: -10, heal: 0,  flammable: false, ground: shallows, cost: { foot: 3, armored: null, mounted: 4, flier: 1, monster: 2 }, surface: riverbed, height: -0.15, water: true }
 - { id: river,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: river, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: riverbed, height: -0.32, water: true }
 - { id: bridge,   def: 0, avoid: 0,   heal: 0,  flammable: false, ground: river, prop: bridge, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: riverbed, height: -0.32, water: true }

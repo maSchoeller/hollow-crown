@@ -74,6 +74,10 @@ const P: Record<string, string> = {
   smith: 'M3 10h12l3-3h3v4l-3 1v2H8l-2 3H3z',
   enchanter: 'M12 3l3 6-3 12-3-12zM6 9h12',
   academy: 'M3 9l9-5 9 5-9 5zM7 11v5c3 2 7 2 10 0v-5M21 9v6',
+  // story 10.1: workshop (saw and plank), training ground (crossed practice swords over a post), build-up arrow of a room stone
+  workshop: 'M3 15h18v4H3zM6 15l3-9 3 9M14 11l6-6M17 5h3v3',
+  training: 'M5 4l10 10M19 4L9 14M7 12l-3 3M17 12l3 3M12 15v6M9 21h6',
+  up: 'M12 19V5M6 11l6-6 6 6',
   healer: 'M12 4v16M4 12h16',
   tavern: 'M5 6h11v13H5zM16 9h2.5a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H16M8 9v7M12 9v7',
   campfire: 'M12 4c2 3 4 4.5 4 8a4 4 0 0 1-8 0c0-2 1-3 2-4 0 2 1 3 2 3 0-2-1-4 0-7zM5 20l14-3M5 17l14 3',

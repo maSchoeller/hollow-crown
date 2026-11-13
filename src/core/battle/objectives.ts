@@ -1,4 +1,4 @@
-import type { Pos, Team, WeaponType } from '../defs';
+import type { MoveType, Pos, Team, WeaponType } from '../defs';
 import type { GameData } from '../gameData';
 import type { MapDef, MapUnitDef, SideObjectiveDef, TriggerDef } from '../mapDefs';
 import type { GameEvent } from '../events';
@@ -9,6 +9,7 @@ import { activeVictory, escapeProgress, leftAlive, mustUnits } from './activeVic
 import { battleUnitFromPlan } from './create';
 import { atPosition, raiseMapChar } from '../campaign/position';
 import { noteLieutenantSight } from './lieutenantSight';
+import { levelsLink } from '../rules/movement';
 
 /** `defeatReason` of a haunt in which the whole company is down. */
 export const HAUNT_COMPANY_LOST = 'company';
@@ -243,7 +244,7 @@ export function spawnUnits(data: GameData, s: BattleState, defs: MapUnitDef[], r
     const known = !!def.lieutenant && !!data.lieutenants?.[def.lieutenant];
     const plan = known && s.lieutenantPlan ? s.lieutenantPlan[def.lieutenant!] : undefined;
     if (known && s.lieutenantPlan && !plan) continue;
-    const at = freeTileNear(s, def.at);
+    const at = freeTileNear(data, s, def.at, data.classes[def.class]!.moveType);
     if (!at) continue;
     const uid = def.id ?? `r${s.nextUid++}`;
     const u = battleUnitFromPlan(data, { ...atPosition(def, s.positionLevel), at }, s, def.team === 'enemy' ? pct : 0, uid, plan);
@@ -257,7 +258,14 @@ export function spawnUnits(data: GameData, s: BattleState, defs: MapUnitDef[], r
   noteLieutenantSight(data, s);
 }
 
-export function freeTileNear(s: BattleState, p: Pos): Pos | null {
+/**
+ * The free tile nearest to `p` that a unit of `moveType` may stand on (fix 2026-11-13: a spawn or recruit whose field was taken
+ * landed on a mountain or a rock wall beside it). The search spreads only across tiles this unit could walk between (terrain and
+ * levels, units ignored), so the fallback never lands behind a ridge or on a wall walk without stairs. `p` itself impassable
+ * (content the check rejects) still spreads to its neighbours. Null = no such tile.
+ */
+export function freeTileNear(data: GameData, s: BattleState, p: Pos, moveType: MoveType): Pos | null {
+  const passable = (c: Pos) => data.terrain[s.terrain[c[1] * s.width + c[0]]!]?.cost[moveType] != null;
   const seen = new Set<string>();
   const queue: Pos[] = [p];
   while (queue.length) {
@@ -265,8 +273,13 @@ export function freeTileNear(s: BattleState, p: Pos): Pos | null {
     const k = `${c[0]},${c[1]}`;
     if (seen.has(k) || !inBounds(s, c)) continue;
     seen.add(k);
-    if (!unitAt(s, c) && s.terrain[c[1] * s.width + c[0]] !== 'wall') return c;
-    queue.push(...neighbors(c));
+    const ok = passable(c);
+    if (ok && !unitAt(s, c)) return c;
+    if (ok || c === p) {
+      for (const n of neighbors(c)) {
+        if (inBounds(s, n) && passable(n) && (!ok || levelsLink(data, s, c, n, moveType))) queue.push(n);
+      }
+    }
   }
   return null;
 }

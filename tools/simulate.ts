@@ -153,6 +153,8 @@ async function runCampaign(act: string) {
       gold: `${per(m.gold, m.cleared).toFixed(0)}${mark(f, 'gold')}`,
       'side gold': `${per(m.sideGold, m.cleared).toFixed(0)}${mark(f, 'side')}`,
       'army lv': `${per(m.armyLevel, m.reached).toFixed(1)}${mark(f, 'level')}`,
+      // story 10.1: room levels built above 1 before the mission (home heuristic)
+      rooms: per(m.rooms, m.reached).toFixed(1),
       expected: m.expectedLevel,
       deaths: per(m.deaths, m.cleared).toFixed(2),
       flagged: Object.keys(f).length ? Object.keys(f).join(',') : '',
@@ -182,7 +184,7 @@ async function runCampaign(act: string) {
   console.log(`battle time of the act ≈ ${(battleMin / 60).toFixed(1)} h (${actionS} s per unit action, AI phases as shown with „Gemeinsam“, first attempts won)`);
   console.log(
     `finished ${sim.finished}/${runs}, end gold ${per(sim.endGold, sim.finished).toFixed(0)}, end army lv ${per(sim.endArmyLevel, sim.finished).toFixed(1)}; ` +
-      `home spent per run: heal ${per(sim.spent.heal, runs).toFixed(0)}, buy ${per(sim.spent.buy, runs).toFixed(0)}, upgrade ${per(sim.spent.upgrade, runs).toFixed(0)}, ` +
+      `home spent per run: heal ${per(sim.spent.heal, runs).toFixed(0)}, buy ${per(sim.spent.buy, runs).toFixed(0)}, upgrade ${per(sim.spent.upgrade, runs).toFixed(0)}, rooms ${per(sim.spent.rooms, runs).toFixed(0)}, ` +
       `hire ${per(sim.spent.hire, runs).toFixed(0)} (${per(sim.hired, runs).toFixed(1)} mercenaries)`,
   );
   if (actNo > 1) {
@@ -245,6 +247,7 @@ async function runCampaign(act: string) {
       gold: per(m.gold, m.cleared),
       sideGold: per(m.sideGold, m.cleared),
       armyLevel: per(m.armyLevel, m.reached),
+      rooms: per(m.rooms, m.reached),
       expectedLevel: m.expectedLevel,
       deaths: per(m.deaths, m.cleared),
       rounds: per(m.turns, m.wins),
