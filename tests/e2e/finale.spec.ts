@@ -110,6 +110,13 @@ test('the finale ends act 1: outro, panel, sparks, card "2 x ember spark", world
     .toBe(true);
   await page.getByRole('button', { name: /To the world map|Zur Weltkarte/ }).click();
 
+  // the backup reminder of the act that was just finished comes first (story 7.3): with act 2 released the company is already in
+  // act 2 here, so the sheet names act 1 and holds the title card back until it is answered
+  const later = page.getByRole('button', { name: /Later|Später/ });
+  await expect(later).toBeVisible({ timeout: 20_000 });
+  await expect(page.locator('#act-title-name')).toHaveCount(0);
+  await later.click();
+
   // act 2 is in the build since 2026-11-13: its title card comes up (story 11.3) instead of the "coming soon" hint of story 7.3
   await expect(page.locator('#act-title-name')).toHaveText(/Akt 2|Act 2/, { timeout: 20_000 });
 });
