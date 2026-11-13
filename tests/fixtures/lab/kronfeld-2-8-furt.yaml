@@ -1,0 +1,11 @@
+# QA Akt 2: die Furt im Osten von 2-8 ist eine optionale Interaktion, die die Kampf-KI nie nutzt (tests/unit/act2-optional-levers.test.ts).
+#   pnpm lab kronfeld-2-8-furt                      Lage vor der Furt (Gegner entfernt, Rhen zwei Felder vor dem Wasser)
+#   pnpm lab kronfeld-2-8-furt --path avatar 23,5   Weg in die Furt
+#   pnpm lab kronfeld-2-8-furt --path lucan 23,5    derselbe Weg vom Aufstellfeld aus
+# Die Gegner sind entfernt, damit der Weg zur Furt ohne Kampf zu prüfen ist; das Siegziel ist `survive`, die Lage endet also nicht von selbst.
+question: Ist die Furt vom Südufer aus erreichbar, und beginnt die Flucht, sobald jemand hineinwatet?
+map: m2_8_kronfeld
+company: [lucan]
+remove: [enemy:*]
+units:
+  avatar: { at: [23, 7] }
