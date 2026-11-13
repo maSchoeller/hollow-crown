@@ -23,7 +23,7 @@ Reihenfolge nach „Akt-Release“ in `AGENTS.md`. ✅ = am 2026-11-07 erledigt,
 
 - [x] Epic 13 done (`sprint-status.yaml`)
 - [x] Epic 15: 15.1, 15.2, 15.4, 15.5, 15.7, 15.8, 15.9, 15.10, 15.13, 15.14 done; 15.3 done seit 2026-11-07 (Prolog nur Siegquote)
-- [ ] 👤 **15.6** Szenen: offen ist ein spätsommerliches Bild der eroberten Paktwacht (die Szenen 1-6 nach, 1-7 nach, 1-8 vor und nach zeigen `paktwacht_heimat` = Herbst und ausgebaute Burg, AK 3) und die Abnahme der vier neuen Ortsbilder (`art/prompts/loc_*.md`)
+- [ ] 👤 **15.6** Szenen: offen ist nur noch die Abnahme der fünf neuen Ortsbilder (`art/prompts/loc_*.md`, darunter `loc_paktwacht_spaetsommer.md`: die eroberte Paktwacht im Spätsommer für 1-6 nach, 1-7 nach, 1-8 vor und nach, seit 2026-11-13 eingebunden)
 - [ ] 👤 **15.11** Leistung großer Karten: Handy-Test des Produktinhabers auf dem Referenzgerät (Status review)
 - [ ] 👤 **15.12** Weltkarte flüssig, Paktwacht als Ruine: Handy-Test des Produktinhabers (Status review)
 - [x] **15.15** Jahreszeiten-Boden: done (PR #130, #131)

@@ -2,7 +2,7 @@
 # dann die Tafel „Glutfunken“ und der Moment: zwei Funken steigen aus der Glut auf (Zeile mit `moment`: Funken über der Tafel, danach die Karte „2 × Glutfunke“).
 # Die zwei Glutfunken legt die Knotenwirkung an m1_8 (campaign.yaml) in den Konvoi; die Szene zeigt sie nur. Der Aufstieg selbst ist Story 10.2.
 id: scn.m1_8.outro
-background: paktwacht_heimat
+background: paktwacht_spaetsommer
 music: camp
 lines:
   - id: l01
