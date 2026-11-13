@@ -51,6 +51,9 @@ const P: Record<string, string> = {
   cast: 'M12 3c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1.5 4 3 4 0-3-1.5-6 0-9z',
   // Stehlen: the role symbol of the scout (a purse)
   steal: 'M9 4h6l-1.5 3h-3zM9.5 7C6 10 4.5 13 4.5 16a3.5 3.5 0 0 0 3.5 3.5h8a3.5 3.5 0 0 0 3.5-3.5c0-3-1.5-6-5-9M12 11v5M10.5 12.5h2.5a1 1 0 0 1 0 2h-2a1 1 0 0 0 0 2H14',
+  // Falle legen / zurücknehmen (story 10.5): an open trap with jaws; taking it back adds a lifting arrow
+  trap: 'M3 17h18M5 17l2-6 2 3 3-6 3 6 2-3 2 6M12 17v3',
+  disarm: 'M3 17h18M5 17l2-6 2 3 3-6 3 6 2-3 2 6M19 3v6M16 6l3-3 3 3',
   farRescue: 'M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z',
   cheer: 'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',
   convoy: 'M3 8h12v9H3zM15 11h4l2 3v3h-6M7 20a2 2 0 1 0 0-.1M17 20a2 2 0 1 0 0-.1',

@@ -400,6 +400,10 @@ skill.pro_song.name: "Weites Lied"
 skill.pro_song.desc: "Anfeuern reicht 2 Felder weit und erreicht bis zu 2 Verbündete."
 skill.pro_banner.name: "Banner"
 skill.pro_banner.desc: "Nachbarn ignorieren Trauer und erhalten +5 Ausweichen."
+skill.pro_shadow.name: "Verborgen"
+skill.pro_shadow.desc: "Für Gegner unsichtbar: im Nebel immer, sonst bis einer näher als 3 Felder steht; nach eigenem Angriff eine Gegnerphase lang sichtbar."
+skill.pro_traps.name: "Fallen"
+skill.pro_traps.desc: "Falle legen: bis zu 2 Fallen auf Nachbarfeldern; ein Gegner bleibt darauf stehen, nimmt 8 Schaden und ist verlangsamt."
 
 # Story 11.5: Stahl-Tier, Signaturen und Fähigkeiten von Akt 2
 item.armorpiercer.name: "Panzerstecher"

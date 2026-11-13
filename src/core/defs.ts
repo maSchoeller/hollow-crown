@@ -312,6 +312,10 @@ export interface SkillEffect {
   cheerTargets?: number;
   /** the grief hit penalty does not apply (an aura gives it to the neighbours) */
   ignoreGrief?: boolean;
+  /** Schatten (story 10.5): the bearer is invisible to the enemy AI (fog map, or no foe close; see `shadowHidden`) */
+  hidden?: boolean;
+  /** an extra action the bearer may take besides its class action (Fallensteller, story 10.5: `trap` = Falle legen / zurücknehmen) */
+  grantAction?: 'trap';
   /** a ballista this unit fires reaches this many tiles further (Brakka, story 11.5); the largest source counts */
   siegeRangeBonus?: number;
   /** story 11.20: extra sight under fog (Weißwolf, Ilka); the highest of the active skills counts */

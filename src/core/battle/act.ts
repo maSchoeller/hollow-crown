@@ -14,6 +14,8 @@ import { resolveCast } from '../rules/cast';
 import { ballistaMods } from '../rules/ballista';
 import { goesToConvoy } from '../rules/scout';
 import { pathTo, reachable, type Walk } from '../rules/movement';
+import { disarmTrap, layTrap, springTrap, trapStop } from '../rules/traps';
+import { revealAfterAttack } from '../rules/stealth';
 import { expPercent, grantExp } from '../rules/progression';
 import { healStaff, staffHeal } from '../rules/heal';
 import { computeStats } from '../rules/stats';
@@ -38,30 +40,41 @@ export function ambush(u: BattleUnit, w: Walk, events: GameEvent[]): void {
   events.push({ t: 'ambush', unit: u.uid, by: w.cut!.by, at: [u.pos![0], u.pos![1]] });
 }
 
-/** `walked`: the walk along the player's planned path (it may end before `to`); without it the core finds the way. */
-export function doMove(data: GameData, s: BattleState, u: BattleUnit, to: Pos, events: GameEvent[], mov?: number, walked?: Walk): void {
-  if (!u.pos) return;
+/**
+ * `walked`: the walk along the player's planned path (it may end before `to`); without it the core finds the way. A trap of a foe on
+ * the way (story 10.5) ends the move on its tile and springs; returns true then.
+ */
+export function doMove(data: GameData, s: BattleState, u: BattleUnit, to: Pos, events: GameEvent[], mov?: number, walked?: Walk): boolean {
+  if (!u.pos) return false;
   let path: Pos[];
   if (walked) {
     path = walked.tiles;
     to = path[path.length - 1]!;
     if (samePos(u.pos, to)) {
       u.moved = true;
-      return;
+      return false;
     }
     u.moveSpent = walked.cost;
   } else {
-    if (samePos(u.pos, to)) return;
+    if (samePos(u.pos, to)) return false;
     const reach = reachable(data, s, u, u.pos, mov);
     path = pathTo(reach, to);
-    u.moveSpent = reach.get(posKey(to))?.cost ?? 0;
+    const sprung = trapStop(s, u, path);
+    u.moveSpent = reach.get(posKey(sprung > 0 ? path[sprung]! : to))?.cost ?? 0;
+  }
+  const stop = trapStop(s, u, path);
+  if (stop > 0) {
+    path = path.slice(0, stop + 1);
+    to = path[stop]!;
   }
   u.pos = [to[0], to[1]];
   u.moved = true;
   events.push({ t: 'moved', unit: u.uid, path });
-  pickUpLoot(data, s, u, events);
+  if (stop > 0) springTrap(data, s, u, events);
+  if (active(u)) pickUpLoot(data, s, u, events);
   afterUnitMoved(data, s, u, events);
   noteLieutenantSight(data, s);
+  return stop > 0;
 }
 
 function pickUpLoot(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
@@ -185,6 +198,7 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
       const target = getUnit(s, a.target);
       const weapon = a.weapon ?? attackTargets(data, s, u, u.pos!)[a.target]?.[0];
       quoteOnce(s, target, events);
+      revealAfterAttack(data, s, u);
       resolveAttack(data, s, u.uid, target.uid, weapon, events);
       break;
     }
@@ -193,6 +207,7 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
       const weapon = a.weapon ?? aimTargets(data, s, u, u.pos!)[a.target]?.[0];
       events.push({ t: 'classAction', unit: u.uid, action: 'aim', target: target.uid });
       quoteOnce(s, target, events);
+      revealAfterAttack(data, s, u);
       resolveAttack(data, s, u.uid, target.uid, weapon, events, { hit: b.classActions.aim.hit });
       break;
     }
@@ -202,6 +217,7 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
       const target = getUnit(s, a.target);
       obj.state = 'open';
       quoteOnce(s, target, events);
+      revealAfterAttack(data, s, u);
       resolveAttack(data, s, u.uid, target.uid, undefined, events, ballistaMods(data, s, obj.id));
       break;
     }
@@ -315,6 +331,12 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
     }
     case 'cast':
       resolveCast(data, s, u, a.at, events);
+      break;
+    case 'trap':
+      layTrap(data, s, u, a.at, events);
+      break;
+    case 'disarm':
+      disarmTrap(s, u, a.at, events);
       break;
     case 'talk': {
       const t = getUnit(s, a.target);

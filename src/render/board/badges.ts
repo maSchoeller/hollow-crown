@@ -16,6 +16,8 @@ export interface BadgeUnit {
   hp: number;
   maxHp: number;
   lieutenant: boolean;
+  /** Schatten (story 10.5): hidden from the foes right now; the badge carries the mark „verborgen“ */
+  hidden?: boolean;
 }
 
 interface Badge {
@@ -25,6 +27,7 @@ interface Badge {
   bar: HTMLElement;
   mark: HTMLElement;
   check: HTMLElement;
+  veil: HTMLElement;
   unit: BadgeUnit;
   /** content written last: re-rendered only on a change */
   sig: string;
@@ -59,6 +62,10 @@ const FLEE =
   '<path class="b-skull" d="M5 12h8m-3-4 4 4-4 4M15 6v10" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 /** Heights in CSS px of the marker and the check (badges.css); the badge row is as high as its highest shown part. */
 const MARK_PX = 18;
+const VEIL_PX = 16;
+/** „verborgen“ (story 10.5): a closed eye on a dark stone */
+const VEIL =
+  '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.5" fill="#2b2230"/><path d="M3.2 7.2q4.8 4.6 9.6 0M5 9.6l-1 1.6M8 10.6v1.9M11 9.6l1 1.6" fill="none" stroke="#fff8ec" stroke-width="1.5" stroke-linecap="round"/></svg>';
 const CHECK_PX = 14;
 
 const CHECK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 8.5l2.6 2.6L12 5.6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -108,7 +115,7 @@ export class Badges {
       const el = document.createElement('div');
       el.className = 'hc-badge';
       el.setAttribute('aria-hidden', 'true');
-      el.innerHTML = '<span class="hc-badge__mark"></span><span class="hc-hpbar"><i class="hc-hpbar__fill"></i><i class="hc-hpbar__loss"></i></span><span class="hc-badge__check"></span>';
+      el.innerHTML = '<span class="hc-badge__mark"></span><span class="hc-hpbar"><i class="hc-hpbar__fill"></i><i class="hc-hpbar__loss"></i></span><span class="hc-badge__check"></span><span class="hc-badge__veil"></span>';
       this.layer.appendChild(el);
       b = {
         el,
@@ -117,6 +124,7 @@ export class Badges {
         loss: el.querySelector('.hc-hpbar__loss')!,
         mark: el.querySelector('.hc-badge__mark')!,
         check: el.querySelector('.hc-badge__check')!,
+        veil: el.querySelector('.hc-badge__veil')!,
         unit: u,
         sig: '',
         x: NaN,
@@ -171,8 +179,9 @@ export class Badges {
     const pre = this.preview?.uid === uid ? Math.max(0, Math.min(u.hp, this.preview.after)) : null;
     // a previewed attack shows its bar whatever the option says, else the flashing loss would hide with it (story 13.4)
     const bar = barShown(this.mode, u) || pre !== null;
-    b.height = Math.max(bar ? this.look.heightPx : 0, mark ? MARK_PX : 0, done ? CHECK_PX : 0);
-    const sig = `${bar}|${u.team}|${u.hp}|${u.maxHp}|${u.lieutenant}|${mark ?? ''}|${done}|${pre ?? ''}`;
+    const veil = !!u.hidden;
+    b.height = Math.max(bar ? this.look.heightPx : 0, mark ? MARK_PX : 0, done ? CHECK_PX : 0, veil ? VEIL_PX : 0);
+    const sig = `${bar}|${u.team}|${u.hp}|${u.maxHp}|${u.lieutenant}|${mark ?? ''}|${done}|${pre ?? ''}|${veil}`;
     if (sig === b.sig) return;
     b.sig = sig;
     b.el.className = `hc-badge is-${u.team}${u.lieutenant ? ' is-lt' : ''}${look.critical ? ' is-critical' : ''}${bar ? '' : ' no-bar'}`;
@@ -192,6 +201,8 @@ export class Badges {
     b.mark.innerHTML = !mark ? '' : mark === 'flee' || mark === 'fleeCrit' ? FLEE : SKULL;
     b.check.innerHTML = done ? CHECK : '';
     b.check.classList.toggle('is-done', done);
+    b.veil.innerHTML = veil ? VEIL : '';
+    b.veil.classList.toggle('is-on', veil);
   }
 
   /** Places the badge of `uid` with its bottom centre at screen point (x, y) in CSS px; `shown` false hides it (off screen, hidden, faded). */

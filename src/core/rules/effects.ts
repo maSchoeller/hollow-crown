@@ -112,7 +112,7 @@ export function damageUnit(
   s: BattleState,
   u: BattleUnit,
   amount: number,
-  cause: 'burn' | 'fire' | 'item',
+  cause: 'burn' | 'fire' | 'item' | 'trap',
   events: GameEvent[],
   by?: string,
 ): boolean {

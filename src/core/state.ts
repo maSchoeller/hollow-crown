@@ -110,6 +110,21 @@ export interface BattleUnit extends UnitRecord {
   /** level before the first EXP of this battle counted; lets the result show the level-up of units that joined mid-battle */
   levelAtExpStart?: number;
   scarGained?: string;
+  /**
+   * Schatten (story 10.5): after its own attack the shadow is seen until the end of the next foe phase: the round it attacked in.
+   * Missing or null = not revealed (also in older saves); a counter does not reveal it.
+   */
+  revealedUntil?: number | null;
+}
+
+/** A trap on the board (story 10.5): laid by `owner` (uid); `seq` orders them (the oldest class trap gives way to a new one). */
+export interface TrapState {
+  id: string;
+  at: Pos;
+  owner: string;
+  /** `class`: Falle legen of the trapper; `item`: the trap set of story 10.6 */
+  source: 'class' | 'item';
+  seq: number;
 }
 
 export interface ObjectState {
@@ -217,6 +232,8 @@ export interface BattleState {
   lieutenantPlan?: Record<string, LieutenantPlan>;
   /** ids of the lieutenants the company has seen in this battle (review R2; `noteLieutenantSight`); missing = none yet */
   ltSeen?: string[];
+  /** traps on the board (story 10.5); they stay until they spring, are taken back or the mission ends. Missing = none (older saves) */
+  traps?: TrapState[];
 }
 
 /** The scaling of one lieutenant for one battle (review R1): level, tiered items, grudge skills, grudge and its target. */

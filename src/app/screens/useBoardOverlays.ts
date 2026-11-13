@@ -1,5 +1,5 @@
 /** Board overlays of the battle screen (Battle.tsx). */
-import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, forecast, healTiles, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, terrainWarnings, visibleTiles } from '../../core';
+import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, forecast, healTiles, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, terrainWarnings, visibleTiles, trapsOf, trapTeam, isHostile } from '../../core';
 import { data } from '../state/session';
 import { goalMarkTiles, markedGoal } from '../state/goalMarks';
 import { activeVictory } from '../../core/battle/activeVictory';
@@ -90,6 +90,8 @@ export function useBoardOverlays(b: BattleScreen) {
       fog: fogTiles.fog,
       fogEdge: fogTiles.edge,
       mark: markTiles,
+      // own traps (story 10.5); the foes' traps the player does not know
+      traps: trapsOf(s).filter((t) => !isHostile(trapTeam(s, t), 'player')).map((t) => t.at),
     };
     if (mode.k === 'idle') return board.setOverlays({ ...base, cursor: tileInfo });
     const u = unit(mode.uid);
@@ -133,6 +135,10 @@ export function useBoardOverlays(b: BattleScreen) {
       const tiles = availableActions(data, s, u, to).find((o) => o.kind === 'cast')?.tiles ?? [];
       const pre = mode.at ? classPreview(data, s, u, to, { kind: 'cast', at: mode.at }) : null;
       return board.setOverlays({ ...base, path, ghost, targets: tiles.filter((p) => !mode.at || !samePos(p, mode.at)), cast: pre?.kind === 'cast' ? pre.area.tiles : [], cursor: mode.at ?? to });
+    }
+    if (mode.k === 'tile') {
+      const tiles = availableActions(data, s, u, to).find((o) => o.kind === mode.action)?.tiles ?? [];
+      return board.setOverlays({ ...base, path, ghost, attack: tiles, cursor: to });
     }
     if (mode.k === 'passive') {
       const pre = passivePreview(data, s, u, to);

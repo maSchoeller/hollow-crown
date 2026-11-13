@@ -24,6 +24,10 @@ export type Action =
   | { kind: 'open'; object: string }
   /** Stehlen (story 2.6, scout): takes `item` out of the bag of the adjacent foe `target` */
   | { kind: 'steal'; target: string; item: string }
+  /** Falle legen (Fallensteller, story 10.5): a trap on `at`, a tile of `trapTiles` */
+  | { kind: 'trap'; at: Pos }
+  /** Zurücknehmen (story 10.5): takes the trapper's own trap on `at` back */
+  | { kind: 'disarm'; at: Pos }
   /** Balliste (story 11.6): fire the ballista `object` on a neighbouring tile at `target`; the shot is the unit's action */
   | { kind: 'ballista'; object: string; target: string }
   | { kind: 'seize' }

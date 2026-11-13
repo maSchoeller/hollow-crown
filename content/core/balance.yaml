@@ -194,6 +194,13 @@ classActions:
   hold: { detourMax: 2 }
   # Wirken (Story 2.5): Reichweite = Waffenreichweite der Zauberwaffe; Brand-/Wall-Dauer in terrainEffects; waterRadius = Löschradius um das Zielfeld, fogDuration = Runden, die Wind den Nebel lichtet (Radius windFogClearRadius)
   cast: { waterRadius: 1, fogDuration: 2 }
+  # Falle legen (Story 10.5, GDD und Produktinhaber 2026-10-31): Fallensteller legt auf ein freies, zu Fuß begehbares Feld im Abstand range;
+  # höchstens max eigene Fallen (die dritte ersetzt die älteste). Ein Gegner, der hineinläuft, bleibt stehen, nimmt damage (ohne Zufall) und
+  # erhält status (Verlangsamt: status.slowMovPenalty, status.durationRounds)
+  trap: { range: 1, max: 2, damage: 8, status: slowed }
+# Schatten (Story 10.5): für die Gegner-KI unsichtbar; auf Karten mit Nebel immer, ohne Nebel, solange kein Gegner näher als revealDistance
+# Felder steht (Manhattan-Abstand ≤ revealDistance − 1 enthüllt); nach eigenem Angriff sichtbar bis Ende der nächsten Gegnerphase
+shadow: { revealDistance: 3 }
 bag: { size: 3 }
 # Nebel (Story 2.6): Sicht = Manhattan-Radius um jede eigene (und verbündete) Einheit mit Sichtlinie; baseVision + höchster Bonus
 # (Boni stapeln nicht): roleBonus nach Klassenrolle, moveTypeBonus nach Bewegungsart. blockers = Gelände, hinter dem die Sicht endet

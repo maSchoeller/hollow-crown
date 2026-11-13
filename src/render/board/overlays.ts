@@ -38,6 +38,8 @@ export interface Overlays {
   fogEdge?: Pos[];
   /** places of a tapped side objective (goal marking): a light ring with a dark outline on the field, see `MarkerStyle` */
   mark?: Pos[];
+  /** own traps (story 10.5): a ring with jaws on the field, render.yaml `legibility.trap` */
+  traps?: Pos[];
 }
 
 /** Look of the goal marking (render.yaml `look.marker`): light ring, dark outline, opacity and its pulse. Unlit, never ember orange nor a team colour. */
@@ -101,6 +103,7 @@ const LAYER = {
   watchLine: 17,
   cast: 18,
   terrainWarn: 19,
+  trap: 20,
   pathCream: 21,
   path: 22,
   targets: 23,
@@ -366,6 +369,33 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
       idx.push(k, k + 1, k + 2, k, k + 2, k + 3);
     }
     out.push(overlayMesh(scene, `overlay:${key}`, p, idx, spec.color, spec.alpha, spec.pulse ?? 0, layer));
+  }
+  if (o.traps?.length) {
+    // a trap (story 10.5): dark outline under a rust ring, four jaws pointing in; flat on the field, no pulse
+    const tl = leg.trap;
+    const dark = { p: [] as number[], idx: [] as number[] };
+    const ring = { p: [] as number[], idx: [] as number[] };
+    for (const t of o.traps) {
+      const h = top(t) + 0.04;
+      addRing(dark.p, dark.idx, t, h, tl.radius - tl.width * 2, tl.radius + tl.width);
+      addRing(ring.p, ring.idx, t, h + 0.002, tl.radius - tl.width, tl.radius);
+      const cx = t[0] + 0.5;
+      const cz = -t[1] - 0.5;
+      for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1]] as const) {
+        const k = ring.p.length / 3;
+        const r0 = tl.radius - tl.width;
+        const r1 = r0 - tl.jaw;
+        const w = tl.width / 2;
+        const [ox, oz] = [-dz * w, dx * w];
+        ring.p.push(cx + dx * r0 + ox, h + 0.003, cz + dz * r0 + oz, cx + dx * r0 - ox, h + 0.003, cz + dz * r0 - oz, cx + dx * r1, h + 0.003, cz + dz * r1);
+        ring.idx.push(k, k + 1, k + 2);
+      }
+    }
+    const outline = overlayMesh(scene, 'overlay:trap-outline', dark.p, dark.idx, tl.outline, tl.alpha, 0);
+    outline.mesh.alphaIndex = LAYER.trap;
+    const body = overlayMesh(scene, 'overlay:trap', ring.p, ring.idx, tl.color, tl.alpha, 0);
+    body.mesh.alphaIndex = LAYER.trap + 0.5;
+    out.push(outline, body);
   }
   if (marker && o.mark?.length) {
     // dark outline below, light ring above: legible on grass, dirt and cobbles alike

@@ -26,7 +26,13 @@ export type GameEvent =
   | { t: 'status'; unit: string; status: StatusId; on: boolean }
   | { t: 'knockback'; unit: string; from: Pos; to: Pos; blocked: boolean }
   | { t: 'terrain'; at: Pos; terrain: string; cause: 'ignite' | 'spread' | 'burnout' | 'extinguish' | 'rockwall' | 'raze' | 'event'; level?: number }
-  | { t: 'damage'; unit: string; amount: number; hpAfter: number; cause: 'burn' | 'fire' | 'item' }
+  | { t: 'damage'; unit: string; amount: number; hpAfter: number; cause: 'burn' | 'fire' | 'item' | 'trap' }
+  /** story 10.5: a trapper laid a trap (`trap` = its id) */
+  | { t: 'trapSet'; unit: string; trap: string; at: Pos }
+  /** a trap left the board: taken back by its owner, or the oldest one that gave way to a new one */
+  | { t: 'trapRemoved'; trap: string; at: Pos; unit: string }
+  /** a foe walked into a trap: its move ended there, `damage` follows as a `damage` event, then the status */
+  | { t: 'trapTriggered'; trap: string; unit: string; damage: number; at: Pos }
   | { t: 'heal'; unit: string; amount: number; hpAfter: number; by?: string; cause: 'staff' | 'item' | 'terrain' | 'skill' }
   | { t: 'downed'; unit: string }
   /** a downed unit bleeds one more own phase; `turns` of `max`, at `max` it dies (a `died` event follows) */

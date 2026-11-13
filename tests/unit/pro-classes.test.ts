@@ -29,7 +29,8 @@ beforeAll(() => {
 });
 
 const NEW = ['blade_dancer', 'ranger', 'hexer', 'battle_priest', 'bard', 'standard_bearer', 'shadow', 'trapper', 'grand_strategist', 'banner_lord'];
-const LATER = ['shadow', 'trapper'];
+// shadow and trapper became playable with story 10.5; every pro class is playable now
+const LATER: string[] = [];
 
 /** A company member of `role`, promoted to `classId` (rules only, no academy). */
 function proOf(role: string, classId: string): UnitRecord {
@@ -41,7 +42,7 @@ function proOf(role: string, classId: string): UnitRecord {
 }
 
 describe('pro classes (story 10.3)', () => {
-  it('has 16 pro classes; each comes from a role that names it, the later ones are not playable yet', () => {
+  it('has 16 pro classes; each comes from a role that names it, all are playable (shadow and trapper since story 10.5)', () => {
     const pros = Object.values(data.classes).filter((c) => c.tier === 'pro');
     expect(pros).toHaveLength(16);
     for (const id of NEW) {
@@ -55,7 +56,7 @@ describe('pro classes (story 10.3)', () => {
       for (const r of c.proSkills ?? []) expect(r.startsWith('pro_') && data.skills[r]?.source === 'class').toBe(true);
     }
     expect(promotionTargets(data, 'minstrel')).toEqual(['bard', 'standard_bearer']);
-    expect(promotionTargets(data, 'scout')).toEqual([]);
+    expect(promotionTargets(data, 'scout')).toEqual(['shadow', 'trapper']);
     expect(promotionTargets(data, 'tactician')).toEqual(['grand_strategist']);
     expect(promotionTargets(data, 'captain')).toEqual(['banner_lord']);
   });

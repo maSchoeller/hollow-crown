@@ -69,6 +69,7 @@ const legibilitySchema = z.object({
   }),
   reach: z.object({ color: hex, strength: unit }),
   terrainWarn: z.object({ color: hex, alpha: unit, pulse: unit }),
+  trap: z.object({ color: hex, outline: hex, alpha: unit, radius: z.number().positive(), width: z.number().positive(), jaw: z.number().min(0) }),
   hpBar: z.object({ tick: z.number().int().positive(), tickWide: z.number().int().positive(), wideFrom: z.number().int().positive(), critical: unit, widthTiles: z.number().positive(), minPx: z.number().positive(), maxPx: z.number().positive(), heightPx: z.number().positive(), lift: z.number().min(0) }),
   view: z.object({ wholeMapMargin: z.number().min(0) }),
   doubleTapMs: ms,

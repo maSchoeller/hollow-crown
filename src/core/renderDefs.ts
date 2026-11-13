@@ -32,6 +32,8 @@ export interface LegibilityDef {
   reach: { color: string; strength: number };
   /** story 11.10: warning before a map event changes the ground: amber stripes on the board and the edge of the HUD line */
   terrainWarn: { color: string; alpha: number; pulse: number };
+  /** story 10.5: an own trap on the board: dark outline ring, coloured ring and jaws (radius, ring width and jaw length in tiles) */
+  trap: { color: string; outline: string; alpha: number; radius: number; width: number; jaw: number };
   /** story 13.3: HP bar over the head */
   hpBar: { tick: number; tickWide: number; wideFrom: number; critical: number; widthTiles: number; minPx: number; maxPx: number; heightPx: number; lift: number };
   /** story 13.9: the whole-map zoom step */

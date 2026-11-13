@@ -229,6 +229,11 @@ export class BoardView extends BoardFrame implements HostedView {
         case 'combatEnd':
           await this.hooks.onEvent?.(e);
           break;
+        case 'trapTriggered':
+          // story 10.5: the trap snaps shut under the foe (the spikes effect, well under 600 ms, art direction §8); damage and status follow as their own events
+          this.spawnFx('earth_spikes', e.at[0], e.at[1]);
+          await this.hooks.onEvent?.(e);
+          break;
         case 'damage':
         case 'heal': {
           const p = this.unitPos(e.unit);

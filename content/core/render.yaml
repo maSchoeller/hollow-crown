@@ -238,6 +238,8 @@ legibility:
   reach: { color: "#E0473A", strength: 0.38 }
   # Story 11.10: Warnung vor einem Geländewechsel (set_terrain mit warn): Streifen auf dem Brett und Kante der HUD-Zeile, eine Farbe
   terrainWarn: { color: "#E8A317", alpha: 0.75, pulse: 0.2 }
+  # Story 10.5: eigene Falle auf Feldhöhe (nur die Spielerseite sieht sie): dunkle Kontur, rostfarbener Ring, Zähne nach innen (jaw = Länge)
+  trap: { color: "#C0703A", outline: "#2B1E16", alpha: 0.95, radius: 0.3, width: 0.06, jaw: 0.1 }
   # Story 13.3: Lebensleiste über dem Kopf. tick = Teilstrich je so viele TP, ab wideFrom max. TP je tickWide; critical = Anteil der max. TP,
   # unter dem der Glutrand pulsiert; Breite = widthTiles Felder, begrenzt auf minPx..maxPx CSS-px; heightPx = Höhe; lift = Höhe über dem Feld (Felder)
   hpBar: { tick: 5, tickWide: 10, wideFrom: 40, critical: 0.25, widthTiles: 0.8, minPx: 24, maxPx: 54, heightPx: 8, lift: 1.0 }

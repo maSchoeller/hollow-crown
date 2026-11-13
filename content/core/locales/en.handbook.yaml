@@ -71,6 +71,9 @@ handbook:
     classes: { name: "Classes", sub: "Strengths, weaknesses" }
     lessons: { name: "Lessons", sub: "from the prologue" }
   label:
+    shadowReveal: "Seen at a distance below"
+    trapMax: "Traps at once"
+    trapDamage: "Trap damage"
     loadoutPro: "Skills of a pro"
     changePath: "Change path from academy level"
     changeGold: "Changing the path costs"
@@ -532,6 +535,20 @@ handbook:
       keywords: "standard bearer, pro, minstrel, grief, avoid"
       strong: { "1": "Keeps grieving allies in the fight.", "2": "More HP and DEF than the bard." }
       weak: { "1": "Works on neighbours only.", "2": "No cheer at range." }
+    class_shadow:
+      title: "Shadow"
+      text: "Pro path of the scout with dagger and light bow. Foes do not see it: never on maps with fog, without fog only once one stands closer than {shadowReveal} fields. They do not attack it and walk into it as if the field were free. After an attack of its own it is seen until the end of the next enemy phase; a counter does not give it away. Climbing, opening, stealing and the scout's wide sight stay."
+      where: "Promotion happens in the academy of the castle."
+      keywords: "shadow, pro, scout, invisible, hidden, fog"
+      strong: { "1": "No target for foes while hidden.", "2": "Very fast." }
+      weak: { "1": "Seen for one enemy phase after attacking.", "2": "Little HP and DEF." }
+    class_trapper:
+      title: "Trapper"
+      text: "Pro path of the scout. As its action it lays a trap on a free neighbouring field, at most {trapMax} at once; another one replaces the oldest. A foe that walks into one stops, takes {trapDamage} damage and is slowed. Own units walk over traps. It takes an own trap next to it back as its action. Climbing, opening, stealing and the scout's wide sight stay."
+      where: "Promotion happens in the academy of the castle."
+      keywords: "trapper, pro, scout, trap, slowed"
+      strong: { "1": "Blocks ways with traps.", "2": "More HP and DEF than the shadow." }
+      weak: { "1": "Traps cost the action.", "2": "Slower than the shadow." }
     class_banner_lord:
       title: "Banner Lord"
       text: "The captain's pro path. His rally reaches allies one field further."

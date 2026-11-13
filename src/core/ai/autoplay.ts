@@ -11,9 +11,11 @@ import { destinations, levelStep, levelsLink, moveCost, reachable, stepCost, thr
 import { isScout } from '../rules/scout';
 import { computeStats } from '../rules/stats';
 import type { BattleState, BattleUnit } from '../state';
-import { active, areaTiles, dist, inBounds, neighbors, posKey, samePos } from '../util';
+import { active, areaTiles, dist, inBounds, neighbors, posKey, samePos, tileIndex } from '../util';
 import { asleep, attackPlans, ballistaPlans, bestApproach } from './ai';
 import { wardLine } from './wardLine';
+import { enemyView } from './enemyView';
+import { trapTiles } from '../rules/traps';
 
 /** Farther than any walk of a unit plus any walk and reach of a foe, boosts included. */
 const DANGER_REACH = 26;
@@ -26,7 +28,8 @@ function dangerCounts(data: GameData, s: BattleState): Map<string, number> {
     // only tiles a unit can walk to this turn are ever asked for: a foe further off cannot threaten one (saves most of the work on a large map)
     if (!company.some((p) => dist(p.pos!, o.pos!) <= DANGER_REACH)) continue;
     const hold = staysPut(data, s, o);
-    for (const k of threatTiles(data, s, o, !!hold)) m.set(k, (m.get(k) ?? 0) + 1);
+    // each foe reaches what it can on the board it sees (story 10.5: past a hidden shadow)
+    for (const k of threatTiles(data, enemyView(data, s, o.uid), o, !!hold)) m.set(k, (m.get(k) ?? 0) + 1);
   }
   return m;
 }
@@ -511,9 +514,24 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       if (rest.length) dests = rest;
     }
     const to = approach(s, u, dests, aim, danger, maxDanger, field);
-    return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };
+    const trap = trapSpot(data, s, u, to, enemies);
+    return { type: 'act', unit: u.uid, to, action: trap ? { kind: 'trap', at: trap } : { kind: 'wait' } };
   }
   return { type: 'endPhase' };
+}
+
+/**
+ * Fallensteller (story 10.5) when no attack is worth it: a trap on the free tile next to `to` closest to the nearest foe (ties: the
+ * smallest tile index), so `pnpm sim` measures the class. Null for a unit that lays no traps or with no foe left.
+ */
+export function trapSpot(data: GameData, s: BattleState, u: BattleUnit, to: Pos, enemies: BattleUnit[]): Pos | null {
+  if (!enemies.length) return null;
+  let best: { at: Pos; d: number } | null = null;
+  for (const at of trapTiles(data, s, u, to)) {
+    const d = Math.min(...enemies.map((o) => dist(o.pos!, at)));
+    if (!best || d < best.d || (d === best.d && tileIndex(s, at) < tileIndex(s, best.at))) best = { at, d };
+  }
+  return best?.at ?? null;
 }
 
 /** Plays a battle to the end with autoCommand; returns the final state and the command log. */

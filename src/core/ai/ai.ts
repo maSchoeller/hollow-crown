@@ -2,19 +2,20 @@ import type { Pos, Team } from '../defs';
 import type { GameData } from '../gameData';
 import type { GameEvent } from '../events';
 import { attackTargets, staffTargets } from '../battle/actions';
-import { applyAct, moveAfterAction } from '../battle/act';
+import { applyAct, doAction, doMove, finishUnit } from '../battle/act';
 import type { Action } from '../battle/commands';
 import { activeVictory } from '../battle/activeVictory';
-import { mapOf, runTriggers } from '../battle/objectives';
+import { checkObjectives, mapOf, runTriggers } from '../battle/objectives';
 import { deathless, fleesAtZero, withdraw } from '../rules/effects';
 import { expectedDamage, forecast, type Forecast } from '../rules/combat';
 import { ballistaForecast, ballistaTargets } from '../rules/ballista';
-import { crewSpots, holdZone, levelAt, levelStep, moveCost, stepCost, destinations, reachable, threatTiles, waitsToJoin } from '../rules/movement';
+import { crewSpots, holdZone, levelAt, levelStep, moveCost, stepCost, destinations, pathTo, reachable, threatTiles, waitsToJoin, walkPath } from '../rules/movement';
 import { castSource, castTargets, fireArea } from '../rules/cast';
 import { computeStats } from '../rules/stats';
 import { itemDef } from '../rules/items';
 import { afterActionMove } from '../rules/skills';
 import type { BattleState, BattleUnit } from '../state';
+import { enemyView } from './enemyView';
 import { active, areaTiles, dist, getUnit, inBounds, isAlly, isHostile, neighbors, onMap, posKey, samePos, terrainAt, tileIndex } from '../util';
 
 interface Plan {
@@ -358,9 +359,10 @@ function dangerMap(data: GameData, s: BattleState, u: BattleUnit): Map<string, n
  * fields to the reachable tile that the fewest player units threaten; it stays where it is unless a tile is strictly safer than
  * its own. Ties go to the shorter walk, then to the lower tile key, so the choice is fixed (no randomness).
  */
-function retreatAfterAction(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
-  const fields = afterActionMove(data, u, s);
-  if (fields <= 0 || !active(u) || !u.pos || s.outcome) return;
+function retreatAfterAction(data: GameData, real: BattleState, u: BattleUnit, events: GameEvent[]): void {
+  const fields = afterActionMove(data, u, real);
+  if (fields <= 0 || !active(u) || !u.pos || real.outcome) return;
+  const s = enemyView(data, real, u.uid);
   const danger = dangerMap(data, s, u);
   const reach = reachable(data, s, u, u.pos, fields);
   let best: { to: Pos; danger: number; cost: number } | null = null;
@@ -375,7 +377,32 @@ function retreatAfterAction(data: GameData, s: BattleState, u: BattleUnit, event
       bestDanger = d;
     }
   }
-  if (best) moveAfterAction(data, s, u, best.to, fields, events);
+  if (best) {
+    enemyGo(data, real, s, u, best.to, events, fields);
+    checkObjectives(data, real, events);
+  }
+}
+
+/**
+ * Story 10.5: walks `u` to `to` the way it planned on what it sees (`view`, from `enemyView`); the real board decides. A hidden shadow
+ * on the way stops it on the last free tile before (it does not notice why: no ambush), a trap of its foes on the way stops it on the
+ * trap, which springs (`doMove`). Returns whether the unit arrived at `to`. With nothing hidden the walk is the one it always was.
+ */
+function enemyGo(data: GameData, real: BattleState, view: BattleState, u: BattleUnit, to: Pos, events: GameEvent[], mov?: number): boolean {
+  if (!u.pos || samePos(u.pos, to)) return true;
+  if (view === real || view.units === real.units) return !doMove(data, real, u, to, events, mov) && samePos(u.pos, to);
+  const way = pathTo(reachable(data, view, u, u.pos, mov), to);
+  const walk = way.length ? walkPath(data, real, u, way, mov) : null;
+  // a way the real board does not allow at all (it should not happen): the unit stays
+  if (!walk) return false;
+  const sprung = doMove(data, real, u, to, events, mov, walk);
+  return !sprung && !walk.cut && samePos(u.pos, to);
+}
+
+/** After an interrupted walk (trap, hidden shadow, story 10.5): strike from where it stands if a target is in reach, else wait. */
+function strikeFromHere(data: GameData, real: BattleState, u: BattleUnit): Action {
+  if (!active(u) || !u.pos || real.outcome) return { kind: 'wait' };
+  return attackPlans(data, enemyView(data, real, u.uid), u, [u.pos]).find((p) => p.score > -500)?.action ?? { kind: 'wait' };
 }
 
 function healPlan(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[]): Plan | null {
@@ -422,13 +449,17 @@ function wake(data: GameData, s: BattleState, u: BattleUnit): void {
   }
 }
 
-/** Decides and performs one unit's turn. */
-function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
+/**
+ * Decides and performs one unit's turn. It decides on what it sees (`enemyView`, story 10.5: no hidden shadows, no traps of its foes)
+ * and acts on the real board (`real`).
+ */
+function aiAct(data: GameData, real: BattleState, u: BattleUnit, events: GameEvent[]): void {
   if (!u.pos) return;
+  const s = enemyView(data, real, u.uid);
   const ai = u.ai ?? { profile: 'aggressive' as const };
   if (waitsToJoin(u)) {
     events.push({ t: 'aiTurn', unit: u.uid });
-    return applyAct(data, s, u, u.pos, { kind: 'wait' }, events);
+    return applyAct(data, real, u, u.pos, { kind: 'wait' }, events);
   }
   if (u.ai) wake(data, s, u);
   const profile = u.ai?.profile ?? ai.profile;
@@ -438,9 +469,20 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
   let plan: Plan | null;
   const act = (p: Plan | null) => {
     events.push({ t: 'aiTurn', unit: u.uid });
-    if (p) applyAct(data, s, u, p.to, p.action, events);
-    else applyAct(data, s, u, u.pos!, { kind: 'wait' }, events);
-    if (p && p.action.kind !== 'wait') retreatAfterAction(data, s, u, events);
+    if (!p) return applyAct(data, real, u, u.pos!, { kind: 'wait' }, events);
+    // stopped on the way (trap, hidden shadow): it decides anew from there without moving on (story 10.5 [ASSUMPTION])
+    const action = enemyGo(data, real, s, u, p.to, events) ? p.action : strikeFromHere(data, real, u);
+    if (active(u) && !real.outcome) doAction(data, real, u, action, events);
+    finishUnit(data, real, u, events);
+    checkObjectives(data, real, events);
+    if (action.kind !== 'wait') retreatAfterAction(data, real, u, events);
+  };
+  // a walk to the way out (flee, follow) that ends the unit's turn there; false when a trap or a hidden shadow stopped it before
+  const arrive = (to: Pos): boolean => {
+    const there = enemyGo(data, real, s, u, to, events);
+    finishUnit(data, real, u, events);
+    checkObjectives(data, real, events);
+    return there;
   };
   const potion = u.bag.find((i) => itemDef(data, i).use?.heal && (i.charges ?? 1) > 0);
   if (potion && u.hp * 100 < computeStats(data, u).maxHp * data.balance.ai.selfHealBelowPercent) {
@@ -489,12 +531,12 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
       if (kill) return act(kill);
       if (target && samePos(u.pos, target.at)) {
         target.state = 'razed';
-        s.terrain[target.at[1] * s.width + target.at[0]] = 'ruins';
+        real.terrain[target.at[1] * real.width + target.at[0]] = 'ruins';
         events.push({ t: 'aiTurn', unit: u.uid });
         events.push({ t: 'razed', unit: u.uid, object: target.id });
         events.push({ t: 'terrain', at: target.at, terrain: 'ruins', cause: 'raze' });
-        runTriggers(data, s, { kind: 'action', unit: u }, events);
-        applyAct(data, s, u, u.pos, { kind: 'wait' }, events);
+        runTriggers(data, real, { kind: 'action', unit: u }, events);
+        applyAct(data, real, u, u.pos, { kind: 'wait' }, events);
         return;
       }
       if (target) {
@@ -511,10 +553,11 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
       // already standing in the way out: leave at once (a lieutenant called back while he is still at the edge)
       const to = u.pos && goals.some((g) => samePos(g, u.pos!)) ? u.pos : bestApproach(data, s, u, goals);
       if (to && ai.area && goals.some((g) => samePos(g, to))) {
-        applyAct(data, s, u, to, { kind: 'wait' }, events);
+        const out = arrive(to);
+        if (!out || !active(u)) return;
         if (fleesAtZero(u)) {
           // a lieutenant who withdraws on his own (a map trigger set `flee`, story 9.9) is driven off like one who fell to 0 HP: loot, grudge, bounty, flee line
-          withdraw(s, u, events);
+          withdraw(real, u, events);
         } else {
           u.gone = 'escaped';
           events.push({ t: 'escaped', unit: u.uid });
@@ -528,7 +571,7 @@ function aiAct(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[
     case 'follow': {
       const to = followStep(data, s, u);
       if (to && exitTiles(data, s).some((g) => samePos(g, to))) {
-        applyAct(data, s, u, to, { kind: 'wait' }, events);
+        if (!arrive(to) || !active(u)) return;
         u.gone = 'escaped';
         events.push({ t: 'escaped', unit: u.uid });
         return;
@@ -567,10 +610,11 @@ export function runAiPhase(data: GameData, s: BattleState, team: Team, events: G
   const ready = s.units.filter((u) => u.team === team && active(u) && !u.acted);
   // units that can kill first, then by distance to the nearest hostile
   const scored = ready.map((u) => {
-    const plans = attackPlans(data, s, u, destinations(s, u, reachable(data, s, u)));
+    const v = enemyView(data, s, u.uid);
+    const plans = attackPlans(data, v, u, destinations(v, u, reachable(data, v, u)));
     const canKill = plans.some((p) => p.action.kind === 'attack' && p.score > 40);
     const near = Math.min(
-      ...hostileUnits(s, u)
+      ...hostileUnits(v, u)
         .filter((o) => o.pos)
         .map((o) => dist(o.pos!, u.pos!)),
       999,

@@ -10,6 +10,7 @@ import type { GameEvent } from '../events';
 import type { BattleState, BattleUnit } from '../state';
 import { active, isHostile, onMap, posKey } from '../util';
 import { asleep } from '../ai/ai';
+import { enemyView } from '../ai/enemyView';
 import { forecast, type Forecast } from './combat';
 import { usableWeapons } from './items';
 import { canStrike, destinations, reachNow, reachable, threatTiles, weaponRange } from './movement';
@@ -34,7 +35,7 @@ export interface ThreatMap {
 /**
  * Who reaches which field (story 13.5): every foe of `team` that acts next counts once per field it can attack; hold/guard
  * count without moving, sleeping `trigger` foes do not count and give the `sleeping` fields instead. `only`: just these foes
- * (the zone of single foes the player switched on).
+ * (the zone of single foes the player switched on). Each foe reaches what it can on the board it sees (`enemyView`, story 10.5).
  */
 export function threatMap(data: GameData, s: BattleState, team: BattleUnit['team'], only?: readonly string[]): ThreatMap {
   const byTile = new Map<string, string[]>();
@@ -42,11 +43,12 @@ export function threatMap(data: GameData, s: BattleState, team: BattleUnit['team
   for (const u of s.units) {
     if (!onMap(u) || !active(u) || !isHostile(u.team, team)) continue;
     if (only && !only.includes(u.uid)) continue;
+    const v = enemyView(data, s, u.uid);
     if (asleep(data, s, u)) {
-      for (const k of threatTiles(data, s, u)) sleeping.add(k);
+      for (const k of threatTiles(data, v, u)) sleeping.add(k);
       continue;
     }
-    for (const k of threatTiles(data, s, u, standsStill(u))) {
+    for (const k of threatTiles(data, v, u, standsStill(u))) {
       const list = byTile.get(k);
       if (list) list.push(u.uid);
       else byTile.set(k, [u.uid]);
@@ -71,7 +73,7 @@ export function tileThreats(data: GameData, s: BattleState, unit: BattleUnit, at
   unit.pos = at;
   try {
     return threatening(data, s, unit.team)
-      .filter((u) => threatTiles(data, s, u, standsStill(u)).has(k))
+      .filter((u) => threatTiles(data, enemyView(data, s, u.uid), u, standsStill(u)).has(k))
       .map((u) => u.uid);
   } finally {
     unit.pos = saved;
