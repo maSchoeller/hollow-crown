@@ -18,6 +18,9 @@
 - { id: pro_wide_heal,     source: class, trigger: passive, effect: { healRadius: 1 } }
 - { id: pro_song,          source: class, trigger: passive, effect: { cheerRange: 2, cheerTargets: 2 } }
 - { id: pro_banner,        source: class, trigger: passive, aura: { radius: 1 }, effect: { ignoreGrief: true, avoidBonus: 5 } }
+# Story 10.5: Schatten unsichtbar für die Gegner-KI (Regeln balance.shadow), Fallensteller legt Fallen (balance.classActions.trap)
+- { id: pro_shadow,        source: class, trigger: passive, effect: { hidden: true } }
+- { id: pro_traps,         source: class, trigger: passive, effect: { grantAction: trap } }
 # Profi-Wege (Story 10.3): nur Werte, Waffengruppen, Einsätze oder Radien; die Wirkungen mit Vorschau/KI-Folgen bringt Story 10.4
 - { id: pro_blade_dance,   source: class, trigger: passive, effect: { avoidBonus: 15, critBonus: 10 } }
 - { id: pro_woodsman,      source: class, trigger: passive, effect: { terrainCost: { forest: 1 }, addWeaponGroups: [sword] } }

@@ -5,7 +5,7 @@
 import { timerLook } from './aiPacing';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { BattleState, BattleUnit, GearPiece, Pos, StatusId } from '../../core';
-import { bleedsOut, itemDef, maxHpOf, modelId, unitFigureId, unitVatPath } from '../../core';
+import { bleedsOut, itemDef, maxHpOf, modelId, shadowHidden, unitFigureId, unitVatPath } from '../../core';
 import { loadManifest, loadUnitSheet } from '../shared/assets';
 import { loadUnitModel } from '../shared/models';
 import { ModelFigure, SpriteFigure, type Figure, type FigureAnim } from '../shared/figures';
@@ -164,7 +164,7 @@ export abstract class BoardUnits extends BoardProps {
   /** The badge of a unit from its state: units on the board that stand (not downed, fled, gone) have one (story 13.3). */
   protected setBadge(u: BattleUnit): void {
     if (!u.pos || u.gone || u.downed || !this.units.has(u.uid)) return this.badges.set(u.uid, null);
-    this.badges.set(u.uid, { team: u.team, hp: u.hp, maxHp: maxHpOf(this.data, this.state, u), lieutenant: !!u.lieutenant });
+    this.badges.set(u.uid, { team: u.team, hp: u.hp, maxHp: maxHpOf(this.data, this.state, u), lieutenant: !!u.lieutenant, hidden: shadowHidden(this.data, this.state, u) });
   }
 
   /** Option "Lebensleisten" (story 13.3). */

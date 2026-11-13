@@ -5,6 +5,7 @@ import { forecast, type Forecast } from '../rules/combat';
 import { castArea, castTargets, type CastArea } from '../rules/cast';
 import { classActionId } from '../rules/roles';
 import { ballistaTargets } from '../rules/ballista';
+import { disarmTiles, trapTiles } from '../rules/traps';
 import { openTargets, stealPreview, stealTargets, type StealPreview } from '../rules/scout';
 import { moveBudget, reachable, strikeTiles, tilesInRange, weaponRange } from '../rules/movement';
 import { computeStats } from '../rules/stats';
@@ -30,7 +31,7 @@ export interface ActionOption {
   objectType?: 'door' | 'chest';
   /** steal: target uid → uids of the items that can be taken */
   stealable?: Record<string, string[]>;
-  /** cast: the tiles Wirken can be aimed at */
+  /** cast: the tiles Wirken can be aimed at; trap/disarm: the tiles for a trap or with an own trap (story 10.5) */
   tiles?: Pos[];
 }
 
@@ -258,6 +259,11 @@ export function availableActions(data: GameData, s: BattleState, u: BattleUnit, 
   if (cheer.length) out.push({ kind: 'cheer', targets: cheer });
   const casts = castTargets(data, s, u, pos);
   if (casts.length) out.push({ kind: 'cast', tiles: casts });
+  // Fallensteller (story 10.5): lay a trap next to the tile, or take an own one back
+  const traps = trapTiles(data, s, u, pos);
+  if (traps.length) out.push({ kind: 'trap', tiles: traps });
+  const disarm = disarmTiles(data, s, u, pos);
+  if (disarm.length) out.push({ kind: 'disarm', tiles: disarm });
   const steal = stealTargets(data, s, u, pos);
   if (Object.keys(steal).length) out.push({ kind: 'steal', targets: Object.keys(steal), stealable: steal });
   // Balliste (story 11.6): one option per ballista beside the tile, for a unit of any team

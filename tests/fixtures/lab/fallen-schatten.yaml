@@ -1,0 +1,11 @@
+# Story 10.5: Fallensteller und Schatten.
+#   pnpm lab fallen-schatten --enemy       Gegnerphase: der Räuber sieht den Schatten nicht (Abstand ≥ 3) und läuft in die Falle, sobald eine liegt
+#   ?lab=fallen-schatten                   Fallensteller wählen: Aktion „Falle legen“ mit „0/2“, Felder als Bereichskacheln; Schatten trägt „verborgen“
+question: Legt der Fallensteller Fallen, sieht die Gegner-KI den Schatten nicht und läuft sie in die Falle?
+map: dev_terrain_warn
+company: none
+add:
+  - { id: lab_trapper, team: player, class: trapper, level: 5, at: [3, 8], items: [{ def: iron_dagger }] }
+  - { id: lab_shadow, team: player, class: shadow, level: 5, at: [5, 5], items: [{ def: iron_dagger }] }
+  - { id: lab_raider, team: enemy, class: brigand, level: 5, at: [9, 8], items: [{ def: iron_axe }] }
+remove: [liora, dev_raider, dev_archer, dev_marksman, dev_vanguard]

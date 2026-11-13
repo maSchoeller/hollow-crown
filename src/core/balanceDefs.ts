@@ -179,7 +179,11 @@ export interface Balance {
     hold: { detourMax: number };
     /** Wirken (story 2.5): radius around the target that water puts out, rounds wind lifts fog */
     cast: { waterRadius: number; fogDuration: number };
+    /** Falle legen (Fallensteller, story 10.5): reach from the trapper, class traps per trapper, fixed damage and status when one springs */
+    trap: { range: number; max: number; damage: number; status: StatusId };
   };
+  /** Schatten (story 10.5): without fog a hidden shadow is seen once a foe stands closer than `revealDistance` tiles */
+  shadow: { revealDistance: number };
   bag: { size: number };
   economy: {
     sellRatio: number;

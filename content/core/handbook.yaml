@@ -404,6 +404,23 @@ entries:
   - { id: class_bard, category: classes, graphic: class, class: bard, fromAct: 2, see: [class_minstrel, academy] }
   - { id: class_standard_bearer, category: classes, graphic: class, class: standard_bearer, fromAct: 2, see: [class_minstrel, academy] }
   - { id: class_banner_lord, category: classes, graphic: class, class: banner_lord, fromAct: 2, see: [class_captain, academy] }
+  - id: class_shadow
+    category: classes
+    graphic: class
+    class: shadow
+    fromAct: 2
+    values:
+      - { id: shadowReveal, ref: balance.shadow.revealDistance, icon: target }
+    see: [class_scout, class_trapper, fog, academy]
+  - id: class_trapper
+    category: classes
+    graphic: class
+    class: trapper
+    fromAct: 2
+    values:
+      - { id: trapMax, ref: balance.classActions.trap.max, icon: target }
+      - { id: trapDamage, ref: balance.classActions.trap.damage, icon: attack }
+    see: [class_scout, class_shadow, academy]
 
   # ------------------------------------------------------------------ Lektionen (Text aus den Szenen selbst, keine Kopie)
   - { id: lesson_move, category: lessons, graphic: lesson, lesson: scn.prologue.tutorial_move, see: [movement, forecast] }

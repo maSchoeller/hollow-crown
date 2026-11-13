@@ -67,6 +67,8 @@ function actionValid(data: GameData, s: BattleState, u: BattleUnit, to: Pos, a: 
       return null;
     }
     case 'cast':
+    case 'trap':
+    case 'disarm':
       return opt.tiles?.some((p) => samePos(p, a.at)) ? null : 'invalid_target';
     case 'door':
     case 'lever':

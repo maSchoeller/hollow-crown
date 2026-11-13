@@ -130,6 +130,11 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
         if (tiles.some((c) => samePos(c, p))) return setMode({ ...mode, at: p });
         return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
       }
+      case 'tile': {
+        const tiles = availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === mode.action)?.tiles ?? [];
+        if (tiles.some((c) => samePos(c, p))) return void run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: mode.action, at: p } });
+        return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
+      }
       case 'classPreview': {
         if (at && (at.uid === mode.target || at.uid === mode.second)) return void confirmClassAction();
         // Barde (story 10.4): a tap on a further ally in reach adds it as the second target of Anfeuern
@@ -181,6 +186,7 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
       case 'passive':
       case 'steal':
       case 'target':
+      case 'tile':
         return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
       case 'pursue':
         return finishPursue();
@@ -334,6 +340,11 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
       }
       case 'cast':
         return setMode({ k: 'cast', uid: u.uid, to: mode.to, at: null });
+      case 'trap':
+      case 'disarm':
+        // a single own trap is taken back at once; a trap always asks for its field
+        if (opt.kind === 'disarm' && opt.tiles?.length === 1) return run({ type: 'act', unit: u.uid, to: mode.to, action: { kind: 'disarm', at: opt.tiles[0]! } });
+        return setMode({ k: 'tile', uid: u.uid, to: mode.to, action: opt.kind });
       case 'ballista': {
         // Balliste (story 11.6): the preview first; with several targets the player picks one on the board
         const targets = opt.targets ?? [];

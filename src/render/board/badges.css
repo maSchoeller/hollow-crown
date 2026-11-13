@@ -168,3 +168,18 @@
     box-shadow: 0 0 0 2px var(--hc-ember);
   }
 }
+
+/* Schatten (story 10.5): the mark „verborgen“ right of the bar while foes cannot see the unit */
+.hc-badge__veil {
+  display: none;
+}
+.hc-badge__veil.is-on {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+.hc-badge__veil svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}

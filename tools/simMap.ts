@@ -39,6 +39,8 @@ export interface MapRun {
   recruited?: string[];
   /** side objective id → fulfilled (counts only on a victory, as in `finishBattle`) */
   side?: Record<string, boolean>;
+  /** traps of the company that sprang (story 10.5) */
+  traps?: number;
   ms?: number;
 }
 
@@ -90,7 +92,7 @@ export function simulateMapRun(data: GameData, o: MapSimOptions, run: number, se
     }
   const t0 = performance.now();
   const start = beginBattle(data, c, o.node, c.roster.map((u) => u.id)).state;
-  const { state } = autoplay(data, start);
+  const { state, events } = autoplay(data, start);
   const ms = performance.now() - t0;
   const map = data.maps[state.mapId]!;
   const lost: string[] = [];
@@ -113,6 +115,7 @@ export function simulateMapRun(data: GameData, o: MapSimOptions, run: number, se
     villages: state.stats.villagesVisited.length,
     recruited: [...state.stats.recruited],
     side: Object.fromEntries(map.objectives.side.map((s) => [s.id, victory && sideObjectiveDone(data, state, s)])),
+    traps: events.filter((e) => e.t === 'trapTriggered').length,
     ms,
   };
 }
@@ -152,6 +155,8 @@ export interface MapSummary {
   turns: TurnStats;
   avgDowns: number;
   villagesPerRun: number;
+  /** traps that sprang per arrived run (story 10.5) */
+  trapsPerRun: number;
   /** player units down or dead at the end, outcomes other than victory, defeat units lost */
   causes: Record<string, number>;
   recruited: Record<string, number>;
@@ -202,6 +207,7 @@ export function summarizeMap(data: GameData, o: MapSimOptions & { runs: number; 
     turns: turnStats(winTurns),
     avgDowns: per(played.reduce((a, r) => a + (r.downs ?? 0), 0), played.length),
     villagesPerRun: per(played.reduce((a, r) => a + (r.villages ?? 0), 0), played.length),
+    trapsPerRun: per(played.reduce((a, r) => a + (r.traps ?? 0), 0), played.length),
     causes,
     recruited,
     side,
@@ -221,7 +227,7 @@ export function printMap(s: MapSummary): void {
     `win rate ${pct(s.winRate)}, avg turns ${(s.avgTurns ?? 0).toFixed(1)}, median turns ${s.turns.p50 ?? '-'}, avg losses ${s.avgDowns.toFixed(2)}, avg ${s.timing.msPerRun.toFixed(0)} ms/run`,
   );
   console.log('downs/deaths:', JSON.stringify(s.causes));
-  console.log(`villages/run ${s.villagesPerRun.toFixed(1)}, recruited: ${JSON.stringify(s.recruited)}`);
+  console.log(`villages/run ${s.villagesPerRun.toFixed(1)}, recruited: ${JSON.stringify(s.recruited)}${s.trapsPerRun ? `, traps sprung/run ${s.trapsPerRun.toFixed(1)}` : ''}`);
   const dist = Object.entries(s.turns.dist)
     .map(([t, n]) => `${t}:${n}`)
     .join(' ');

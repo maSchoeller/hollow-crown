@@ -228,6 +228,8 @@ export const skillSchema = z.object({
       ignoreGrief: z.boolean(),
       siegeRangeBonus: z.number().int().min(1),
       visionBonus: z.number().int().min(1),
+      hidden: z.boolean(),
+      grantAction: z.enum(['trap']),
     })
     .partial(),
   usesPerMap: z.number().optional(),

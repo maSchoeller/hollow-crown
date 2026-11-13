@@ -110,7 +110,9 @@ export const balanceSchema = z.object({
     cheer: z.object({ mov: z.number().int(), hit: z.number() }),
     hold: z.object({ detourMax: z.number().int().min(0) }),
     cast: z.object({ waterRadius: z.number().int().min(0), fogDuration: z.number().int().min(1) }),
+    trap: z.object({ range: z.number().int().min(1), max: z.number().int().min(1), damage: z.number().int().min(0), status: statusId }),
   }),
+  shadow: z.object({ revealDistance: z.number().int().min(1) }),
   bag: z.object({ size: z.number().int() }),
   economy: z.looseObject({
     rarityAffixes: z.record(z.string(), z.number()),

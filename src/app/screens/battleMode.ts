@@ -17,10 +17,12 @@ export type Mode =
   /** Wirken (story 2.5): pick a field in range (`at` null), then the preview of the affected fields and the confirmation */
   | { k: 'cast'; uid: string; to: Pos; at: Pos | null }
   /** Stehlen (story 2.6): the bag of the chosen foe is shown, one tap on an item takes it */
-  | { k: 'steal'; uid: string; to: Pos; target: string };
+  | { k: 'steal'; uid: string; to: Pos; target: string }
+  /** Falle legen / zurücknehmen (story 10.5): the valid fields are shown as range tiles, a tap on one does it */
+  | { k: 'tile'; uid: string; to: Pos; action: 'trap' | 'disarm' };
 
 /** Class slot of the dock: role actions (Zielen, Fernbergen, Anfeuern, story 2.3) and the skill actions of the PoC classes. */
-export const CLASS_KINDS: ActionOption['kind'][] = ['aim', 'farRescue', 'cheer', 'cast', 'steal', 'staff', 'command', 'rally'];
+export const CLASS_KINDS: ActionOption['kind'][] = ['aim', 'farRescue', 'cheer', 'cast', 'trap', 'disarm', 'steal', 'staff', 'command', 'rally'];
 /** Class actions with a preview and a confirmation before they run. */
 export type ClassKind = 'aim' | 'farRescue' | 'cheer';
 

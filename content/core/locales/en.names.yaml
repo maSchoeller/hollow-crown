@@ -400,6 +400,10 @@ skill.pro_song.name: "Far song"
 skill.pro_song.desc: "Cheer reaches 2 fields and up to 2 allies."
 skill.pro_banner.name: "Banner"
 skill.pro_banner.desc: "Neighbours ignore grief and gain +5 avoid."
+skill.pro_shadow.name: "Hidden"
+skill.pro_shadow.desc: "Invisible to foes: always under fog, otherwise until one stands closer than 3 fields; seen for one enemy phase after attacking."
+skill.pro_traps.name: "Traps"
+skill.pro_traps.desc: "Lay trap: up to 2 traps on neighbouring fields; a foe stops on one, takes 8 damage and is slowed."
 
 # Story 11.5: steel tier, signatures and skills of act 2
 item.armorpiercer.name: "Armorpiercer"

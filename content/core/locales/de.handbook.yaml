@@ -71,6 +71,9 @@ handbook:
     classes: { name: "Klassen", sub: "Stärken, Schwächen" }
     lessons: { name: "Lektionen", sub: "aus dem Prolog" }
   label:
+    shadowReveal: "Sichtbar ab Abstand unter"
+    trapMax: "Fallen zugleich"
+    trapDamage: "Fallen-Schaden"
     loadoutPro: "Skills eines Profis"
     changePath: "Weg wechseln ab Akademie-Stufe"
     changeGold: "Weg wechseln kostet"
@@ -532,6 +535,20 @@ handbook:
       keywords: "Bannerträger, Profi, Spielmann, Trauer, Ausweichen"
       strong: { "1": "Hält trauernde Verbündete im Kampf.", "2": "Mehr TP und VER als der Barde." }
       weak: { "1": "Wirkt nur auf Nachbarn.", "2": "Kein Anfeuern auf Abstand." }
+    class_shadow:
+      title: "Schatten"
+      text: "Profi-Weg des Spähers mit Dolch und leichtem Bogen. Gegner sehen ihn nicht: auf Karten mit Nebel nie, ohne Nebel erst, wenn einer näher als {shadowReveal} Felder steht. Sie greifen ihn nicht an und laufen gegen ihn, als wäre das Feld frei. Nach einem eigenen Angriff ist er bis zum Ende der nächsten Gegnerphase sichtbar; ein Konter verrät ihn nicht. Klettern, Öffnen, Stehlen und die weite Sicht des Spähers bleiben."
+      where: "Der Aufstieg geschieht in der Akademie der Burg."
+      keywords: "Schatten, Profi, Späher, unsichtbar, verborgen, Nebel"
+      strong: { "1": "Kein Ziel für Gegner, solange er verborgen ist.", "2": "Sehr schnell." }
+      weak: { "1": "Nach dem Angriff eine Gegnerphase lang sichtbar.", "2": "Wenig TP und VER." }
+    class_trapper:
+      title: "Fallensteller"
+      text: "Profi-Weg des Spähers. Als Aktion legt er eine Falle auf ein freies Nachbarfeld, höchstens {trapMax} zugleich; eine weitere ersetzt die älteste. Ein Gegner, der hineinläuft, bleibt stehen, nimmt {trapDamage} Schaden und ist verlangsamt. Eigene Figuren laufen darüber. Eine eigene Falle daneben nimmt er als Aktion zurück. Klettern, Öffnen, Stehlen und die weite Sicht des Spähers bleiben."
+      where: "Der Aufstieg geschieht in der Akademie der Burg."
+      keywords: "Fallensteller, Profi, Späher, Falle, verlangsamt"
+      strong: { "1": "Sperrt Wege mit Fallen.", "2": "Mehr TP und VER als der Schatten." }
+      weak: { "1": "Fallen kosten die Aktion.", "2": "Langsamer als der Schatten." }
     class_banner_lord:
       title: "Bannerherr"
       text: "Profi-Weg des Hauptmanns. Sein Sammelruf erreicht Verbündete ein Feld weiter."

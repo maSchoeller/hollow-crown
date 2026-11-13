@@ -182,6 +182,10 @@ export interface SkillTotals {
   /** the guard chance this unit gives each neighbour (Bollwerk) */
   guardNeighbors: number;
   ignoreGrief: boolean;
+  /** Schatten (story 10.5): invisible to the enemy AI while the rules of `shadowHidden` allow it */
+  hidden: boolean;
+  /** extra actions of the active skills (Fallensteller: `trap`) */
+  grantActions: string[];
   /** extra reach of a ballista this unit fires (story 11.5) */
   siegeRange: number;
   /** statuses a landed fight inflicts (`statusOnHit` of on_hit skills) */
@@ -218,6 +222,8 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
     cheerTargets: 0,
     guardNeighbors: 0,
     ignoreGrief: false,
+    hidden: false,
+    grantActions: [],
     siegeRange: 0,
     statusOnHit: [],
     procs: [],
@@ -264,6 +270,8 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
     t.cheerTargets = Math.min(2, Math.max(t.cheerTargets, e.cheerTargets ?? 0));
     t.guardNeighbors = Math.max(t.guardNeighbors, e.guardNeighbors ?? 0);
     if (e.ignoreGrief) t.ignoreGrief = true;
+    if (e.hidden) t.hidden = true;
+    if (e.grantAction && !t.grantActions.includes(e.grantAction)) t.grantActions.push(e.grantAction);
     t.siegeRange = Math.max(t.siegeRange, e.siegeRangeBonus ?? 0);
     if (e.statusOnHit) t.statusOnHit.push(e.statusOnHit);
     if (

@@ -1,5 +1,5 @@
 /** The battle screen: HUD, sheets and panels over the 3D board. State, board, overlays, presentation, commands and input live in the hooks next to it. */
-import { type ActionOption, type BattleUnit, active, availableActions, ballistaForecast, castBlock, classActionId, classPreview, contextEntries, damageAtHit, forecast, longPressView, passivePreview, posKey, stealBlock, unitAt, wantedView, weaponRange } from '../../core';
+import { type ActionOption, type BattleUnit, active, availableActions, ballistaForecast, canLayTraps, castBlock, classActionId, classPreview, contextEntries, damageAtHit, forecast, longPressView, ownTraps, passivePreview, posKey, stealBlock, unitAt, wantedView, weaponRange } from '../../core';
 import { BackPill, ClassPreviewCard, ContextBands, Dock, DockAction, ForecastCard, GoalPills, HintPill, MenuStone, OverviewStone, PassiveRuleCard, PhasePill, RosterPanel, SpeedControl, TerrainCard, TurnPill, UnitCardB, roleIcon } from './BattleHud';
 import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, StealPick, TradeSheet, UnitInfo } from './BattlePanels';
 import { CLASS_KINDS, type Mode, selectMode } from './battleMode';
@@ -150,7 +150,7 @@ export function Battle() {
           variant="class"
           icon={classOpts.length && classOpts[0]!.kind !== 'cast' ? classOpts[0]!.kind : roleIcon(data.classes[u.classId]!.role)}
           label={passive ? t(`ui.passive.${passive}.name`) : classOne ? t(`ui.action.${classOne.kind}`) : t('ui.hud.classSlot')}
-          sub={passive ? t('ui.passive.ready') : undefined}
+          sub={passive ? t('ui.passive.ready') : canLayTraps(data, s, u) ? t('ui.trap.count', { n: ownTraps(s, u).length, max: data.balance.classActions.trap.max }) : undefined}
           state={passive ? 'ready' : undefined}
           dim={!classOpts.length && !passive}
           onClick={
@@ -259,6 +259,15 @@ export function Battle() {
             <SecondaryButton onClick={() => cancelRef.current()}>{t('ui.back')}</SecondaryButton>
             <PrimaryButton onClick={() => cancelRef.current()}>{t('ui.passive.ok')}</PrimaryButton>
           </div>
+        </>
+      )}
+      {mode.k === 'tile' && selUnit && (
+        <>
+          <div class="hud-row">
+            {back}
+            <HintPill>{t(`ui.pick.${mode.action}`)}</HintPill>
+          </div>
+          {card}
         </>
       )}
       {mode.k === 'cast' && selUnit && (
