@@ -261,6 +261,12 @@ economy:
   mercenaryLimit: 6                      # zusätzlich zu den 20 Gefährten (GDD Armee-Limit)
   smithMaxUpgrade: [3, 4, 5]             # höchste Aufwertung je Schmied-Stufe (Lager = Stufe 1)
   rerollFromSmithLevel: 3                # Affix neu würfeln ab Schmied-Stufe
+  # Händler der Stufen 2 und 3 (Story 10.9): Rabatt je Händler-Stufe in %, Rabatte aus Entscheidungen (priceMod) addieren sich dazu
+  merchantDiscountByLevel: [0, 0, 10]
+  maxDiscountPct: 30                     # Produktinhaber 2026-10-31: alle Rabatte zusammen höchstens −30 %
+  dailyOfferFromMerchantLevel: 3         # Abschnitt „Angebot des Tages“ (c.offers, buyOffer) ab dieser Händler-Stufe
+  # Glutfunke beim Händler: ab Stufe 3, insgesamt 3, je einer bis zur nächsten Story-Mission; fester Preis = items.<item>.price ohne Rabatt
+  emberShop: { item: ember_spark, fromMerchantLevel: 3, total: 3, maxOffered: 1 }
   tavern:
     offersByLevel: [3, 4, 4]             # Söldner-Angebote je Runde nach Taverne-Stufe (Story 10.1); tavernOfferCount
     levelSpread: 1                       # Angebotsstufe = erwartete Stufe der nächsten Mission minus 0..spread

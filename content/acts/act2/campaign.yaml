@@ -56,6 +56,10 @@ merchant:
   - tier: 2
     storyCount: 4
     items: [stiletto, tower_shield]
+  # größeres Sortiment ab Händler-Stufe 2 (Story 10.9, [ASSUMPTION]): seltene Teile, die sonst kein Händler führt (items.md §2 „Händler ab Stufe 2“)
+  - tier: 0
+    roomLevel: 2
+    items: [horseslayer, stone_wall, remedy_staff, plate_armor, ember_robe, power_ring, earth_amulet, wind_feather]
 # Narben wie in Akt 1 (dieselben Ids; eine Narbe trägt über die Akte)
 scars:
   - { id: lame_leg, mods: { mov: -1 } }

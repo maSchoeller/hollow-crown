@@ -31,7 +31,6 @@ import {
   beginBattle,
   conditionContext,
   createHauntBattle,
-  currentTier,
   effectiveLevel,
   promoteError,
   roomBuild,
@@ -43,7 +42,7 @@ import {
   finishBattle,
   itemCategory,
   itemDef,
-  merchantStock,
+  shopStock,
   newCampaign,
   startBattle,
   upgradeCost,
@@ -140,7 +139,7 @@ export interface CampaignSim {
   endGold: number;
   endArmyLevel: number;
   /** spent by the home heuristic over the act (all runs) */
-  spent: { heal: number; buy: number; upgrade: number; rooms: number; hire: number; craft: number };
+  spent: { heal: number; buy: number; upgrade: number; rooms: number; hire: number; craft: number; sparks: number };
   /** story 11.28: mercenaries the home heuristic hired over the act (all runs) */
   hired: number;
   /** haunts played between the missions (all runs): played, won, gold they paid, fallen companions */
@@ -278,6 +277,14 @@ export function homeHeuristic(data: GameData, c0: CampaignState, spent: Campaign
   for (const pair of Object.keys(c.supports)) c = tryCmd(data, c, { type: 'unlockSupport', pair });
   const strong = () =>
     [...c.roster].sort((a, b) => effectiveLevel(data, b) - effectiveLevel(data, a)).slice(0, data.balance.simulation.armySize);
+  // ember sparks (story 10.9): the merchant of level 3 sells one whenever its price is free
+  for (;;) {
+    const g = c.gold;
+    const next = tryCmd(data, c, { type: 'buyEmberSpark' });
+    if (next === c) break;
+    c = next;
+    pay('sparks', g);
+  }
   // promote (story 10.2, for story 11.27): with an ember spark the highest unit of level 10 or more rises on its first path
   for (;;) {
     const cand = [...c.roster]
@@ -310,7 +317,7 @@ export function homeHeuristic(data: GameData, c0: CampaignState, spent: Campaign
   // hire (story 11.28): fill the places of the next mission before gold goes into items and upgrades
   c = hireMercenaries(data, c, next, spent).campaign;
   // buy: the cheapest healing item in stock for each strong unit without one
-  const stock = merchantStock(data, currentTier(data, c), actOf(c))
+  const stock = shopStock(data, c)
     .filter((id) => itemDef(data, id).use?.heal)
     .sort((a, b) => itemDef(data, a).price - itemDef(data, b).price);
   const healing = stock[0];
@@ -456,7 +463,7 @@ const emptySim = (): CampaignSim => ({
   finished: 0,
   endGold: 0,
   endArmyLevel: 0,
-  spent: { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0 },
+  spent: { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0, sparks: 0 },
   hired: 0,
   haunts: { played: 0, won: 0, gold: 0, fallen: 0 },
   entry: { runs: 0, armyLevel: 0, gold: 0 },

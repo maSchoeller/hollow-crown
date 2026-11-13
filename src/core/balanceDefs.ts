@@ -212,6 +212,14 @@ export interface Balance {
     smithMaxUpgrade: number[];
     /** smith level from which affixes can be rerolled */
     rerollFromSmithLevel: number;
+    /** story 10.9: the merchant's discount in percent by its level */
+    merchantDiscountByLevel: number[];
+    /** story 10.9: all discounts together (priceMod and merchant) at most this many percent */
+    maxDiscountPct: number;
+    /** story 10.9: the deal of the day (`c.offers`) from this merchant level */
+    dailyOfferFromMerchantLevel: number;
+    /** story 10.9: the merchant's ember sparks: the item, from which level, how many in all, how many at once */
+    emberShop: { item: string; fromMerchantLevel: number; total: number; maxOffered: number };
     tavern: TavernDef;
     convoySize: number;
     rarityAffixes: Record<Rarity, number>;

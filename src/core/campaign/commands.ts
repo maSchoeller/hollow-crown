@@ -23,6 +23,8 @@ export interface QueuedEffects {
 export type CampaignCommand =
   | { type: 'buy'; item: string }
   | { type: 'buyOffer'; uid: string }
+  /** story 10.9: the merchant's ember spark (from level 3, at most 3, one per story mission), fixed price */
+  | { type: 'buyEmberSpark' }
   | { type: 'sell'; uid: string }
   /** `replace` (bag only): uid of the item in that bag place, which goes to the convoy in the same step (swap) */
   | { type: 'equip'; unit: string; uid: string; slot: EquipSlot | 'bag'; replace?: string }

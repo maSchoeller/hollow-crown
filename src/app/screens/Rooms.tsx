@@ -7,7 +7,6 @@ import { createContext } from 'preact';
 import { createPortal } from 'preact/compat';
 import type { ComponentChildren } from 'preact';
 import {
-  actOf,
   armyCount,
   armyOverLimit,
   isMercenary,
@@ -15,13 +14,17 @@ import {
   availableSupportTalks,
   campfireLock,
   reservePct,
-  currentTier,
+  dailyOffersOpen,
+  emberSparkOffered,
+  emberSparkPrice,
   hireCost,
   hireError,
   itemDef,
   locateItem,
-  merchantStock,
+  offerPrice,
+  priceChangePct,
   shopPrice,
+  shopStock,
   roomBuild,
   scarCost,
   rerollAllowed,
@@ -54,6 +57,7 @@ import { AcademyRoom } from './Academy';
 import { WorkshopRoom } from './Workshop';
 import { MemorialRoom } from './Memorial';
 import { TrainingRoom } from './Training';
+import { Sparks } from '../../ui/Sparks';
 import { campaign, data } from '../state/session';
 import { UnitHead } from './unitArt';
 import '../../ui/camp.css';
@@ -214,21 +218,55 @@ export function ConvoyRoom({ room, apply, onClose }: { room: RoomDef; apply: App
 
 const probe = (id: string): ItemInstance => ({ uid: `shop-${id}`, def: id, upgrade: 0, affixes: [], runes: [] });
 
-/** Merchant: tier of the act's gear, purse in the HUD, "For whom?" names who can hold the item. */
+/** What the buy tab has chosen: an item of the stock (def id), a deal of the day (uid, story 10.9) or the ember spark. */
+type MerchantPick = { kind: 'stock'; id: string } | { kind: 'offer'; uid: string } | { kind: 'spark' };
+
+/**
+ * Merchant: tier of the act's gear, purse in the HUD, "For whom?" names who can hold the item. From level 2 a larger range
+ * (`roomLevel` lists), from level 3 the deal of the day and the ember spark; the total discount stands as a mark (story 10.9).
+ * Prices come from the same functions the commands use (`shopPrice`, `offerPrice`, `emberSparkPrice`).
+ */
 export function MerchantRoom({ room, apply, onClose }: { room: RoomDef; apply: Apply; onClose: () => void }) {
   const c = campaign.value!;
   const [tab, setTab] = useState<'buy' | 'sell'>('buy');
   const [sel, setSel] = useState<string | null>(null);
   const [who, setWho] = useState(false);
-  const stock = merchantStock(data, currentTier(data, c), actOf(c));
-  const chosenDef = tab === 'buy' && sel ? sel : null;
-  const price = chosenDef ? shopPrice(data, c, itemDef(data, chosenDef).price) : 0;
+  const [moment, setMoment] = useState(0);
+  const stock = shopStock(data, c);
+  const offers = dailyOffersOpen(data, c) ? c.offers : [];
+  const spark = emberSparkOffered(data, c);
+  const sparkItem = data.balance.economy.emberShop.item;
+  const pct = priceChangePct(data, c);
+  const chosen: MerchantPick | null =
+    tab !== 'buy' || !sel
+      ? null
+      : sel === 'spark'
+        ? spark ? { kind: 'spark' } : null
+        : sel.startsWith('offer:')
+          ? offers.some((o) => `offer:${o.uid}` === sel) ? { kind: 'offer', uid: sel.slice(6) } : null
+          : { kind: 'stock', id: sel };
+  const chosenOffer = chosen?.kind === 'offer' ? offers.find((o) => o.uid === chosen.uid) : undefined;
+  const chosenDef = chosen?.kind === 'stock' ? chosen.id : chosenOffer?.def ?? null;
+  const price =
+    chosen?.kind === 'spark' ? emberSparkPrice(data) : chosenOffer ? offerPrice(data, chosenOffer, c) : chosen?.kind === 'stock' ? shopPrice(data, c, itemDef(data, chosen.id).price) : 0;
   const owned = tab === 'sell' && sel ? c.convoy.find((i) => i.uid === sel) : undefined;
   const sellFor = owned ? sellPrice(data, owned) : 0;
   const pick = (id: string | null) => {
     setSel(id);
     setWho(false);
   };
+  const buy = () => {
+    if (!chosen) return;
+    if (chosen.kind === 'stock') apply({ type: 'buy', item: chosen.id }, t('ui.camp.bought'));
+    else if (chosen.kind === 'offer') {
+      if (apply({ type: 'buyOffer', uid: chosen.uid }, t('ui.camp.bought'))) pick(null);
+    }
+    else if (apply({ type: 'buyEmberSpark' }, t('ui.camp.bought'))) {
+      pick(null);
+      setMoment((n) => n + 1);
+    }
+  };
+  const priceSide = (value: number) => <Amount resource="gold" value={value} short={c.gold < value} />;
   return (
     <RoomPanel
       room={room}
@@ -239,11 +277,8 @@ export function MerchantRoom({ room, apply, onClose }: { room: RoomDef; apply: A
             <SecondaryButton disabled={!chosenDef} onClick={() => setWho(!who)}>
               {t('ui.room.merchant.who')}
             </SecondaryButton>
-            <PrimaryButton
-              disabled={!chosenDef || c.gold < price}
-              onClick={() => chosenDef && apply({ type: 'buy', item: chosenDef }, t('ui.camp.bought'))}
-            >
-              {chosenDef ? (
+            <PrimaryButton disabled={!chosen || c.gold < price} onClick={buy}>
+              {chosen ? (
                 <>
                   {t('ui.room.merchant.buy')} · <Amount resource="gold" value={price} short={c.gold < price} />
                 </>
@@ -265,32 +300,73 @@ export function MerchantRoom({ room, apply, onClose }: { room: RoomDef; apply: A
         )
       }
     >
-      <Tabs
-        value={tab}
-        onChange={(v) => {
-          setTab(v);
-          pick(null);
-        }}
-        options={[
-          { id: 'buy', label: t('ui.room.merchant.buy') },
-          { id: 'sell', label: t('ui.sell') },
-        ]}
-      />
-      {who && chosenDef && <Who defId={chosenDef} />}
-      {tab === 'buy' ? (
-        stock.map((id) => (
-          <ItemLine
-            key={id}
-            data={data}
-            inst={probe(id)}
-            selected={sel === id}
-            onClick={() => pick(sel === id ? null : id)}
-            side={<Amount resource="gold" value={shopPrice(data, c, itemDef(data, id).price)} short={c.gold < shopPrice(data, c, itemDef(data, id).price)} />}
+      <div class="hm-merchant">
+        {moment > 0 && <Sparks key={moment} />}
+        <div class="hm-merchant__head">
+          <Tabs
+            value={tab}
+            onChange={(v) => {
+              setTab(v);
+              pick(null);
+            }}
+            options={[
+              { id: 'buy', label: t('ui.room.merchant.buy') },
+              { id: 'sell', label: t('ui.sell') },
+            ]}
           />
-        ))
-      ) : (
-        <ConvoyList items={c.convoy} sel={sel} onSel={pick} />
-      )}
+          {pct < 0 && tab === 'buy' && (
+            <span class="hm-discount" title={t('ui.room.merchant.discountHint', { max: data.balance.economy.maxDiscountPct })}>
+              {t('ui.room.merchant.discount', { pct: -pct })}
+            </span>
+          )}
+        </div>
+        {who && chosenDef && <Who defId={chosenDef} />}
+        {tab === 'buy' ? (
+          <>
+            {offers.length > 0 && (
+              <>
+                <div class="hm-subhead">{t('ui.room.merchant.daily')}</div>
+                {offers.map((o) => (
+                  <ItemLine
+                    key={o.uid}
+                    data={data}
+                    inst={o}
+                    selected={sel === `offer:${o.uid}`}
+                    onClick={() => pick(sel === `offer:${o.uid}` ? null : `offer:${o.uid}`)}
+                    side={priceSide(offerPrice(data, o, c))}
+                  />
+                ))}
+              </>
+            )}
+            {spark && (
+              <>
+                <div class="hm-subhead">{t('ui.room.merchant.spark')}</div>
+                <ItemLine
+                  data={data}
+                  inst={probe(sparkItem)}
+                  sub={t('ui.room.merchant.sparkNote', { left: data.balance.economy.emberShop.total - c.emberShop.sold })}
+                  selected={sel === 'spark'}
+                  onClick={() => pick(sel === 'spark' ? null : 'spark')}
+                  side={priceSide(emberSparkPrice(data))}
+                />
+              </>
+            )}
+            {(offers.length > 0 || spark) && <div class="hm-subhead">{t('ui.room.merchant.range')}</div>}
+            {stock.map((id) => (
+              <ItemLine
+                key={id}
+                data={data}
+                inst={probe(id)}
+                selected={sel === id}
+                onClick={() => pick(sel === id ? null : id)}
+                side={priceSide(shopPrice(data, c, itemDef(data, id).price))}
+              />
+            ))}
+          </>
+        ) : (
+          <ConvoyList items={c.convoy} sel={sel} onSel={pick} />
+        )}
+      </div>
     </RoomPanel>
   );
 }

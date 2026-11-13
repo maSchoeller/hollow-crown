@@ -316,6 +316,8 @@ export interface CampaignState {
   heritageGiven: HeritageRecord[];
   /** what the training ground gave the reserve after the last won mission (story 10.8); default [] */
   reserveLast: ReserveGain[];
+  /** ember sparks the merchant sold (story 10.9): how many, and `storiesDone` at the last purchase; default `{ sold: 0, lastSoldAtStory: null }` */
+  emberShop: { sold: number; lastSoldAtStory: number | null };
   convoy: ItemInstance[];
   gold: number;
   materials: Record<string, number>;
