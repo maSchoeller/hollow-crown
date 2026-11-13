@@ -180,12 +180,15 @@ describe('campaign commands', () => {
     expect(rem.campaign.convoy.some((i) => i.def === 'fire_rune_1')).toBe(true);
     expect(validateCampaign(data, rem.campaign, { type: 'removeRune', item: sword, index: idx })).toBe('unknown_item');
 
+    // merging needs an enchanter of level 2 for rune II (story 10.6): act 2, castle
     const three = rich({ gold: 5000, items: ['fire_rune_1', 'fire_rune_1', 'fire_rune_1'] });
+    three.act = 2;
+    three.home = { kind: 'castle', rooms: { enchanter: 2 } };
     const merged = run(three, { type: 'mergeRunes', rune: 'fire_rune_1' });
     expect(merged.campaign.convoy.filter((i) => i.def === 'fire_rune_1')).toHaveLength(0);
     expect(merged.campaign.convoy.some((i) => i.def === 'fire_rune_2')).toBe(true);
     expect(merged.campaign.gold).toBe(5000 - data.balance.economy.runeMerge.goldPerTier);
-    expect(validateCampaign(data, rich(), { type: 'mergeRunes', rune: 'fire_rune_1' })).toBe('not_enough_materials');
+    expect(validateCampaign(data, { ...three, convoy: [] }, { type: 'mergeRunes', rune: 'fire_rune_1' })).toBe('not_enough_materials');
     expect(validateCampaign(data, { ...three, gold: 0 }, { type: 'mergeRunes', rune: 'fire_rune_1' })).toBe('not_enough_gold');
     expect(validateCampaign(data, three, { type: 'mergeRunes', rune: 'fire_rune_3' })).toBe('max_level');
     expect(validateCampaign(data, three, { type: 'mergeRunes', rune: 'iron_sword' })).toBe('unknown_item');

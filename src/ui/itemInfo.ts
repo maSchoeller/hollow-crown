@@ -164,6 +164,11 @@ function useEffects(data: GameData, d: ItemDef): string[] {
   const out: string[] = [];
   if (u.heal) out.push(t('ui.itemInfo.use.heal', { n: u.heal }));
   if (u.cureStatus) out.push(t('ui.itemInfo.use.cure'));
+  if (u.statusImmuneRounds) out.push(t('ui.itemInfo.use.immune'));
+  if (u.trap) {
+    const trap = data.balance.classActions.trap;
+    out.push(t('ui.itemInfo.use.trap', { rng: range(u.rng ?? [1, 1]), n: trap.damage, status: t(`ui.status.${trap.status}`) }));
+  }
   if (u.open?.length)
     out.push(t('ui.itemInfo.use.open', { what: u.open.map((x) => t(`ui.itemInfo.open.${x}`)).join(', ') }));
   if (u.damage) {

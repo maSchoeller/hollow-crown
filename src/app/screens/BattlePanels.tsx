@@ -99,6 +99,8 @@ export function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s
   const skills = activeSkillIds(data, u, s);
   const hp = u.hp;
   const affinity = st.affinity && ruleOn(s, 'elements') ? st.affinity : undefined;
+  // Starkes Gegengift (story 10.6): no new condition until its buff runs out
+  const immune = u.buffs.some((b) => b.statusImmune);
   const items = [
     ...SLOTS.flatMap((sl) => (u.equip[sl] ? [{ inst: u.equip[sl]!, slot: sl as string }] : [])),
     ...u.bag.map((i) => ({ inst: i, slot: 'bag' })),
@@ -124,7 +126,7 @@ export function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s
               </i>
             </span>
             <span class="bp-info__hp">{t('ui.hud.hp', { hp, max: st.maxHp })}</span>
-            {(affinity || u.status.length > 0) && (
+            {(affinity || u.status.length > 0 || immune) && (
               <span class="bp-chips">
                 {affinity && (
                   <span class="bp-chip">
@@ -137,6 +139,7 @@ export function UnitInfo({ u, s, onClose, onEquip, canEdit }: { u: BattleUnit; s
                     <HelpStone anchor={`status.${x.id}`} />
                   </span>
                 ))}
+                {immune && <span class="bp-chip">{t('ui.hud.immune')}</span>}
               </span>
             )}
           </div>

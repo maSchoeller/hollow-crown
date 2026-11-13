@@ -1,5 +1,5 @@
 /** Selection modes of the battle screen (Battle.tsx). */
-import type { ActionOption, BattleUnit, Pos } from '../../core';
+import { availableActions, itemTiles, type ActionOption, type BattleState, type BattleUnit, type GameData, type Pos } from '../../core';
 
 export type Mode =
   | { k: 'idle' }
@@ -18,8 +18,14 @@ export type Mode =
   | { k: 'cast'; uid: string; to: Pos; at: Pos | null }
   /** Stehlen (story 2.6): the bag of the chosen foe is shown, one tap on an item takes it */
   | { k: 'steal'; uid: string; to: Pos; target: string }
-  /** Falle legen / zurücknehmen (story 10.5): the valid fields are shown as range tiles, a tap on one does it */
-  | { k: 'tile'; uid: string; to: Pos; action: 'trap' | 'disarm' };
+  /** Falle legen / zurücknehmen (story 10.5): the valid fields are shown as range tiles, a tap on one does it; `item`: the trap set used (story 10.6) */
+  | { k: 'tile'; uid: string; to: Pos; action: 'trap' | 'disarm'; item?: string };
+
+/** The fields of a `tile` mode: those of Falle legen / Zurücknehmen, or (story 10.6) where the chosen trap set can go. */
+export function tileModeTiles(data: GameData, s: BattleState, u: BattleUnit, mode: Extract<Mode, { k: 'tile' }>): Pos[] {
+  if (mode.item) return itemTiles(data, s, u, mode.to, mode.item);
+  return availableActions(data, s, u, mode.to).find((o) => o.kind === mode.action)?.tiles ?? [];
+}
 
 /** Class slot of the dock: role actions (Zielen, Fernbergen, Anfeuern, story 2.3) and the skill actions of the PoC classes. */
 export const CLASS_KINDS: ActionOption['kind'][] = ['aim', 'farRescue', 'cheer', 'cast', 'trap', 'disarm', 'steal', 'staff', 'command', 'rally'];

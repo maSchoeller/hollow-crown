@@ -105,6 +105,8 @@ export interface MissionSim {
   armyLevel: number;
   /** story 10.1: room levels built above level 1 before the mission (all rooms of the home, summed) */
   rooms: number;
+  /** story 10.6: material units in the campaign (all kinds summed) before the mission: the material curve of the chain */
+  materials: number;
   /** companions lost for good in the won attempt */
   deaths: number;
   /** story 15.10, first attempts won: rounds, player actions (move, act, pursue) and units deployed at the start, summed */
@@ -134,7 +136,7 @@ export interface CampaignSim {
   endGold: number;
   endArmyLevel: number;
   /** spent by the home heuristic over the act (all runs) */
-  spent: { heal: number; buy: number; upgrade: number; rooms: number; hire: number };
+  spent: { heal: number; buy: number; upgrade: number; rooms: number; hire: number; craft: number };
   /** story 11.28: mercenaries the home heuristic hired over the act (all runs) */
   hired: number;
   /** haunts played between the missions (all runs): played, won, gold they paid, fallen companions */
@@ -207,6 +209,27 @@ export function hireMercenaries(data: GameData, c0: CampaignState, next: string 
   return { campaign: c, hired };
 }
 
+/** Material units the campaign holds, all kinds summed (story 10.6: the material curve per mission). */
+export const materialUnits = (c: CampaignState): number => Object.values(c.materials).reduce((n, k) => n + k, 0);
+
+/**
+ * Story 10.6 [ASSUMPTION]: the workshop makes fire bombs while more than `simulation.craftIronOreAbove` iron ore is left (and the
+ * recipe can be made: workshop open, gold, convoy room).
+ */
+export function craftBombs(data: GameData, c0: CampaignState, spent?: CampaignSim['spent']): CampaignState {
+  let c = c0;
+  const recipe = data.recipes.fire_bomb;
+  if (!recipe) return c;
+  while ((c.materials.iron_ore ?? 0) > data.balance.simulation.craftIronOreAbove) {
+    const g = c.gold;
+    const next = tryCmd(data, c, { type: 'craft', recipe: recipe.id });
+    if (next === c) break;
+    c = next;
+    if (spent) spent.craft += g - c.gold;
+  }
+  return c;
+}
+
 /** Room levels built above level 1 (story 10.1: the sim shows them next to the gold). */
 export const roomUpgrades = (data: GameData, c: CampaignState): number => Object.keys(data.rooms).reduce((n, id) => n + Math.max(0, roomLevel(c, id) - 1), 0);
 
@@ -263,6 +286,8 @@ export function homeHeuristic(data: GameData, c0: CampaignState, spent: Campaign
       .map((w) => (w && itemCategory(itemDef(data, w)) === 'weapon' ? (upgradeCost(data, w)?.gold ?? Infinity) : Infinity)),
   );
   c = buildRooms(data, c, Number.isFinite(nextUpgrade) ? nextUpgrade : 0, spent);
+  // workshop (story 10.6): spare iron ore becomes fire bombs
+  c = craftBombs(data, c, spent);
   // heal: scars first, they cost the most and weigh on every battle
   for (const u of strong()) {
     while ((c.roster.find((r) => r.id === u.id)?.scars.length ?? 0) > 0) {
@@ -422,7 +447,7 @@ const emptySim = (): CampaignSim => ({
   finished: 0,
   endGold: 0,
   endArmyLevel: 0,
-  spent: { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0 },
+  spent: { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0 },
   hired: 0,
   haunts: { played: 0, won: 0, gold: 0, fallen: 0 },
   entry: { runs: 0, armyLevel: 0, gold: 0 },
@@ -496,7 +521,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
         missions.get(id) ??
         missions
           .set(id, {
-            node: id, map: node.map, expectedLevel: nodeLevel(data, c, node), reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, rooms: 0, deaths: 0,
+            node: id, map: node.map, expectedLevel: nodeLevel(data, c, node), reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, rooms: 0, materials: 0, deaths: 0,
             turns: 0, actions: 0, deployed: 0, phases: 0, phaseSingle: 0, phaseMarch: 0, phaseSingleMax: 0, phaseMarchMax: 0, phaseShown: 0, phaseShownMax: 0,
             winTurns: [], side: Object.fromEntries(data.maps[node.map]!.objectives.side.map((s) => [s.id, 0])),
           })
@@ -504,6 +529,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
       m.reached++;
       m.armyLevel += armyLevel(data, c);
       m.rooms += roomUpgrades(data, c);
+      m.materials += materialUnits(c);
       o.onMission?.(id, c, run);
       let won: { campaign: CampaignState; result: BattleResult } | null = null;
       for (let attempt = 0; attempt < MAX_ATTEMPTS && !won; attempt++) {

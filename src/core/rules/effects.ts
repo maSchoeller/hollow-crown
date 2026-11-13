@@ -17,6 +17,8 @@ export function hasStatus(u: BattleUnit, id: StatusId): boolean {
 /** Applies a lasting status (not knockback). Respects immunities (concept/03 §6–7); does nothing while the `status` mechanic is not introduced. */
 export function applyStatus(data: GameData, s: BattleState, u: BattleUnit, id: StatusId, events: GameEvent[]): boolean {
   if (!onMap(u) || u.downed || !ruleOn(s, 'status')) return false;
+  // Starkes Gegengift (story 10.6): immune to new conditions until its buff runs out
+  if (u.buffs.some((b) => b.statusImmune)) return false;
   const aff = computeStats(data, u, { state: s }).affinity;
   if (aff && aff === STATUS_ELEMENT[id]) return false;
   if (id === 'burning' && hasStatus(u, 'wet')) return false;

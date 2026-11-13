@@ -31,15 +31,15 @@ export function ownTraps(s: BattleState, u: Pick<BattleUnit, 'uid'>, source: Tra
     .sort((a, b) => a.seq - b.seq);
 }
 
-/** Tiles within the trap reach of `pos` (neighbours with range 1), in tile order. */
-function inReach(data: GameData, s: BattleState, pos: Pos): Pos[] {
-  const r = data.balance.classActions.trap.range;
+/** Tiles within the trap reach of `pos` (neighbours with range 1, or the range `[min, max]` of a trap set), in tile order. */
+function inReach(data: GameData, s: BattleState, pos: Pos, rng?: readonly [number, number]): Pos[] {
+  const [lo, r] = rng ?? [1, data.balance.classActions.trap.range];
   const out: Pos[] = [];
   for (let y = pos[1] - r; y <= pos[1] + r; y++)
     for (let x = pos[0] - r; x <= pos[0] + r; x++) {
       const p: Pos = [x, y];
       const d = dist(p, pos);
-      if (d >= 1 && d <= r && inBounds(s, p)) out.push(p);
+      if (d >= Math.max(1, lo) && d <= r && inBounds(s, p)) out.push(p);
     }
   return out.sort((a, b) => tileIndex(s, a) - tileIndex(s, b));
 }
@@ -50,7 +50,16 @@ function inReach(data: GameData, s: BattleState, pos: Pos): Pos[] {
  */
 export function trapTiles(data: GameData, s: BattleState, u: BattleUnit, pos: Pos): Pos[] {
   if (!canLayTraps(data, s, u)) return [];
-  return inReach(data, s, pos).filter(
+  return freeTrapTiles(data, s, u, pos);
+}
+
+/** Fallen-Set (story 10.6): the free tiles in the item's `rng` from `pos`, by the same rules as Falle legen; any unit may use it. */
+export function trapKitTiles(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, rng: readonly [number, number] = [1, 1]): Pos[] {
+  return freeTrapTiles(data, s, u, pos, rng);
+}
+
+function freeTrapTiles(data: GameData, s: BattleState, u: BattleUnit, pos: Pos, rng?: readonly [number, number]): Pos[] {
+  return inReach(data, s, pos, rng).filter(
     (p) =>
       !s.units.some((o) => o.uid !== u.uid && onMap(o) && samePos(o.pos, p)) &&
       !s.objects.some((o) => samePos(o.at, p)) &&

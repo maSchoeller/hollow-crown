@@ -76,6 +76,8 @@ item.steel_sword.desc: "Ein Schwert aus Stahl. Mehr Schaden als das Eisenschwert
 item.stone_wall.desc: "Ein Erdzauber ohne Schaden: Er lässt einen Felswall aus dem Boden wachsen, der Wege versperrt."
 item.surge.desc: "Ein Wasserzauber. Macht das Ziel nass und löscht brennendes Gelände."
 item.tinder.desc: "Hasks Axt, rußgeschwärzt. Ihr Hieb kann das Ziel in Brand setzen."
+item.strong_remedy.desc: "Ein bitteres Gegengift aus der Werkstatt. Entfernt alle schlechten Zustände der Figur oder eines Nachbarn und hält neue bis zum Ende der Gegnerphase fern."
+item.trap_kit.desc: "Eisen, Feder und Mondstahl aus der Werkstatt. Legt eine Falle auf ein freies Nachbarfeld, die nur Gegner auslösen."
 item.torch.desc: "Eine Pechfackel. Erhellt die Umgebung im Dunkeln für einige Runden."
 item.tower_shield.desc: "Ein mannshoher Schild. Sehr viel Schutz, aber er macht langsamer."
 item.travel_lute.desc: "Eine Laute für die Nebenhand des Spielmanns. Erhöht das Glück."

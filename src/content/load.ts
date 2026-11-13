@@ -2,7 +2,7 @@ import type { z } from 'zod';
 import { chronicleTexts } from '../core/campaign/chronicle';
 import { memorialTexts } from '../core/campaign/memorial';
 import { sceneTexts } from '../core/campaign/scene';
-import type { AffixDef, CharDef, ClassDef, HomeKind, ItemDef, Rarity, RuneDef, SetDef, SkillDef } from '../core/defs';
+import type { AffixDef, CharDef, ClassDef, HomeKind, ItemDef, Rarity, RecipeDef, RuneDef, SetDef, SkillDef } from '../core/defs';
 import type { Balance } from '../core/balanceDefs';
 import type { GameData } from '../core/gameData';
 import type { HauntPoolsDef, MapDef, MapUnitDef, TerrainDef } from '../core/mapDefs';
@@ -14,7 +14,7 @@ import { campaignSchema, chroniclePageSchema, hauntPoolsSchema, homeSchema, lieu
 import { flagSchema } from './schemaConditions';
 import { mapSchema, terrainSchema } from './schemaMap';
 import { handbookSchema, renderSchema } from './schemaRender';
-import { affixSchema, charSchema, classSchema, itemSchema, runeSchema, setSchema, skillSchema } from './schemaUnits';
+import { affixSchema, charSchema, classSchema, itemSchema, recipeSchema, runeSchema, setSchema, skillSchema } from './schemaUnits';
 
 export type Locales = Record<string, Record<string, string>>;
 
@@ -236,6 +236,8 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const skills = parseList<SkillDef>('skills.yaml', get('core/skills.yaml'), skillSchema, issues);
   const affixes = parseList<AffixDef>('affixes.yaml', get('core/affixes.yaml'), affixSchema, issues);
   const runes = parseList<RuneDef>('runes.yaml', get('core/runes.yaml'), runeSchema, issues);
+  const recipes = parseList<RecipeDef>('recipes.yaml', get('core/recipes.yaml'), recipeSchema, issues);
+  for (const [i, r] of recipes.entries()) if (recipes.findIndex((x) => x.id === r.id) !== i) issues.push({ file: 'recipes.yaml', message: `recipe ${r.id} is listed twice` });
   const sets = parseList<SetDef>('sets.yaml', get('core/sets.yaml'), setSchema, issues);
   const rooms = parseList<RoomDef>('rooms.yaml', get('core/rooms.yaml'), roomSchema, issues);
   const terrain = parseList<TerrainDef>('terrain.yaml', get('core/terrain.yaml'), terrainSchema, issues);
@@ -286,6 +288,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     skills: byId(skills),
     affixes: byId(affixes),
     runes: byId(runes),
+    recipes: byId(recipes),
     sets: byId(sets),
     rooms: byId(rooms),
     terrain: byId(terrain),

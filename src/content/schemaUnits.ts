@@ -47,6 +47,8 @@ export const itemSchema = z.object({
       promote: z.boolean(),
       minLevel: z.number(),
       removeScar: z.boolean(),
+      statusImmuneRounds: z.number().int().min(1),
+      trap: z.boolean(),
     })
     .partial()
     .optional(),
@@ -101,6 +103,15 @@ export const runeSchema = z.object({
   effectiveVs: z.array(z.string()).optional(),
   /** painted image art/items/<image>.png; defaults to the id */
   image: z.string().optional(),
+});
+
+/** Werkstatt-Rezept (story 10.6): `{ id, item, roomLevel: 1–3, materials: Record<materialId, int ≥ 1>, gold: int ≥ 0 = 0 }`. */
+export const recipeSchema = z.strictObject({
+  id: z.string().regex(/^[a-z][a-z0-9_]*$/),
+  item: z.string(),
+  roomLevel: z.number().int().min(1).max(3),
+  materials: z.record(z.string(), z.number().int().min(1)),
+  gold: z.number().int().min(0).default(0),
 });
 
 export const setSchema = z.object({

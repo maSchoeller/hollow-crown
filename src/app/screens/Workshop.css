@@ -1,0 +1,18 @@
+/* Werkstatt (story 10.6): cost line of a recipe and the stock in the convoy */
+.ws-cost {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.ws-make {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.ws-stock {
+  font-family: var(--hc-font-label);
+  font-size: var(--hc-size-label);
+  color: var(--hc-soft);
+  white-space: nowrap;
+}

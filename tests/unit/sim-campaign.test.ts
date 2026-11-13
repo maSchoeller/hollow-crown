@@ -21,6 +21,7 @@ const mission = (over: Partial<MissionSim> = {}): MissionSim => ({
   cleared: 10,
   armyLevel: 20,
   rooms: 0,
+  materials: 0,
   deaths: 0,
   turns: 0,
   actions: 0,
@@ -59,7 +60,7 @@ describe('chained act simulation (story 6.8)', () => {
     const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'R', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
     c.gold = 5000;
     c.materials = { ...c.materials, iron_ore: 10 };
-    const spent = { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0 };
+    const spent = { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0 };
     const after = homeHeuristic(data, c, spent);
     expect(after.gold).toBeGreaterThanOrEqual(0);
     expect(spent.buy + spent.upgrade + spent.heal + spent.rooms + spent.hire).toBe(5000 - after.gold);
@@ -77,7 +78,7 @@ describe('chained act simulation (story 6.8)', () => {
     const reserve = data.balance.simulation.hire.reserve;
     const rich = fresh();
     rich.gold = 100000;
-    const spent = { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0 };
+    const spent = { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0 };
     const { campaign, hired } = hireMercenaries(data, rich, next, spent);
     const offers = rich.tavern.length;
     expect(offers).toBeGreaterThan(0);
@@ -87,8 +88,8 @@ describe('chained act simulation (story 6.8)', () => {
     // the highest offer first
     expect(campaign.roster.find(isMercenary)!.level).toBe(Math.max(...rich.tavern.map((u) => u.level)));
     // same seed, same hires
-    expect(hireMercenaries(data, fresh(), next, { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0 }).campaign.roster.map((u) => u.id)).toEqual(
-      hireMercenaries(data, fresh(), next, { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0 }).campaign.roster.map((u) => u.id),
+    expect(hireMercenaries(data, fresh(), next, { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0 }).campaign.roster.map((u) => u.id)).toEqual(
+      hireMercenaries(data, fresh(), next, { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0 }).campaign.roster.map((u) => u.id),
     );
     // never below the reserve, never past the limit, nothing without a next mission
     const poor = fresh();

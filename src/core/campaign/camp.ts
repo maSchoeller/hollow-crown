@@ -1,4 +1,4 @@
-import { SUPPORT_RANKS, type EquipSlot, type RuneDef, type SupportRank } from '../defs';
+import { SUPPORT_RANKS, type EquipSlot, type RecipeDef, type RuneDef, type SupportRank } from '../defs';
 import type { GameData } from '../gameData';
 import type { Condition, RoomDef } from '../storyDefs';
 import { bagIsFull, canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weaponProfile, type EquipError } from '../rules/items';
@@ -69,6 +69,70 @@ export function runeMerge(data: GameData, runeId: string): { next: RuneDef; gold
   if (!next) return null;
   const m = data.balance.economy.runeMerge;
   return { next, gold: m.goldPerTier * r.tier, count: m.count };
+}
+
+/** Level of a room the current home has open (`homeRooms`), 0 when it has none (the camp, act 1 for rooms `fromAct: 2`, locked). */
+export function openRoomLevel(data: GameData, c: CampaignState, roomId: string): number {
+  return homeRooms(data, c).some((st) => st.room.id === roomId && st.open) ? roomLevel(c, roomId) : 0;
+}
+
+/**
+ * Highest rune tier the enchanter of the home merges into (story 10.6): `economy.enchanterMergeMaxTier` by enchanter level, 0 without
+ * an open enchanter. Merging tier N into N + 1 needs N + 1 ≤ this; setting and taking out runes never depends on it.
+ */
+export function runeMergeLimit(data: GameData, c: CampaignState): number {
+  const level = openRoomLevel(data, c, 'enchanter');
+  const tiers = data.balance.economy.enchanterMergeMaxTier;
+  return level > 0 ? tiers[Math.min(level, tiers.length) - 1]! : 0;
+}
+
+/** Enchanter level from which merging into `tier` is allowed (for "ab Verzauberer Stufe n"); null when no level allows it. */
+export function mergeLevelFor(data: GameData, tier: number): number | null {
+  const i = data.balance.economy.enchanterMergeMaxTier.findIndex((max) => max >= tier);
+  return i < 0 ? null : i + 1;
+}
+
+/** Why `mergeRunes` refuses, in the order it checks (id → availability → resources); null: it can merge now. */
+export function mergeError(data: GameData, c: CampaignState, runeId: string): 'unknown_item' | 'max_level' | 'room_locked' | 'not_enough_materials' | 'not_enough_gold' | null {
+  if (!data.runes[runeId]?.element || !data.runes[runeId]?.tier) return 'unknown_item';
+  const m = runeMerge(data, runeId);
+  if (!m) return 'max_level';
+  if ((m.next.tier ?? 0) > runeMergeLimit(data, c)) return 'room_locked';
+  if (c.convoy.filter((i) => i.def === runeId).length < m.count) return 'not_enough_materials';
+  return c.gold < m.gold ? 'not_enough_gold' : null;
+}
+
+/** Why `craft` refuses (story 10.6), in the order it checks; null: the recipe can be made now. */
+export type CraftError = 'unknown_item' | 'room_locked' | 'not_enough_materials' | 'not_enough_gold' | 'convoy_full';
+
+/** One recipe as the workshop panel and `craft` see it: the materials with what the convoy holds, the gold and the first error. */
+export interface CraftCost {
+  recipe: RecipeDef | null;
+  materials: Array<{ id: string; need: number; have: number }>;
+  gold: number;
+  error: CraftError | null;
+}
+
+/**
+ * The one function behind the workshop panel and the command `craft` (story 10.6): a recipe of `recipes.yaml` is made while the
+ * workshop of the home is open at its `roomLevel` or higher, the materials and the gold are there and the convoy has room.
+ */
+export function craftCost(data: GameData, c: CampaignState, recipeId: string): CraftCost {
+  const recipe = data.recipes[recipeId] ?? null;
+  if (!recipe) return { recipe, materials: [], gold: 0, error: 'unknown_item' };
+  const materials = Object.entries(recipe.materials).map(([id, need]) => ({ id, need, have: c.materials[id] ?? 0 }));
+  const out = { recipe, materials, gold: recipe.gold };
+  const error: CraftError | null =
+    openRoomLevel(data, c, 'workshop') < recipe.roomLevel
+      ? 'room_locked'
+      : materials.some((m) => m.have < m.need)
+        ? 'not_enough_materials'
+        : c.gold < recipe.gold
+          ? 'not_enough_gold'
+          : c.convoy.length >= data.balance.economy.convoySize
+            ? 'convoy_full'
+            : null;
+  return { ...out, error };
 }
 
 /** Highest rank the campfire of the home unlocks (story 4.9): `balance.supports.campfireMaxRank` by campfire level. */

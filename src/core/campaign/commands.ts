@@ -32,6 +32,8 @@ export type CampaignCommand =
   | { type: 'insertRune'; item: string; rune: string }
   | { type: 'removeRune'; item: string; index: number }
   | { type: 'mergeRunes'; rune: string }
+  /** make the item of workshop recipe `recipe` from materials and gold (story 10.6, `craftCost`) */
+  | { type: 'craft'; recipe: string }
   | { type: 'healScar'; unit: string; index: number; herb?: boolean }
   | { type: 'unlockSupport'; pair: string }
   | { type: 'setLoadout'; unit: string; skills: string[] }

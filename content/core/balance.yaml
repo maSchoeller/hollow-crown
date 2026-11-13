@@ -171,6 +171,8 @@ simulation:
   # Story 10.1: Reihenfolge, in der die Heimat-Heuristik Räume ausbaut (danach der Rest in der Reihenfolge von rooms.yaml); sie baut nur,
   # wenn danach noch das Gold für eine Narbe und eine Aufwertung bleibt [ASSUMPTION]
   roomOrder: [smith, academy, healer, training]
+  # Story 10.6 [ASSUMPTION]: die Heimat-Heuristik stellt Feuerbomben her, solange mehr als so viel Eisenerz übrig ist
+  craftIronOreAbove: 4
   # Story 11.28: die Heimat-Heuristik wirbt in der Taverne Söldner an, bis die Truppe das Einsatz-Limit der nächsten Mission füllt,
   # und behält dabei mindestens reserve Gold (für Heiltränke und Narben) [ASSUMPTION]; nur die Simulation, kein Spielwert
   hire: { reserve: 500 }
@@ -240,6 +242,8 @@ economy:
   upgradePerLevel: { weaponMight: 1, weaponHit: 3, armorDefOrRes: 1 }
   rerollAffix: { gold: 500, arcane_dust: 2, epicGold: 800, epicArcaneDust: 3 }
   runeMerge: { count: 3, goldPerTier: 200 }
+  # höchste Runen-Stufe, die der Verzauberer je Raumstufe verschmilzt (Story 10.6, runeMergeLimit): Stufe 1 keine, 2 bis Rune II, 3 bis Rune III
+  enchanterMergeMaxTier: [1, 2, 3]
   recruitCost: { base: 600, perLevel: 150 }
   scarRemoval: { goldByLevel: [2500, 1800, 1200], altItem: seers_herb }   # Gold je Heiler-Stufe (Story 10.1, GDD „Heimat“); scarCost
   potionUpgrade: [{ gold: 400, heal: 5 }, { gold: 900, heal: 5 }]

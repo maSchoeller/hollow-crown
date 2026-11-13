@@ -114,6 +114,7 @@ describe('simulation over the acts (story 11.4)', { timeout: 45_000 }, () => {
       gold: lo2 - 1,
       sideGold: 0,
       rooms: 0,
+      materials: 0,
       cleared: 1,
       armyLevel: base,
       deaths: 0,

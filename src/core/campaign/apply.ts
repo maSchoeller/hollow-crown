@@ -11,7 +11,7 @@ import { activeSkillIds } from '../rules/skills';
 import { relicCtx } from './relics';
 import type { CampaignState } from '../state';
 import { clone } from '../util';
-import { changePathError, dismissError, hireCost, promoteError, roomBuild, scarCost, secondPathError, sealOf, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
+import { changePathError, craftCost, dismissError, mergeError, hireCost, promoteError, roomBuild, scarCost, secondPathError, sealOf, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { shopPrice } from './aid';
 import { currentTier, finishBattle, merchantStock, normalizeCampaign } from './campaign';
 import { replayBattle } from './restart';
@@ -102,13 +102,10 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       const loc = locateItem(c, cmd.item);
       return loc?.inst.runes[cmd.index] ? null : 'unknown_item';
     }
-    case 'mergeRunes': {
-      if (!data.runes[cmd.rune]?.element || !data.runes[cmd.rune]?.tier) return 'unknown_item';
-      const m = runeMerge(data, cmd.rune);
-      if (!m) return 'max_level';
-      if (c.convoy.filter((i) => i.def === cmd.rune).length < m.count) return 'not_enough_materials';
-      return c.gold < m.gold ? 'not_enough_gold' : null;
-    }
+    case 'mergeRunes':
+      return mergeError(data, c, cmd.rune);
+    case 'craft':
+      return craftCost(data, c, cmd.recipe).error;
     case 'healScar': {
       const u = c.roster.find((r) => r.id === cmd.unit);
       if (!u || !u.scars[cmd.index]) return 'unknown_unit';
@@ -350,6 +347,16 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       const inst = newItem(c, m.next.id, data);
       c.convoy.push(inst);
       c.gold -= m.gold;
+      gained(inst.uid, inst.def);
+      break;
+    }
+    case 'craft': {
+      // materials and gold go, the item joins the convoy; materialChanged/goldChanged come from resourceEvents
+      const cost = craftCost(data, c, cmd.recipe);
+      for (const m of cost.materials) c.materials[m.id] = m.have - m.need;
+      c.gold -= cost.gold;
+      const inst = newItem(c, cost.recipe!.item, data);
+      c.convoy.push(inst);
       gained(inst.uid, inst.def);
       break;
     }

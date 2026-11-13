@@ -2,7 +2,7 @@
 import { type Action, type ActionOption, type BattleUnit, type Command, type Pos, active, availableActions, classPreview, destinations, healTiles, itemDef, itemTargets, killMarks, longPressView, perilWarnings, posKey, pursueReach, samePos, unitAt } from '../../core';
 import type { KillKind } from '../../render/board/badges';
 import { overviewTap } from './largeMap';
-import { backFromMoved, selectMode } from './battleMode';
+import { backFromMoved, selectMode, tileModeTiles } from './battleMode';
 import { audio } from '../audio';
 import { battle } from '../state/battle';
 import { data } from '../state/session';
@@ -131,8 +131,9 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
         return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
       }
       case 'tile': {
-        const tiles = availableActions(data, s, unit(mode.uid), mode.to).find((o) => o.kind === mode.action)?.tiles ?? [];
-        if (tiles.some((c) => samePos(c, p))) return void run({ type: 'act', unit: mode.uid, to: mode.to, action: { kind: mode.action, at: p } });
+        const tiles = tileModeTiles(data, s, unit(mode.uid), mode);
+        const action: Action = mode.item ? { kind: 'item', item: mode.item, at: p } : { kind: mode.action, at: p };
+        if (tiles.some((c) => samePos(c, p))) return void run({ type: 'act', unit: mode.uid, to: mode.to, action });
         return setMode({ k: 'moved', uid: mode.uid, to: mode.to });
       }
       case 'classPreview': {
@@ -395,6 +396,8 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
     const targets = itemTargets(data, s, u, items.to, itemUid);
     const d = itemDef(data, u.bag.find((i) => i.uid === itemUid)!);
     setItems(null);
+    // Fallen-Set (story 10.6): the free fields show like Falle legen, a tap on one lays the trap
+    if (d.use?.trap) return setMode({ k: 'tile', uid: u.uid, to: items.to, action: 'trap', item: itemUid });
     if (d.use?.damage || (d.use?.target === 'ally' && targets.length > 1)) {
       setMode({ k: 'target', uid: u.uid, to: items.to, action: 'item', targets, item: itemUid });
       return;

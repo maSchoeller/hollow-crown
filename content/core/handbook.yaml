@@ -319,6 +319,16 @@ entries:
       - { id: sell, ref: balance.economy.sellRatio, format: share, icon: gold }
       - { id: convoy, ref: balance.economy.convoySize, icon: convoy }
     see: [rooms, upgrade]
+  # story 10.6: recipes stand in recipes.yaml; the fire bomb and the first rune stand for all
+  - id: workshop
+    category: home
+    icon: workshop
+    fromAct: 2
+    values:
+      - { id: bombOre, ref: recipes.fire_bomb.materials.iron_ore }
+      - { id: bombGold, ref: recipes.fire_bomb.gold, icon: gold }
+      - { id: runeMoon, ref: recipes.fire_rune_1.materials.moonsteel }
+    see: [runes, rooms_upgrade]
   - id: ember_spark
     category: home
     icon: star
@@ -362,7 +372,11 @@ entries:
       - { id: two, ref: balance.status.rune2StatusChance, format: percent, icon: enchanter }
       - { id: three, ref: balance.status.rune3StatusChance, format: percent, icon: enchanter }
       - { id: merge, ref: balance.economy.runeMerge.count, icon: enchanter }
-    see: [elements, rarity, status_burning]
+      - { id: mergeGold, ref: balance.economy.runeMerge.goldPerTier, icon: gold }
+      # story 10.6: highest tier merged into on enchanter level two and three
+      - { id: limit2, ref: balance.economy.enchanterMergeMaxTier.1, icon: enchanter }
+      - { id: limit3, ref: balance.economy.enchanterMergeMaxTier.2, icon: enchanter }
+    see: [elements, rarity, status_burning, workshop]
   - id: sets
     category: items
     icon: shield
