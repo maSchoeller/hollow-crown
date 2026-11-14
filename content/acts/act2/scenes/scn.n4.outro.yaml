@@ -1,5 +1,5 @@
 # Nebenquest N4, Szene nach der Karte (Knoten post, Story 11.20): Die Vorposten ziehen ab, Ilka bekommt den Weißwolf (Knotenwirkung) und bleibt.
-# [ASSUMPTION] QA Akt 2 2026-11-13: Wurde Ilka nie angeworben, geben Ersatzzeilen den Weißwolf an die Truppe; die Knotenwirkung bleibt gleich.
+# Produktinhaber 2026-11-14 (QA Akt 2 2026-11-13): Wurde Ilka nie angeworben, geben Ersatzzeilen den Weißwolf an die Truppe; die Knotenwirkung bleibt gleich.
 # Ob die Älteste überlebt hat, kann eine Szene nicht abfragen (keine Bedingung auf Nebenziele); die Zeilen lassen es offen.
 id: scn.n4.outro
 background: clanlager
