@@ -44,11 +44,13 @@ export abstract class BoardSetup extends BoardBase {
     this.shadows?.dispose();
     this.shadows = null;
     if (q.shadowMap > 0) {
-      const sg = new ShadowGenerator(q.shadowMap, this.sun);
+      // Full-float, single-channel depth: the default half-float map is too coarse on phones (iOS Safari) and shows up as black
+      // blocks of self-shadowing on steep roofs (shadow acne).
+      const sg = new ShadowGenerator(q.shadowMap, this.sun, true, null, true);
       sg.usePercentageCloserFiltering = true;
       sg.filteringQuality = this.quality === 'high' ? ShadowGenerator.QUALITY_HIGH : ShadowGenerator.QUALITY_MEDIUM;
-      sg.bias = 0.002;
-      sg.normalBias = 0.02;
+      sg.bias = 0.003;
+      sg.normalBias = 0.03;
       sg.darkness = 0.35;
       // story 7.7: terrain and props cast a shadow that is drawn once and again only when they are rebuilt; units cast none
       sg.getShadowMap()!.refreshRate = RenderTargetTexture.REFRESHRATE_RENDER_ONCE;
