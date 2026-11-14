@@ -30,7 +30,7 @@ import '@babylonjs/core/Culling/ray';
 import '@babylonjs/core/Lights/Shadows/shadowGeneratorSceneComponent';
 import '@babylonjs/core/Particles/particleSystemComponent';
 import '@babylonjs/core/Engines/Extensions/engine.dynamicTexture';
-import type { GameData } from '../../core';
+import { CASTLE_PLACES, type GameData, type KeepsakeState } from '../../core';
 import { renderHost, type AssetStore, type HostedView, type Quality, type RenderHost } from '../host';
 import { resolveLook } from '../shared/look';
 import { applyLight } from '../shared/season';
@@ -46,8 +46,6 @@ const MODEL = 'models/castle/paktwacht.glb';
 
 /** the rooms the castle model has */
 export const CASTLE_ROOMS = ['convoy', 'workshop', 'merchant', 'campfire', 'tavern', 'smith', 'academy', 'healer', 'training', 'memorial', 'enchanter'];
-
-const KEEPSAKES = ['axe', 'lute', 'books'];
 
 /** [C] camera: angle above the horizon, horizontal field of view (kept on every screen), distance to the aim, height of the aim */
 const PITCH = (30 * Math.PI) / 180;
@@ -81,6 +79,14 @@ const FIRE_LIGHT: [string, number, number, number, number, number] = ['#ff9a3c',
 /** part names of the model file (glTF primitives get a `_primitive<n>` suffix) */
 const PART = /^(?:castle:)?([a-z]+)_(a|[0-9]+)(?:_primitive\d+)?$/;
 
+/** A companion's keepsake: one node, shown as his state asks (`castleScene`). */
+interface KeepsakeView {
+  root: TransformNode;
+  /** every mesh of the keepsake with the material it has when it is there (a candle flame glows) */
+  meshes: Array<{ mesh: Mesh; glow: boolean }>;
+  state: KeepsakeState | null;
+}
+
 /** One group's parts, each under its own node so it can switch as a whole. */
 type Tagged = Array<{ tag: string; node: TransformNode }>;
 
@@ -109,8 +115,10 @@ export class CastleView implements HostedView {
   private shadows: ShadowGenerator | null = null;
   private lit: StandardMaterial;
   private glow: StandardMaterial;
+  private mourn: StandardMaterial;
   private smokeTex: DynamicTexture;
   private rooms = new Map<string, RoomView>();
+  private keepsakes = new Map<string, KeepsakeView>();
   private tiered: Tagged = [];
   private tier = -1;
   private pins = new Map<string, HTMLElement>();
@@ -169,6 +177,12 @@ export class CastleView implements HostedView {
     this.glow = new StandardMaterial('castle:glow', this.scene);
     this.glow.disableLighting = true;
     this.glow.emissiveColor = new Color3(1, 1, 1);
+    // [C] a fallen companion's keepsake stays where it is, drained of its colours: the memorial style of the hall's stones
+    this.mourn = new StandardMaterial('castle:mourn', this.scene);
+    this.mourn.diffuseColor = new Color3(0.62, 0.6, 0.62);
+    this.mourn.specularColor = new Color3(0.02, 0.02, 0.02);
+    this.mourn.emissiveColor = new Color3(0.14, 0.13, 0.15);
+    this.mourn.maxSimultaneousLights = 6;
     this.smokeTex = this.makeSmokeTexture();
     this.fit();
     this.bindInput();
@@ -227,7 +241,13 @@ export class CastleView implements HostedView {
       if (group === 'shell' || group === 'land') this.tiered.push({ tag, node: this.attach(meshes, `tier:${key}`) });
     }
     for (const id of CASTLE_ROOMS) this.buildRoom(id, parts);
-    for (const id of KEEPSAKES) this.attach(parts.get(`${id}_a`) ?? [], `keepsake:${id}`);
+    for (const id of CASTLE_PLACES) {
+      const meshes = parts.get(`${id}_a`);
+      if (!meshes) continue;
+      const root = this.attach(meshes, `keepsake:${id}`);
+      root.setEnabled(false);
+      this.keepsakes.set(id, { root, meshes: meshes.map((mesh) => ({ mesh, glow: mesh.material === this.glow })), state: null });
+    }
     // the campfire burns at every level
     this.smoke(FIRE, true).start();
     this.light(FIRE_LIGHT);
@@ -236,6 +256,7 @@ export class CastleView implements HostedView {
     }
     this.lit.freeze();
     this.glow.freeze();
+    this.mourn.freeze();
     return true;
   }
 
@@ -343,6 +364,23 @@ export class CastleView implements HostedView {
     if (tier === this.tier) return;
     this.tier = tier;
     for (const { tag, node } of this.tiered) node.setEnabled(shown(tag, tier));
+    this.refreshShadows();
+  }
+
+  /**
+   * Shows a companion's keepsake as his state asks (story 10.14): `present` at its place, `mourned` drained of its colours,
+   * `gone` and `none` not at all. Unknown places are ignored, so the content may name one the model does not have yet.
+   */
+  setKeepsake(id: string, state: KeepsakeState): void {
+    const k = this.keepsakes.get(id);
+    if (!k || k.state === state) return;
+    k.state = state;
+    k.root.setEnabled(state === 'present' || state === 'mourned');
+    // mourning: one grey stone material for the whole keepsake, its vertex colours off and its glowing bits (a candle) out
+    for (const { mesh, glow } of k.meshes) {
+      mesh.material = state === 'mourned' ? this.mourn : glow ? this.glow : this.lit;
+      mesh.useVertexColors = state !== 'mourned';
+    }
     this.refreshShadows();
   }
 

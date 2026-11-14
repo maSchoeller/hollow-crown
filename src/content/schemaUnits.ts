@@ -175,6 +175,8 @@ export const charSchema = z.object({
   flags: z.array(z.string()).default([]),
   supports: z.array(z.string()).default([]),
   joins: z.string(),
+  /** story 10.14: the companion's keepsake in the castle (a place of the castle model); Avatar and Lucan have none */
+  homeObject: z.string().optional(),
   portrait: z.string().optional(),
   sprite: z.string().optional(),
   recruit: z

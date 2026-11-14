@@ -66,6 +66,9 @@ ROAD = [(0, -1.4), (0.2, -3.5), (-0.8, -6.5), (0.6, -9.8), (3.6, -12.5), (4.2, -
 PASS = [(13.0, 20.5), (16.5, 22.5), (18.5, 26.0), (17.0, 30.0), (19.5, 35.0)]  # the Wachpass road, up the gap on the right
 PASS_Z = [LEDGE_Z, LEDGE_Z + 1.2, LEDGE_Z + 3.5, LEDGE_Z + 7, LEDGE_Z + 12]
 ROOM_S = 1.7
+# [ASSUMPTION] keepsakes stand bigger than their true size (story 10.14): at 1 : 1 they are a dozen pixels on the reference
+# phone and a mourned one cannot be told from a standing one. 1.35 x keeps them smaller than a door and makes them read.
+KEEP_S = ROOM_S * 1.35
 
 
 def court_z(y):
@@ -82,8 +85,20 @@ LAYOUT = {  # x, y, z, yaw (counter-clockwise), scale
     'workshop': (7.9, 10.3, on_yard(10.3), -6, ROOM_S * 0.86), 'convoy': (11.6, 5.8, on_yard(5.8), -18, ROOM_S),
     'healer': (-8.6, 2.6, on_yard(2.6), 14, ROOM_S * 0.9), 'training': (7.6, 2.8, on_yard(2.8), -8, ROOM_S), 'campfire': (0.0, 6.4, on_yard(6.4), 0, ROOM_S),
     'memorial': (2.6, 18.2, LEDGE_Z, 0, ROOM_S * 1.25), 'academy': (-12.4, 17.0, LEDGE_Z, 20, ROOM_S), 'enchanter': (8.1, 16.4, LEDGE_Z, -8, ROOM_S),
-    # keepsakes (companions' objects), fixed places
-    'axe': (-7.8, 4.8, on_yard(4.8) + 0.2, -20, ROOM_S), 'lute': (-2.9, 5.6, on_yard(5.6) + 0.2, 10, ROOM_S), 'books': (-0.2, 16.4, LEDGE_Z, 0, ROOM_S),
+    # keepsakes (companions' objects, story 10.14), fixed places in the room of their companion
+    'axe': (-7.8, 4.8, on_yard(4.8) + 0.2, -20, KEEP_S), 'lute': (-2.9, 5.6, on_yard(5.6) + 0.2, 10, KEEP_S), 'books': (-0.2, 16.4, LEDGE_Z, 0, KEEP_S),
+    'cauldron': (-5.4, 4.0, on_yard(4.0) + 0.2, 16, KEEP_S * 0.95),      # Grosk, between forge and campfire
+    'dice': (-4.2, 8.4, on_yard(8.4) + 0.2, 4, KEEP_S * 0.95),           # Varek, the table in front of the tavern
+    'shield': (10.1, 4.3, on_yard(4.3) + 0.2, -34, KEEP_S * 0.95),       # Tobin, the wagon's side by the gate
+    'pelts': (6.1, 1.5, on_yard(1.5) + 0.2, -10, KEEP_S * 0.95),         # Mira, the rim of the shooting range
+    'wolfpelt': (4.8, 1.8, on_yard(1.8) + 0.2, 8, KEEP_S * 0.9),         # Ilka, beside Mira's rack
+    'trinkets': (6.5, 9.2, on_yard(9.2) + 0.2, -16, KEEP_S * 0.9),       # Fenn, under the workbench
+    'seachart': (1.2, 8.8, on_yard(8.8) + 0.2, 6, KEEP_S * 0.9),         # Nell, the shop counter
+    'satchel': (-7.4, 1.6, on_yard(1.6) + 0.2, 14, KEEP_S * 0.9),        # Amos, at the healer's door
+    'sabre': (-2.7, 1.1, on_yard(1.1) + 0.2, 24, KEEP_S * 0.9),          # Sable, the gate's guard room
+    'altar': (4.5, 17.1, LEDGE_Z, -12, KEEP_S * 0.95),                   # Liora, beside the memorial hall's entrance
+    'cuirass': (-10.4, 15.8, LEDGE_Z, 24, KEEP_S * 0.95),                # Odile, in front of the academy's door
+    'emberstone': (10.3, 18.4, LEDGE_Z, -18, KEEP_S * 0.95),             # Brann, at the rock face by the enchanter
 }
 LATE_ROOMS = ('enchanter', 'academy', 'workshop', 'training')  # from act 2 (content/core/rooms.yaml): missing at tier 0
 
@@ -606,6 +621,25 @@ def build_land():
         bush(a, x, y, s=r.uniform(0.45, 0.8), seed=r.randint(0, 999), M=mat4((0, 0, height(x, y))), flowers=r.choice((None, 'flower_w', 'flower_y')))
 
 
+def build_outwork():
+    """Tier 3 only: the outwork at the foot of the pass road (F4, product owner 2026-11-06) - a picture, no room and no rule."""
+    l3 = part('shell_3')
+    x, y = PASS[0]
+    O = mat4((x + 0.5, y - 0.4, LEDGE_Z), (0, 0, -28), (1.35, 1.35, 1.35))
+    # a short wall across the road with a gateway, merlons on top and a banner beside it
+    for sx in (-1, 1):
+        box(l3, 'stone2', (sx * 1.5, 0, 0), (1.5, 1.0, 1.9), bev=0.06, M=O)
+        merlons(l3, (sx * 0.78, 0), (sx * 2.2, 0), 1.9, 1.0, M=O, size=0.34, gap=0.62)
+        box(l3, 'stone3', (sx * 2.26, 0, 0), (0.6, 1.1, 2.5), bev=0.1, M=O)
+        box(l3, 'stone2', (sx * 2.26, 0, 2.45), (0.76, 1.26, 0.18), bev=0.25, M=O)
+        lantern_wall(l3, sx * 1.95, -0.55, 1.1, M=O, rot=0)
+    box(l3, 'stone', (0, 0, 1.55), (1.6, 1.0, 0.45), bev=0.08, M=O)
+    poly(l3, 'stone3', arch_pts(1.0, 1.5, True, n=6), (0, -0.52, 0), depth=0.05, M=O)
+    poly(l3, 'wood', arch_pts(0.78, 1.26, True, n=6), (0, -0.56, 0), depth=0.04, M=O)
+    banner(l3, 1.0, -0.53, 1.0, w=0.3, h=0.66, M=O)
+    pennant(l3, -2.26, -0.2, 2.6, h=1.1, M=O)
+
+
 def build_sites():
     """Where the rooms of act 2 will stand, the ruin shows rubble."""
     l0 = part('shell_0')
@@ -618,7 +652,7 @@ def build_sites():
 
 
 def build_all():
-    for fn in (build_terrain, build_water, build_cliffs, build_platforms, build_wall, build_gate, build_keep, build_vault, build_land, build_sites):
+    for fn in (build_terrain, build_water, build_cliffs, build_platforms, build_wall, build_gate, build_keep, build_vault, build_land, build_outwork, build_sites):
         before = sum(p.tris() for p in PARTS.values())
         fn()
         print(f'[hc]   {fn.__name__}: {sum(p.tris() for p in PARTS.values()) - before} tris', flush=True)

@@ -332,9 +332,10 @@ Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept
 | 0 Ruine | Lücken in der Mauer, Bergfried als Stumpf, Tor ohne Flügel, Efeu, Gestrüpp im Hof, Trümmer auf den Plätzen der Akt-2-Räume | Felder verwildert, Mauern eingefallen, Mühle ohne Dach und Rad, Brücke weg (Trittsteine) |
 | 1 Gesichert | Torflügel, Palisaden in den Lücken, Gerüste, Bergfried wieder hoch | Holzbrücke, Mühlrad, die ersten Felder tragen Korn, erster Hof |
 | 2 Wehrhaft | Mauer geschlossen, Zinnen, Laternen, Palisade am Pass | Steinbrücke, weitere Felder und Höfe, junger Obstgarten |
-| 3 Festung | Kegeldächer, Banner an der ganzen Mauer, Wachturm am Pass | Alle Felder, Weiler an der Brücke, Laternen an der Straße, Heuhaufen |
+| 3 Festung | Kegeldächer, Banner an der ganzen Mauer, Wachturm am Pass, **Vorwerk am Passfuß** (F4, Produktinhaber 2026-11-06: nur Bild, kein Raum und keine Regel) | Alle Felder, Weiler an der Brücke, Laternen an der Straße, Heuhaufen |
 
-- **Gefährten-Gegenstände** (Brennas Axtständer, Jorys Laute, Ysoldes Bücherstapel …) stehen als Modelle an festen Plätzen. Stirbt ein Gefährte, bleibt der Gegenstand liegen; in der Gedächtnishalle steht ein Gedenkstein. Gebaut sind bisher drei; der Rest kommt mit Story 10.14.
+- **Gefährten-Gegenstände** (Brennas Axtständer, Jorys Laute, Ysoldes Bücherstapel …) stehen als Modelle an festen Plätzen: je Story-Gefährte einer, Avatar und Lucan bekommen keinen (Liste abgenommen 2026-11-07, `concept/22-narrative/burg-gegenstaende-vorschlag.md`). Seit Story 10.14 sind alle fünfzehn gebaut; der Platz steht im Modell (`LAYOUT` in `tools/art/blender_paktwacht.py`), die Id am Gefährten (`homeObject` in `content/acts/*/units.yaml`). Was ein Platz zeigt, sagt `castleScene`: ist der Gefährte da, steht sein Gegenstand dort; ist er gefallen, bleibt der Gegenstand liegen und verliert seine Farben (Gedenken-Stil), und in der Gedächtnishalle steht sein Gedenkstein; ist er gegangen, nimmt er den Gegenstand mit; wer nie beitrat, hinterlässt nichts. Söldner haben keinen Platz. Die Gegenstände stehen 1,35× größer als ihr wahres Maß, sonst sind sie auf dem Referenzgerät nicht zu lesen `[ASSUMPTION]`.
+- Alle Burg-Modelle sind **von Hand in Blender** gebaut (`blender_paktwacht.py`, `blender_castle.py`, Vertex-Farben), kein KI-Asset; `licensing.md` §6 greift darum nicht. Abnahme-Bilder und Bauanleitung in `art/models/castle/README.md`.
 - Antippen eines Raums oder seines Steins öffnet ein Panel (U21) über der Ansicht; es gibt kein eigenes Raumbild.
 - Licht immer abendlich warm (Narrative: Ruhe).
 

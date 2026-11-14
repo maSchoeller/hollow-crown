@@ -262,6 +262,8 @@ export interface CharDef {
   supports: string[];
   /** node id of the chapter he joins in, `prologue` at the start, or `lieutenant`: he joins as a lieutenant through the effect `recruit: { lt }` (story 3.7) */
   joins: string;
+  /** story 10.14: id of his keepsake in the castle, a place of the castle model (`CASTLE_PLACES`); Avatar and Lucan have none */
+  homeObject?: string;
   portrait?: string;
   sprite?: string;
   recruit?: { chapter: string; by: string[] | 'any'; dialogue?: string };

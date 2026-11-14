@@ -1203,12 +1203,183 @@ def keepsake_books(L):
     box(a, 'leather', (0.33, -0.27, 0.0), (0.04, 0.11, 0.11), rot=(0, 0, 20), bev=0)
 
 
+def keepsake_shield(L):
+    """Tobin's wooden shield with the crest he painted himself, leaning against a post."""
+    a = L.a
+    box(a, 'wood_dark', (0, 0.06, 0), (0.1, 0.1, 0.9), bev=0.2)
+    S = mat4((0, -0.12, 0.1), (-14, 0, 0))
+    pts = [(-0.3, 0.0), (0.3, 0.0), (0.34, 0.5), (0.0, 0.78), (-0.34, 0.5)]
+    poly(a, 'plank', pts, (0, 0, 0), depth=0.07, M=S)
+    poly(a, 'banner', [(x * 0.82, z * 0.8 + 0.06) for x, z in pts], (0, -0.02, 0), depth=0.02, M=S)
+    poly(a, 'cream', [(0, 0.2), (0.14, 0.4), (0, 0.6), (-0.14, 0.4)], (0, -0.04, 0), depth=0.02, M=S)
+    for z in (0.12, 0.62):
+        box(a, 'iron', (0, -0.03, z), (0.58, 0.02, 0.05), bev=0, M=S)
+
+
+def keepsake_pelts(L):
+    """Mira's drying rack: three hides over a frame of poles."""
+    a = L.a
+    for sx in (-1, 1):
+        beam(a, 'wood_dark', (sx * 0.52, -0.16, 0), (sx * 0.44, 0.16, 0.92), t=0.055)
+    beam(a, 'wood', (-0.46, 0, 0.9), (0.46, 0, 0.9), t=0.05)
+    for i, (x, col, w) in enumerate(((-0.3, 'leather', 0.24), (0.02, 'straw2', 0.26), (0.32, 'wood_light', 0.22))):
+        pts = [(-w, 0.0), (w, 0.0), (w * 0.8, -0.52), (0.0, -0.62), (-w * 0.8, -0.52)]
+        poly(a, col, pts, (x, -0.03 + 0.03 * i, 0.88), depth=0.03)
+    cyl(a, 'wood', (-0.18, 0.1, 0), 0.07, 0.3, seg=8, bev=0.2)
+    box(a, 'leather', (0.3, 0.14, 0), (0.3, 0.2, 0.12), rot=(0, 0, 14), bev=0.2)
+
+
+def keepsake_wolfpelt(L):
+    """Ilka's white wolf pelt over a bench, the hood's head hanging over the edge."""
+    a = L.a
+    for sx in (-1, 1):
+        box(a, 'wood_dark', (sx * 0.34, 0, 0), (0.1, 0.34, 0.34), bev=0.2)
+    box(a, 'wood', (0, 0, 0.32), (0.92, 0.38, 0.09), bev=0.2)
+    box(a, 'cream', (0.02, -0.03, 0.4), (0.72, 0.42, 0.07), bev=0.3)
+    poly(a, 'cream', [(-0.3, 0.0), (0.3, 0.0), (0.26, -0.3), (-0.24, -0.34)], (0.02, -0.26, 0.42), depth=0.03, rot=(-72, 0, 0))
+    blob(a, 'cream', (-0.34, -0.2, 0.42), (0.11, 0.13, 0.09), sub=1, lumpy=0.06, seed=4)
+    for sx in (-1, 1):
+        poly(a, 'cream', [(0, 0), (0.05, 0.1), (-0.05, 0.1)], (-0.34 + sx * 0.06, -0.26, 0.48), depth=0.02)
+
+
+def keepsake_trinkets(L):
+    """Fenn's crate of odds and ends with a roll of lockpicks on top."""
+    a = L.a
+    crate(a, 0, 0, s=0.56)
+    for x, y, col, r in ((-0.1, -0.08, 'brass', 0.07), (0.12, 0.06, 'iron2', 0.06)):
+        cyl(a, col, (x, y, 0.56), r, 0.05, seg=8, bev=0.2)
+    box(a, 'leather', (0.06, -0.12, 0.61), (0.3, 0.14, 0.05), rot=(0, 0, -12), bev=0.3)
+    for i in range(5):
+        box(a, 'steel', (-0.04 + i * 0.045, -0.12, 0.66), (0.012, 0.11, 0.012), rot=(0, 0, -12), bev=0)
+    cyl(a, 'iron', (-0.16, 0.1, 0.56), 0.06, 0.1, seg=8, r2=0.04, bev=0.2)
+    box(a, 'wood_light', (0.2, 0.14, 0), (0.18, 0.14, 0.24), rot=(0, 0, 22), bev=0.2)
+    sack(a, -0.3, -0.1, s=0.14, seed=6)
+
+
+def keepsake_altar(L):
+    """Liora's small house altar: a stone slab with a carved flame, two candles and a bowl."""
+    a = L.a
+    box(a, 'stone_dark', (0, 0, 0), (0.6, 0.34, 0.1), bev=0.2)
+    box(a, 'stone2', (0, 0, 0.08), (0.46, 0.26, 0.42), bev=0.1)
+    box(a, 'stone3', (0, 0, 0.48), (0.64, 0.36, 0.09), bev=0.2)
+    poly(a, 'relief', [(0, 0.1), (0.1, 0.28), (0.04, 0.5), (0, 0.66), (-0.04, 0.5), (-0.1, 0.28)], (0, -0.14, 0.1), depth=0.03)
+    for sx in (-1, 1):
+        cyl(a, 'brass', (sx * 0.22, 0.02, 0.57), 0.05, 0.03, seg=10, bev=0.2)
+        cyl(a, 'cream', (sx * 0.22, 0.02, 0.59), 0.032, 0.16, seg=8, bev=0.1)
+        blob(a, 'glow2', (sx * 0.22, 0.02, 0.78), (0.022, 0.022, 0.042), sub=1, lumpy=0, glow=True)
+    cyl(a, 'pot', (0, 0.0, 0.57), 0.09, 0.07, seg=12, r2=0.11, bev=0.2)
+    blob(a, 'herb', (0, 0.0, 0.63), (0.08, 0.06, 0.03), sub=1, lumpy=0.2, seed=3)
+
+
+def keepsake_dice(L):
+    """Varek's dice board on a low table, a cup and three dice."""
+    a = L.a
+    for dx, dy in ((-0.26, -0.18), (0.26, -0.18), (-0.26, 0.18), (0.26, 0.18)):
+        box(a, 'wood_dark', (dx, dy, 0), (0.07, 0.07, 0.42), bev=0.2)
+    box(a, 'wood', (0, 0, 0.4), (0.74, 0.54, 0.08), bev=0.2)
+    box(a, 'leather', (0, 0, 0.48), (0.5, 0.36, 0.02), bev=0.3)
+    for i in range(3):
+        box(a, 'cream', (-0.12 + i * 0.1, -0.06 + 0.05 * (i % 2), 0.5), (0.055, 0.055, 0.055), rot=(0, 0, 18 * i), bev=0.25)
+    cyl(a, 'leather', (0.2, 0.1, 0.5), 0.07, 0.14, seg=10, r2=0.08, bev=0.15)
+    cyl(a, 'brass', (-0.26, 0.14, 0.5), 0.045, 0.02, seg=10, bev=0.2)
+
+
+def keepsake_cauldron(L):
+    """Grosk's big cooking pot on a tripod over embers, a ladle leaning on the rim."""
+    a = L.a
+    for i in range(3):
+        ang = math.radians(90 + i * 120)
+        beam(a, 'iron', (0.42 * math.cos(ang), 0.42 * math.sin(ang), 0), (0, 0, 0.78), t=0.05)
+    cyl(a, 'pot', (0, 0, 0.3), 0.34, 0.42, seg=14, r2=0.3, bev=0.25)
+    cyl(a, 'iron2', (0, 0, 0.69), 0.36, 0.05, seg=14, bev=0.3)
+    blob(a, 'straw', (0, 0, 0.68), (0.27, 0.27, 0.06), sub=1, lumpy=0.1, seed=9)
+    beam(a, 'wood', (0.26, 0.1, 0.66), (0.46, 0.2, 1.0), t=0.04)
+    cyl(a, 'iron2', (0.47, 0.21, 1.0), 0.06, 0.03, seg=8, bev=0.3)
+    for i, (x, y) in enumerate(((-0.3, -0.22), (0.3, -0.26), (0.06, 0.32))):
+        blob(a, 'fire' if i == 0 else 'rock_dark', (x, y, 0.0), (0.1, 0.09, 0.05), sub=1, lumpy=0.2, seed=20 + i, glow=i == 0)
+    box(a, 'wood_light', (-0.42, 0.22, 0), (0.22, 0.18, 0.2), rot=(0, 0, 18), bev=0.2)
+
+
+def keepsake_cuirass(L):
+    """Odile's polished cuirass on a stand, a helmet on the post."""
+    a = L.a
+    cyl(a, 'wood_dark', (0, 0, 0), 0.22, 0.07, seg=12, bev=0.3)
+    cyl(a, 'wood_dark', (0, 0, 0.05), 0.055, 0.78, seg=8, bev=0.15)
+    blob(a, 'steel', (0, -0.04, 0.6), (0.24, 0.15, 0.24), sub=2, lumpy=0, shade=(0.74, 1.12))
+    box(a, 'steel', (0, -0.04, 0.5), (0.4, 0.2, 0.08), bev=0.4)
+    for sx in (-1, 1):
+        cyl(a, 'brass', (sx * 0.13, -0.17, 0.66), 0.035, 0.02, seg=8, rot=(90, 0, 0), bev=0.2)
+    poly(a, 'gold', [(0, 0.0), (0.07, 0.11), (0, 0.22), (-0.07, 0.11)], (0, -0.19, 0.58), depth=0.02)
+    cyl(a, 'steel', (0, 0, 0.84), 0.12, 0.14, seg=10, r2=0.1, bev=0.25)
+    box(a, 'iron', (0, -0.1, 0.88), (0.06, 0.1, 0.08), bev=0.3)
+
+
+def keepsake_seachart(L):
+    """Nell's sea chart with a compass, rolled out over the shop counter."""
+    a = L.a
+    for sx in (-1, 1):
+        box(a, 'wood_dark', (sx * 0.3, 0, 0), (0.1, 0.3, 0.46), bev=0.2)
+    box(a, 'wood', (0, 0, 0.44), (0.84, 0.4, 0.08), bev=0.2)
+    box(a, 'parch', (0, -0.02, 0.52), (0.62, 0.34, 0.015), bev=0.3)
+    poly(a, 'water2', [(-0.2, -0.1), (0.0, -0.14), (0.16, -0.04), (0.22, 0.08), (0.0, 0.12), (-0.18, 0.06)], (0, -0.04, 0.535), depth=0.004, rot=(-90, 0, 0))
+    cyl(a, 'parch', (0.36, 0.1, 0.52), 0.05, 0.3, seg=8, rot=(0, 90, 12), bev=0.2)
+    cyl(a, 'brass', (-0.2, 0.08, 0.535), 0.07, 0.025, seg=12, bev=0.3)
+    cyl(a, 'glow2', (-0.2, 0.08, 0.555), 0.05, 0.008, seg=12, bev=0)
+    box(a, 'iron', (-0.2, 0.08, 0.56), (0.07, 0.012, 0.008), rot=(0, 0, 28), bev=0)
+
+
+def keepsake_emberstone(L):
+    """Brann's boulder with an ember vein, two smaller stones beside it."""
+    a = L.a
+    blob(a, 'cliff3', (0, 0, 0.3), (0.42, 0.34, 0.33), sub=2, lumpy=0.2, seed=12, shade=(0.82, 1.06))
+    pts = [(-0.3, 0.08), (-0.1, 0.3), (0.06, 0.2), (0.24, 0.46), (0.32, 0.42), (0.1, 0.12), (-0.04, 0.24), (-0.26, 0.0)]
+    poly(a, 'fire2', pts, (0, -0.31, 0.1), depth=0.07, glow=True)
+    blob(a, 'cliff3', (0.38, 0.22, 0.08), (0.17, 0.15, 0.13), sub=1, lumpy=0.22, seed=13, shade=(0.68, 1.1))
+    blob(a, 'cliff_dark', (-0.38, 0.18, 0.06), (0.13, 0.12, 0.1), sub=1, lumpy=0.24, seed=14, shade=(0.68, 1.1))
+
+
+def keepsake_satchel(L):
+    """Amos's field surgeon's satchel at the door, herb bundles drying on a line above it."""
+    a = L.a
+    box(a, 'leather', (0, 0, 0.12), (0.34, 0.18, 0.3), bev=0.2)
+    box(a, 'wood_dark', (0, -0.02, 0.4), (0.36, 0.2, 0.05), bev=0.3)
+    poly(a, 'cream', [(-0.05, 0), (0.05, 0), (0.05, 0.1), (-0.05, 0.1)], (0, -0.11, 0.2), depth=0.01)
+    for sx in (-1, 1):
+        box(a, 'leather', (sx * 0.12, -0.1, 0.3), (0.05, 0.015, 0.16), bev=0.2)
+    cyl(a, 'cream', (-0.1, 0.0, 0.42), 0.04, 0.12, seg=8, bev=0.2)
+    cyl(a, 'herb', (0.1, 0.0, 0.42), 0.035, 0.1, seg=8, bev=0.2)
+    for sx in (-1, 1):
+        box(a, 'wood_dark', (sx * 0.5, 0.04, 0), (0.07, 0.07, 1.0), bev=0.2)
+    beam(a, 'wood', (-0.48, 0.04, 0.96), (0.48, 0.04, 0.96), t=0.03)
+    for i, x in enumerate((-0.32, -0.08, 0.16, 0.38)):
+        blob(a, 'herb' if i % 2 else 'leaf_dark', (x, 0.04, 0.82), (0.055, 0.045, 0.1), sub=1, lumpy=0.2, seed=30 + i)
+        box(a, 'straw2', (x, 0.04, 0.9), (0.015, 0.015, 0.07), bev=0)
+
+
+def keepsake_sabre(L):
+    """Sable's border-army sabre on a stand, her folded cloak below."""
+    a = L.a
+    box(a, 'wood_dark', (0, 0, 0), (0.44, 0.22, 0.08), bev=0.2)
+    for sx in (-1, 1):
+        box(a, 'wood', (sx * 0.16, 0, 0.06), (0.06, 0.06, 0.52), bev=0.2)
+        poly(a, 'wood', [(0, 0), (0.08, 0.1), (-0.08, 0.1)], (sx * 0.16, -0.03, 0.56), depth=0.06)
+    blade = [(-0.42, 0.0), (0.1, 0.02), (0.36, 0.1), (0.44, 0.17), (0.3, 0.14), (0.08, 0.07), (-0.42, 0.045)]
+    poly(a, 'steel', blade, (0, -0.02, 0.62), depth=0.028)
+    box(a, 'brass', (-0.42, -0.01, 0.6), (0.05, 0.05, 0.1), bev=0.25)
+    cyl(a, 'leather', (-0.52, -0.01, 0.63), 0.028, 0.16, seg=8, rot=(0, 90, 0), bev=0.2)
+    poly(a, 'banner_dark', [(-0.22, 0), (0.24, 0), (0.2, 0.17), (-0.18, 0.2)], (0, 0.1, 0.1), depth=0.14, rot=(0, 0, 4))
+
 ROOMS = {
     'convoy': room_convoy, 'merchant': room_merchant, 'smith': room_smith, 'healer': room_healer, 'tavern': room_tavern,
     'campfire': room_campfire, 'memorial': room_memorial, 'enchanter': room_enchanter, 'academy': room_academy,
     'workshop': room_workshop, 'training': room_training,
 }
-KEEPSAKES = {'axe': keepsake_axe, 'lute': keepsake_lute, 'books': keepsake_books}
+KEEPSAKES = {  # story 10.14: one place per story companion (concept/22-narrative/burg-gegenstaende-vorschlag.md)
+    'axe': keepsake_axe, 'cauldron': keepsake_cauldron, 'lute': keepsake_lute, 'dice': keepsake_dice, 'shield': keepsake_shield,
+    'pelts': keepsake_pelts, 'wolfpelt': keepsake_wolfpelt, 'trinkets': keepsake_trinkets, 'seachart': keepsake_seachart,
+    'satchel': keepsake_satchel, 'sabre': keepsake_sabre, 'books': keepsake_books, 'altar': keepsake_altar,
+    'cuirass': keepsake_cuirass, 'emberstone': keepsake_emberstone,
+}
 
 
 # ------------------------------------------------------------------------------------------------ scene, export
