@@ -85,16 +85,27 @@ reinforcements:
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [12, 15], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [12, 16], items: [{ def: iron_sword }], ai: { profile: aggressive } }
-      - { nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [12, 17], items: [{ def: iron_bow }], ai: { profile: aggressive } }
+      # Story 11.27, Runde 3 (nur Schwer): auf Schwer schlagen die Bootsleute wie die übrigen Eintreiber nur auf die Truppe
+      # (`prefer: player`). Ohne das starb die Gauklermeisterin auf Schwer in 57 von 100 Läufen – die Boote jagten sie, während die
+      # Truppe gebunden war (Sieg 5 %). Leicht und Normal bleiben unverändert, dort bedrohen die Boote sie weiter.
+      - { nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [12, 15], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [easy, normal] }
+      - { nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [12, 15], items: [{ def: iron_axe }], ai: { profile: aggressive, prefer: player }, difficulty: [hard] }
+      - { nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [12, 16], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [easy, normal] }
+      - { nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [12, 16], items: [{ def: iron_sword }], ai: { profile: aggressive, prefer: player }, difficulty: [hard] }
+      - { nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [12, 17], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [easy, normal] }
+      - { nameKey: unit.debt_collector.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [12, 17], items: [{ def: iron_bow }], ai: { profile: aggressive, prefer: player }, difficulty: [hard] }
   # Boote im Westen
   - turn: 5
     phase: enemy
     announce: true
     units:
-      - { nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [1, 5], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-      - { nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [1, 6], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+      # Story 11.27, Runde 3 (nur Schwer): auf Schwer schlagen die Bootsleute wie die übrigen Eintreiber nur auf die Truppe
+      # (`prefer: player`). Ohne das starb die Gauklermeisterin auf Schwer in 57 von 100 Läufen – die Boote jagten sie, während die
+      # Truppe gebunden war (Sieg 5 %). Leicht und Normal bleiben unverändert, dort bedrohen die Boote sie weiter.
+      - { nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [1, 5], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [easy, normal] }
+      - { nameKey: unit.debt_collector.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -2, at: [1, 5], items: [{ def: iron_axe }], ai: { profile: aggressive, prefer: player }, difficulty: [hard] }
+      - { nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [1, 6], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [easy, normal] }
+      - { nameKey: unit.debt_collector.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [1, 6], items: [{ def: iron_sword }], ai: { profile: aggressive, prefer: player }, difficulty: [hard] }
 objectives:
   victory: { type: escort, unit: troupe_master, area: { rect: [1, 15, 4, 17] }, join: false }
   defeat:

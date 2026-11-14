@@ -106,10 +106,10 @@ units:
   - { id: n1, nameKey: unit.lance_knight.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [10, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
   - { id: n2, nameKey: unit.lance_knight.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [19, 9], items: [{ def: iron_lance }], ai: { profile: trigger, radius: 5, then: aggressive } }
   - { id: n3, nameKey: unit.lance_squire.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [14, 12], items: [{ def: iron_lance }], ai: { profile: aggressive } }
-  - { id: n4, nameKey: unit.lance_squire.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [15, 12], items: [{ def: iron_lance }], ai: { profile: aggressive } }
+  - { id: n4, nameKey: unit.lance_squire.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [15, 12], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [easy, normal] }
   - { id: n5, nameKey: unit.lance_squire.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [12, 12], items: [{ def: iron_bow }], ai: { profile: aggressive } }
   - { id: n6, nameKey: unit.lance_squire.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [17, 12], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal] }
-  - { id: n7, nameKey: unit.lance_squire.name, team: enemy, class: healer, sprite: cleric, levelOffset: -3, at: [15, 10], items: [{ def: heal_staff }], ai: { profile: support } }
+  - { id: n7, nameKey: unit.lance_squire.name, team: enemy, class: healer, sprite: cleric, levelOffset: -3, at: [15, 10], items: [{ def: heal_staff }], ai: { profile: support }, difficulty: [easy, normal] }
   # Westen: Grell und seine Kaperfahrer (Maelis)
   - { id: grell, nameKey: unit.grell.name, team: enemy, class: skirmisher, levelOffset: 1, at: [2, 21], lieutenant: grell, items: [{ def: steel_sword }], ai: { profile: aggressive } }
   - { id: w1, nameKey: unit.privateer.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [3, 18], items: [{ def: iron_axe }], ai: { profile: aggressive } }

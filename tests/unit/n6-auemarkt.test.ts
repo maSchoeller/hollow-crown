@@ -93,12 +93,20 @@ describe('map n6_auemarkt', () => {
   });
 
   it('has 13 / 16 / 19 foes with boats in rounds 4 (east) and 5 (west), all on P−3 to P−1', () => {
-    const count = (d: Difficulty) => battle(d).units.filter((u) => u.team === 'enemy').length + map().reinforcements.flatMap((r) => r.units).length;
+    // story 11.27 round 3: every boat crew exists twice, for [easy, normal] and as a hard copy with prefer: player,
+    // so the waves are counted per difficulty like the foes on the map
+    const waves = (d: Difficulty) => map().reinforcements.flatMap((r) => r.units).filter((u) => !u.difficulty || u.difficulty.includes(d));
+    const count = (d: Difficulty) => battle(d).units.filter((u) => u.team === 'enemy').length + waves(d).length;
     expect([count('easy'), count('normal'), count('hard')]).toEqual([13, 16, 19]);
-    expect(map().reinforcements.map((r) => [r.turn, r.phase, r.announce, r.units.length])).toEqual([
-      [4, 'enemy', true, 3],
-      [5, 'enemy', true, 2],
-    ]);
+    for (const d of ['easy', 'normal', 'hard'] as const) {
+      expect(map().reinforcements.map((r) => [r.turn, r.phase, r.announce, r.units.filter((u) => !u.difficulty || u.difficulty.includes(d)).length]), d).toEqual([
+        [4, 'enemy', true, 3],
+        [5, 'enemy', true, 2],
+      ]);
+    }
+    // on hard the boats strike only at the company, like the other debt collectors
+    expect(waves('hard').every((u) => u.ai?.prefer === 'player')).toBe(true);
+    expect(waves('normal').every((u) => u.ai?.prefer === undefined)).toBe(true);
     for (const u of [...map().units, ...map().reinforcements.flatMap((r) => r.units)].filter((x) => x.team === 'enemy')) {
       expect(u.level, u.id).toBeUndefined();
       expect(u.levelOffset, u.id).toBeGreaterThanOrEqual(-3);
