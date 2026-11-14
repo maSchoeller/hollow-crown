@@ -21,9 +21,13 @@ import {
   emberSparkPrice,
   hireCost,
   hireError,
+  isHealingPotion,
   itemDef,
   locateItem,
   offerPrice,
+  potionUpgradeCost,
+  potionUpgradeError,
+  potionUpgradeOpen,
   priceChangePct,
   shopPrice,
   shopStock,
@@ -36,6 +40,8 @@ import {
   runeMerge,
   runeSlotCount,
   sellPrice,
+  tavernWishOpen,
+  tavernWishRoles,
   upgradable,
   upgradeCost,
   upgradeLimit,
@@ -406,7 +412,13 @@ export function SmithRoom({ room, apply, onClose }: { room: RoomDef; apply: Appl
   const c = campaign.value!;
   const [sel, setSel] = useState<string | null>(null);
   const limit = upgradeLimit(data, c);
-  const gear: ItemInstance[] = [...c.roster.flatMap((u) => [...Object.values(u.equip), ...u.bag]).filter((i): i is ItemInstance => !!i), ...c.convoy].filter(upgradable.bind(null, data));
+  const all: ItemInstance[] = [...c.roster.flatMap((u) => [...Object.values(u.equip), ...u.bag]).filter((i): i is ItemInstance => !!i), ...c.convoy];
+  const gear = all.filter(upgradable.bind(null, data));
+  // story 10.11: healing potions get their own list, from act 2 on (`potionUpgradeFromAct`)
+  const potions = potionUpgradeOpen(data, c) ? all.filter((i) => isHealingPotion(data, i)) : [];
+  const potion = sel ? potions.find((i) => i.uid === sel) : undefined;
+  const potionCost = potion ? potionUpgradeCost(data, potion) : undefined;
+  const potionErr = potion ? potionUpgradeError(data, c, potion.uid) : null;
   const inst = sel ? gear.find((i) => i.uid === sel) : undefined;
   const cost = inst ? upgradeCost(data, inst) : undefined;
   const atLimit = !!inst && inst.upgrade >= limit;
@@ -418,6 +430,17 @@ export function SmithRoom({ room, apply, onClose }: { room: RoomDef; apply: Appl
       desc={t('ui.room.smith.limit', { n: limit })}
       onClose={onClose}
       actions={
+        potion ? (
+          <PrimaryButton disabled={!!potionErr} onClick={() => apply({ type: 'upgradePotion', item: potion.uid }, t('ui.room.smith.potionDone'))}>
+            {potionCost ? (
+              <>
+                {t('ui.room.smith.potion')} · <Amount resource="gold" value={potionCost.gold} short={c.gold < potionCost.gold} />
+              </>
+            ) : (
+              t('ui.camp.maxed')
+            )}
+          </PrimaryButton>
+        ) : (
         <PrimaryButton disabled={!inst || !cost || atLimit || !afford} onClick={() => inst && apply({ type: 'upgrade', uid: inst.uid }, t('ui.camp.upgraded'))}>
           {inst && cost && !atLimit ? (
             <>
@@ -432,6 +455,7 @@ export function SmithRoom({ room, apply, onClose }: { room: RoomDef; apply: Appl
             t('ui.room.smith.upgrade')
           )}
         </PrimaryButton>
+        )
       }
     >
       {gear.map((i) => {
@@ -468,6 +492,28 @@ export function SmithRoom({ room, apply, onClose }: { room: RoomDef; apply: Appl
             {t(`affix.${a}`)} · <Amount resource="gold" value={rr!.gold} /> <Amount material={itemDef(data, 'arcane_dust')} value={rr!.dust} />
           </SecondaryButton>
         ))}
+      {potions.length > 0 && <div class="hm-subhead">{t('ui.room.smith.potions')}</div>}
+      {potions.map((i) => {
+        const owner = ownerOf(i.uid);
+        const step = potionUpgradeCost(data, i);
+        return (
+          <ItemLine
+            key={i.uid}
+            data={data}
+            inst={i}
+            selected={sel === i.uid}
+            onClick={() => setSel(sel === i.uid ? null : i.uid)}
+            sub={`${owner ? unitName(owner) : t('ui.convoy')}`}
+            side={
+              step ? (
+                <span class="hc-up">{t('ui.room.smith.potionHeal', { n: step.heal })}</span>
+              ) : (
+                <span style={{ color: 'var(--hc-soft)' }}>{t('ui.camp.maxed')}</span>
+              )
+            }
+          />
+        );
+      })}
     </RoomPanel>
   );
 }
@@ -562,6 +608,28 @@ export function TavernRoom({ room, apply, onClose }: { room: RoomDef; apply: App
     >
       {over && <div class="hm-hint is-warn" role="alert">{t('ui.army.over', { n: over.dismiss })}</div>}
       {full && !over && <div class="hm-hint">{t('ui.room.tavern.full')}</div>}
+      {/* story 10.11: the wished-for role of the next round of offers (tavern level 3) */}
+      {tavernWishOpen(data, c) && (
+        <>
+          <div class="hm-subhead">{t('ui.room.tavern.wish')}</div>
+          <div class="hm-chips">
+            {tavernWishRoles(data, c).map((role) => {
+              const on = c.tavernWish === role;
+              return (
+                <SecondaryButton
+                  key={role}
+                  class="hm-wish"
+                  aria-pressed={on}
+                  onClick={() => apply({ type: 'setTavernWish', role: on ? null : role }, t(on ? 'ui.room.tavern.wishCleared' : 'ui.room.tavern.wishSet', { role: t(`class.${role}.name`) }))}
+                >
+                  {t(`class.${role}.name`)}
+                </SecondaryButton>
+              );
+            })}
+          </div>
+          <div class="hm-hint">{t('ui.room.tavern.wishHint')}</div>
+        </>
+      )}
       {c.tavern.map((u) => {
         const st = u.stats;
         return (

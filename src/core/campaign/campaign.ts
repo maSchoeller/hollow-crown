@@ -1,7 +1,7 @@
 import type { Stats, WeaponType } from '../defs';
 import type { GameData } from '../gameData';
 import type { Reward, SideObjectiveDef } from '../mapDefs';
-import type { Effect } from '../storyDefs';
+import type { Effect, TavernDef } from '../storyDefs';
 import type { GameEvent } from '../events';
 import { newItem, recordFromChar, autoEquip, genericStats } from '../battle/create';
 import { hauntAnchorGone } from '../battle/hauntMap';
@@ -17,7 +17,7 @@ import { conditionContext, evalConditions } from './conditions';
 import { availableNodes, enterNextAct, noteRoles, storyCount } from './graph';
 import { actCampaign, actOf, campaignOfAct, findNode } from './acts';
 import { nodeLevel, positionNow, raiseOnJoin } from './position';
-import { availableSupportTalks, tavernOfferCount } from './camp';
+import { availableSupportTalks, griefMissions, tavernOfferCount } from './camp';
 import { applyLieutenantOutcome, bountyMaterialId, lieutenantState, payBounties } from './lieutenants';
 import { hauntGold, hauntHalved } from './haunts';
 import { trainReserve } from './training';
@@ -61,6 +61,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     offers: [],
     home: { kind: campaignOfAct(data, 1).home, rooms: {} },
     tavern: [],
+    tavernWish: null,
     day: { last: null, pending: [] },
     haunts: [],
     hauntLast: {},
@@ -121,6 +122,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     // story 10.9: the merchant's ember sparks, absent in saves from before them
     emberShop: (c as Partial<CampaignState>).emberShop ?? { sold: 0, lastSoldAtStory: null },
     tavern: (c.tavern ?? []).map((u) => ({ ...u, bag: stackKeys(data, u.bag) })),
+    // story 10.11: the wished-for role of the tavern of level 3, absent in saves from before it
+    tavernWish: (c as Partial<CampaignState>).tavernWish ?? null,
     // pairs of content added since the save (a later act) start empty
     supports: { ...Object.fromEntries(Object.keys(data.supports).map((k) => [k, { points: 0, rank: null }])), ...c.supports },
     quests: old.quests ?? [],
@@ -375,7 +378,8 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   // training ground (story 10.8): the reserve learns along, with the battle RNG after the deployed figures
   result.reserve = trainReserve(data, c, s, result.units, rng);
   c.reserveLast = clone(result.reserve);
-  // grief: every surviving fixed support partner of a fallen companion from support rank C (GDD: −10 hit for 3 missions)
+  // grief: every surviving fixed support partner of a fallen companion from support rank C (GDD: −10 hit; a healer of
+  // level 3 shortens new grief to 2 missions, story 10.11)
   for (const f of result.fallen) {
     if (f.mercenary) continue;
     f.grief = [];
@@ -384,7 +388,7 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
       const rec = partner ? c.roster.find((r) => r.id === partner) : undefined;
       if (!rec) continue;
       if (!(s.supports[key] ?? c.supports[key])?.rank) continue;
-      rec.grief = Math.max(rec.grief ?? 0, data.balance.supports.griefMissions);
+      rec.grief = Math.max(rec.grief ?? 0, griefMissions(data, c));
       f.grief.push({ id: rec.id, missions: rec.grief });
     }
   }
@@ -462,47 +466,63 @@ export function finishBattle(data: GameData, c0: CampaignState, s: BattleState):
   return { campaign: c, result };
 }
 
-/** Tavern offers of a chapter (story 6.4): `tavernOfferCount` mercenaries (by tavern level, story 10.1) near the level of the next mission. */
+/** One mercenary offer of the kind `kind`, near the expected level of the next mission (drawn from `c.rng`). */
+function makeOffer(data: GameData, c: CampaignState, kind: TavernDef['classes'][number], expected: number): UnitRecord {
+  const tav = data.balance.economy.tavern;
+  const level = Math.max(1, expected - nextInt(c.rng, tav.levelSpread + 1));
+  const cls = data.classes[kind.class]!;
+  // two offers (or an offer and a hired mercenary) never share a name while the list has names left
+  const taken = new Set([...c.tavern, ...c.roster].map((u) => u.nameKey));
+  const freeNames = tav.names.filter((n) => !taken.has(n));
+  const zero = { hp: 0, str: 0, mag: 0, skl: 0, spd: 0, lck: 0, def: 0, res: 0 };
+  const rec: UnitRecord = {
+    id: `merc${c.nextUid++}`,
+    nameKey: pick(c.rng, freeNames.length ? freeNames : tav.names),
+    classId: kind.class,
+    level,
+    exp: 0,
+    stats: genericStats(data, kind.class, level, 0),
+    growth: clone(cls.growth),
+    gained: { ...zero },
+    expected: { ...zero },
+    flags: [],
+    equip: {},
+    bag: [],
+    scars: [],
+    mastered: [],
+    loadout: [],
+    sp: {},
+    promotionGain: {},
+    secondPath: null,
+    heritage: null,
+  };
+  autoEquip(data, rec, kind.items.map((id) => newItem(c, id, data)));
+  return rec;
+}
+
+/**
+ * Tavern offers of a chapter (story 6.4): `tavernOfferCount` mercenaries (by tavern level, story 10.1) near the level of the
+ * next mission. A wished-for role (tavern level 3, story 10.11) is sure to be among them: if none was drawn, an offer of that
+ * role replaces the first one. The wish is used up by this round either way.
+ */
 export function refreshTavern(data: GameData, c: CampaignState): void {
   const tav = data.balance.economy.tavern;
   const ctx = conditionContext(data, c);
   const classes = tav.classes.filter((k) => evalConditions(ctx, k.requires));
   const next = availableNodes(data, c).find((n) => n.kind === 'story') ?? availableNodes(data, c)[0];
   const expected = next ? nodeLevel(data, c, next) : Math.max(1, ...c.roster.map((u) => u.level));
+  const wish = c.tavernWish;
+  c.tavernWish = null;
   c.tavern = [];
   if (!classes.length) return;
-  for (let i = 0, n = tavernOfferCount(data, c); i < n; i++) {
-    const kind = pick(c.rng, classes);
-    const level = Math.max(1, expected - nextInt(c.rng, tav.levelSpread + 1));
-    const cls = data.classes[kind.class]!;
-    // two offers (or an offer and a hired mercenary) never share a name while the list has names left
-    const taken = new Set([...c.tavern, ...c.roster].map((u) => u.nameKey));
-    const freeNames = tav.names.filter((n) => !taken.has(n));
-    const zero = { hp: 0, str: 0, mag: 0, skl: 0, spd: 0, lck: 0, def: 0, res: 0 };
-    const rec: UnitRecord = {
-      id: `merc${c.nextUid++}`,
-      nameKey: pick(c.rng, freeNames.length ? freeNames : tav.names),
-      classId: kind.class,
-      level,
-      exp: 0,
-      stats: genericStats(data, kind.class, level, 0),
-      growth: clone(cls.growth),
-      gained: { ...zero },
-      expected: { ...zero },
-      flags: [],
-      equip: {},
-      bag: [],
-      scars: [],
-      mastered: [],
-      loadout: [],
-      sp: {},
-      promotionGain: {},
-      secondPath: null,
-      heritage: null,
-    };
-    autoEquip(data, rec, kind.items.map((id) => newItem(c, id, data)));
-    c.tavern.push(rec);
-  }
+  for (let i = 0, n = tavernOfferCount(data, c); i < n; i++) c.tavern.push(makeOffer(data, c, pick(c.rng, classes), expected));
+  const roleOf = (classId: string): string | undefined => data.classes[classId]?.role;
+  if (!wish || !c.tavern.length || c.tavern.some((u) => roleOf(u.classId) === wish)) return;
+  const wanted = classes.filter((k) => roleOf(k.class) === wish);
+  if (!wanted.length) return;
+  // the replaced offer goes first, so the rule "no name twice" still sees the offers that stay
+  c.tavern.shift();
+  c.tavern.unshift(makeOffer(data, c, pick(c.rng, wanted), expected));
 }
 
 /** Merchant special offers: 1–2 affixed items per chapter (concept/07 §1). */

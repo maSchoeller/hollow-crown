@@ -3,7 +3,7 @@
  * story nodes, auto-win and the fault and save-failure switches. Imported once by App.tsx.
  */
 import { SEASONS, type Season } from '../../core/defs';
-import { CoreInvariantError, beginBattle, type MapDef, armyCount, firstNode, makeHaunt, seedRng, storyNodeOf, newCampaign, newItem, addToRoster, levelUp, refreshOffers, currentTier, nodeLevel, type BattleSettings, type BattleState, type BattleUnit, type GameEvent, filterEvents, visibleState, type Effect, type SceneDef, type FlagDef, type ChroniclePageDef, type CampaignDef, chronicleTexts, sceneTexts } from '../../core';
+import { CoreInvariantError, beginBattle, type MapDef, armyCount, firstNode, makeHaunt, seedRng, storyNodeOf, newCampaign, newItem, addToRoster, levelUp, refreshOffers, refreshTavern, currentTier, nodeLevel, type BattleSettings, type BattleState, type BattleUnit, type GameEvent, filterEvents, visibleState, type Effect, type SceneDef, type FlagDef, type ChroniclePageDef, type CampaignDef, chronicleTexts, sceneTexts } from '../../core';
 import { autosave, campaign, data } from './session';
 import { abandonBattle, battle, canAbandon, canRestart, command, pendingEvents, restartBattle } from './battle';
 import { reportFault } from './fault';
@@ -264,6 +264,25 @@ if (import.meta.env.DEV) {
         campaign.value = c;
         battle.value = null;
         screen.value = { name: 'camp', tab: 'merchant' };
+      },
+      /**
+       * story 10.11: the tavern, healer and smith of act 2 at `level` with offers, potions and gold; `tab` picks the room.
+       * Unsaved campaign.
+       */
+      devRooms: async (level = 3, tab: 'tavern' | 'smith' | 'healer' = 'tavern') => {
+        if (data.releasedActs?.includes(2)) await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { kind: 'castle', rooms: level > 1 ? { tavern: level, healer: level, smith: level } : {} };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        c.gold = 12000;
+        for (const id of ['vulnerary', 'vulnerary', 'steel_sword']) if (data.items[id]) c.convoy.push(newItem(c, id, data));
+        refreshTavern(data, c);
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'camp', tab };
       },
       devMemorial: (level = 2, given = false) => {
         const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });

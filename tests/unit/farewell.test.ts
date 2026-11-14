@@ -57,7 +57,7 @@ describe('grief (story 6.7)', () => {
     const partners = Object.values(data.supports).map((p) => p.pair).filter((p) => p.includes('brenna')).map((p) => (p[0] === 'brenna' ? p[1] : p[0]));
     const alive = partners.filter((id) => campaign.roster.some((r) => r.id === id));
     expect(alive.length).toBeGreaterThan(0);
-    for (const id of alive) expect(campaign.roster.find((r) => r.id === id)!.grief).toBe(data.balance.supports.griefMissions);
+    for (const id of alive) expect(campaign.roster.find((r) => r.id === id)!.grief).toBe(data.balance.supports.griefMissionsByHealerLevel[0]!);
     expect(result.fallen[0]!.grief!.map((g) => g.id).sort()).toEqual([...alive].sort());
     expect(campaign.fallen.at(-1)).toMatchObject({ id: 'brenna', classId: 'vanguard', node: firstNode(data).id });
     expect(campaign.fallen.at(-1)).not.toHaveProperty('mercenary');
@@ -73,7 +73,7 @@ describe('grief (story 6.7)', () => {
     const [first, ...rest] = alive;
     const mixed = wonWith(withRanks(rankedWith(base, 'brenna', null), { [pairKey('brenna', first!)]: 'C' }), ['brenna']);
     expect(mixed.result.fallen[0]!.grief!.map((g) => g.id)).toEqual([first]);
-    expect(mixed.campaign.roster.find((r) => r.id === first)!.grief).toBe(data.balance.supports.griefMissions);
+    expect(mixed.campaign.roster.find((r) => r.id === first)!.grief).toBe(data.balance.supports.griefMissionsByHealerLevel[0]!);
     for (const id of rest) expect(mixed.campaign.roster.find((r) => r.id === id)!.grief ?? 0).toBe(0);
   });
 
@@ -83,7 +83,7 @@ describe('grief (story 6.7)', () => {
     const clear = { ...lucan, grief: 0 };
     expect(computeStats(data, clear).hit - computeStats(data, lucan).hit).toBe(data.balance.supports.griefHitPenalty);
     let c = campaign;
-    for (let i = 0; i < data.balance.supports.griefMissions; i++) {
+    for (let i = 0; i < data.balance.supports.griefMissionsByHealerLevel[0]!; i++) {
       c = wonWith({ ...c, completed: [] }, []).campaign;
     }
     expect(c.roster.find((r) => r.id === 'lucan')!.grief ?? 0).toBe(0);
