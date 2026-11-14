@@ -1,6 +1,6 @@
 # Nebenquest N6, Szene vor der Karte (Knoten pre, Story 11.22): Herbstmarkt auf der Aue-Insel in der Auremündung, Jorys alte Truppe
 # steht bei Schuldeneintreibern in der Kreide (Gläubiger ungenannt [ASSUMPTION]), die Meisterin auf der Bühne. Jory ist Pflicht und in der
-# Truppe (sonst spielt scn.n6.memorial_intro). [ASSUMPTION] QA Akt 2 2026-11-13: Wurde Jory nie angeworben (nicht recruited), tragen
+# Truppe (sonst spielt scn.n6.memorial_intro). Produktinhaber 2026-11-14 (QA Akt 2 2026-11-13): Wurde Jory nie angeworben (nicht recruited), tragen
 # Ersatzzeilen ohne ihn dieselbe Auskunft; die Truppe hilft der Gauklertruppe, weil die Eintreiber auf dem Markt stehen. Nell nur, wenn sie beigetreten ist (requires alive); Text Vorschlag [ASSUMPTION].
 id: scn.n6.intro
 background: auemarkt

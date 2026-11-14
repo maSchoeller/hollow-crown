@@ -99,3 +99,28 @@ Für 11 der 16 Profi-Wege widersprachen die Locale-Namen der Teile-Tabelle des E
 ### 18. Bühne in N6: Auslöser auf der Terrasse (nachts angenommen)
 
 Das Gespräch mit der Gauklermeisterin feuerte auch, wenn man westlich an der Bühne vorbeiging. Jetzt deckt der Auslöser die Terrasse selbst ab; die Treppe liegt außerhalb, wer die Szene will, macht einen Schritt weiter hinauf.
+
+## Antworten des Produktinhabers (2026-11-14)
+
+| Frage | Antwort | Festgehalten in |
+| --- | --- | --- |
+| 1 Sicherungs-Erinnerung | A: gilt für den gerade abgeschlossenen Akt, erscheint beim Übergang | GDD-Log 2026-11-14 |
+| 2 2-8 „Kronfeld“ | C: erst der Handytest, danach entscheiden | GDD-Log 2026-11-14 |
+| 3 Abnahme 11.1–11.26 | gesammelt nach dem Durchlauf, Auffälligkeiten einzeln | Epics-Log 2026-11-14 |
+| 4 N4 `d2` | wartet auf den Handytest | GDD-Log 2026-11-14 |
+| 5 Spielzeit Akt 2 | misst der Produktinhaber beim Durchspielen | offen (seine Aufgabe) |
+| 6 Tonbruch-Test | offen (seine Aufgabe, Story 8.1) | — |
+| 7 Nemesis-Patent | offen (seine Aufgabe, rechtliche Prüfung) | — |
+| 8 Handy-Tests 15.11/15.12 | abgenommen über den Akt-1-Durchlauf | Epics-Log 2026-11-14 |
+| 9 Ortsbilder | offen: vier Bilder aus 15.6 und Paktwacht Spätsommer | — |
+| 10 Akt 2 im Build | bleibt bis zum Release auf `released: true` | Epics-Log 2026-11-14 |
+| 11 Annahmen aus Epic 10 | bleiben, werden in 11.27 gemessen | — |
+| 12 Story 10.14 Burg-Grafik | wird jetzt gebaut, Messung am Gerät danach | — |
+| 13 Nebenquests ohne Gefährten | A: Quest öffnet auch ohne ihn | GDD-Log 2026-11-14 |
+| 14 Ein Schlüssel je Truhe | A: als Regel bestätigt | GDD-Log 2026-11-14 |
+| 15 Platzhalter „cleric“ | bleibt bis zum Ende von Staffel 1 | GDD-Log 2026-11-14 |
+| 16 Vier optionale Hebel | der Produktinhaber nimmt sie im Durchlauf bewusst mit | — |
+| 17 Teile-Namen | A: bleiben wie angeglichen, auch `blender_proparts.py` | Art-Log 2026-11-14 |
+| 18 Bühne N6 | A: Auslöser nur auf der Terrasse | GDD-Log 2026-11-14 |
+
+Nächste Schritte laut Produktinhaber, während er Akt 2 spielt: Story 10.14 „Burg-Grafik“ bauen, die zweite Abstimmungsrunde von 11.27 messen und die Abnahmebilder der Anhängeteile sowie die offenen Ortsbilder zum Durchsehen aufbereiten.
