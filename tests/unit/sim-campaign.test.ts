@@ -96,7 +96,7 @@ describe('chained act simulation (story 6.8)', () => {
     );
     // never below the reserve, never past the limit, nothing without a next mission
     const poor = fresh();
-    poor.gold = reserve + Math.min(...poor.tavern.map((u) => hireCost(data, u.level))) - 1;
+    poor.gold = reserve + Math.min(...poor.tavern.map((u) => hireCost(data, u))) - 1;
     expect(hireMercenaries(data, poor, next, spent).hired).toBe(0);
     const full = fresh();
     full.gold = 100000;

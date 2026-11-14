@@ -325,7 +325,27 @@ entries:
       - { id: potion1, ref: balance.economy.potionUpgrade.0.gold, icon: gold }
       - { id: potion2, ref: balance.economy.potionUpgrade.1.gold, icon: gold }
       - { id: potionHeal, ref: balance.economy.potionUpgrade.0.heal }
-    see: [rooms, trade, ember_spark]
+    see: [rooms, tavern, trade, ember_spark]
+  # story 10.12: the traits of the tavern's offers stand in traits.yaml, the chances in balance.yaml
+  - id: tavern
+    category: home
+    icon: company
+    values:
+      - { id: traitMax, ref: balance.economy.tavern.traitCount.1 }
+      - { id: good1, ref: balance.economy.tavern.goodTraitChanceByLevel.0, format: percent }
+      - { id: good2, ref: balance.economy.tavern.goodTraitChanceByLevel.1, format: percent }
+      - { id: toughHp, ref: traits.tough.effect.stats.hp, format: signed }
+      - { id: nimbleSpd, ref: traits.nimble.effect.stats.spd, format: signed }
+      - { id: veteranSkl, ref: traits.veteran.effect.stats.skl, format: signed }
+      - { id: veteranLck, ref: traits.veteran.effect.stats.lck, format: signed }
+      - { id: childMag, ref: traits.elemental_child.effect.stats.mag, format: signed }
+      - { id: childRes, ref: traits.elemental_child.effect.stats.res, format: signed }
+      - { id: greedyPct, ref: traits.greedy.hireCostPct, format: percent, icon: gold }
+      - { id: cowardStr, ref: traits.coward.effect.stats.str, format: signed }
+      - { id: cowardMov, ref: traits.coward.effect.stats.mov, format: signed }
+      - { id: clumsySkl, ref: traits.clumsy.effect.stats.skl, format: signed }
+      - { id: clumsyHit, ref: traits.clumsy.effect.hitBonus, format: signed }
+    see: [rooms, rooms_upgrade, trade]
   - id: trade
     category: home
     icon: merchant

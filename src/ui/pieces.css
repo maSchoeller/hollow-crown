@@ -547,3 +547,26 @@
   background: var(--hc-ember);
   transform: rotate(45deg);
 }
+
+/* Söldner-Traits (Story 10.12): Marken an einem Angebot und an der Figur, gute grün, schlechte rot */
+.hc-traits {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.hc-trait {
+  border: 1px solid var(--hc-positive);
+  border-radius: 999px;
+  padding: 0 6px;
+  font-family: var(--hc-font-label);
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--hc-positive);
+  background: var(--hc-positive-soft);
+}
+.hc-trait.is-bad {
+  border-color: var(--hc-negative);
+  color: var(--hc-negative);
+  background: var(--hc-team-enemy-soft);
+}

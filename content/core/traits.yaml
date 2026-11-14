@@ -1,0 +1,13 @@
+# Söldner-Traits (Story 10.12): Eigenheiten, die die Taverne an ihre Angebote vergibt.
+# kind: good | bad – je Angebot 1–2 verschiedene Traits, jeder Platz mit goodTraitChanceByLevel
+# der Taverne-Stufe aus den guten, sonst aus den schlechten (balance.economy.tavern).
+# effect sind die Bausteine passiver Skills (dieselben Felder wie skills.yaml effect) und wirken
+# über computeStats in Kampf, Vorschau, Truppe und Simulation. hireCostPct ändert nur den Preis.
+# Texte: trait.<id>.name|desc in locales/de.yaml und en.yaml. Werte [ASSUMPTION] Epic 10.12.
+- { id: tough,           kind: good, effect: { stats: { hp: 4 } } }
+- { id: nimble,          kind: good, effect: { stats: { spd: 2 } } }
+- { id: veteran,         kind: good, effect: { stats: { skl: 2, lck: 2 } } }
+- { id: elemental_child, kind: good, effect: { stats: { mag: 2, res: 2 } } }
+- { id: greedy,          kind: bad,  hireCostPct: 25 }
+- { id: coward,          kind: bad,  effect: { stats: { str: -2, mov: 1 } } }
+- { id: clumsy,          kind: bad,  effect: { stats: { skl: -2 }, hitBonus: -5 } }

@@ -2,7 +2,7 @@ import type { z } from 'zod';
 import { chronicleTexts } from '../core/campaign/chronicle';
 import { memorialTexts } from '../core/campaign/memorial';
 import { sceneTexts } from '../core/campaign/scene';
-import type { AffixDef, CharDef, ClassDef, HeritageDef, HomeKind, ItemDef, Rarity, RecipeDef, RuneDef, SetDef, SkillDef } from '../core/defs';
+import type { AffixDef, CharDef, ClassDef, HeritageDef, HomeKind, ItemDef, Rarity, RecipeDef, RuneDef, SetDef, SkillDef, TraitDef } from '../core/defs';
 import type { Balance } from '../core/balanceDefs';
 import type { GameData } from '../core/gameData';
 import type { HauntPoolsDef, MapDef, MapUnitDef, TerrainDef } from '../core/mapDefs';
@@ -14,7 +14,7 @@ import { campaignSchema, chroniclePageSchema, hauntPoolsSchema, homeSchema, lieu
 import { flagSchema } from './schemaConditions';
 import { mapSchema, terrainSchema } from './schemaMap';
 import { handbookSchema, renderSchema } from './schemaRender';
-import { affixSchema, charSchema, classSchema, heritageSchema, itemSchema, recipeSchema, runeSchema, setSchema, skillSchema } from './schemaUnits';
+import { affixSchema, charSchema, classSchema, heritageSchema, itemSchema, recipeSchema, runeSchema, setSchema, skillSchema, traitSchema } from './schemaUnits';
 
 export type Locales = Record<string, Record<string, string>>;
 
@@ -238,6 +238,8 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
   const runes = parseList<RuneDef>('runes.yaml', get('core/runes.yaml'), runeSchema, issues);
   const recipes = parseList<RecipeDef>('recipes.yaml', get('core/recipes.yaml'), recipeSchema, issues);
   for (const [i, r] of recipes.entries()) if (recipes.findIndex((x) => x.id === r.id) !== i) issues.push({ file: 'recipes.yaml', message: `recipe ${r.id} is listed twice` });
+  const traits = parseList<TraitDef>('traits.yaml', get('core/traits.yaml'), traitSchema, issues);
+  for (const [i, tr] of traits.entries()) if (traits.findIndex((x) => x.id === tr.id) !== i) issues.push({ file: 'traits.yaml', message: `trait ${tr.id} is listed twice` });
   const heritage = parseList<HeritageDef>('heritage.yaml', get('core/heritage.yaml'), heritageSchema, issues);
   for (const [i, h] of heritage.entries()) if (heritage.findIndex((x) => x.role === h.role) !== i) issues.push({ file: 'heritage.yaml', message: `role ${h.role} is listed twice` });
   const sets = parseList<SetDef>('sets.yaml', get('core/sets.yaml'), setSchema, issues);
@@ -291,6 +293,7 @@ export function buildContent(files: Record<string, unknown>): LoadedContent {
     affixes: byId(affixes),
     runes: byId(runes),
     recipes: byId(recipes),
+    traits: byId(traits),
     heritage: Object.fromEntries(heritage.map((h) => [h.role, h])),
     sets: byId(sets),
     rooms: byId(rooms),

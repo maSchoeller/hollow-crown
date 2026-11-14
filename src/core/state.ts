@@ -49,6 +49,8 @@ export interface UnitRecord {
   heritage?: UnitHeritage | null;
   /** the gear template saved in the convoy of level 2 (story 10.10): the uids of the places; default null */
   gearTemplate?: GearTemplate | null;
+  /** traits of a mercenary of the tavern (story 10.12, `traits.yaml`); companions have none, default `[]` */
+  traits?: string[];
 }
 
 /**

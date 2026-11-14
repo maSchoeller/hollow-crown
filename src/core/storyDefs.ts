@@ -298,6 +298,10 @@ export interface TavernDef {
   wishRoleFromLevel: number;
   /** an offer's level lies between the expected level of the next mission minus `levelSpread` and that level */
   levelSpread: number;
+  /** story 10.12: how many traits one offer gets, [min, max] (both ends possible, equally likely) */
+  traitCount: [number, number];
+  /** story 10.12: chance in percent that a trait place is drawn from the good traits, by tavern level (index = level - 1) */
+  goodTraitChanceByLevel: number[];
   /** name keys of generated mercenaries (locales) */
   names: string[];
   classes: Array<{ class: string; items: string[]; requires?: Condition[] }>;

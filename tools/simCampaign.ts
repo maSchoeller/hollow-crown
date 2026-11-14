@@ -204,7 +204,7 @@ export function hireMercenaries(data: GameData, c0: CampaignState, next: string 
   const reserve = data.balance.simulation.hire.reserve;
   while (c.roster.length < limit) {
     const offer = [...c.tavern]
-      .filter((u) => !hireError(data, c, u.id) && c.gold - hireCost(data, u.level) >= reserve)
+      .filter((u) => !hireError(data, c, u.id) && c.gold - hireCost(data, u) >= reserve)
       .sort((a, b) => b.level - a.level)[0];
     if (!offer) break;
     const g = c.gold;
