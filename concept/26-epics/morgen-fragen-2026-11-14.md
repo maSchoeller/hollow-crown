@@ -91,3 +91,11 @@ Auf 2-1, 2-3, 2-5, 2-6 und 2-7 stehen die Heiler-Gegner noch als Platzhalter. Ei
 ### 16. Vier optionale Hebel nutzt das Autoplay nie
 
 Kranhebel in 2-7, Furt in 2-8, Gatterhebel in N5 und Bühne in N6: Felder und Trigger sind erreichbar und funktionieren, nur die Kampf-KI geht nie hin. Für deinen Durchlauf heißt das, diese vier Wege sind ungetestet — bitte bewusst mitnehmen.
+
+### 17. Teile-Namen aus Story 10.13 angeglichen (nachts angenommen)
+
+Für 11 der 16 Profi-Wege widersprachen die Locale-Namen der Teile-Tabelle des Epics (zum Beispiel „Duellklinge“ gegen Federbarett). Sichtbares Teil und Name müssen zusammenpassen, deshalb sind die Namen in DE und EN an die Tabelle des Epics angeglichen — sie ist die jüngere Quelle. Zweitens heißt das neue Blender-Skript `blender_proparts.py`, weil `blender_parts.py` seit dem Prototyp die Teile-Bibliothek der Sprite-Pipeline ist. Beides nur widersprechen, wenn dir ein Name nicht gefällt.
+
+### 18. Bühne in N6: Auslöser auf der Terrasse (nachts angenommen)
+
+Das Gespräch mit der Gauklermeisterin feuerte auch, wenn man westlich an der Bühne vorbeiging. Jetzt deckt der Auslöser die Terrasse selbst ab; die Treppe liegt außerhalb, wer die Szene will, macht einen Schritt weiter hinauf.
