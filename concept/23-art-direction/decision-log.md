@@ -238,3 +238,17 @@
 - **Gedenken-Stil [ASSUMPTION]:** Der Gegenstand eines Gefallenen behält seine Form, bekommt aber ein eigenes graues Material (`castle:mourn`), und seine Vertex-Farben werden abgeschaltet (`mesh.useVertexColors = false`); leuchtende Teile (Lioras Kerzen) gehen mit aus. Kein eigener Shader nötig.
 - **Vorwerk am Passfuß (F4, Produktinhaber 2026-11-06):** `build_outwork()` setzt bei Burgstufe 3 eine kurze Mauer mit Tordurchgang, Zinnen, Laternen und Banner an den Fuß der Passstraße (940 Dreiecke, Teil `shell_3`). Nur Bild, kein Raum und keine Regel.
 - **Abnahme:** `node tools/art/castle-shots.mjs` gegen `pnpm dev:act2` schreibt vier Bilder bei 375 × 812 nach `art/models/castle/shots/` (Stufe 1, 2, 3 und ein Bild mit gefallener Brenna und gegangenem Varek), Spiel stumm. Noch offen: die Messung der Bildrate auf dem echten Gerät (Ziele aus Story 7.8); die Dev-Leiste zeigt FPS und Draw Calls (`?castle3d=1`).
+
+## 2026-11-14: Sieben Anhängeteile nachgearbeitet (Lesbarkeit im Spielblick)
+
+Die Abnahmebilder von Story 10.13 zeigten im Spielblick (375 × 812, Kamera 35° aus der Senkrechten auf den Rücken), dass neun der sechzehn Teile klar lesbar sind und sieben nicht. Nachgearbeitet in `tools/art/blender_proparts.py`, Regel dahinter: **ein Teil muss sich in Helligkeit vom Körper absetzen und über die Schultern reichen oder deutlich neben der Silhouette stehen** – ein dunkles Teil auf dem dunklen Rücken verschwindet, egal wie sauber es gebaut ist.
+
+- **general_cloak:** war ein dunkler Block über der ganzen Figur. Jetzt weinroter Stoff (WINE) mit dünner Goldkante ringsum, an den Schultern breit und zum Saum verjüngt, Kartenköcher an der Hüfte. Drei Anläufe: dunkle Platte, dann Schild mit Mittelborte, dann die Farbe – ein dunkles Teil auf dem dunklen Rücken ist bei 375 × 812 nicht lesbar, egal wie es geformt ist.
+- **leaf_cloak:** deckte den Körper zu. Jetzt ein Schultermantel: Reihen nach oben gezogen und verbreitert, unterste Reihe weg.
+- **tower_shield:** Rand in STEEL statt STEEL_DARK, Schild größer und bis über die Schultern, Buckel in Gold.
+- **trap_belt:** Fallen anderthalbmal so groß und in hellem Stahl mit Goldring statt Dunkelstahl auf dunklem Riemen.
+- **second_blade:** Griff, Parierstange und Knauf ein Drittel größer, Griff in WINE, Knauf in GOLD_LIGHT.
+- **great_lute:** las sich als Sack. Cremefarbene Decke zur Kamera, dunkler Korpusrand, Schallrosette in INK, Bünde in Gold.
+- **mitre:** las sich als gefaltetes Blatt. Höher, mit rundem Grat zwischen den Platten, und die Goldborte läuft jetzt auch über die **Rückseite** – die Kamera sieht den Hinterkopf, die vordere Borte allein war unsichtbar.
+
+Abnahmebilder neu erzeugt mit `node tools/art/part-shots.mjs` nach `art/models/parts/shots/`. Die Namen der Teile bleiben unverändert (Produktinhaber 2026-11-14).

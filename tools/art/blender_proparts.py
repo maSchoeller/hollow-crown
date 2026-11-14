@@ -151,10 +151,14 @@ BACK = -0.085  # the back surface of the chest, a hair clear of it
 
 
 def tower_shield():
-    """Bulwark: a tall shield slung over the back, team cloth face in a steel rim."""
-    plate(shield_outline(0.082, 0.15, -0.16), 0.02, STEEL_DARK, at=(0, 0.01, BACK - 0.012))
-    plate(shield_outline(0.066, 0.134, -0.142), 0.028, TEAM, at=(0, 0.01, BACK - 0.004))
-    sphere((0, 0.01, BACK - 0.028), 0.028, STEEL, scale=(1, 1, 0.5))
+    """Bulwark: a tall shield slung over the back, team cloth face in a bright steel rim.
+    The camera looks at the back from 35 degrees off vertical, so the shield reaches above the shoulders and the rim
+    is STEEL, not STEEL_DARK: a dark rim on the dark body read as nothing (abnahme 2026-11-14)."""
+    plate(shield_outline(0.1, 0.21, -0.17), 0.02, STEEL, at=(0, 0.02, BACK - 0.012))
+    plate(shield_outline(0.08, 0.188, -0.15), 0.028, TEAM, at=(0, 0.02, BACK - 0.004))
+    plate([(-0.016, 0.17), (0.016, 0.17), (0.016, -0.12), (-0.016, -0.12)], 0.03, STEEL, at=(0, 0.02, BACK - 0.022))
+    sphere((0, 0.03, BACK - 0.034), 0.036, GOLD, scale=(1, 1, 0.5))
+    sphere((0, 0.03, BACK - 0.046), 0.016, GOLD_LIGHT, scale=(1, 1, 0.5))
     box((0, 0.11, BACK + 0.012), (0.16, 0.02, 0.026), LEATHER, bevel=0.005)  # strap over the shoulders
 
 
@@ -173,28 +177,32 @@ def ram_axe():
 
 
 def second_blade():
-    """Blade dancer: a second blade in its scabbard, hilt over the right shoulder."""
-    a, b, d = shaft(0.33, -34, (0.01, 0.035, BACK - 0.015), 0.019, LEATHER_DARK)
+    """Blade dancer: a second blade in its scabbard, hilt high over the right shoulder.
+    Hilt, guard and pommel are a third larger than in story 10.13: at 375 x 812 the old ones were a few pixels
+    (abnahme 2026-11-14)."""
+    a, b, d = shaft(0.38, -34, (0.01, 0.055, BACK - 0.015), 0.024, LEATHER_DARK)
     for s in (0.3, 0.55, 0.8):
         p = a + (b - a) * s
-        cylinder(p - d * 0.008, p + d * 0.008, 0.026, GOLD, segs=8)
+        cylinder(p - d * 0.01, p + d * 0.01, 0.033, GOLD, segs=8)
     hilt = b + d * 0.02
     n, _ = across(d)
-    cylinder(hilt, hilt + d * 0.07, 0.014, LEATHER, segs=8)
-    cylinder(hilt - n * 0.045, hilt + n * 0.045, 0.013, GOLD, segs=8)
-    sphere(hilt + d * 0.085, 0.019, GOLD)
+    cylinder(hilt, hilt + d * 0.085, 0.018, WINE, segs=8)
+    cylinder(hilt - n * 0.058, hilt + n * 0.058, 0.017, GOLD, segs=8)
+    sphere(hilt + d * 0.1, 0.026, GOLD_LIGHT)
     box((0, 0.09, BACK + 0.015), (0.19, 0.02, 0.028), LEATHER, bevel=0.005)
 
 
 def leaf_cloak():
-    """Ranger: a short cloak of layered leaf plates over the back and shoulders."""
+    """Ranger: a short mantle of layered leaf plates over the shoulders.
+    Lifted and widened against story 10.13, and the lowest row dropped: the mantle used to cover the whole body, so
+    the figure under it was gone (abnahme 2026-11-14)."""
     leaf = [(-0.055, 0.03), (0.0, 0.055), (0.055, 0.03), (0.04, -0.045), (0.0, -0.07), (-0.04, -0.045)]
-    for row, (y, span, n, col) in enumerate(((0.1, 0.085, 3, LEAF), (0.0, 0.1, 3, LEAF_DARK), (-0.1, 0.075, 2, LEAF))):
+    for row, (y, span, n, col) in enumerate(((0.155, 0.1, 3, LEAF), (0.07, 0.115, 4, LEAF_DARK), (-0.015, 0.1, 3, LEAF))):
         for i in range(n):
             x = (i - (n - 1) / 2) * span
             plate(leaf, 0.016, col, at=(x, y, BACK - 0.006 * row))
-    cylinder((-0.12, 0.17, BACK + 0.03), (0.12, 0.17, BACK + 0.03), 0.028, LEAF_DARK, segs=8)  # collar roll
-    sphere((0, 0.19, BACK + 0.055), 0.022, WOOD, scale=(1, 0.6, 1))
+    cylinder((-0.13, 0.205, BACK + 0.03), (0.13, 0.205, BACK + 0.03), 0.03, WOOD, segs=8)  # collar roll
+    sphere((0, 0.225, BACK + 0.055), 0.024, GOLD, scale=(1, 0.6, 1))
 
 
 def raven_collar():
@@ -221,15 +229,22 @@ def war_hammer():
 
 
 def great_lute():
-    """Bard: a great lute on the back, neck up over the left shoulder."""
-    sphere((0.0, -0.06, BACK - 0.03), 0.105, WOOD_LIGHT, scale=(1.0, 1.1, 0.42))
-    sphere((0.0, 0.04, BACK - 0.026), 0.075, WOOD_LIGHT, scale=(1.0, 1.0, 0.42))
-    a, b, d = shaft(0.4, 22, (0.03, 0.1, BACK - 0.02), 0.016, WOOD)
-    cylinder(b - d * 0.02, b + d * 0.06, 0.017, WOOD, segs=8)
-    sphere((0.0, -0.045, BACK - 0.075), 0.03, STEEL_DARK, scale=(1, 1, 0.3))  # rosette
-    box((0.012, -0.02, BACK - 0.07), (0.006, 0.2, 0.01), CREAM)  # strings
+    """Bard: a great lute on the back, neck up over the left shoulder.
+    The body carries a cream soundboard towards the camera and a dark rim: two plain wood domes read as a sack
+    (abnahme 2026-11-14)."""
+    sphere((0.0, -0.06, BACK - 0.03), 0.112, WOOD, scale=(1.0, 1.1, 0.42))
+    sphere((0.0, 0.045, BACK - 0.026), 0.08, WOOD, scale=(1.0, 1.0, 0.42))
+    sphere((0.0, -0.055, BACK - 0.062), 0.094, WOOD_LIGHT, scale=(1.0, 1.15, 0.2))  # soundboard
+    sphere((0.0, 0.045, BACK - 0.056), 0.066, WOOD_LIGHT, scale=(1.0, 1.0, 0.2))
+    sphere((0.0, -0.04, BACK - 0.078), 0.034, INK, scale=(1, 1, 0.25))  # rosette
+    a, b, d = shaft(0.42, 22, (0.03, 0.11, BACK - 0.02), 0.017, WOOD)
+    cylinder(b - d * 0.02, b + d * 0.07, 0.019, WOOD_LIGHT, segs=8)
+    for s in (0.42, 0.6, 0.78):
+        q = a + (b - a) * s
+        cylinder(q - d * 0.006, q + d * 0.006, 0.022, GOLD, segs=6)
+    box((0.012, -0.02, BACK - 0.084), (0.008, 0.22, 0.01), CREAM)  # strings
     for s in (-1, 1):
-        cylinder(b + d * 0.03 + Vector((s * 0.014, 0, 0)), b + d * 0.03 + Vector((s * 0.03, 0, 0)), 0.008, GOLD, segs=5)
+        cylinder(b + d * 0.035 + Vector((s * 0.015, 0, 0)), b + d * 0.035 + Vector((s * 0.034, 0, 0)), 0.009, GOLD_LIGHT, segs=5)
 
 
 def back_banner():
@@ -242,28 +257,36 @@ def back_banner():
 
 
 def trap_belt():
-    """Trapper: a strap of folded traps across the back."""
-    _, _, d = diag(0.4, 34, (0.0, 0.0, BACK))
+    """Trapper: a strap of folded traps across the back.
+    Bright steel and half again as large as in story 10.13; the dark traps on the dark strap were not readable
+    (abnahme 2026-11-14)."""
+    _, _, d = diag(0.44, 34, (0.0, 0.015, BACK))
     n, rot = across(d)
-    plate([(-0.035, 0.2), (0.035, 0.2), (0.035, -0.2), (-0.035, -0.2)], 0.022, LEATHER, at=(0.0, 0.0, BACK - 0.01), rot=rot)
-    for s in (-0.13, 0.0, 0.13):
-        p = Vector((0.0, 0.0, BACK - 0.028)) + d * s
-        cylinder(p + Vector((0, 0, 0.004)), p - Vector((0, 0, 0.018)), 0.038, STEEL_DARK, segs=10)
-        cylinder(p - Vector((0, 0, 0.016)), p - Vector((0, 0, 0.026)), 0.03, STEEL, segs=10)
-    for s in (-0.07, 0.07):
-        p = Vector((0.0, 0.0, BACK - 0.02)) + d * s
-        box(p, (0.03, 0.05, 0.03), WOOD, bevel=0.006, rot=rot)
+    plate([(-0.042, 0.22), (0.042, 0.22), (0.042, -0.22), (-0.042, -0.22)], 0.022, LEATHER_DARK, at=(0.0, 0.015, BACK - 0.01), rot=rot)
+    for s in (-0.15, 0.0, 0.15):
+        p = Vector((0.0, 0.015, BACK - 0.03)) + d * s
+        cylinder(p + Vector((0, 0, 0.004)), p - Vector((0, 0, 0.022)), 0.047, STEEL, segs=10)
+        cylinder(p - Vector((0, 0, 0.02)), p - Vector((0, 0, 0.032)), 0.034, STEEL_DARK, segs=10)
+        cylinder(p - Vector((0, 0, 0.03)), p - Vector((0, 0, 0.04)), 0.018, GOLD, segs=8)
+    for s in (-0.075, 0.075):
+        p = Vector((0.0, 0.015, BACK - 0.022)) + d * s
+        box(p, (0.034, 0.055, 0.032), WOOD, bevel=0.006, rot=rot)
 
 
 def general_cloak():
-    """Grand strategist: a long commander's cloak down the back, gold trim."""
-    plate([(-0.095, 0.16), (0.095, 0.16), (0.135, -0.06), (0.12, -0.25), (-0.12, -0.25), (-0.135, -0.06)], 0.022,
-          STEEL_DARK, at=(0, 0, BACK - 0.012))
-    plate([(-0.12, -0.2), (0.12, -0.2), (0.12, -0.246), (-0.12, -0.246)], 0.026, GOLD, at=(0, 0, BACK - 0.016))
-    cylinder((-0.12, 0.16, BACK + 0.035), (0.12, 0.16, BACK + 0.035), 0.028, STEEL_DARK, segs=10)
+    """Grand strategist: a long wine cloak down the back with a thin gold edge.
+    Three tries: a dark slab over the whole figure, then a signboard with a band down the middle, now wine cloth with
+    a gold outline. The colour does the work – a dark cloak on the dark back cannot be read at 375 x 812, whatever its
+    shape (abnahme 2026-11-14)."""
+    outer = [(-0.112, 0.182), (0.112, 0.182), (0.096, -0.03), (0.066, -0.178), (-0.066, -0.178), (-0.096, -0.03)]
+    inner = [(-0.098, 0.17), (0.098, 0.17), (0.083, -0.03), (0.055, -0.166), (-0.055, -0.166), (-0.083, -0.03)]
+    # no fold lines: dark stripes on the cloth turned it back into a shield face
+    plate(outer, 0.018, GOLD, at=(0, 0, BACK - 0.006))
+    plate(inner, 0.022, WINE, at=(0, 0, BACK - 0.014))
+    cylinder((-0.11, 0.192, BACK + 0.015), (0.11, 0.192, BACK + 0.015), 0.028, WINE, segs=10)
     for s in (-1, 1):
-        sphere((s * 0.095, 0.155, BACK + 0.062), 0.02, GOLD)
-    box((0.0, 0.03, BACK - 0.05), (0.065, 0.085, 0.028), LEATHER_DARK, bevel=0.008)  # map case
+        sphere((s * 0.104, 0.176, BACK - 0.03), 0.018, GOLD)
+    cylinder((0.1, -0.01, BACK - 0.05), (0.1, -0.11, BACK - 0.05), 0.026, LEATHER_DARK, segs=8)  # map case at the hip
 
 
 def standard():
@@ -328,15 +351,17 @@ def pointed_hat():
 
 
 def mitre():
-    """Bishop: a mitre with a gold band and two short lappets behind."""
-    # two stiff panels front and back: wide and pointed seen from the front, narrow from the side
+    """Bishop: a mitre with a gold band and two short lappets behind.
+    The orphrey band runs up the back panel as well: the camera looks at the back of the head, so the front band alone
+    left a blank sheet (abnahme 2026-11-14). The cap is taller and carries a rounded ridge."""
     first = len(parts)
-    plate([(-0.068, 0.0), (0.068, 0.0), (0.068, 0.06), (0.0, 0.2), (-0.068, 0.06)], 0.058, CREAM, at=(0, 0, 0.0))
-    # gold orphrey band up the front panel
-    plate([(-0.014, -0.002), (0.014, -0.002), (0.014, 0.14), (0.0, 0.2), (-0.014, 0.14)], 0.012, GOLD_LIGHT, at=(0, 0, 0.034))
-    cylinder((0, -0.002, 0.0), (0, 0.024, 0.0), 0.072, GOLD, segs=14)
-    plate([(-0.011, 0.02), (0.011, 0.02), (0.011, -0.07), (-0.011, -0.07)], 0.01, GOLD, at=(-0.024, 0.0, -0.042))
-    plate([(-0.011, 0.02), (0.011, 0.02), (0.011, -0.06), (-0.011, -0.06)], 0.01, GOLD, at=(0.024, 0.0, -0.038))
+    plate([(-0.07, 0.0), (0.07, 0.0), (0.07, 0.062), (0.0, 0.215), (-0.07, 0.062)], 0.062, CREAM, at=(0, 0, 0.0))
+    sphere((0, 0.07, 0.0), 0.034, CREAM, scale=(1.0, 2.4, 0.6))  # the ridge between the panels
+    for z in (0.036, -0.036):
+        plate([(-0.016, -0.002), (0.016, -0.002), (0.016, 0.15), (0.0, 0.212), (-0.016, 0.15)], 0.012, GOLD_LIGHT, at=(0, 0, z))
+    cylinder((0, -0.002, 0.0), (0, 0.028, 0.0), 0.075, GOLD, segs=14)
+    plate([(-0.013, 0.02), (0.013, 0.02), (0.013, -0.08), (-0.013, -0.08)], 0.01, GOLD, at=(-0.026, 0.0, -0.046))
+    plate([(-0.013, 0.02), (0.013, 0.02), (0.013, -0.07), (-0.013, -0.07)], 0.01, GOLD, at=(0.026, 0.0, -0.042))
     lift_head_parts(first)
 
 
