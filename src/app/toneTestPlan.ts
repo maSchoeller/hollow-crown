@@ -60,7 +60,7 @@ export function toneTestResult(data: GameData): BattleResult {
         nameKey: `unit.${TONE_TEST.fallen}.name`,
         portrait: ch?.portrait ?? TONE_TEST.fallen,
         classId: ch?.class,
-        grief: TONE_TEST.grief.map((id) => ({ id, missions: data.balance.supports.griefMissions })),
+        grief: TONE_TEST.grief.map((id) => ({ id, missions: data.balance.supports.griefMissionsByHealerLevel[0]! })),
       },
     ],
     bounty: [],

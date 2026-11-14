@@ -147,6 +147,11 @@ handbook:
     sparkPrice: "Price per ember spark"
     template: "Convoy: gear template from level"
     best: "Convoy: equip the best from level"
+    wish: "Tavern: wished-for role from level"
+    griefShort: "Grief at an upgraded healer"
+    potion1: "Strengthen potion, first step"
+    potion2: "Strengthen potion, second step"
+    potionHeal: "Strengthen potion: healing per step"
     sell: "Sell price"
     convoy: "Convoy slots"
     level: "Promotion from level"
@@ -387,7 +392,7 @@ handbook:
       keywords: "room, merchant, smith, healer, tavern, campfire, convoy, hall of remembrance"
     rooms_upgrade:
       title: "Upgrading the castle"
-      text: "The castle's rooms grow in three levels. From the second act, the second level costs only gold ({level2}); the third costs {level3} gold and needs one of the room's two companions in the company, named on the upgrade band. Each level unlocks more, such as higher upgrades at the smith or ranks A and S at the campfire. From level two the merchant carries a larger range; at level three it gives {discount} off (at most {maxDiscount} together with discounts from decisions), shows the deal of the day and sells {sparks} ember sparks in all for {sparkPrice} gold each, at most one per story mission. From level {template} the convoy saves one gear template per figure, from level {best} “Equip the best” puts weapon and armor on by itself. The academy, workshop, enchanter and training ground join them. A room keeps its level even when its companions leave."
+      text: "The castle's rooms grow in three levels. From the second act, the second level costs only gold ({level2}); the third costs {level3} gold and needs one of the room's two companions in the company, named on the upgrade band. Each level unlocks more, such as higher upgrades at the smith or ranks A and S at the campfire. From level two the merchant carries a larger range; at level three it gives {discount} off (at most {maxDiscount} together with discounts from decisions), shows the deal of the day and sells {sparks} ember sparks in all for {sparkPrice} gold each, at most one per story mission. From level {template} the convoy saves one gear template per figure, from level {best} “Equip the best” puts weapon and armor on by itself. From tavern level {wish} you name a wished-for role: the next round of offers is sure to hold a mercenary of it. At a healer of level three, new grief lasts only {griefShort} missions. From the second act the smith strengthens healing potions, twice per potion for {potion1} and {potion2} gold, each for +{potionHeal} healing. The academy, workshop, enchanter and training ground join them. A room keeps its level even when its companions leave."
       where: "Upgrading is offered in every room of the castle."
       keywords: "upgrade, level, castle, academy, workshop, training ground"
     trade:

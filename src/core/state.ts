@@ -360,6 +360,11 @@ export interface CampaignState {
   /** mercenaries the tavern offers for the current chapter (finished company records, id `merc<n>`) */
   tavern: UnitRecord[];
   /**
+   * story 10.11: the role wished for at the tavern of level 3 (`setTavernWish`). The next round of offers is sure to hold
+   * one of it and uses the wish up; `null` = no wish.
+   */
+  tavernWish: string | null;
+  /**
    * the day change (story 5.4, architecture §5.6): `last` = the newest day number the app sent (null until the first
    * lieutenant is met, so the first meeting brings a packet at once); `pending` is unused since story 5.5 turns the packets
    * into haunts directly (kept for saves)

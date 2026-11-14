@@ -147,6 +147,11 @@ handbook:
     sparkPrice: "Preis je Glutfunke"
     template: "Konvoi: Vorlage ab Stufe"
     best: "Konvoi: Bestes anlegen ab Stufe"
+    wish: "Taverne: Wunschrolle ab Stufe"
+    griefShort: "Trauer beim ausgebauten Heiler"
+    potion1: "Trank verstärken, erste Stufe"
+    potion2: "Trank verstärken, zweite Stufe"
+    potionHeal: "Trank verstärken: Heilung je Stufe"
     sell: "Verkaufspreis"
     convoy: "Konvoi-Plätze"
     level: "Aufstieg ab Stufe"
@@ -387,7 +392,7 @@ handbook:
       keywords: "Raum, Händler, Schmied, Heiler, Taverne, Lagerfeuer, Konvoi, Gedächtnishalle"
     rooms_upgrade:
       title: "Ausbau der Burg"
-      text: "Die Räume der Burg wachsen in drei Stufen. Die zweite kostet ab dem zweiten Akt nur Gold ({level2}), die dritte {level3} Gold und einen der zwei Gefährten des Raums in der Truppe; welche das sind, nennt das Ausbau-Band. Jede Stufe schaltet mehr frei, etwa höhere Aufwertungen beim Schmied oder die Ränge A und S am Lagerfeuer. Der Händler führt ab Stufe zwei ein größeres Sortiment; auf Stufe drei gibt er {discount} Rabatt (mit Rabatten aus Entscheidungen höchstens {maxDiscount}), zeigt das Angebot des Tages und verkauft insgesamt {sparks} Glutfunken für je {sparkPrice} Gold, höchstens einen je Story-Mission. Der Konvoi speichert ab Stufe {template} je Figur eine Ausrüstungs-Vorlage, ab Stufe {best} legt „Bestes anlegen“ Waffe und Rüstung selbst an. Dazu kommen Akademie, Werkstatt, Verzauberer und Übungsplatz. Ein ausgebauter Raum behält seine Stufe, auch wenn seine Gefährten gehen."
+      text: "Die Räume der Burg wachsen in drei Stufen. Die zweite kostet ab dem zweiten Akt nur Gold ({level2}), die dritte {level3} Gold und einen der zwei Gefährten des Raums in der Truppe; welche das sind, nennt das Ausbau-Band. Jede Stufe schaltet mehr frei, etwa höhere Aufwertungen beim Schmied oder die Ränge A und S am Lagerfeuer. Der Händler führt ab Stufe zwei ein größeres Sortiment; auf Stufe drei gibt er {discount} Rabatt (mit Rabatten aus Entscheidungen höchstens {maxDiscount}), zeigt das Angebot des Tages und verkauft insgesamt {sparks} Glutfunken für je {sparkPrice} Gold, höchstens einen je Story-Mission. Der Konvoi speichert ab Stufe {template} je Figur eine Ausrüstungs-Vorlage, ab Stufe {best} legt „Bestes anlegen“ Waffe und Rüstung selbst an. Ab Taverne-Stufe {wish} nennst du eine Wunschrolle: Die nächste Angebotsrunde bringt sicher einen Söldner dieser Rolle. Beim Heiler der dritten Stufe dauert neu entstehende Trauer nur {griefShort} Missionen. Der Schmied verstärkt ab dem zweiten Akt Heiltränke, zweimal je Trank für {potion1} und {potion2} Gold, je +{potionHeal} Heilung. Dazu kommen Akademie, Werkstatt, Verzauberer und Übungsplatz. Ein ausgebauter Raum behält seine Stufe, auch wenn seine Gefährten gehen."
       where: "Der Ausbau steht in jedem Raum der Burg."
       keywords: "Ausbau, Stufe, Burg, Akademie, Werkstatt, Übungsplatz"
     trade:

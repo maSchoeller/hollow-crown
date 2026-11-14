@@ -28,6 +28,7 @@ export const balanceSchema = z.object({
   supports: z.looseObject({
     thresholds: z.record(z.string(), z.number()),
     campfireMaxRank: z.array(z.enum(['C', 'B', 'A', 'S'])).min(1),
+    griefMissionsByHealerLevel: z.array(z.number().int().min(0)).min(1),
     seasonPairs: z.number().int().min(1),
     corePairs: z.number().int().min(0),
   }),
@@ -132,11 +133,13 @@ export const balanceSchema = z.object({
     emberShop: z.object({ item: z.string(), fromMerchantLevel: z.number().int().min(1), total: z.number().int().min(0), maxOffered: z.number().int().min(1) }),
     gearTemplateFromConvoyLevel: z.number().int().min(1),
     equipBestFromConvoyLevel: z.number().int().min(1),
+    potionUpgradeFromAct: z.number().int().min(1),
     enchanterMergeMaxTier: z.array(z.number().int().min(1)).min(1),
     villageAid: z.object({ healCharges: z.number().int().min(1) }),
     scarRemoval: z.object({ goldByLevel: z.array(z.number().int().min(0)).min(1), altItem: z.string() }),
     tavern: z.object({
       offersByLevel: z.array(z.number().int().min(0)).min(1),
+      wishRoleFromLevel: z.number().int().min(1),
       levelSpread: z.number().int().min(0),
       names: z.array(z.string()).min(1),
       classes: z.array(z.object({ class: z.string(), items: z.array(z.string()), requires: z.array(conditionSchema).optional() })).min(1),

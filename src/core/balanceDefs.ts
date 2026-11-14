@@ -57,7 +57,8 @@ export interface Balance {
     /** highest guard chance from supports and `guardNeighbors` together (Bollwerk, story 10.4) */
     guardMaxTotal: number;
     griefHitPenalty: number;
-    griefMissions: number;
+    /** story 10.11: how many missions new grief lasts, by healer level (index = level - 1): `griefMissions(data, c)` */
+    griefMissionsByHealerLevel: number[];
     /** highest rank the campfire unlocks, by its level (index 0 = level 1) */
     campfireMaxRank: SupportRank[];
     /** fixed pairs of the season, and how many of them are core pairs that reach S */
@@ -203,6 +204,8 @@ export interface Balance {
     /** gold per healer level (index = level - 1, story 10.1), or the herb */
     scarRemoval: { goldByLevel: number[]; altItem: string };
     potionUpgrade: Array<{ gold: number; heal: number }>;
+    /** story 10.11: the smith strengthens healing potions only from this act on */
+    potionUpgradeFromAct: number;
     /** effect `villageAid` (E1): extra charges of every healing potion (`use.heal`) until the end of the act */
     villageAid: { healCharges: number };
     armyLimit: number;

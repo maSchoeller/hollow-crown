@@ -244,16 +244,73 @@ export function roomBuild(data: GameData, c: CampaignState, roomId: string): Roo
 /** Rooms of the current home that can be built up right now (head of the room list, "Räume 11 · n ausbaubar"). */
 export const buildableRooms = (data: GameData, c: CampaignState): number => homeRooms(data, c).filter((st) => roomBuild(data, c, st.room.id).error === null).length;
 
+/** Level of the room with this function in the current home (the camp never builds, so it stays 1 there). */
+export function roomLevelOf(data: GameData, c: CampaignState, fn: string): number {
+  const room = Object.values(data.rooms).find((r) => r.function === fn);
+  return room ? roomLevel(c, room.id) : 1;
+}
+
+/** Picks the entry of a per-level array for `level` (index = level − 1, the last entry holds for higher levels). */
+const byLevel = <T>(list: readonly T[], level: number): T => list[Math.min(level, list.length) - 1]!;
+
 /** Gold a scar costs at the healer of this home (`balance.economy.scarRemoval.goldByLevel` by healer level, story 10.1). */
 export function scarCost(data: GameData, c: CampaignState): number {
-  const g = data.balance.economy.scarRemoval.goldByLevel;
-  return g[Math.min(roomLevel(c, 'healer'), g.length) - 1]!;
+  return byLevel(data.balance.economy.scarRemoval.goldByLevel, roomLevelOf(data, c, 'healer'));
+}
+
+/**
+ * How many missions grief newly caused by a fallen support partner lasts (`balance.supports.griefMissionsByHealerLevel`
+ * by healer level, story 10.11): a healer of level 3 shortens it. Running grief keeps its own count (`finishBattle`).
+ */
+export function griefMissions(data: GameData, c: CampaignState): number {
+  return byLevel(data.balance.supports.griefMissionsByHealerLevel, roomLevelOf(data, c, 'healer'));
 }
 
 /** Mercenaries the tavern offers per round (`balance.economy.tavern.offersByLevel` by tavern level, story 10.1). */
 export function tavernOfferCount(data: GameData, c: CampaignState): number {
-  const n = data.balance.economy.tavern.offersByLevel;
-  return n[Math.min(roomLevel(c, 'tavern'), n.length) - 1]!;
+  return byLevel(data.balance.economy.tavern.offersByLevel, roomLevelOf(data, c, 'tavern'));
+}
+
+/** A role can be wished for the next round of offers (`economy.tavern.wishRoleFromLevel`, story 10.11). */
+export const tavernWishOpen = (data: GameData, c: CampaignState): boolean =>
+  roomLevelOf(data, c, 'tavern') >= data.balance.economy.tavern.wishRoleFromLevel;
+
+/** The roles the tavern can be asked for now: the roles of its classes whose conditions hold, in the order of the list. */
+export function tavernWishRoles(data: GameData, c: CampaignState): string[] {
+  const ctx = conditionContext(data, c);
+  const roles: string[] = [];
+  for (const k of data.balance.economy.tavern.classes) {
+    if (k.requires?.some((x) => !evalCondition(ctx, x))) continue;
+    const role = data.classes[k.class]?.role;
+    if (role && !roles.includes(role)) roles.push(role);
+  }
+  return roles;
+}
+
+/** Why `setTavernWish` refuses, in the order it checks (story 10.11); `role: null` only clears a wish. */
+export function tavernWishError(data: GameData, c: CampaignState, role: string | null): 'not_available' | 'unknown_choice' | null {
+  if (!tavernWishOpen(data, c)) return 'not_available';
+  if (role !== null && !tavernWishRoles(data, c).includes(role)) return 'unknown_choice';
+  return null;
+}
+
+/** A healing potion the smith can strengthen: a consumable that heals (`use.heal`, story 10.11). */
+export const isHealingPotion = (data: GameData, inst: ItemInstance): boolean => (itemDef(data, inst).use?.heal ?? 0) > 0;
+
+/** The smith strengthens potions only from `economy.potionUpgradeFromAct` on (no `if (act >= 2)` anywhere else). */
+export const potionUpgradeOpen = (data: GameData, c: CampaignState): boolean => c.act >= data.balance.economy.potionUpgradeFromAct;
+
+/** Gold and healing the next step of strengthening brings (`economy.potionUpgrade`); undefined at the last step. */
+export const potionUpgradeCost = (data: GameData, inst: ItemInstance) => data.balance.economy.potionUpgrade[inst.upgrade];
+
+/** Why `upgradePotion` refuses, in the order it checks (story 10.11): id → availability → gold. */
+export function potionUpgradeError(data: GameData, c: CampaignState, uid: string): 'unknown_item' | 'not_available' | 'not_enough_gold' | null {
+  const loc = locateItem(c, uid);
+  if (!loc) return 'unknown_item';
+  if (!potionUpgradeOpen(data, c) || !isHealingPotion(data, loc.inst)) return 'not_available';
+  const cost = potionUpgradeCost(data, loc.inst);
+  if (!cost) return 'not_available';
+  return c.gold < cost.gold ? 'not_enough_gold' : null;
 }
 
 /** What a room opens later (the lessons of the memorial hall): each entry open, or locked by its first open condition. */

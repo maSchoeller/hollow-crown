@@ -294,6 +294,8 @@ export interface CampaignDef {
 export interface TavernDef {
   /** offers per round by tavern level (index = level - 1, story 10.1): `tavernOfferCount` */
   offersByLevel: number[];
+  /** story 10.11: the tavern level from which a wished-for role can be set (`c.tavernWish`) */
+  wishRoleFromLevel: number;
   /** an offer's level lies between the expected level of the next mission minus `levelSpread` and that level */
   levelSpread: number;
   /** name keys of generated mercenaries (locales) */

@@ -11,7 +11,7 @@ import { activeSkillIds } from '../rules/skills';
 import { relicCtx } from './relics';
 import type { CampaignState } from '../state';
 import { clone } from '../util';
-import { changePathError, craftCost, dismissError, mergeError, hireCost, promoteError, roomBuild, scarCost, secondPathError, sealOf, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
+import { changePathError, craftCost, dismissError, mergeError, hireCost, potionUpgradeCost, potionUpgradeError, promoteError, roomBuild, scarCost, secondPathError, sealOf, hireError, tavernWishError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { dailyOffersOpen, emberSparkOffered, emberSparkPrice, shopPrice, storiesDone } from './aid';
 import { equipBestOpen, equipInto, gearTemplateOf, gearTemplatesOpen, runEquipBest, runGearTemplate } from './gear';
 import { heritageError } from './heritage';
@@ -102,6 +102,8 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       for (const [m, n] of Object.entries(cost.materials)) if ((c.materials[m] ?? 0) < n) return 'not_enough_materials';
       return null;
     }
+    case 'upgradePotion':
+      return potionUpgradeError(data, c, cmd.item);
     case 'reroll': {
       const loc = locateItem(c, cmd.uid);
       if (!loc || !loc.inst.affixes[cmd.index]) return 'unknown_item';
@@ -156,6 +158,8 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       return roomBuild(data, c, cmd.room).error;
     case 'hire':
       return hireError(data, c, cmd.offer);
+    case 'setTavernWish':
+      return tavernWishError(data, c, cmd.role);
     case 'dismiss':
       return dismissError(c, cmd.unit);
     case 'markSceneSeen':
@@ -337,6 +341,13 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       events.push({ t: 'itemChanged', uid: inst.uid });
       break;
     }
+    case 'upgradePotion': {
+      const inst = locateItem(c, cmd.item)!.inst;
+      c.gold -= potionUpgradeCost(data, inst)!.gold;
+      inst.upgrade += 1;
+      events.push({ t: 'itemChanged', uid: inst.uid });
+      break;
+    }
     case 'reroll': {
       const inst = locateItem(c, cmd.uid)!.inst;
       const cost = rerollCost(data, inst);
@@ -463,6 +474,10 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       c.gold -= b.gold;
       c.home.rooms[cmd.room] = b.level;
       events.push({ t: 'roomBuilt', room: cmd.room, level: b.level });
+      break;
+    }
+    case 'setTavernWish': {
+      c.tavernWish = cmd.role;
       break;
     }
     case 'hire': {

@@ -86,7 +86,7 @@ entries:
       - { id: guardA, ref: balance.supports.guardChance.A, format: percent, icon: shield }
       - { id: guardS, ref: balance.supports.guardChance.S, format: percent, icon: shield }
       - { id: grief, ref: balance.supports.griefHitPenalty, icon: target }
-      - { id: griefMissions, ref: balance.supports.griefMissions, icon: log }
+      - { id: griefMissions, ref: balance.supports.griefMissionsByHealerLevel.0, icon: log }
     see: [hit_chance, rooms]
 
   # ------------------------------------------------------------------ Waffen & Elemente
@@ -319,6 +319,12 @@ entries:
       # story 10.10: the convoy's levels
       - { id: template, ref: balance.economy.gearTemplateFromConvoyLevel }
       - { id: best, ref: balance.economy.equipBestFromConvoyLevel }
+      # story 10.11: the levels of tavern, healer and smith
+      - { id: wish, ref: balance.economy.tavern.wishRoleFromLevel }
+      - { id: griefShort, ref: balance.supports.griefMissionsByHealerLevel.2, icon: log }
+      - { id: potion1, ref: balance.economy.potionUpgrade.0.gold, icon: gold }
+      - { id: potion2, ref: balance.economy.potionUpgrade.1.gold, icon: gold }
+      - { id: potionHeal, ref: balance.economy.potionUpgrade.0.heal }
     see: [rooms, trade, ember_spark]
   - id: trade
     category: home

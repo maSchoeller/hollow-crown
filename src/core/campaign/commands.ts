@@ -36,6 +36,8 @@ export type CampaignCommand =
   /** story 10.10: put the best weapon and armor of convoy and own gear on `unit` (convoy level 3) */
   | { type: 'equipBest'; unit: string }
   | { type: 'upgrade'; uid: string }
+  /** story 10.11: strengthen the healing potion `item` at the smith (+5 healing per step, at most two steps, from act 2) */
+  | { type: 'upgradePotion'; item: string }
   | { type: 'reroll'; uid: string; index: number }
   | { type: 'insertRune'; item: string; rune: string }
   | { type: 'removeRune'; item: string; index: number }
@@ -57,6 +59,8 @@ export type CampaignCommand =
   | { type: 'buildRoom'; room: string }
   /** hire the tavern's mercenary `offer` (a record id `merc<n>` of `c.tavern`) */
   | { type: 'hire'; offer: string }
+  /** story 10.11: wish for the role `role` in the tavern's next round of offers (tavern level 3); `null` clears the wish */
+  | { type: 'setTavernWish'; role: string | null }
   /** let go of the hired mercenary `unit` (a record id `merc<n>` of `c.roster`); his gear goes to the convoy (story 3.7: the way out of an over-full company) */
   | { type: 'dismiss'; unit: string }
   /** the player saw scene `scene` to the end or skipped it (a record, not story state; idempotent) */
