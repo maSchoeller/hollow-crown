@@ -91,6 +91,35 @@ Grenzfälle am Korridorrand mit 100 statt 50 Läufen: bei 50 Läufen und einer Q
 ohne sie bei 32–37 %. Die Niedergestreckten von 2-8 steigen durch die kürzere Ballisten-Reichweite leicht (5,67 → 6,60), weil auch die
 Truppe die Hügelballiste schlechter nutzt.
 
+## Runde 3 (2026-11-14, nur Schwer)
+
+Der Produktinhaber hat N6 auf Normal und 2-4 bis zu seinem Handy-Durchlauf zurückgestellt und dafür Schwer freigegeben:
+2-8, N4 und N6 sollen über 30 % kommen. Alle Eingriffe sind schwierigkeitsgebunden, je 100 Läufe `--fresh`.
+
+| Karte | Schwer vorher | Schwer nachher | Änderung |
+|---|---|---|---|
+| 2-8 | 21 % | **39 %** | `n4` (zweiter Nordritter) und `n7` (Nordheiler) auf `[easy, normal]`; Schwer 28 statt 30 Gegner |
+| N4 | 27 % | **34 %** | Schwer-Zusatzgegner `h1`, `h2`, `h3` gestrichen; `a4` und `b3` bleiben |
+| N6 | 5 % | **53 %** | die fünf Bootsleute tragen auf Schwer `ai.prefer: player` wie die übrigen Eintreiber |
+
+Ursachen, aus dem Ausfall-Protokoll der Basismessung: auf 2-8 fielen Rhen (57 von 100) und Lucan (22) – beides die
+Niederlage – beim Durchbruch nach Norden, dem Fluchtweg; auf N4 fiel Rhen in 73 von 100 Läufen; auf N6 starb in
+57 von 100 Läufen die **Gauklermeisterin**, nicht Rhen.
+
+### N6: Ausdünnen hilft hier nicht
+
+- `prefer: player` auf dem Schwer-Schützen `h2`: **wirkungslos**, Ergebnis bis auf die Ziffer gleich. Er hält auf
+  [12,3], die Meisterin steht auf [10,5] – vier Felder bei Bogenreichweite 2, er kann sie nie treffen.
+- `h1` und `h3` streichen: **schlechter** (5 % → 2 %, Tode der Meisterin 57 → 81). Mit weniger Gegnern zieht die
+  Truppe schneller nach Norden, und die Meisterin folgt ihr (`profile: follow`) in die Boote hinein.
+- Erst die Zielwahl der Boote löst es: die Meisterin stirbt in keinem Lauf mehr, übrig bleibt Rhens Fall (45 von 100).
+
+### Leicht und Normal gegengemessen
+
+Normal Ziffer für Ziffer wie in Runde 2: 2-8 59 % / 6,60, N4 97 % / 1,75, N6 67 % / 0,98. Leicht alle drei 100 %
+(Niedergestreckte 0,75 / 0,00 / 0,05). 2-8 auf Leicht liegt mit 0,75 über dem Korridor von 0,5 – unverändert aus der
+Zeit davor, kein Rückschritt dieser Runde.
+
 ## Dev Agent Record
 
 ### Agent Model Used

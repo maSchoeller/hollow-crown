@@ -84,9 +84,6 @@ units:
   - { id: d2, nameKey: unit.border_soldier.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [10, 19], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [normal, hard] }
   - { id: d3, nameKey: unit.border_soldier.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [12, 18], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive } }
   # Nur Schwer
-  - { id: h1, nameKey: unit.border_soldier.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [8, 3], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
-  - { id: h2, nameKey: unit.border_soldier.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [11, 3], items: [{ def: iron_bow }], ai: { profile: trigger, radius: 5, then: aggressive }, difficulty: [hard] }
-  - { id: h3, nameKey: unit.border_soldier.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [10, 20], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
   # Die Clanälteste, Zivilistin; das Nebenziel hängt an ihr. Story 11.27: Stufe 12, Platte und Helm, ein Feld weiter im Ring der Aufstellung (vorher Stufe 5 auf [10,12], fiel in R1–3)
   - { id: elder, nameKey: unit.clan_elder.name, team: other, class: civilian, sprite: villager_elder, portrait: clan_elder, level: 12, at: [10, 11], items: [{ def: plate_armor }, { def: steel_helm }], ai: { profile: hold }, ignoreForRout: true }
 reinforcements:
