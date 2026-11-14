@@ -213,7 +213,7 @@ describe('the content check of traits.yaml (story 10.12)', () => {
     validateContent({ ...data, traits }, locales)
       .filter((i) => i.file === 'traits.yaml')
       .map((i) => i.message);
-  const good = { id: 'tough', kind: 'good' as const, effect: { hp: 4 } };
+  const good = { id: 'tough', kind: 'good' as const, effect: { stats: { hp: 4 } } };
   const bad = { id: 'greedy', kind: 'bad' as const, hireCostPct: 25 };
 
   it('passes for the real table', () => {
@@ -221,15 +221,15 @@ describe('the content check of traits.yaml (story 10.12)', () => {
   });
 
   it('a trait has to do something, and an empty effect is nothing', () => {
-    expect(issues({ good, bad, idle: { id: 'idle', kind: 'good' } })).toEqual(['idle: neither effect nor hireCostPct']);
-    expect(issues({ good, bad, hollow: { id: 'hollow', kind: 'bad', effect: {} } })).toEqual(['hollow: empty effect']);
+    expect(issues({ good, bad, idle: { id: 'idle', kind: 'good' as const } })).toEqual(['idle: neither effect nor hireCostPct']);
+    expect(issues({ good, bad, hollow: { id: 'hollow', kind: 'bad' as const, effect: {} } })).toEqual(['hollow: empty effect']);
   });
 
   it('a discount of 100 percent or more would make hiring free', () => {
-    expect(issues({ good, bad, free: { id: 'free', kind: 'good', hireCostPct: -100 } })).toEqual([
+    expect(issues({ good, bad, free: { id: 'free', kind: 'good' as const, hireCostPct: -100 } })).toEqual([
       'free: hireCostPct -100 would make hiring free',
     ]);
-    expect(issues({ good, bad, cheap: { id: 'cheap', kind: 'good', hireCostPct: -99 } })).toEqual([]);
+    expect(issues({ good, bad, cheap: { id: 'cheap', kind: 'good' as const, hireCostPct: -99 } })).toEqual([]);
   });
 
   it('both kinds have to exist, otherwise a trait place of an offer stays empty', () => {
