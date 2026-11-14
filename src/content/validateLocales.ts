@@ -18,6 +18,8 @@ export function validateLocales(data: GameData, locales: Locales, err: Err, spri
   for (const i of Object.values(data.items)) need.push(`item.${i.id}.name`, `item.${i.id}.desc`);
   for (const st of Object.values(data.sets)) need.push(`set.${st.id}.name`);
   for (const s of Object.values(data.skills)) need.push(`skill.${s.id}.name`, `skill.${s.id}.desc`);
+  // story 10.12: the tavern and the unit sheet name every trait and say what it does
+  for (const tr of Object.values(data.traits)) need.push(`trait.${tr.id}.name`, `trait.${tr.id}.desc`);
   for (const a of Object.values(data.affixes)) need.push(`affix.${a.id}`);
   for (const t of Object.values(data.terrain)) need.push(`terrain.${t.id}`);
   for (const m of Object.values(data.maps)) need.push(m.nameKey);

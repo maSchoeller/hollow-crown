@@ -80,6 +80,7 @@ export function validateUnits(data: GameData, err: Err, { item, conditions, batt
   }
   validateRecipes(data, err, itemImages);
   validateHeritage(data, err);
+  validateTraits(data, err);
   for (const s of Object.values(data.sets)) {
     for (const p of s.pieces) if (!data.items[p]) err('sets.yaml', `${s.id}: unknown piece ${p}`);
   }
@@ -123,4 +124,18 @@ export function validateHeritage(data: GameData, err: Err): void {
   }
   for (const sk of Object.values(data.skills)) if (sk.source === 'heritage' && !lessons.has(sk.id)) err('skills.yaml', `${sk.id}: source heritage, but no role lists it in heritage.yaml`);
   for (const m of Object.values(data.memorials)) if (m.heritage && !lessons.has(m.heritage)) err('memorials.yaml', `${m.id}: heritage ${m.heritage} is no lesson of heritage.yaml`);
+}
+
+/**
+ * Mercenary traits (story 10.12): each one has to do something (`effect` or `hireCostPct`), and the tavern needs traits of
+ * both kinds, otherwise a trait place of an offer would stay empty.
+ */
+export function validateTraits(data: GameData, err: Err): void {
+  const f = 'traits.yaml';
+  for (const tr of Object.values(data.traits)) {
+    if (!tr.effect && tr.hireCostPct === undefined) err(f, `${tr.id}: neither effect nor hireCostPct`);
+    if (tr.effect && !Object.keys(tr.effect).length) err(f, `${tr.id}: empty effect`);
+    if (tr.hireCostPct !== undefined && tr.hireCostPct <= -100) err(f, `${tr.id}: hireCostPct ${tr.hireCostPct} would make hiring free`);
+  }
+  for (const kind of ['good', 'bad'] as const) if (!Object.values(data.traits).some((tr) => tr.kind === kind)) err(f, `no trait of kind ${kind}`);
 }

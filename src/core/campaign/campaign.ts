@@ -7,7 +7,7 @@ import { newItem, recordFromChar, autoEquip, genericStats } from '../battle/crea
 import { hauntAnchorGone } from '../battle/hauntMap';
 import { sideObjectiveDone, sideSubject } from '../battle/objectives';
 import { rollAffixes } from '../loot';
-import { nextInt, pick, seedRng } from '../rng';
+import { nextInt, pick, roll1, seedRng } from '../rng';
 import { deathless } from '../rules/effects';
 import { allItems, itemDef, maxCharges, stackKeys } from '../rules/items';
 import { expPercent, grantSp, levelCap } from '../rules/progression';
@@ -17,7 +17,7 @@ import { conditionContext, evalConditions } from './conditions';
 import { availableNodes, enterNextAct, noteRoles, storyCount } from './graph';
 import { actCampaign, actOf, campaignOfAct, findNode } from './acts';
 import { nodeLevel, positionNow, raiseOnJoin } from './position';
-import { availableSupportTalks, griefMissions, tavernOfferCount } from './camp';
+import { availableSupportTalks, goodTraitChance, griefMissions, tavernOfferCount, traitsOfKind } from './camp';
 import { applyLieutenantOutcome, bountyMaterialId, lieutenantState, payBounties } from './lieutenants';
 import { hauntGold, hauntHalved } from './haunts';
 import { trainReserve } from './training';
@@ -115,13 +115,14 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     // story 10.2: promotion gain and second pro path, absent in saves from before the academy
     // story 10.7: lessons of the memorial hall, absent in saves from before them
     // story 10.10: the gear template of the convoy of level 2, absent in saves from before it
-    roster: c.roster.map((u) => ({ ...u, bag: stackKeys(data, u.bag), promotionGain: u.promotionGain ?? {}, secondPath: u.secondPath ?? null, heritage: u.heritage ?? null, gearTemplate: u.gearTemplate ?? null })),
+    // story 10.12: the traits of a mercenary, absent in saves from before the tavern gave them
+    roster: c.roster.map((u) => ({ ...u, bag: stackKeys(data, u.bag), promotionGain: u.promotionGain ?? {}, secondPath: u.secondPath ?? null, heritage: u.heritage ?? null, gearTemplate: u.gearTemplate ?? null, traits: u.traits ?? [] })),
     heritageGiven: (c as Partial<CampaignState>).heritageGiven ?? [],
     // story 10.8: the reserve of the last mission, absent in saves from before the training ground
     reserveLast: (c as Partial<CampaignState>).reserveLast ?? [],
     // story 10.9: the merchant's ember sparks, absent in saves from before them
     emberShop: (c as Partial<CampaignState>).emberShop ?? { sold: 0, lastSoldAtStory: null },
-    tavern: (c.tavern ?? []).map((u) => ({ ...u, bag: stackKeys(data, u.bag) })),
+    tavern: (c.tavern ?? []).map((u) => ({ ...u, bag: stackKeys(data, u.bag), traits: u.traits ?? [] })),
     // story 10.11: the wished-for role of the tavern of level 3, absent in saves from before it
     tavernWish: (c as Partial<CampaignState>).tavernWish ?? null,
     // pairs of content added since the save (a later act) start empty
@@ -274,6 +275,8 @@ function toRecord(u: BattleUnit): UnitRecord {
     promotionGain: clone(u.promotionGain ?? {}),
     secondPath: u.secondPath ?? null,
     heritage: u.heritage ? { ...u.heritage } : null,
+    gearTemplate: u.gearTemplate ? clone(u.gearTemplate) : null,
+    traits: [...(u.traits ?? [])],
   };
   return rec;
 }
@@ -495,9 +498,29 @@ function makeOffer(data: GameData, c: CampaignState, kind: TavernDef['classes'][
     promotionGain: {},
     secondPath: null,
     heritage: null,
+    traits: rollTraits(data, c),
   };
   autoEquip(data, rec, kind.items.map((id) => newItem(c, id, data)));
   return rec;
+}
+
+/**
+ * The traits of one offer (story 10.12): `economy.tavern.traitCount` many, each place with `goodTraitChance` of the
+ * tavern's level from the good traits and otherwise from the bad ones, never the same trait twice. Draws from `c.rng`
+ * in a fixed order (count, then per place kind and trait), so a replay gets the same mercenaries.
+ */
+function rollTraits(data: GameData, c: CampaignState): string[] {
+  const [min, max] = data.balance.economy.tavern.traitCount;
+  const chance = goodTraitChance(data, c);
+  const n = min + nextInt(c.rng, Math.max(0, max - min) + 1);
+  const out: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const good = roll1(c.rng, chance);
+    const free = traitsOfKind(data, good ? 'good' : 'bad').filter((id) => !out.includes(id));
+    if (!free.length) continue;
+    out.push(pick(c.rng, free));
+  }
+  return out;
 }
 
 /**

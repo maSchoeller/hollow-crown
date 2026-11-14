@@ -26,7 +26,7 @@ import {
 import { activeSkillIds } from '../../core/rules/skills';
 import { isKey } from '../../core/rules/items';
 import { t } from '../../i18n';
-import { Toast, unitName } from '../../ui/components';
+import { Toast, TraitChips, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { Amount, Backdrop, ItemImage, Piece, PrimaryButton, ScreenHead, Tabs } from '../../ui/pieces';
 import { audio } from '../audio';
@@ -387,6 +387,12 @@ export function Figure({
             .map((id) => t(`skill.${id}.name`))
             .join(' · ')}
         </span>
+        {/* story 10.12: the traits of a hired mercenary */}
+        {(unit.traits ?? []).length > 0 && (
+          <span class="trp-chips">
+            <TraitChips data={data} traits={unit.traits} />
+          </span>
+        )}
         {second && <span class="trp-chips">{t('ui.figure.also', { effect: t(`class.${second.id}.effect`) })}</span>}
         {heritage && (
           <span class="trp-chips" title={t(`skill.${heritage.skill}.desc`)}>

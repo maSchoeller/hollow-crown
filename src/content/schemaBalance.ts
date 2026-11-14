@@ -141,6 +141,8 @@ export const balanceSchema = z.object({
       offersByLevel: z.array(z.number().int().min(0)).min(1),
       wishRoleFromLevel: z.number().int().min(1),
       levelSpread: z.number().int().min(0),
+      traitCount: z.tuple([z.number().int().min(0), z.number().int().min(0)]),
+      goodTraitChanceByLevel: z.array(z.number().int().min(0).max(100)).min(1),
       names: z.array(z.string()).min(1),
       classes: z.array(z.object({ class: z.string(), items: z.array(z.string()), requires: z.array(conditionSchema).optional() })).min(1),
     }),

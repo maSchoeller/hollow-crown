@@ -205,56 +205,70 @@ const skillCondition = z
   })
   .partial();
 
+/** The building blocks of a skill's effect; traits (story 10.12) use the same ones. */
+export const skillEffect = z
+  .object({
+    stats: statMods,
+    hitBonus: z.number(),
+    avoidBonus: z.number(),
+    critBonus: z.number(),
+    damageBonus: z.number(),
+    damageTakenPercent: z.number(),
+    statusChanceBonus: z.number(),
+    healBonus: z.number(),
+    terrainCost: z.record(z.string(), z.number()),
+    rangeBonus: z.number(),
+    lifestealPercent: z.number(),
+    ignoreDefPercent: z.number(),
+    extraMove: z.number(),
+    healPercent: z.number(),
+    surviveWith: z.number(),
+    strikeFirst: z.boolean(),
+    moveThroughEnemies: z.boolean(),
+    bagChargeSaveChance: z.number(),
+    refreshAction: z.boolean(),
+    allowArmorClass: z.string(),
+    stealEquipped: z.boolean(),
+    until: z.string(),
+    addWeaponGroups: z.array(weaponGroup).min(1),
+    usesBonus: z.record(z.string(), z.number().int().min(1)),
+    radiusBonus: z.record(z.string(), z.number().int().min(1)),
+    guardNeighbors: z.number().int().min(1).max(100),
+    statusOnHit: z.object({ status: statusId, chance: z.number().int().min(1).max(100) }),
+    rangeCap: z.number().int().min(1),
+    castRadius: z.number().int().min(1),
+    healRadius: z.number().int().min(1),
+    cheerRange: z.number().int().min(1),
+    cheerTargets: z.number().int().min(1).max(2),
+    ignoreGrief: z.boolean(),
+    siegeRangeBonus: z.number().int().min(1),
+    visionBonus: z.number().int().min(1),
+    hidden: z.boolean(),
+    grantAction: z.enum(['trap']),
+  })
+  .partial();
+
 export const skillSchema = z.object({
   id: z.string(),
   source: z.enum(['class', 'personal', 'item', 'grudge', 'heritage']),
   trigger: z.enum(['passive', 'on_attack', 'on_defend', 'on_hit', 'on_turn_start', 'action', 'after_action', 'on_lethal']),
   condition: skillCondition.optional(),
-  effect: z
-    .object({
-      stats: statMods,
-      hitBonus: z.number(),
-      avoidBonus: z.number(),
-      critBonus: z.number(),
-      damageBonus: z.number(),
-      damageTakenPercent: z.number(),
-      statusChanceBonus: z.number(),
-      healBonus: z.number(),
-      terrainCost: z.record(z.string(), z.number()),
-      rangeBonus: z.number(),
-      lifestealPercent: z.number(),
-      ignoreDefPercent: z.number(),
-      extraMove: z.number(),
-      healPercent: z.number(),
-      surviveWith: z.number(),
-      strikeFirst: z.boolean(),
-      moveThroughEnemies: z.boolean(),
-      bagChargeSaveChance: z.number(),
-      refreshAction: z.boolean(),
-      allowArmorClass: z.string(),
-      stealEquipped: z.boolean(),
-      until: z.string(),
-      addWeaponGroups: z.array(weaponGroup).min(1),
-      usesBonus: z.record(z.string(), z.number().int().min(1)),
-      radiusBonus: z.record(z.string(), z.number().int().min(1)),
-      guardNeighbors: z.number().int().min(1).max(100),
-      statusOnHit: z.object({ status: statusId, chance: z.number().int().min(1).max(100) }),
-      rangeCap: z.number().int().min(1),
-      castRadius: z.number().int().min(1),
-      healRadius: z.number().int().min(1),
-      cheerRange: z.number().int().min(1),
-      cheerTargets: z.number().int().min(1).max(2),
-      ignoreGrief: z.boolean(),
-      siegeRangeBonus: z.number().int().min(1),
-      visionBonus: z.number().int().min(1),
-      hidden: z.boolean(),
-      grantAction: z.enum(['trap']),
-    })
-    .partial(),
+  effect: skillEffect,
   usesPerMap: z.number().optional(),
   chanceFrom: z.enum(['hp', 'str', 'mag', 'skl', 'spd', 'lck', 'def', 'res']).optional(),
   chanceDivisor: z.number().optional(),
   area: z.object({ radius: z.number(), allies: z.boolean().optional() }).optional(),
   aura: z.object({ radius: z.number().int().min(1) }).optional(),
   target: z.object({ ally: z.boolean(), adjacent: z.boolean(), exhausted: z.boolean() }).partial().optional(),
+});
+
+/**
+ * Mercenary traits (story 10.12, `traits.yaml`): the tavern gives 1-2 of them to every offer. `effect` holds the
+ * building blocks of a passive skill and works through `computeStats`; `hireCostPct` only raises the hire price.
+ */
+export const traitSchema = z.strictObject({
+  id: z.string().regex(/^[a-z][a-z0-9_]*$/),
+  kind: z.enum(['good', 'bad']),
+  effect: skillEffect.optional(),
+  hireCostPct: z.number().int().optional(),
 });

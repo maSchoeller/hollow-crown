@@ -482,7 +482,7 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
     }
     case 'hire': {
       const rec = c.tavern.find((u) => u.id === cmd.offer)!;
-      c.gold -= hireCost(data, rec.level);
+      c.gold -= hireCost(data, rec);
       c.tavern = c.tavern.filter((u) => u.id !== cmd.offer);
       c.roster.push(rec);
       events.push({ t: 'unitJoined', unit: rec.id });

@@ -250,46 +250,56 @@ export function skillTotals(data: GameData, ctx: SkillCtx, phase: SkillPhase): S
       t.procs.push({ skill: id, chance: Math.floor(stat / (sk.chanceDivisor ?? 1)), effect: e });
       continue;
     }
-    for (const [k, v] of Object.entries(e.stats ?? {})) {
-      const key = k as keyof StatMods;
-      t.stats[key] = (t.stats[key] ?? 0) + (v ?? 0);
-    }
-    t.hit += e.hitBonus ?? 0;
-    t.avoid += e.avoidBonus ?? 0;
-    t.crit += e.critBonus ?? 0;
-    t.damage += e.damageBonus ?? 0;
-    if (e.damageTakenPercent !== undefined) t.damageTakenPercent = (t.damageTakenPercent * e.damageTakenPercent) / 100;
-    t.statusChance += e.statusChanceBonus ?? 0;
-    t.healBonus += e.healBonus ?? 0;
-    t.rangeBonus += e.rangeBonus ?? 0;
-    if (e.strikeFirst) t.strikeFirst = true;
-    if (e.moveThroughEnemies) t.moveThroughEnemies = true;
-    if (e.terrainCost) Object.assign(t.terrainCost, e.terrainCost);
-    if (e.rangeCap !== undefined) t.rangeCap = Math.min(t.rangeCap, e.rangeCap);
-    t.castRadius = Math.max(t.castRadius, e.castRadius ?? 0);
-    t.healRadius = Math.max(t.healRadius, e.healRadius ?? 0);
-    t.cheerRange = Math.max(t.cheerRange, e.cheerRange ?? 0);
-    t.cheerTargets = Math.min(2, Math.max(t.cheerTargets, e.cheerTargets ?? 0));
-    t.guardNeighbors = Math.max(t.guardNeighbors, e.guardNeighbors ?? 0);
-    if (e.ignoreGrief) t.ignoreGrief = true;
-    if (e.hidden) t.hidden = true;
-    if (e.grantAction && !t.grantActions.includes(e.grantAction)) t.grantActions.push(e.grantAction);
-    t.siegeRange = Math.max(t.siegeRange, e.siegeRangeBonus ?? 0);
-    if (e.statusOnHit) t.statusOnHit.push(e.statusOnHit);
-    if (
-      e.stats ||
-      e.hitBonus ||
-      e.avoidBonus ||
-      e.critBonus ||
-      e.damageBonus ||
-      e.damageTakenPercent !== undefined ||
-      e.strikeFirst ||
-      e.statusOnHit
-    )
-      t.used.push(id);
+    addEffect(t, e, id);
+  }
+  // traits of a mercenary (story 10.12): the building blocks of a passive skill, always on, no condition and no trigger
+  for (const id of ctx.unit.traits ?? []) {
+    const tr = data.traits[id];
+    if (tr?.effect) addEffect(t, tr.effect, null);
   }
   addAuras(data, ctx, t);
   return t;
+}
+
+/** Adds one effect block to the totals; `id` is the skill that brought it, or null for a trait (story 10.12). */
+function addEffect(t: SkillTotals, e: SkillDef['effect'], id: string | null): void {
+  for (const [k, v] of Object.entries(e.stats ?? {})) {
+    const key = k as keyof StatMods;
+    t.stats[key] = (t.stats[key] ?? 0) + (v ?? 0);
+  }
+  t.hit += e.hitBonus ?? 0;
+  t.avoid += e.avoidBonus ?? 0;
+  t.crit += e.critBonus ?? 0;
+  t.damage += e.damageBonus ?? 0;
+  if (e.damageTakenPercent !== undefined) t.damageTakenPercent = (t.damageTakenPercent * e.damageTakenPercent) / 100;
+  t.statusChance += e.statusChanceBonus ?? 0;
+  t.healBonus += e.healBonus ?? 0;
+  t.rangeBonus += e.rangeBonus ?? 0;
+  if (e.strikeFirst) t.strikeFirst = true;
+  if (e.moveThroughEnemies) t.moveThroughEnemies = true;
+  if (e.terrainCost) Object.assign(t.terrainCost, e.terrainCost);
+  if (e.rangeCap !== undefined) t.rangeCap = Math.min(t.rangeCap, e.rangeCap);
+  t.castRadius = Math.max(t.castRadius, e.castRadius ?? 0);
+  t.healRadius = Math.max(t.healRadius, e.healRadius ?? 0);
+  t.cheerRange = Math.max(t.cheerRange, e.cheerRange ?? 0);
+  t.cheerTargets = Math.min(2, Math.max(t.cheerTargets, e.cheerTargets ?? 0));
+  t.guardNeighbors = Math.max(t.guardNeighbors, e.guardNeighbors ?? 0);
+  if (e.ignoreGrief) t.ignoreGrief = true;
+  if (e.hidden) t.hidden = true;
+  if (e.grantAction && !t.grantActions.includes(e.grantAction)) t.grantActions.push(e.grantAction);
+  t.siegeRange = Math.max(t.siegeRange, e.siegeRangeBonus ?? 0);
+  if (e.statusOnHit) t.statusOnHit.push(e.statusOnHit);
+  if (
+    e.stats ||
+    e.hitBonus ||
+    e.avoidBonus ||
+    e.critBonus ||
+    e.damageBonus ||
+    e.damageTakenPercent !== undefined ||
+    e.strikeFirst ||
+    e.statusOnHit
+  )
+    if (id) t.used.push(id);
 }
 
 /**

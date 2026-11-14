@@ -26,6 +26,24 @@ export function unitName(u: { name?: string; nameKey: string }): string {
   return u.name ?? t(u.nameKey);
 }
 
+/**
+ * Traits of a mercenary (story 10.12): good ones green, bad ones red, with the effect as the chip's info. The
+ * tavern and the unit sheet show the same marks.
+ */
+export function TraitChips({ data, traits }: { data: GameData; traits?: string[] }) {
+  const ids = (traits ?? []).filter((id) => !!data.traits[id]);
+  if (!ids.length) return null;
+  return (
+    <span class="hc-traits">
+      {ids.map((id) => (
+        <span key={id} class={`hc-trait is-${data.traits[id]!.kind}`} title={t(`trait.${id}.desc`)}>
+          {t(`trait.${id}.name`)}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export function Modal({ title, onClose, children, wide }: { title?: ComponentChildren; onClose?: () => void; children: ComponentChildren; wide?: boolean }) {
   return (
     <div class="modal-back" onClick={(e) => e.target === e.currentTarget && onClose?.()}>

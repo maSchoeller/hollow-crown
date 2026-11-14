@@ -137,6 +137,8 @@ export function recordFromChar(data: GameData, def: CharDef, src: UidSource, ava
     secondPath: null,
     heritage: null,
     gearTemplate: null,
+    // story 10.12: only mercenaries of the tavern get traits, a companion stays without
+    traits: [],
     portrait: def.portrait ?? def.id,
     sprite: def.sprite ?? def.id,
   };

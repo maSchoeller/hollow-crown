@@ -276,6 +276,8 @@ economy:
     wishRoleFromLevel: 3                 # Wunschrolle für die nächste Angebotsrunde ab dieser Taverne-Stufe (Story 10.11)
     offersByLevel: [3, 4, 4]             # Söldner-Angebote je Runde nach Taverne-Stufe (Story 10.1); tavernOfferCount
     levelSpread: 1                       # Angebotsstufe = erwartete Stufe der nächsten Mission minus 0..spread
+    traitCount: [1, 2]                   # Traits je Angebot (Story 10.12): 1 oder 2, gleich wahrscheinlich [ASSUMPTION]
+    goodTraitChanceByLevel: [50, 75, 75] # Chance je Trait-Platz auf einen guten Trait nach Taverne-Stufe; Stufe 2 = „bessere Eigenschaften“ [ASSUMPTION]
     names: [merc.name.1, merc.name.2, merc.name.3, merc.name.4, merc.name.5, merc.name.6, merc.name.7, merc.name.8, merc.name.9, merc.name.10, merc.name.11, merc.name.12]
     classes:
       - { class: skirmisher, items: [iron_sword, leather_vest] }

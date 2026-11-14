@@ -365,10 +365,23 @@ export function dismissError(c: CampaignState, unitId: string): 'unknown_unit' |
   return isMercenary(u) ? null : 'not_available';
 }
 
-/** Gold a mercenary of this level costs in the tavern (balance.yaml `recruitCost`). */
-export function hireCost(data: GameData, level: number): number {
+/** Chance in percent that a trait place of an offer is drawn from the good traits (tavern level, story 10.12). */
+export const goodTraitChance = (data: GameData, c: CampaignState): number =>
+  byLevel(data.balance.economy.tavern.goodTraitChanceByLevel, roomLevelOf(data, c, 'tavern'));
+
+/** The traits of one kind in file order (story 10.12). */
+export const traitsOfKind = (data: GameData, kind: 'good' | 'bad'): string[] => Object.values(data.traits).filter((tr) => tr.kind === kind).map((tr) => tr.id);
+
+/**
+ * Gold a mercenary costs in the tavern (balance.yaml `recruitCost`), with the surcharge of his traits
+ * (`hireCostPct`, story 10.12: Gierig costs 25 % more). The offer line, the button and `hire` use this one function.
+ */
+export function hireCost(data: GameData, unit: Pick<UnitRecord, 'level' | 'traits'>): number {
   const r = data.balance.economy.recruitCost;
-  return r.base + r.perLevel * level;
+  const base = r.base + r.perLevel * unit.level;
+  let pct = 0;
+  for (const id of unit.traits ?? []) pct += data.traits[id]?.hireCostPct ?? 0;
+  return Math.ceil((base * (100 + pct)) / 100);
 }
 
 /** Why a mercenary cannot be hired now, or null. Companions join through the story and ignore the mercenary limit. */
@@ -376,7 +389,7 @@ export function hireError(data: GameData, c: CampaignState, offerId: string): 'n
   const offer = c.tavern.find((u) => u.id === offerId);
   if (!offer) return 'not_available';
   if (armyCount(c).mercenaries >= mercenaryRoom(data, c)) return 'army_full';
-  return c.gold < hireCost(data, offer.level) ? 'not_enough_gold' : null;
+  return c.gold < hireCost(data, offer) ? 'not_enough_gold' : null;
 }
 
 /** Highest upgrade the smith of this home reaches (rooms.yaml level via `balance.economy.smithMaxUpgrade`). */

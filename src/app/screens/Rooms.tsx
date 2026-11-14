@@ -56,7 +56,7 @@ import {
 } from '../../core';
 import { t } from '../../i18n';
 import { Icon } from '../../ui/icons';
-import { ItemLine, itemName, unitName } from '../../ui/components';
+import { ItemLine, TraitChips, itemName, unitName } from '../../ui/components';
 import { ItemInfoButton } from '../../ui/ItemSheet';
 import { Amount, ItemImage, Piece, PrimaryButton, SecondaryButton, Tabs } from '../../ui/pieces';
 import { nodeShort } from '../campaignInfo';
@@ -577,7 +577,7 @@ export function TavernRoom({ room, apply, onClose }: { room: RoomDef; apply: App
   const [sel, setSel] = useState<string | null>(null);
   const army = armyCount(c);
   const chosen = c.tavern.find((u) => u.id === sel);
-  const cost = chosen ? hireCost(data, chosen.level) : 0;
+  const cost = chosen ? hireCost(data, chosen) : 0;
   const err = chosen ? hireError(data, c, chosen.id) : null;
   const room_ = mercenaryRoom(data, c);
   const full = army.mercenaries >= room_;
@@ -642,22 +642,48 @@ export function TavernRoom({ room, apply, onClose }: { room: RoomDef; apply: App
                 {t('ui.lv')} {u.level} · {STAT_KEYS.filter((k) => k === 'hp' || k === 'str' || k === 'mag' || k === 'def').map((k) => `${t(`ui.stat.${k}`)} ${st[k]}`).join(' · ')}
                 <br />
                 {Object.values(u.equip).map((i) => itemName(data, i!)).join(', ')}
+                {/* story 10.12: the traits of the offer; the price already holds their surcharge */}
+                {(u.traits ?? []).length > 0 && (
+                  <>
+                    <br />
+                    <TraitChips data={data} traits={u.traits} />
+                  </>
+                )}
               </>
             }
-            side={<Amount resource="gold" value={hireCost(data, u.level)} short={c.gold < hireCost(data, u.level)} />}
+            side={<Amount resource="gold" value={hireCost(data, u)} short={c.gold < hireCost(data, u)} />}
             selected={sel === u.id}
             onClick={() => setSel(sel === u.id ? null : u.id)}
           />
         );
       })}
       {c.tavern.length === 0 && <div class="hm-none">{t('ui.room.tavern.none')}</div>}
+      {/* story 10.12: what the traits of the chosen offer do (the chip alone only names them) */}
+      {chosen &&
+        (chosen.traits ?? [])
+          .filter((id) => !!data.traits[id])
+          .map((id) => (
+            <div key={id} class="hm-hint">
+              {t('ui.room.tavern.trait', { name: t(`trait.${id}.name`), effect: t(`trait.${id}.desc`) })}
+            </div>
+          ))}
       {hired.length > 0 && <div class="hm-subhead">{t('ui.room.tavern.mine')}</div>}
       {hired.map((u) => (
         <PersonLine
           key={u.id}
           unit={u}
           name={`${unitName(u)} · ${t(`class.${u.classId}.name`)}`}
-          sub={`${t('ui.lv')} ${u.level}`}
+          sub={
+            <>
+              {t('ui.lv')} {u.level}
+              {(u.traits ?? []).length > 0 && (
+                <>
+                  <br />
+                  <TraitChips data={data} traits={u.traits} />
+                </>
+              )}
+            </>
+          }
           selected={sel === u.id}
           onClick={() => setSel(sel === u.id ? null : u.id)}
         />

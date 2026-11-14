@@ -123,6 +123,18 @@ export interface HeritageDef {
   lessons: [string, string];
 }
 
+/**
+ * A mercenary trait (story 10.12, `content/core/traits.yaml`): the tavern gives 1–2 of them to every offer, good ones
+ * with the chance of its level. `effect` holds the building blocks of a passive skill (it works through `computeStats`),
+ * `hireCostPct` raises the hire price by that many percent.
+ */
+export interface TraitDef {
+  id: string;
+  kind: 'good' | 'bad';
+  effect?: SkillEffect;
+  hireCostPct?: number;
+}
+
 /** A recipe of the workshop (story 10.6, `content/core/recipes.yaml`): materials and gold for one `item` from workshop level `roomLevel`. */
 export interface RecipeDef {
   id: string;

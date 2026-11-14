@@ -257,7 +257,7 @@ describe('smith, tavern and army limits (story 6.4)', () => {
     const r = applyCampaign(data, c, cmd);
     expect(applyCampaign(data, clone(c), cmd)).toEqual(r);
     expect(r.campaign.gold).toBe(10000 - (data.balance.economy.recruitCost.base + data.balance.economy.recruitCost.perLevel * offer.level));
-    expect(hireCost(data, offer.level)).toBe(10000 - r.campaign.gold);
+    expect(hireCost(data, offer)).toBe(10000 - r.campaign.gold);
     expect(r.campaign.roster.some((u) => u.id === offer.id)).toBe(true);
     expect(r.campaign.tavern.some((u) => u.id === offer.id)).toBe(false);
     expect(r.events).toContainEqual({ t: 'unitJoined', unit: offer.id });
