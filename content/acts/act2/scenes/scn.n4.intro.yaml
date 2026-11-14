@@ -1,5 +1,5 @@
 # Nebenquest N4, Szene vor der Karte (Knoten pre, Story 11.20): Ankunft im Clanlager der Kupferberge, früher Schnee, Dravns Vorposten im Wald.
-# Ilka spricht nur unter requires: alive (Gedenk-Variante scn.n4.memorial_intro). [ASSUMPTION] QA Akt 2 2026-11-13: Wurde Ilka nie
+# Ilka spricht nur unter requires: alive (Gedenk-Variante scn.n4.memorial_intro). Produktinhaber 2026-11-14 (QA Akt 2 2026-11-13): Wurde Ilka nie
 # angeworben (nicht recruited), tragen Ersatzzeilen ohne sie dieselbe Auskunft; die Quest ist dann über die Kunde vom Clan offen. Die Clanälteste spricht mit eigener Halbfigur
 # (clan_elder, art/prompts/clan_elder.md, 2026-11-10). Text nach der Schreib-Pipeline der Narrative (Vorschlag), Abnahme beim Durchspielen.
 id: scn.n4.intro

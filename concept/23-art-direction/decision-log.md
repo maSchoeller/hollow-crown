@@ -225,6 +225,10 @@
 - **Kopfteile bleiben niedrig:** höchstens etwa 0,16 über dem Scheitel (Spitzhut mit nach hinten gebogener Spitze), damit Lebensleiste (`legibility.hpBar.lift` 1,0) und Groll-Wimpel frei bleiben [ASSUMPTION].
 - **Abnahme:** `node tools/art/part-shots.mjs` rendert je Teil ein Bild bei 375 × 812 aus der Spielkamera (Prüfseite `tools/art/part-one.html`) nach `art/models/parts/shots/`.
 
+## 2026-11-14: Abnahme der Teile-Namen (Produktinhaber)
+
+- **Namen bleiben wie angeglichen:** Die 16 `part.<classId>.name` in DE und EN folgen der Teile-Tabelle des Epics; die Annahme vom 2026-11-13 ist damit bestätigt und das `[ASSUMPTION]` dort hinfällig. Sichtbares Teil und Name gehören zusammen, die Epic-Tabelle ist die jüngere Quelle. Der Skriptname `blender_proparts.py` bleibt ebenfalls.
+
 ## 2026-11-14: Burg-Grafik nach der 3D-Entscheidung (Story 10.14)
 
 - **Alle fünfzehn Gefährten-Gegenstände gebaut (§7):** zwölf neue in `tools/art/blender_castle.py` (`KEEPSAKES`) nach der am 2026-11-07 abgenommenen Liste, Plätze in `LAYOUT` von `blender_paktwacht.py`. Von Hand modelliert mit Vertex-Farben – **kein KI-Asset**, `licensing.md` §6 greift nicht, es gibt also keinen Prompt. Das Modell wächst von 1905 auf 1936 KB, 124 804 Dreiecke.
@@ -234,4 +238,3 @@
 - **Gedenken-Stil [ASSUMPTION]:** Der Gegenstand eines Gefallenen behält seine Form, bekommt aber ein eigenes graues Material (`castle:mourn`), und seine Vertex-Farben werden abgeschaltet (`mesh.useVertexColors = false`); leuchtende Teile (Lioras Kerzen) gehen mit aus. Kein eigener Shader nötig.
 - **Vorwerk am Passfuß (F4, Produktinhaber 2026-11-06):** `build_outwork()` setzt bei Burgstufe 3 eine kurze Mauer mit Tordurchgang, Zinnen, Laternen und Banner an den Fuß der Passstraße (940 Dreiecke, Teil `shell_3`). Nur Bild, kein Raum und keine Regel.
 - **Abnahme:** `node tools/art/castle-shots.mjs` gegen `pnpm dev:act2` schreibt vier Bilder bei 375 × 812 nach `art/models/castle/shots/` (Stufe 1, 2, 3 und ein Bild mit gefallener Brenna und gegangenem Varek), Spiel stumm. Noch offen: die Messung der Bildrate auf dem echten Gerät (Ziele aus Story 7.8); die Dev-Leiste zeigt FPS und Draw Calls (`?castle3d=1`).
-
