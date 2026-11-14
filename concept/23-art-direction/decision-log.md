@@ -252,3 +252,5 @@ Die Abnahmebilder von Story 10.13 zeigten im Spielblick (375 × 812, Kamera 35°
 - **mitre:** las sich als gefaltetes Blatt. Höher, mit rundem Grat zwischen den Platten, und die Goldborte läuft jetzt auch über die **Rückseite** – die Kamera sieht den Hinterkopf, die vordere Borte allein war unsichtbar.
 
 Abnahmebilder neu erzeugt mit `node tools/art/part-shots.mjs` nach `art/models/parts/shots/`. Die Namen der Teile bleiben unverändert (Produktinhaber 2026-11-14).
+
+**Abnahme:** Der Produktinhaber hat die sieben nachgearbeiteten Teile am 2026-11-14 an den neuen Abnahmebildern abgenommen. Damit sind alle 16 Teile von Story 10.13 abgenommen.
