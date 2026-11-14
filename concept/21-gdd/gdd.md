@@ -209,7 +209,7 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 ### Gelände und Umwelteffekte
 
 - Interaktive Objekte: Tür, Tor, Truhe, Hebel, Balliste, Dorf (Gegner können es zerstören). Ein geschlossenes Tor sperrt und öffnet über Hebel, Schlüssel oder Auslöser. Mauern stürzen nur per Ereignis ein.
-- **Balliste:** Mt 12 + STR des Bedieners, Treffer 70, Reichweite 3–10, kein Gegenangriff, Schüsse unbegrenzt. Bedienen kann jede Fuß- oder gepanzerte Figur auf einem Nachbarfeld, kein Flieger. Keine Effektivität gegen Flieger. Die Gegner-KI bedient sie nur mit dem Profil `hold` oder wenn ein Gegner schon daneben steht.
+- **Balliste:** Mt 12 + STR des Bedieners, Treffer 70, Reichweite 3–6 (Story 11.27, Runde 2; vorher 3–10), kein Gegenangriff, Schüsse unbegrenzt. Bedienen kann jede Fuß- oder gepanzerte Figur auf einem Nachbarfeld, kein Flieger. Keine Effektivität gegen Flieger. Die Gegner-KI bedient sie nur mit dem Profil `hold` oder wenn ein Gegner schon daneben steht.
 - Elementeffekte: Brand 2 Runden, 5 Schaden beim Betreten, Ausbreitung 25 % pro Runde auf brennbare Nachbarfelder; Löschen; Felswall 2 Runden; Wind lichtet Nebel (Radius 2). Die Ausbreitung ist reproduzierbar.
 - Jahreszeit pro Akt verändert nur die Optik.
 

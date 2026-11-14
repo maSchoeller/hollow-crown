@@ -112,7 +112,9 @@
   personalSkill: prodigy
   base:   { hp: 17, str: 0, mag: 9, skl: 6, spd: 7, lck: 3, def: 2, res: 6 }
   growth: { hp: 50, str: 5, mag: 65, skl: 45, spd: 50, lck: 25, def: 15, res: 40 }
-  items: [ { def: ember }, { def: gust } ]
+  # Story 11.27, Runde 2: Lederweste dazu – Ysolde war die einzige Figur ohne Rüstung im Körperplatz (Liora Magierrobe, Varek Lederweste)
+  # und fiel dadurch in Akt 2 am häufigsten (2-4 40/50, 2-7 41/50, 2-1 23/50 Läufe). Robe statt Weste hilft nicht: die Schützen schlagen physisch.
+  items: [ { def: ember }, { def: gust }, { def: leather_vest } ]
   # Beitritt: Mission 1-4 (Karte m1_4_wolfslager): Gefangene in der Westhöhle, {avatar} spricht sie an (recruit der Kartenfigur, Szene scn.m1_4.ysolde_talk)
   supports: [liora]
   joins: m1_4

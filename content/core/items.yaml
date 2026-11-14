@@ -153,7 +153,10 @@
 
 # --- Akt 2: Balliste (Story 11.6, GDD Gelände): feste Waffe eines Ballisten-Objekts, liegt nie in einem Inventar (Tag fixed). Gruppe siege
 # steht außerhalb des Dreiecks; weaponType bow nur als Regeltyp (physischer Fernkampf), Reichweite fest aus rng. Bild vorläufig iron_bow ---
-- { id: ballista_bolt, kind: weapon, slot: mainHand, weaponType: bow, group: siege, damageType: physical, mt: 12, hit: 70, crit: 0, rng: [3,10], wt: 0, rarity: common, price: 0, tags: [fixed, unsellable, convoyOnly], image: iron_bow }
+# Story 11.27, Runde 2: Reichweite 3–10 → 3–6. Mt 12 ohne Gegenangriff über die halbe Karte war der stärkste Treiber der
+# Niedergestreckten von 2-1 (4,06) und 2-7 (3,68); mit 3–6 fallen sie auf 1,77 bzw. 1,60 (je 100 Läufe, Normal). Die Siegquote
+# von 2-8 bleibt unverändert bei 59 %, es wird dort also nichts vorab leichter. Brakkas ballista_reach (+1) wirkt weiter.
+- { id: ballista_bolt, kind: weapon, slot: mainHand, weaponType: bow, group: siege, damageType: physical, mt: 12, hit: 70, crit: 0, rng: [3,6], wt: 0, rarity: common, price: 0, tags: [fixed, unsellable, convoyOnly], image: iron_bow }
 
 # --- Akt 2: Stahl-Tier (Story 11.5; items.md §6.1/§6.6, Ableitungsregel der Fassung 2026-10-31) [ASSUMPTION]: Waffen gegenüber dem
 # Eisen-Pendant Mt +3, Treffer −10 bis −15, Gewicht ×1,5–2, Preis 900–1 200; Zauber mit Element und Zustand des Eisen-Pendants;
