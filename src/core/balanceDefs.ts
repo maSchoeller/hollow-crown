@@ -220,6 +220,10 @@ export interface Balance {
     dailyOfferFromMerchantLevel: number;
     /** story 10.9: the merchant's ember sparks: the item, from which level, how many in all, how many at once */
     emberShop: { item: string; fromMerchantLevel: number; total: number; maxOffered: number };
+    /** story 10.10: gear templates of a figure from this convoy level */
+    gearTemplateFromConvoyLevel: number;
+    /** story 10.10: "equip the best" from this convoy level */
+    equipBestFromConvoyLevel: number;
     tavern: TavernDef;
     convoySize: number;
     rarityAffixes: Record<Rarity, number>;

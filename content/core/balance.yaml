@@ -267,6 +267,9 @@ economy:
   dailyOfferFromMerchantLevel: 3         # Abschnitt „Angebot des Tages“ (c.offers, buyOffer) ab dieser Händler-Stufe
   # Glutfunke beim Händler: ab Stufe 3, insgesamt 3, je einer bis zur nächsten Story-Mission; fester Preis = items.<item>.price ohne Rabatt
   emberShop: { item: ember_spark, fromMerchantLevel: 3, total: 3, maxOffered: 1 }
+  # Konvoi der Stufen 2 und 3 (Story 10.10): Ausrüstungs-Vorlage je Figur ab Konvoi-Stufe 2, „Bestes anlegen“ ab Stufe 3
+  gearTemplateFromConvoyLevel: 2
+  equipBestFromConvoyLevel: 3
   tavern:
     offersByLevel: [3, 4, 4]             # Söldner-Angebote je Runde nach Taverne-Stufe (Story 10.1); tavernOfferCount
     levelSpread: 1                       # Angebotsstufe = erwartete Stufe der nächsten Mission minus 0..spread

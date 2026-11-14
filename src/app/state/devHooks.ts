@@ -3,7 +3,7 @@
  * story nodes, auto-win and the fault and save-failure switches. Imported once by App.tsx.
  */
 import { SEASONS, type Season } from '../../core/defs';
-import { CoreInvariantError, beginBattle, type MapDef, armyCount, firstNode, makeHaunt, seedRng, storyNodeOf, newCampaign, addToRoster, levelUp, refreshOffers, currentTier, nodeLevel, type BattleSettings, type BattleState, type BattleUnit, type GameEvent, filterEvents, visibleState, type Effect, type SceneDef, type FlagDef, type ChroniclePageDef, type CampaignDef, chronicleTexts, sceneTexts } from '../../core';
+import { CoreInvariantError, beginBattle, type MapDef, armyCount, firstNode, makeHaunt, seedRng, storyNodeOf, newCampaign, newItem, addToRoster, levelUp, refreshOffers, currentTier, nodeLevel, type BattleSettings, type BattleState, type BattleUnit, type GameEvent, filterEvents, visibleState, type Effect, type SceneDef, type FlagDef, type ChroniclePageDef, type CampaignDef, chronicleTexts, sceneTexts } from '../../core';
 import { autosave, campaign, data } from './session';
 import { abandonBattle, battle, canAbandon, canRestart, command, pendingEvents, restartBattle } from './battle';
 import { reportFault } from './fault';
@@ -227,6 +227,23 @@ if (import.meta.env.DEV) {
         campaign.value = c;
         battle.value = null;
         screen.value = { name: 'camp', ...(mode === 'talk' ? { tab: 'campfire' } : {}) };
+      },
+      /**
+       * story 10.10: the convoy of act 2 at `level` with gear in the convoy, the troop open. Unsaved campaign.
+       */
+      devConvoy: async (level = 3) => {
+        if (data.releasedActs?.includes(2)) await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { kind: 'castle', rooms: level > 1 ? { convoy: level } : {} };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        for (const id of ['steel_sword', 'steel_lance', 'iron_axe', 'plate_armor', 'leather_vest', 'iron_shield', 'vulnerary'])
+          if (data.items[id]) c.convoy.push(newItem(c, id, data));
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'troop' };
       },
       /**
        * story 10.7: the memorial hall of act 2 at `level` with Gerrit's stone, fallen Fenn (scout) and a fallen mercenary marksman,
