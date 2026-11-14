@@ -175,7 +175,7 @@ development_status:
   epic-9-retrospective: optional
 
   # Epic 10: Die Burg ausbauen (ab Akt 2) – verfeinert 2026-10-31, neu geschnitten nach Readiness 2026-10-31
-  epic-10: in-progress  # nur durch 10-14 (Burg in 3D, PR 100); Reihenfolge sonst unverändert
+  epic-10: in-progress  # alle 14 Stories auf review, nur die Geräte-Messung von 10-14 steht beim Produktinhaber aus
   10-1-raeume-ausbauen: review  # Räume ausbauen
   10-2-akademie-und-aufstieg-mit-glutfunke: review  # Akademie und Aufstieg mit Glutfunke
   10-3-profi-klassen-und-werte: review  # Profi-Klassen und Werte
@@ -189,7 +189,7 @@ development_status:
   10-11-taverne-heiler-und-schmied-der-stufen-2-und-3: review  # Taverne, Heiler und Schmied der Stufen 2 und 3
   10-12-soeldner-traits: review  # Söldner-Traits
   10-13-anhaengeteile-der-profi-wege: review  # Anhängeteile der Profi-Wege
-  10-14-burg-grafik-nach-der-3d-entscheidung: in-progress  # Burg-Grafik nach der 3D-Entscheidung (3D-Szene und castleTier seit PR 100 auf main, ohne Story-Datei; offen laut Epic: homeObject, castleScene, Messung auf echtem Gerät)
+  10-14-burg-grafik-nach-der-3d-entscheidung: review  # Burg-Grafik nach der 3D-Entscheidung (PR 223: homeObject, castleScene, alle 15 Gegenstände, Vorwerk am Passfuß; offen nur die Messung auf dem echten Gerät durch den Produktinhaber)
   epic-10-retrospective: optional
 
   # Epic 11: Akt 2 „Glut“ – neu geschnitten 2026-11-06 auf die Überarbeitung (Schlüssel neu, alte 11-* ersetzt); F1, F3, F4 entschieden 2026-11-06 (Akt 2 stückweise live), F2 nur Rowena neu (concept/27-ueberarbeitung/umsetzung-lueckenliste-akt2.md)
