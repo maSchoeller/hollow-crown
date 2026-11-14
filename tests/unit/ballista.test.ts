@@ -1,4 +1,4 @@
-/** Balliste (story 11.6): crew beside it, range 3–10 from its tile, height, fog, no counter, preview = resolution, AI rule, replay. */
+/** Balliste (story 11.6): crew beside it, range 3–6 from its tile (story 11.27 round 2, was 3–10), height, fog, no counter, preview = resolution, AI rule, replay. */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
@@ -106,7 +106,7 @@ describe('content of the ballista', () => {
   it('takes its numbers from the item ballista_bolt (items.yaml) and its crew from balance.yaml', () => {
     const d = data.items[data.balance.ballista.item]!;
     expect(data.balance.ballista.item).toBe('ballista_bolt');
-    expect({ mt: d.mt, hit: d.hit, crit: d.crit, rng: d.rng, group: d.group, tags: d.tags?.includes('fixed') }).toEqual({ mt: 12, hit: 70, crit: 0, rng: [3, 10], group: 'siege', tags: true });
+    expect({ mt: d.mt, hit: d.hit, crit: d.crit, rng: d.rng, group: d.group, tags: d.tags?.includes('fixed') }).toEqual({ mt: 12, hit: 70, crit: 0, rng: [3, 6], group: 'siege', tags: true });
     expect(data.balance.ballista.crew).toEqual(['foot', 'armored']);
   });
   it('is outside the weapon triangle and no unit can hold its bolt', () => {
@@ -130,7 +130,7 @@ describe('crew and tile', () => {
     expect(availableActions(data, s, crew, [5, 4]).some((o) => o.kind === 'ballista')).toBe(false);
     expect(availableActions(data, s, crew, [6, 3]).some((o) => o.kind === 'ballista')).toBe(false);
     const foe = place(s, 'enemy', 'brigand', [4, 2], 'iron_axe');
-    place(s, 'player', 'vanguard', [5, 12], 'iron_sword');
+    place(s, 'player', 'vanguard', [5, 8], 'iron_sword');
     expect(targetsOf(s, foe)).toHaveLength(1);
   });
   it('lets no rider or flier work it (balance.ballista.crew)', () => {
@@ -155,41 +155,41 @@ describe('crew and tile', () => {
 });
 
 describe('range from the ballista tile', () => {
-  it('reaches 3 to 10 tiles on one level: not 2, not 11', () => {
+  it('reaches 3 to 6 tiles on one level: not 2, not 7', () => {
     const s = arena();
     const crew = place(s, 'player', 'vanguard', [4, 2], 'iron_sword');
     const at2 = place(s, 'enemy', 'brigand', [5, 4], 'iron_axe');
     const at3 = place(s, 'enemy', 'brigand', [5, 5], 'iron_axe');
-    const at10 = place(s, 'enemy', 'brigand', [5, 12], 'iron_axe');
-    const at11 = place(s, 'enemy', 'brigand', [5, 13], 'iron_axe');
+    const at6 = place(s, 'enemy', 'brigand', [5, 8], 'iron_axe');
+    const at7 = place(s, 'enemy', 'brigand', [5, 9], 'iron_axe');
     const t = targetsOf(s, crew);
     expect(t).toContain(at3.uid);
-    expect(t).toContain(at10.uid);
+    expect(t).toContain(at6.uid);
     expect(t).not.toContain(at2.uid);
-    expect(t).not.toContain(at11.uid);
+    expect(t).not.toContain(at7.uid);
   });
   it('reaches one tile further from a higher level onto a lower one (elevation.rangedBonus), not from below', () => {
     const s = arena();
     // the crew stands on the ballista's level (a wall walk beside it)
     s.levels = { [posKey(BALLISTA)]: 1, [posKey([4, 2])]: 1 };
     const crew = place(s, 'player', 'vanguard', [4, 2], 'iron_sword');
-    const at11 = place(s, 'enemy', 'brigand', [5, 13], 'iron_axe');
-    const at12 = place(s, 'enemy', 'brigand', [5, 14], 'iron_axe');
-    expect(targetsOf(s, crew)).toEqual([at11.uid]);
+    const at7 = place(s, 'enemy', 'brigand', [5, 9], 'iron_axe');
+    const at8 = place(s, 'enemy', 'brigand', [5, 10], 'iron_axe');
+    expect(targetsOf(s, crew)).toEqual([at7.uid]);
     expect(data.balance.elevation.rangedBonus).toBe(1);
-    s.levels = { [posKey([5, 13])]: 1 };
+    s.levels = { [posKey([5, 9])]: 1 };
     expect(targetsOf(s, crew)).toEqual([]);
-    expect(targetsOf(s, crew)).not.toContain(at12.uid);
+    expect(targetsOf(s, crew)).not.toContain(at8.uid);
   });
   it('under fog the player crew aims only at foes it sees; the AI sees all as for any attack', () => {
     const s = arena(true);
     const crew = place(s, 'player', 'vanguard', [4, 2], 'iron_sword');
     const near = place(s, 'enemy', 'brigand', [4, 5], 'iron_axe');
-    const far = place(s, 'enemy', 'brigand', [5, 11], 'iron_axe');
+    const far = place(s, 'enemy', 'brigand', [5, 8], 'iron_axe');
     expect(targetsOf(s, crew)).toEqual([near.uid]);
     expect(targetsOf(s, crew)).not.toContain(far.uid);
     const foeCrew = place(s, 'enemy', 'brigand', [6, 2], 'iron_axe');
-    const mark = place(s, 'player', 'vanguard', [5, 12], 'iron_sword');
+    const mark = place(s, 'player', 'vanguard', [5, 7], 'iron_sword');
     expect(targetsOf(s, foeCrew)).toContain(mark.uid);
   });
 });
@@ -253,7 +253,7 @@ describe('the shot', () => {
     const s = arena();
     const a = place(s, 'player', 'vanguard', [4, 2], 'iron_sword');
     const b = place(s, 'player', 'vanguard', [6, 2], 'iron_sword');
-    const foe = place(s, 'enemy', 'brigand', [5, 9], 'iron_axe');
+    const foe = place(s, 'enemy', 'brigand', [5, 7], 'iron_axe');
     foe.hp = 999;
     let st = applyCommand(data, s, { type: 'act', unit: a.uid, to: a.pos!, action: { kind: 'ballista', object: 'b1', target: foe.uid } }).state;
     expect(st.objects[0]!.state).toBe('open');
@@ -268,7 +268,7 @@ describe('the shot', () => {
     const crew = place(s, 'player', 'vanguard', [4, 2], 'iron_sword');
     const near = place(s, 'enemy', 'brigand', [5, 3], 'iron_axe');
     expect(() => applyCommand(data, s, { type: 'act', unit: crew.uid, to: crew.pos!, action: { kind: 'ballista', object: 'b1', target: near.uid } })).toThrow(/invalid_command/);
-    place(s, 'enemy', 'brigand', [5, 9], 'iron_axe');
+    place(s, 'enemy', 'brigand', [5, 7], 'iron_axe');
     expect(() => applyCommand(data, s, { type: 'act', unit: crew.uid, to: crew.pos!, action: { kind: 'ballista', object: 'nope', target: near.uid } })).toThrow(/invalid_command/);
   });
 });
@@ -282,7 +282,7 @@ describe('AI, autoplay and danger zone', () => {
   it('a foe beside the ballista fires it when the shot beats his attack', () => {
     const s = arena();
     place(s, 'enemy', 'brigand', [4, 2], undefined, 'aggressive');
-    const target = place(s, 'player', 'vanguard', [5, 9], 'iron_sword');
+    const target = place(s, 'player', 'vanguard', [5, 7], 'iron_sword');
     target.hp = 999;
     expect(shotsOf(enemyPhase(s).events)).toHaveLength(1);
   });
@@ -290,7 +290,7 @@ describe('AI, autoplay and danger zone', () => {
     const s = arena();
     const hold = place(s, 'enemy', 'brigand', [3, 2], undefined, 'hold');
     expect(crewSpots(data, s, hold).length).toBeGreaterThan(0);
-    const target = place(s, 'player', 'vanguard', [5, 12], 'iron_sword');
+    const target = place(s, 'player', 'vanguard', [5, 8], 'iron_sword');
     target.hp = 999;
     const r = enemyPhase(s);
     expect(shotsOf(r.events)).toHaveLength(1);
@@ -299,7 +299,7 @@ describe('AI, autoplay and danger zone', () => {
     expect(crewSpots(data, s2, agg)).toEqual([]);
     agg.ai = undefined; // a foe without a profile is aggressive, too
     expect(crewSpots(data, s2, agg)).toEqual([]);
-    place(s2, 'player', 'vanguard', [5, 12], 'iron_sword').hp = 999;
+    place(s2, 'player', 'vanguard', [5, 8], 'iron_sword').hp = 999;
     expect(shotsOf(enemyPhase(s2).events)).toEqual([]);
   });
   it('a fleeing foe beside it never fires', () => {
@@ -311,11 +311,11 @@ describe('AI, autoplay and danger zone', () => {
     const s = arena();
     place(s, 'enemy', 'brigand', [4, 2], undefined, 'guard');
     const zone = dangerZone(data, s, 'player');
-    expect(zone.has(posKey([5, 12]))).toBe(true);
-    expect(zone.has(posKey([5, 13]))).toBe(false);
+    expect(zone.has(posKey([5, 8]))).toBe(true);
+    expect(zone.has(posKey([5, 9]))).toBe(false);
     const s2 = arena();
     place(s2, 'enemy', 'brigand', [4, 2], undefined, 'flee');
-    expect(dangerZone(data, s2, 'player').has(posKey([5, 12]))).toBe(false);
+    expect(dangerZone(data, s2, 'player').has(posKey([5, 8]))).toBe(false);
   });
   it('the autoplay fires the ballista when the shot is better than the best attack', () => {
     const s = arena();
@@ -333,7 +333,7 @@ describe('replay', () => {
     s.rng = seedRng(11);
     const crew = place(s, 'player', 'vanguard', [4, 2], 'iron_sword');
     place(s, 'enemy', 'brigand', [6, 2], undefined, 'hold');
-    const foe = place(s, 'enemy', 'brigand', [5, 9], 'iron_axe');
+    const foe = place(s, 'enemy', 'brigand', [5, 7], 'iron_axe');
     foe.hp = 999;
     const log: Command[] = [{ type: 'act', unit: crew.uid, to: crew.pos!, action: { kind: 'ballista', object: 'b1', target: foe.uid } }, { type: 'endPhase' }];
     let st = s;
@@ -487,7 +487,7 @@ describe('review follow-ups', () => {
     place(s, 'enemy', 'healer', [4, 2], 'heal_staff', 'guard');
     const hurt = place(s, 'enemy', 'brigand', [3, 2], 'iron_axe', 'guard');
     hurt.hp = 3;
-    place(s, 'player', 'vanguard', [5, 9], 'iron_sword').hp = 999;
+    place(s, 'player', 'vanguard', [5, 7], 'iron_sword').hp = 999;
     const r = enemyPhase(s);
     expect(shotsOf(r.events)).toEqual([]);
     expect(r.state.units.find((u) => u.uid === hurt.uid)!.hp).toBeGreaterThan(3);
@@ -495,7 +495,7 @@ describe('review follow-ups', () => {
 
   it('a hunter shoots only at its target while the ballista reaches it', () => {
     const s = arena();
-    const prey = place(s, 'player', 'vanguard', [5, 12], 'iron_sword');
+    const prey = place(s, 'player', 'vanguard', [5, 8], 'iron_sword');
     const other = place(s, 'player', 'marksman', [5, 6], 'iron_bow');
     other.hp = 1;
     prey.hp = 999;
@@ -512,7 +512,7 @@ describe('review follow-ups', () => {
     place(s, 'enemy', 'brigand', [4, 2], 'iron_axe', 'guard');
     const near = place(s, 'player', 'vanguard', [3, 2], 'iron_sword');
     near.hp = 1;
-    place(s, 'player', 'vanguard', [5, 9], 'iron_sword').hp = 999;
+    place(s, 'player', 'vanguard', [5, 7], 'iron_sword').hp = 999;
     const r = enemyPhase(s);
     expect(shotsOf(r.events)).toEqual([]);
     expect(r.events.some((e) => e.t === 'combat' && e.defender === near.uid)).toBe(true);
@@ -520,7 +520,7 @@ describe('review follow-ups', () => {
     const s2 = arena();
     place(s2, 'enemy', 'brigand', [4, 2], 'iron_axe', 'guard');
     place(s2, 'player', 'vanguard', [3, 2], 'iron_sword').hp = 999;
-    const far = place(s2, 'player', 'marksman', [5, 9], 'iron_bow');
+    const far = place(s2, 'player', 'marksman', [5, 7], 'iron_bow');
     far.hp = 1;
     const r2 = enemyPhase(s2);
     expect(shotsOf(r2.events)).toHaveLength(1);
@@ -538,7 +538,7 @@ describe('review follow-ups', () => {
     const weak = place(s, 'enemy', 'brigand', [3, 2], 'iron_axe');
     weak.hp = 1;
     // the foe in the ballista's reach is an armoured knight: the bolt does little there
-    place(s, 'enemy', 'knight', [5, 9], 'iron_lance');
+    place(s, 'enemy', 'knight', [5, 7], 'iron_lance');
     expect(autoCommand(data, s)).toMatchObject({ unit: crew.uid, action: { kind: 'attack', target: weak.uid } });
     weak.pos = null;
     weak.gone = 'retreated';

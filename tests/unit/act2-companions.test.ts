@@ -141,8 +141,8 @@ describe('Brakka at the ballista', () => {
       return u;
     };
     const crew = take('enemy', [5, 1], 'marksman');
-    // ballista range 3–10 from its tile: a foe 11 tiles away is out of reach without the grudge skill
-    const foe = take('player', [5, 13], 'vanguard');
+    // ballista range 3–6 from its tile (story 11.27 round 2): a foe 7 tiles away is out of reach without the grudge skill
+    const foe = take('player', [5, 9], 'vanguard');
     return { s, crew, foe };
   }
   const learn = (u: BattleUnit, skill: string) => {
@@ -153,10 +153,10 @@ describe('Brakka at the ballista', () => {
   it('ballista_reach: the shot reaches one tile further, in targets and danger zone alike', () => {
     const { s, crew, foe } = arena();
     expect(ballistaTargets(data, s, crew, crew.pos!).b1 ?? []).not.toContain(foe.uid);
-    expect(threatTiles(data, s, crew).has('5,13')).toBe(false);
+    expect(threatTiles(data, s, crew).has('5,9')).toBe(false);
     learn(crew, 'ballista_reach');
     expect(ballistaTargets(data, s, crew, crew.pos!).b1).toContain(foe.uid);
-    expect(threatTiles(data, s, crew).has('5,13')).toBe(true);
+    expect(threatTiles(data, s, crew).has('5,9')).toBe(true);
   });
 
   it('steady_crew: +3 DEF/RES only beside a ballista', () => {

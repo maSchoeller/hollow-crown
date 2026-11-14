@@ -1,4 +1,4 @@
-/** Side quest N6 "Die Gauklertruppe" (story 11.22): node and memorial variant, escort of the troupe master, the tide, the boats, the lute. */
+/** Side quest N6 "Die Gauklertruppe" (story 11.22): node and memorial variant, escort of the troupe master, the tide, the boats (east in round 4 since story 11.27 round 2), the lute. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import {
@@ -92,11 +92,11 @@ describe('map n6_auemarkt', () => {
     expect(master).toMatchObject({ team: 'other', classId: 'minstrel', pos: [10, 5], ai: { profile: 'follow' }, level: 15 });
   });
 
-  it('has 13 / 16 / 19 foes with boats in rounds 3 (east) and 5 (west), all on P−3 to P−1', () => {
+  it('has 13 / 16 / 19 foes with boats in rounds 4 (east) and 5 (west), all on P−3 to P−1', () => {
     const count = (d: Difficulty) => battle(d).units.filter((u) => u.team === 'enemy').length + map().reinforcements.flatMap((r) => r.units).length;
     expect([count('easy'), count('normal'), count('hard')]).toEqual([13, 16, 19]);
     expect(map().reinforcements.map((r) => [r.turn, r.phase, r.announce, r.units.length])).toEqual([
-      [3, 'enemy', true, 3],
+      [4, 'enemy', true, 3],
       [5, 'enemy', true, 2],
     ]);
     for (const u of [...map().units, ...map().reinforcements.flatMap((r) => r.units)].filter((x) => x.team === 'enemy')) {

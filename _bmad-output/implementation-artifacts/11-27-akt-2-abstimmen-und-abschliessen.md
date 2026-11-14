@@ -44,6 +44,53 @@ Siehe `concept/26-epics/epics/epic-11.md`, Story 11.27.
 - **Folge-Story „Die Simulation wirbt an“ (Antwort 6 B):** Der Vorschlag liegt bei der orchestrierenden Session, der PO legt die Story an. Danach Akt 2 verkettet neu messen.
 - **Release-Schritt von Akt 2 (vom PO auszulösen):** `pnpm content:lock`, Fixtures der Live-Schritte, Rabatt- und Glutfunken-Prüfung.
 
+## Runde 2 (2026-11-14, nach Epic 10 im Build)
+
+Gemessen mit `pnpm sim <karte> --runs 100 --fresh` (Normal, Truppe auf der Positionsstufe) und `pnpm sim --campaign act2 --runs 50`.
+Grenzfälle am Korridorrand mit 100 statt 50 Läufen: bei 50 Läufen und einer Quote um 70 % liegt der Standardfehler bei etwa
+6,5 Prozentpunkten (2-8 las bei 50 Läufen 70 %, bei 100 Läufen 59 %).
+
+### Geänderte Werte
+
+- **Balliste `ballista_bolt`: Reichweite 3–10 → 3–6** (`content/core/items.yaml`, GDD §Gelände nachgezogen). Brakka bedient die
+  Balliste auf 2-1, 2-7 **und** 2-8; genau diese drei Karten lagen bei den Niedergestreckten am schlechtesten (4,06 / 3,68 / 5,67),
+  jede Karte ohne Balliste bei 0,29–0,90. Danach 2-1 **99 % / 1,77** (vorher 94 % / 4,06), 2-7 **100 % / 1,60** (vorher 84 % / 3,68);
+  auf Schwer kommen beide mit 69 % in den Korridor. Die Siegquote von 2-8 bleibt bei 59 % – die Karte wird also nicht vorab leichter.
+- **Ysolde trägt eine Lederweste** (`content/acts/act1/units.yaml`): sie war die einzige Figur mit leerem Körperplatz und fiel in
+  Akt 2 am häufigsten (2-4 40/50, 2-7 41/50, 2-1 23/50). Akt 1 verschiebt sich dadurch nicht (Siegquoten gleich, Niedergestreckte ±0,2).
+- **N6: das Ostboot landet in Runde 4 statt 3** (`n6_auemarkt.yaml`), weil es neben dem Einsatzfeld landet; Sieg 62 % → 67 %.
+
+### Gemessen und zurückgenommen, weil wirkungslos
+
+- `crew_west` auf 2-1 nur auf Schwer: 4,12 → 4,16 Niedergestreckte.
+- Die ganze Boots-Welle auf N6 nur auf Schwer: 70 → 74 % bei 200 Läufen, also ein Standardfehler.
+- Ein Wellen-Schütze auf 2-4 nur auf Schwer: 3,06 → 2,92 Niedergestreckte.
+
+### Annahmen aus Epic 10
+
+| Story | Ergebnis |
+|---|---|
+| 10.8 Übungsplatz | **bestätigt.** 14–45 Reserve-EP je Mission, Reserve-Stufen 7,4–15,1; die Reserve bleibt 5–8 Stufen hinter der Armee, auch weil die Heuristik den Übungsplatz zuletzt baut. |
+| 10.9 Händler Stufe 2 | **bleibt offen – mit `pnpm sim` nicht prüfbar.** Die Heimat-Heuristik kauft nur Heilgegenstände, nie Rüstung oder Zubehör; die seltenen Teile werden in keinem Lauf gekauft. |
+| 10.10 Konvoi | **bestätigt.** Reine Freischalt-Bedingungen, die Simulation ruft sie nie auf – genau das behauptet die Annahme. |
+| 10.11 Taverne/Heiler/Schmied | **bestätigt.** Wunschrolle und Trankverstärkung sind Freischalt-Bedingungen; die Trauer-Tabelle wirkt echt, ist aber bei 50 Läufen nicht zu isolieren. |
+| 10.12 Söldner-Traits | **bestätigt.** A/B mit gleichen Seeds: kleine Unterschiede mit wechselndem Vorzeichen, Siegquoten je innerhalb eines Standardfehlers. |
+
+### Weiter außerhalb des Korridors (Entscheidung des Produktinhabers offen, [ASSUMPTION])
+
+- **N6** Normal 67 % (ab 75 %) und Schwer 5 % (ab 30 %). Rhen fällt, und Rhens Fall ist die Niederlage: fast alle Eintreiber tragen
+  `ai.prefer: player`, Rhen ist Pflicht-Einsatz. `prefer: player` wegzunehmen ist keine Option (ohne es fiel die Meisterin 20 von 20 Mal).
+  Naheliegend wäre, die Stufen der Eintreiber zu senken oder Rhen vom Pflicht-Einsatz zu nehmen – beides Spieldesign.
+- **2-4** Normal 2,92–3,06 Niedergestreckte und Schwer 80 % (zu leicht). Ysolde fällt auch mit Weste in 41 von 50 Läufen.
+- Kleine Abweichungen: 2-1 1,77 und 2-7 1,60 auf Normal, 2-3 0,29, 2-1 auf Leicht 0,76.
+- Auf Schwer unter 30 %: 2-8 (21 %), N4 (27 %), N6 (5 %).
+
+### Nicht angetastet, nur gemessen
+
+2-8 Normal 59 % / 6,60, Schwer 21 % / 9,19; N4 Normal 97 % / 1,75, Schwer 27 % / 5,42. Verkettet mit Nebenquests liegt 2-8 bei 71 %,
+ohne sie bei 32–37 %. Die Niedergestreckten von 2-8 steigen durch die kürzere Ballisten-Reichweite leicht (5,67 → 6,60), weil auch die
+Truppe die Hügelballiste schlechter nutzt.
+
 ## Dev Agent Record
 
 ### Agent Model Used
