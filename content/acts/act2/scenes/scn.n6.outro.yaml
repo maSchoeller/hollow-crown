@@ -1,6 +1,6 @@
 # Nebenquest N6, Szene nach der Karte (Knoten post, Story 11.22): Die Truppe ist frei, Maren gibt Jory seine alte Laute zurück.
 # Die Laute Letzter Vorhang (final_curtain) ist die Knotenwirkung (campaign.yaml n6 effects), die Szene zeigt sie nur, wie N1/N3.
-# [ASSUMPTION] QA Akt 2 2026-11-13: Wurde Jory nie angeworben, gibt Maren die Laute der Truppe mit; die Knotenwirkung bleibt gleich.
+# Produktinhaber 2026-11-14 (QA Akt 2 2026-11-13): Wurde Jory nie angeworben, gibt Maren die Laute der Truppe mit; die Knotenwirkung bleibt gleich.
 # Jory ist hier in der Truppe (sonst scn.n6.memorial_outro). Maren spricht mit eigener Halbfigur (troupe_master, 2026-11-10). Text Vorschlag [ASSUMPTION].
 id: scn.n6.outro
 background: auemarkt

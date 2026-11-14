@@ -224,3 +224,7 @@
 - **Namen an die Teile-Tabelle angeglichen [ASSUMPTION]:** `part.<classId>.name` stand seit Story 10.2/10.3 in den Locales und widersprach für 11 der 16 Wege der Tabelle des Epics (z. B. Duellant „Duellklinge“ gegen Federbarett). Sichtbares Teil und Name müssen übereinstimmen; die jüngere Tabelle gewinnt, DE und EN sind nachgezogen. Vom Produktinhaber zu bestätigen.
 - **Kopfteile bleiben niedrig:** höchstens etwa 0,16 über dem Scheitel (Spitzhut mit nach hinten gebogener Spitze), damit Lebensleiste (`legibility.hpBar.lift` 1,0) und Groll-Wimpel frei bleiben [ASSUMPTION].
 - **Abnahme:** `node tools/art/part-shots.mjs` rendert je Teil ein Bild bei 375 × 812 aus der Spielkamera (Prüfseite `tools/art/part-one.html`) nach `art/models/parts/shots/`.
+
+## 2026-11-14: Abnahme der Teile-Namen (Produktinhaber)
+
+- **Namen bleiben wie angeglichen:** Die 16 `part.<classId>.name` in DE und EN folgen der Teile-Tabelle des Epics; die Annahme vom 2026-11-13 ist damit bestätigt und das `[ASSUMPTION]` dort hinfällig. Sichtbares Teil und Name gehören zusammen, die Epic-Tabelle ist die jüngere Quelle. Der Skriptname `blender_proparts.py` bleibt ebenfalls.

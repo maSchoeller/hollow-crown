@@ -78,7 +78,7 @@ units:
   - { id: purser, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [8, 3], items: [{ def: iron_sword }, { def: door_key }], drops: [1], ai: { profile: guard } }
   - { id: n1, nameKey: unit.smuggler.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [11, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
   - { id: n2, nameKey: unit.smuggler.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [12, 5], items: [{ def: iron_lance }], ai: { profile: guard } }
-  # [ASSUMPTION] QA Akt 2 2026-11-13: ein Schlüssel je Truhe (wie 1-7, N2 und N5, und wie die Heimsuchung sie austeilt). Vorher trug nur der
+  # Produktinhaber 2026-11-14 (QA Akt 2 2026-11-13): ein Schlüssel je Truhe (wie 1-7, N2 und N5, und wie die Heimsuchung sie austeilt). Vorher trug nur der
   # Zahlmeister einen Schlüssel für drei Truhen: wurde er an c_page oder c_scouts verbraucht und fehlte Fenn, war der Sieg (c_seal) nicht mehr zu holen.
   - { id: n3, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [10, 3], items: [{ def: iron_bow }, { def: door_key }], drops: [1], ai: { profile: hold } }
   # Felsleiste: Schützen schießen von Stufe 1 in die Mittelkammer
