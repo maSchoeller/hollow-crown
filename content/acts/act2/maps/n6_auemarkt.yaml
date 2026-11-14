@@ -79,8 +79,9 @@ units:
   # Die Gauklermeisterin auf der Bühne, folgt der nächsten eigenen Figur (Stufe P − 3 [ASSUMPTION]; der Entwurf nannte 7 bei P 12)
   - { id: troupe_master, nameKey: unit.troupe_master.name, team: other, class: minstrel, portrait: troupe_master, levelOffset: -3, at: [10, 5], items: [{ def: iron_dagger }, { def: travel_lute }], ai: { profile: follow }, ignoreForRout: true }
 reinforcements:
-  # Boote im Osten
-  - turn: 3
+  # Boote im Osten (Story 11.27, Runde 2: Runde 3 → 4. Das Boot landet auf [12,15]–[12,17] neben dem Einsatzfeld; in Runde 3 stand die
+  # Truppe noch dort und Rhen fiel in 38 von 100 Läufen, was die Niederlage ist. Eine Runde später ist die Truppe nach Norden weg.)
+  - turn: 4
     phase: enemy
     announce: true
     units:
