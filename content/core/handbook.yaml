@@ -316,6 +316,9 @@ entries:
       - { id: maxDiscount, ref: balance.economy.maxDiscountPct, format: percent, icon: gold }
       - { id: sparks, ref: balance.economy.emberShop.total, icon: star }
       - { id: sparkPrice, ref: items.ember_spark.price, icon: gold }
+      # story 10.10: the convoy's levels
+      - { id: template, ref: balance.economy.gearTemplateFromConvoyLevel }
+      - { id: best, ref: balance.economy.equipBestFromConvoyLevel }
     see: [rooms, trade, ember_spark]
   - id: trade
     category: home

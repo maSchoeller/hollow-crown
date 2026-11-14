@@ -3,17 +3,23 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import {
   availableSupportTalks,
   canPromote,
+  clone,
   computeStats,
   EQUIP_SLOTS,
+  equipBestOpen,
   expProgress,
+  gearTemplatesOpen,
   heritageStone,
   isMercenary,
   itemDef,
   loadoutSlots,
   ROLE_GROUPS,
+  runEquipBest,
+  runGearTemplate,
   supportTalksOf,
   type CampaignCommand,
   type EquipSlot,
+  type GearRun,
   type RoleGroup,
   type UnitRecord,
 } from '../../core';
@@ -185,6 +191,17 @@ export function Figure({
   };
   const name = unitName(unit);
   const group = roleOf(unit);
+  // convoy of levels 2 and 3 (story 10.10): gear template and "equip the best" for a figure of the company
+  const gearOpen = !readOnly && c.roster.some((r) => r.id === unit.id) && gearTemplatesOpen(data, c);
+  /** What the toast says after a template or "equip the best": what happened, then every item that stayed where it was. */
+  const gearToast = (run: GearRun, done: string): string => {
+    const lines = run.skipped.map((sk) => {
+      const owner = sk.unit ? c.roster.find((r) => r.id === sk.unit) : undefined;
+      const item = t(`item.${sk.def}.name`);
+      return owner ? t('ui.figure.gearSkippedAt', { unit: unitName(owner), item }) : t('ui.figure.gearSkipped', { item });
+    });
+    return [run.equipped.length ? done : t('ui.figure.gearNothing'), ...lines].join(' · ');
+  };
   const loadCap = Math.max(1, st.carry);
   const slots: Array<{ key: string; slot: EquipSlot | 'bag'; index: number; label: string; item?: (typeof unit.bag)[number]; fixed?: boolean }> = [
     ...EQUIP_SLOTS.map((s, i) => ({ key: s, slot: s as EquipSlot | 'bag', index: i, label: t(`ui.slot.${s}`), item: unit.equip[s] })),
@@ -281,6 +298,36 @@ export function Figure({
             </button>
           ))}
         </div>
+        {gearOpen && (
+          <div class="trp-chips trp-gear">
+            <button type="button" class="hc-tab" onClick={() => apply({ type: 'saveGearTemplate', unit: unit.id }) && setToast(t('ui.figure.gearTemplateSaved'))}>
+              {t('ui.figure.gearTemplateSave')}
+            </button>
+            <button
+              type="button"
+              class="hc-tab"
+              disabled={!unit.gearTemplate}
+              onClick={() => {
+                const run = runGearTemplate(data, clone(c), unit.id);
+                if (apply({ type: 'applyGearTemplate', unit: unit.id })) setToast(gearToast(run, t('ui.figure.gearApplied')));
+              }}
+            >
+              {t('ui.figure.gearTemplateApply')}
+            </button>
+            {equipBestOpen(data, c) && (
+              <button
+                type="button"
+                class="hc-tab"
+                onClick={() => {
+                  const run = runEquipBest(data, clone(c), unit.id);
+                  if (apply({ type: 'equipBest', unit: unit.id })) setToast(gearToast(run, t('ui.figure.gearBest')));
+                }}
+              >
+                {t('ui.figure.equipBest')}
+              </button>
+            )}
+          </div>
+        )}
         <div class="trp-load">
           <span>{t('ui.stat.load')}</span>
           <div class={`trp-bar trp-bar--load ${st.overload > 0 ? 'is-over' : ''}`}>

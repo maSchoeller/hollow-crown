@@ -293,6 +293,11 @@
   align-items: center;
   font-size: 12px;
 }
+/* convoy of levels 2 and 3 (story 10.10): the gear buttons sit under the places, a quiet row of their own */
+.trp-gear {
+  justify-content: flex-start;
+  margin-top: 2px;
+}
 .trp-scar {
   display: inline-flex;
   align-items: center;

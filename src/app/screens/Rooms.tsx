@@ -16,6 +16,8 @@ import {
   reservePct,
   dailyOffersOpen,
   emberSparkOffered,
+  equipBestOpen,
+  gearTemplatesOpen,
   emberSparkPrice,
   hireCost,
   hireError,
@@ -209,6 +211,9 @@ export function ConvoyRoom({ room, apply, onClose }: { room: RoomDef; apply: App
         }}
         options={(['all', 'weapon', 'armor', 'accessory', 'supply'] as Kind[]).map((k) => ({ id: k, label: t(`ui.room.kind.${k}`) }))}
       />
+      {/* story 10.10: what the built convoy does; the figure itself carries the buttons (troop) */}
+      {gearTemplatesOpen(data, c) && <div class="hm-hint">{t('ui.room.convoy.template')}</div>}
+      {equipBestOpen(data, c) && <div class="hm-hint">{t('ui.room.convoy.best')}</div>}
       <ConvoyList items={items} sel={sel} onSel={setSel} />
     </RoomPanel>
   );

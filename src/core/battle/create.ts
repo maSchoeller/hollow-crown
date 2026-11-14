@@ -1,7 +1,8 @@
 import { STAT_KEYS, type CharDef, type EquipSlot, type ItemRef, type Pos, type Stats } from '../defs';
 import type { GameData } from '../gameData';
 import type { MapUnitDef } from '../mapDefs';
-import { addToBag, bagIsFull, canEquip, itemDef } from '../rules/items';
+import { addToBag, bagIsFull, canEquip, itemDef, itemStatMods, weaponProfile } from '../rules/items';
+import type { RelicCtx } from '../rules/relics';
 import { computeStats } from '../rules/stats';
 import type { AvatarSettings, BattleUnit, ItemInstance, LieutenantPlan, UnitRecord } from '../state';
 import { clone } from '../util';
@@ -28,19 +29,86 @@ export function newItem(src: UidSource, ref: ItemRef | string, data?: GameData):
 
 const zeroStats = (): Stats => ({ hp: 0, str: 0, mag: 0, skl: 0, spd: 0, lck: 0, def: 0, res: 0 });
 
+/**
+ * The equipment places an item fits (an accessory fits both): the core `autoEquip` and `pickBestGear` share, so the two
+ * never drift apart (story 10.10). A bag item fits no place.
+ */
+export function slotsOf(data: GameData, inst: ItemInstance): EquipSlot[] {
+  const d = itemDef(data, inst);
+  return d.slot === 'accessory' ? ['accessory1', 'accessory2'] : d.slot === 'bag' ? [] : [d.slot as EquipSlot];
+}
+
 /** Puts items into the best fitting slots; the rest goes into the bag (overflow is returned). */
 export function autoEquip(data: GameData, u: UnitRecord, items: ItemInstance[]): ItemInstance[] {
   const overflow: ItemInstance[] = [];
   for (const inst of items) {
     const d = itemDef(data, inst);
-    const slots: EquipSlot[] =
-      d.slot === 'accessory' ? ['accessory1', 'accessory2'] : d.slot === 'bag' ? [] : [d.slot as EquipSlot];
-    const free = slots.find((sl) => !u.equip[sl] && canEquip(data, u, inst, sl) === null);
+    const free = slotsOf(data, inst).find((sl) => !u.equip[sl] && canEquip(data, u, inst, sl) === null);
     if (free) u.equip[free] = inst;
     else if (!bagIsFull(data, u.bag, inst) && !d.tags?.includes('convoyOnly')) addToBag(data, u.bag, inst);
     else overflow.push(inst);
   }
   return overflow;
+}
+
+/** The places "equip the best" fills: the weapon hand and the armor places (story 10.10; accessories and bag stay untouched). */
+const BEST_ARMOR_SLOTS: readonly EquipSlot[] = ['head', 'body', 'offHand'];
+
+/**
+ * What "equip the best" (story 10.10, convoy level 3) would put on: the weapon the figure may hold with the highest might
+ * (tie: hit, then uid) and, for every armor place, the piece with the highest sum of def + res (tie: def, then uid). An
+ * armor place of a figure with a two-handed weapon in hand stays empty when that weapon wins. Only places where something
+ * better than the worn piece is found are returned, in the order they are put on.
+ *
+ * Pure ranking over `pool` (the figure's own gear plus the convoy); it shares `slotsOf` with `autoEquip` and reads the
+ * values through `weaponProfile` and `itemStatMods`, so it never copies a formula.
+ */
+export function pickBestGear(
+  data: GameData,
+  u: UnitRecord,
+  pool: ItemInstance[],
+  rc: RelicCtx = null,
+  skills?: string[],
+): Array<{ slot: EquipSlot; inst: ItemInstance }> {
+  const fits = (inst: ItemInstance, slot: EquipSlot): boolean => {
+    if (!slotsOf(data, inst).includes(slot)) return false;
+    const err = canEquip(data, u, inst, slot, skills);
+    return err === null || err === 'two_handed';
+  };
+  const best = (slot: EquipSlot, score: (inst: ItemInstance) => number[]): ItemInstance | undefined => {
+    const cands = pool.filter((inst) => fits(inst, slot));
+    return cands.sort((a, b) => {
+      const [sa, sb] = [score(a), score(b)];
+      for (let i = 0; i < sa.length; i++) if (sa[i] !== sb[i]) return sb[i]! - sa[i]!;
+      return a.uid < b.uid ? -1 : 1;
+    })[0];
+  };
+  const out: Array<{ slot: EquipSlot; inst: ItemInstance }> = [];
+  const taken = new Set<string>();
+  const weapon = best('mainHand', (inst) => {
+    const p = weaponProfile(data, inst);
+    return [p.might, p.hit];
+  });
+  if (weapon) {
+    taken.add(weapon.uid);
+    if (weapon.uid !== u.equip.mainHand?.uid) out.push({ slot: 'mainHand', inst: weapon });
+  }
+  const twoHanded = !!weapon && !!itemDef(data, weapon).twoHanded;
+  for (const slot of BEST_ARMOR_SLOTS) {
+    if (slot === 'offHand' && twoHanded) continue;
+    const piece = best(slot, (inst) => {
+      const d = itemDef(data, inst);
+      if (d.kind !== 'armor' && d.kind !== 'shield') return [Number.NEGATIVE_INFINITY, 0];
+      const m = itemStatMods(data, inst, rc);
+      return [(m.def ?? 0) + (m.res ?? 0), m.def ?? 0];
+    });
+    if (!piece || taken.has(piece.uid)) continue;
+    const d = itemDef(data, piece);
+    if (d.kind !== 'armor' && d.kind !== 'shield') continue;
+    taken.add(piece.uid);
+    if (piece.uid !== u.equip[slot]?.uid) out.push({ slot, inst: piece });
+  }
+  return out;
 }
 
 /** Creates a company member from a character definition (concept/11 §4). */
@@ -68,6 +136,7 @@ export function recordFromChar(data: GameData, def: CharDef, src: UidSource, ava
     promotionGain: {},
     secondPath: null,
     heritage: null,
+    gearTemplate: null,
     portrait: def.portrait ?? def.id,
     sprite: def.sprite ?? def.id,
   };

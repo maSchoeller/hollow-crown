@@ -113,7 +113,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     // keys stack into one bag entry (key ring, decision 2026-10-27); older saves held one entry per key
     // story 10.2: promotion gain and second pro path, absent in saves from before the academy
     // story 10.7: lessons of the memorial hall, absent in saves from before them
-    roster: c.roster.map((u) => ({ ...u, bag: stackKeys(data, u.bag), promotionGain: u.promotionGain ?? {}, secondPath: u.secondPath ?? null, heritage: u.heritage ?? null })),
+    // story 10.10: the gear template of the convoy of level 2, absent in saves from before it
+    roster: c.roster.map((u) => ({ ...u, bag: stackKeys(data, u.bag), promotionGain: u.promotionGain ?? {}, secondPath: u.secondPath ?? null, heritage: u.heritage ?? null, gearTemplate: u.gearTemplate ?? null })),
     heritageGiven: (c as Partial<CampaignState>).heritageGiven ?? [],
     // story 10.8: the reserve of the last mission, absent in saves from before the training ground
     reserveLast: (c as Partial<CampaignState>).reserveLast ?? [],

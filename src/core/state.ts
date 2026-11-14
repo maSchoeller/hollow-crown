@@ -47,6 +47,17 @@ export interface UnitRecord {
   secondPath?: string | null;
   /** the lesson passed on to this unit in the memorial hall (story 10.7): skill and memorial stone key; default null */
   heritage?: UnitHeritage | null;
+  /** the gear template saved in the convoy of level 2 (story 10.10): the uids of the places; default null */
+  gearTemplate?: GearTemplate | null;
+}
+
+/**
+ * One saved set of gear of a figure (story 10.10, convoy level 2): the item uids of its six equipment places and its
+ * bag (keys never belong to a template, they stay on the key ring). Only uids: sold items are skipped when it is applied.
+ */
+export interface GearTemplate {
+  equip: Partial<Record<EquipSlot, string>>;
+  bag: string[];
 }
 
 /** A lesson of the memorial hall on a unit (story 10.7): the `heritage` skill and the key of the stone it came from. */

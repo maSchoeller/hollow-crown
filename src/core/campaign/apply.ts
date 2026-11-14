@@ -5,7 +5,7 @@ import type { Effect } from '../storyDefs';
 import { applyCommand } from '../battle/apply';
 import { newItem } from '../battle/create';
 import { rollAffixes } from '../loot';
-import { addToBag, allItems, bagIsFull, canEquip, isKey, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
+import { allItems, bagIsFull, canEquip, isKey, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
 import { changeProPath, loadoutSlots, otherProPath, promote } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { relicCtx } from './relics';
@@ -13,6 +13,7 @@ import type { CampaignState } from '../state';
 import { clone } from '../util';
 import { changePathError, craftCost, dismissError, mergeError, hireCost, promoteError, roomBuild, scarCost, secondPathError, sealOf, hireError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { dailyOffersOpen, emberSparkOffered, emberSparkPrice, shopPrice, storiesDone } from './aid';
+import { equipBestOpen, equipInto, gearTemplateOf, gearTemplatesOpen, runEquipBest, runGearTemplate } from './gear';
 import { heritageError } from './heritage';
 import { finishBattle, normalizeCampaign, shopStock } from './campaign';
 import { replayBattle } from './restart';
@@ -72,6 +73,25 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
     }
     case 'unequip':
       return locateItem(c, cmd.uid) ? null : 'unknown_item';
+    case 'saveGearTemplate':
+      if (!c.roster.some((r) => r.id === cmd.unit)) return 'unknown_unit';
+      return gearTemplatesOpen(data, c) ? null : 'not_available';
+    case 'applyGearTemplate': {
+      const u = c.roster.find((r) => r.id === cmd.unit);
+      if (!u) return 'unknown_unit';
+      if (!gearTemplatesOpen(data, c) || !u.gearTemplate) return 'not_available';
+      // the dry run on a copy counts what would land in the convoy (displaced items can be more than the ones taken out)
+      const dry = clone(c);
+      runGearTemplate(data, dry, cmd.unit);
+      return dry.convoy.length > data.balance.economy.convoySize ? 'convoy_full' : null;
+    }
+    case 'equipBest': {
+      if (!c.roster.some((r) => r.id === cmd.unit)) return 'unknown_unit';
+      if (!equipBestOpen(data, c)) return 'not_available';
+      const dry = clone(c);
+      runEquipBest(data, dry, cmd.unit);
+      return dry.convoy.length > data.balance.economy.convoySize ? 'convoy_full' : null;
+    }
     case 'upgrade': {
       const loc = locateItem(c, cmd.uid);
       if (!loc) return 'unknown_item';
@@ -285,29 +305,21 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       // moves an item (from convoy or any unit) into a unit's slot; the displaced item goes to the convoy
       const u = c.roster.find((r) => r.id === cmd.unit)!;
       const inst = takeItem(c, cmd.uid)!;
-      if (cmd.slot === 'bag') {
-        // a swap keeps the bag place: the new item takes the index of the one that leaves
-        const at = cmd.replace ? u.bag.findIndex((i) => i.uid === cmd.replace) : -1;
-        if (at >= 0 && !isKey(data, inst)) c.convoy.push(...u.bag.splice(at, 1, inst));
-        else {
-          if (at >= 0) c.convoy.push(...u.bag.splice(at, 1));
-          addToBag(data, u.bag, inst);
-        }
-      }
-      else {
-        const old = u.equip[cmd.slot];
-        u.equip[cmd.slot] = inst;
-        if (old) c.convoy.push(old);
-        if (cmd.slot === 'mainHand' && itemDef(data, inst).twoHanded && u.equip.offHand) {
-          c.convoy.push(u.equip.offHand);
-          delete u.equip.offHand;
-        }
-        if (cmd.slot === 'offHand' && u.equip.mainHand && itemDef(data, u.equip.mainHand).twoHanded) {
-          c.convoy.push(u.equip.mainHand);
-          delete u.equip.mainHand;
-        }
-      }
+      equipInto(data, c, u, inst, cmd.slot, cmd.replace);
       events.push({ t: 'equipped', unit: u.id, uid: inst.uid, slot: cmd.slot });
+      break;
+    }
+    case 'saveGearTemplate': {
+      const u = c.roster.find((r) => r.id === cmd.unit)!;
+      u.gearTemplate = gearTemplateOf(data, u);
+      events.push({ t: 'unitChanged', unit: u.id });
+      break;
+    }
+    case 'applyGearTemplate':
+    case 'equipBest': {
+      const run = cmd.type === 'equipBest' ? runEquipBest(data, c, cmd.unit) : runGearTemplate(data, c, cmd.unit);
+      for (const e of run.equipped) events.push({ t: 'equipped', unit: cmd.unit, uid: e.uid, slot: e.slot });
+      events.push({ t: 'unitChanged', unit: cmd.unit });
       break;
     }
     case 'unequip': {

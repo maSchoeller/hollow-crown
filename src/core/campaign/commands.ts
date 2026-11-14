@@ -29,6 +29,12 @@ export type CampaignCommand =
   /** `replace` (bag only): uid of the item in that bag place, which goes to the convoy in the same step (swap) */
   | { type: 'equip'; unit: string; uid: string; slot: EquipSlot | 'bag'; replace?: string }
   | { type: 'unequip'; uid: string }
+  /** story 10.10: save what `unit` wears as its gear template (convoy level 2) */
+  | { type: 'saveGearTemplate'; unit: string }
+  /** story 10.10: put the saved template of `unit` back on (convoy level 2; sold items and items of others are skipped) */
+  | { type: 'applyGearTemplate'; unit: string }
+  /** story 10.10: put the best weapon and armor of convoy and own gear on `unit` (convoy level 3) */
+  | { type: 'equipBest'; unit: string }
   | { type: 'upgrade'; uid: string }
   | { type: 'reroll'; uid: string; index: number }
   | { type: 'insertRune'; item: string; rune: string }

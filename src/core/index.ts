@@ -55,6 +55,7 @@ export * from './campaign/farewellView';
 export * from './campaign/camp';
 export * from './campaign/homeScene';
 export * from './campaign/aid';
+export * from './campaign/gear';
 export * from './campaign/commands';
 export * from './campaign/apply';
 export * from './campaign/restart';

@@ -130,6 +130,8 @@ export const balanceSchema = z.object({
     maxDiscountPct: z.number().min(0).max(100),
     dailyOfferFromMerchantLevel: z.number().int().min(1),
     emberShop: z.object({ item: z.string(), fromMerchantLevel: z.number().int().min(1), total: z.number().int().min(0), maxOffered: z.number().int().min(1) }),
+    gearTemplateFromConvoyLevel: z.number().int().min(1),
+    equipBestFromConvoyLevel: z.number().int().min(1),
     enchanterMergeMaxTier: z.array(z.number().int().min(1)).min(1),
     villageAid: z.object({ healCharges: z.number().int().min(1) }),
     scarRemoval: z.object({ goldByLevel: z.array(z.number().int().min(0)).min(1), altItem: z.string() }),
