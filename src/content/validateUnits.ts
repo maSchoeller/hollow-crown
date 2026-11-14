@@ -2,6 +2,7 @@ import { CORE_ROLES } from '../core/defs';
 import type { GameData } from '../core/gameData';
 import { groupAllowed } from '../core/rules/items';
 import { findNode } from '../core/campaign/acts';
+import { CASTLE_PLACES } from '../core/campaign/castleScene';
 import { ballistaItemIssues } from './validateBallista';
 import type { ContentRefs, Err } from './validateRefs';
 
@@ -59,8 +60,18 @@ export function validateUnits(data: GameData, err: Err, { item, conditions, batt
     for (const id of k.items) item('balance.yaml', { def: id }, `tavern ${k.class}`);
     conditions('balance.yaml', k.requires, `tavern ${k.class}.requires`);
   }
+  const places = new Map<string, string>();
   for (const ch of Object.values(data.chars)) {
     if (!data.classes[ch.class]) err('units.yaml', `${ch.id}: unknown class ${ch.class}`);
+    // story 10.14: every companion but the Avatar and Lucan has a keepsake with a place of its own in the castle model
+    if (ch.homeObject) {
+      if (!CASTLE_PLACES.includes(ch.homeObject)) err('units.yaml', `${ch.id}: homeObject ${ch.homeObject} has no place in the castle model`);
+      const taken = places.get(ch.homeObject);
+      if (taken) err('units.yaml', `${ch.id}: homeObject ${ch.homeObject} already belongs to ${taken}`);
+      places.set(ch.homeObject, ch.id);
+    } else if (!ch.flags.includes('avatar') && !ch.flags.includes('lord')) {
+      err('units.yaml', `${ch.id}: needs a homeObject (keepsake in the castle, story 10.14)`);
+    }
     // chapters that are not built yet (ch03 ff.) may name scenes that are still to be written
     if (ch.recruit && findNode(data, ch.recruit.chapter)) battleDialogue('units.yaml', ch.recruit.dialogue, `${ch.id} recruit.dialogue`);
     if (ch.personalSkill && !data.skills[ch.personalSkill]) err('units.yaml', `${ch.id}: unknown skill ${ch.personalSkill}`);

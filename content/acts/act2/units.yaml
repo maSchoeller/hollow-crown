@@ -16,6 +16,7 @@
   items: [ { def: steel_dagger }, { def: travel_lute }, { def: vulnerary } ]
   supports: [nell]
   joins: m2_1
+  homeObject: lute                   # Laute, Bank am Feuer (Lagerfeuer)
 
 # Fährtenleserin aus dem Clan der Kupferberge, wechselt in 2-3 die Seite (Ansprechen)
 - id: ilka
@@ -29,6 +30,7 @@
   items: [ { def: steel_bow }, { def: vulnerary } ]
   supports: [sable, brann]
   joins: m2_3
+  homeObject: wolfpelt               # weißes Wolfsfell über einer Bank, neben Miras Gestell (Übungsplatz)
 
 # Verstoßene Leibwache der Prinzessin, tritt in 2-5 bei (Schutzfigur)
 - id: odile
@@ -42,6 +44,7 @@
   items: [ { def: steel_sword }, { def: iron_helm }, { def: vulnerary } ]
   supports: [varek, sable]
   joins: m2_5
+  homeObject: cuirass                # polierter Brustpanzer auf Ständer, Felsabsatz vor der Tür (Akademie)
 
 # Feldscher des Klosters Silberquell, tritt in 2-5 bei (Ansprechen)
 - id: amos
@@ -55,6 +58,7 @@
   items: [ { def: mend_staff }, { def: heal_staff }, { def: vulnerary } ]
   supports: [liora, grosk]
   joins: m2_5
+  homeObject: satchel                # Feldschertasche mit Kräuterbund, an der Tür (Heiler)
 
 # Schmugglerin von Krähenholm, von Maelis fallen gelassen, tritt in 2-6 bei (Ansprechen)
 - id: nell
@@ -68,6 +72,7 @@
   items: [ { def: steel_dagger }, { def: door_key }, { def: vulnerary } ]
   supports: [jory, varek]
   joins: m2_6
+  homeObject: seachart               # Seekarte mit Kompass, auf dem Ladentisch (Händler)
 
 # Steinrufer vom Brandhang, Gast in 2-4; tritt erst in N5 bei (Ilka spricht ihn an, sonst Lucan), optional
 - id: brann
@@ -81,6 +86,7 @@
   items: [ { def: stone_fist }, { def: rockfall }, { def: vulnerary } ]
   supports: [ilka]
   joins: n5
+  homeObject: emberstone             # Steinbrocken mit Glutader, Felsabsatz an der Felswand (Verzauberer)
 
 # Dravns Hauptfrau; tritt nur bei E7 „warnen“ als Leutnantin über recruit { lt: sable } bei (Seitenwechsel, Architektur §5.5).
 # Klasse duelist laut Epic (2026-11-06; die Narrative nennt die Rolle Plänkler, duelist ist ihr Profi-Weg) [ASSUMPTION]
@@ -95,3 +101,4 @@
   items: [ { def: steel_sword }, { def: dravns_oath }, { def: vulnerary } ]
   supports: [odile, ilka]
   joins: lieutenant
+  homeObject: sabre                  # Säbel des Grenzheers auf Ständer, Wachstube im Tor

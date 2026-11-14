@@ -53,6 +53,7 @@ export * from './campaign/campaign';
 export * from './campaign/resultView';
 export * from './campaign/farewellView';
 export * from './campaign/camp';
+export * from './campaign/castleScene';
 export * from './campaign/homeScene';
 export * from './campaign/aid';
 export * from './campaign/gear';

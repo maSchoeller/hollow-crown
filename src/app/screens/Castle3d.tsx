@@ -1,11 +1,12 @@
 /**
  * The castle home in 3D (art direction §7). The scene module (`src/render/home/castle.ts`) and its model file are loaded on
  * demand, so the first download does not grow; until they are there, or if the model cannot be loaded, the painted picture
- * shows. The room stones sit over their buildings. With `?castle3d=1` (dev server, or any build with `?debug`) a dev bar sets
- * every room's level and the castle tier, to look at each stage of the build-up.
+ * shows. The room stones sit over their buildings. What the scene shows comes from `castleScene` (story 10.14): the level of
+ * every room, the castle tier and every companion's keepsake. With `?castle3d=1` (dev server, or any build with `?debug`) a
+ * dev bar sets every room's level and the castle tier, and shows the keepsakes as mourned or gone, to look at each stage.
  */
 import { useEffect, useRef, useState } from 'preact/hooks';
-import type { RoomStatus } from '../../core';
+import type { CastleScene, RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { Icon } from '../../ui/icons';
 import { Pips, UpArrow } from './roomStone';
@@ -21,8 +22,11 @@ export function castle3dFlag(): boolean {
   return (import.meta.env.DEV || q.has('debug')) && q.get('castle3d') === '1';
 }
 
-/** The dev bar: one stage for all rooms and walls (null = the campaign's own). */
-export function CastleDevBar({ tier, setTier }: { tier: number | null; setTier: (n: number | null) => void }) {
+/** What the dev bar does to the keepsakes: show every companion's keepsake, mourn them all, or take them all away. */
+export type DevKeepsakes = 'present' | 'mourned' | 'gone';
+
+/** The dev bar: one stage for all rooms and walls (null = the campaign's own), and the state of all keepsakes. */
+export function CastleDevBar({ tier, setTier, keepsakes, setKeepsakes }: { tier: number | null; setTier: (n: number | null) => void; keepsakes: DevKeepsakes | null; setKeepsakes: (k: DevKeepsakes | null) => void }) {
   return (
     <div class="c3d-bar" role="toolbar" aria-label={t('ui.dev.castle3d.title')}>
       <span>{t('ui.dev.castle3d.level')}</span>
@@ -31,19 +35,26 @@ export function CastleDevBar({ tier, setTier }: { tier: number | null; setTier: 
           {n}
         </button>
       ))}
+      <span>{t('ui.dev.castle3d.keepsakes')}</span>
+      {(['present', 'mourned', 'gone'] as const).map((k) => (
+        <button key={k} type="button" class={keepsakes === k ? 'is-on' : ''} onClick={() => setKeepsakes(keepsakes === k ? null : k)}>
+          {t(`ui.dev.castle3d.keepsake.${k}`)}
+        </button>
+      ))}
     </div>
   );
 }
 
 /**
- * The scene in the picture's place. `levelOf` gives a room's level (0: not there yet), `tier` the stage of walls and land,
+ * The scene in the picture's place. `scene` says what it shows (`castleScene`, with the dev bar's overrides applied),
  * `onRoom` is a tap on a building or stone (status null: a room the content does not have yet). `fallback` is the picture.
  */
-export function Castle3d({ rooms, levelOf, tier, canBuild, onRoom, fallback, stats: showStats }: { rooms: RoomStatus[]; levelOf: (id: string) => number; tier: number; canBuild: (id: string) => boolean; onRoom: (id: string, status: RoomStatus | null) => void; fallback: string; stats: boolean }) {
+export function Castle3d({ rooms, scene, canBuild, onRoom, fallback, stats: showStats }: { rooms: RoomStatus[]; scene: CastleScene; canBuild: (id: string) => boolean; onRoom: (id: string, status: RoomStatus | null) => void; fallback: string; stats: boolean }) {
   /** the host's canvas goes in here; Preact never renders into it */
   const stage = useRef<HTMLDivElement>(null);
   const view = useRef<CastleView | null>(null);
   const ids = useRef<string[]>([]);
+  const levelOf = (id: string) => scene.rooms[id] ?? 0;
   const [ready, setReady] = useState(false);
   const [stats, setStats] = useState<{ fps: number; drawCalls: number } | null>(null);
   const latest = useRef({ rooms, onRoom });
@@ -82,12 +93,13 @@ export function Castle3d({ rooms, levelOf, tier, canBuild, onRoom, fallback, sta
     };
   }, []);
 
-  // levels follow the campaign (and the dev bar)
+  // levels, tier and keepsakes follow the campaign (and the dev bar)
   useEffect(() => {
     const v = view.current;
     if (!v || !ready) return;
     for (const id of ids.current) v.setLevel(id, levelOf(id));
-    v.setTier(tier);
+    v.setTier(scene.tier);
+    for (const k of scene.keepsakes) v.setKeepsake(k.id, k.state);
   });
 
   return (

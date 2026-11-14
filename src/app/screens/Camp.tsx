@@ -6,7 +6,7 @@
  */
 import { useEffect, useState } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { actOf, availableSupportTalks, buildableRooms, castleTier, homeRooms, pendingHomeScene, roomBuild, roomLevel, type CampaignCommand, type RoomDef, type RoomStatus } from '../../core';
+import { actOf, availableSupportTalks, buildableRooms, castleScene, homeRooms, pendingHomeScene, roomBuild, roomLevel, type CampaignCommand, type CastleScene, type RoomDef, type RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Toast } from '../../ui/components';
@@ -16,7 +16,7 @@ import { audio } from '../audio';
 import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { lockReason, Room, type Apply } from './Rooms';
-import { Castle3d, castle3dFlag, CastleDevBar } from './Castle3d';
+import { Castle3d, castle3dFlag, CastleDevBar, type DevKeepsakes } from './Castle3d';
 import { Pips, UpArrow } from './roomStone';
 import { Scene } from './Scene';
 import '../../ui/camp.css';
@@ -33,6 +33,7 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
   // dev only (`?castle3d=1`): a bar sets one stage for all of the castle
   const [devBar] = useState(castle3dFlag);
   const [devTier, setDevTier] = useState<number | null>(null);
+  const [devKeepsakes, setDevKeepsakes] = useState<DevKeepsakes | null>(null);
   useEffect(() => audio.music('camp'), []);
   const apply: Apply = (cmd: CampaignCommand, okText?: string) => {
     const r = campaignCommand(cmd);
@@ -61,13 +62,13 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
   /** story 10.1: a castle room that can be built up now carries the green arrow on its stone */
   const canBuild = (id: string) => castle && roomBuild(data, c, id).error === null;
   const buildable = castle ? buildableRooms(data, c) : 0;
+  const scene = castle ? devScene(castleScene(data, c), devTier, devKeepsakes) : null;
   return (
     <div class={`hm ${open ? 'has-room' : ''} ${mourn ? 'hm--mourn' : ''}`}>
-      {castle ? (
+      {castle && scene ? (
         <Castle3d
           rooms={rooms}
-          levelOf={(id) => (devTier !== null ? Math.max(1, devTier) : rooms.some((x) => x.room.id === id) ? roomLevel(c, id) : 0)}
-          tier={devTier ?? castleTier(data, c)}
+          scene={scene}
           canBuild={canBuild}
           onRoom={(_id, st) => (st ? tap(st) : setToast(t('ui.dev.castle3d.noRoom')))}
           fallback={asset(`locations/${view.image}.webp`)}
@@ -76,7 +77,7 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
       ) : (
         <img class="hm__scene" src={asset(`locations/${view.image}.webp`)} alt="" draggable={false} />
       )}
-      {castle && devBar && !room && <CastleDevBar tier={devTier} setTier={setDevTier} />}
+      {castle && devBar && !room && <CastleDevBar tier={devTier} setTier={setDevTier} keepsakes={devKeepsakes} setKeepsakes={setDevKeepsakes} />}
       <div class="hm__hud">
         <div class="hm__top">
           <Piece class="hm-act">
@@ -149,4 +150,16 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
         )}
     </div>
   );
+}
+
+/** Dev bar (`?castle3d=1`): one stage for every room and wall, one state for every keepsake — only to look at the stages. */
+function devScene(scene: CastleScene, tier: number | null, keepsakes: DevKeepsakes | null): CastleScene {
+  if (tier === null && keepsakes === null) return scene;
+  const rooms = { ...scene.rooms };
+  if (tier !== null) for (const id of Object.keys(rooms)) rooms[id] = Math.max(1, tier);
+  return {
+    tier: tier ?? scene.tier,
+    rooms,
+    keepsakes: keepsakes === null ? scene.keepsakes : scene.keepsakes.map((k) => ({ ...k, state: keepsakes, stone: keepsakes === 'mourned' })),
+  };
 }

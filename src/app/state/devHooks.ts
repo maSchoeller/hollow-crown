@@ -284,6 +284,29 @@ if (import.meta.env.DEV) {
         battle.value = null;
         screen.value = { name: 'camp', tab };
       },
+      /**
+       * story 10.14: the castle of act 2 with every room at `level` and every companion of acts 1 and 2 in the company, so
+       * all keepsakes stand at their places. `loss = true` lets Brenna fall and Varek leave, for the acceptance pictures of
+       * the mourned and the taken keepsake. Unsaved campaign; the dev bar (`?castle3d=1`) switches tier and keepsakes.
+       */
+      devCastle: async (level = 3, loss = false) => {
+        if (data.releasedActs?.includes(2)) await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.act = 2;
+        c.actTitleSeen = 2;
+        c.home = { kind: 'castle', rooms: Object.fromEntries(Object.values(data.rooms).filter((r) => r.homes.includes('castle')).map((r) => [r.id, level])) };
+        for (const ch of Object.values(data.chars)) if (ch.homeObject) addToRoster(data, c, ch.id);
+        if (loss) {
+          c.roster = c.roster.filter((u) => u.id !== 'brenna' && u.id !== 'varek');
+          c.fallen = [{ id: 'brenna', nameKey: 'unit.brenna.name', node: 'm1_6', classId: 'vanguard', portrait: 'brenna' }];
+          c.left = ['varek'];
+        }
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'camp' };
+      },
       devMemorial: (level = 2, given = false) => {
         const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
         c.completed = data.acts[1]!.nodes.map((n) => n.id);
