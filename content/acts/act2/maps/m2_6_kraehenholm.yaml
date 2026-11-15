@@ -111,8 +111,10 @@ units:
   - { id: h2, nameKey: unit.smuggler.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -2, at: [17, 19], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [hard] }
   - { id: h3, nameKey: unit.smuggler.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -2, at: [8, 9], items: [{ def: iron_bow }], ai: { profile: hold }, difficulty: [hard] }
   - { id: h4, nameKey: unit.smuggler.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [9, 6], items: [{ def: iron_lance }], ai: { profile: guard }, difficulty: [hard] }
-  # Nell, von Maelis fallen gelassen, versteckt in der Nordwestecke: Gast, wer sie anspricht, gewinnt sie (Werte aus units.yaml, P − 1)
-  - { id: nell, char: nell, team: other, class: scout, at: [3, 5], items: [], ai: { profile: hold }, ignoreForRout: true, guest: true, recruit: { by: any, dialogue: scn.m2_6.nell_talk } }
+  # Nell, von Maelis fallen gelassen, versteckt in der Nordwestecke: Gast, wer sie anspricht, gewinnt sie (Werte aus units.yaml, P − 1).
+  # untargetable: d3 und d6 stehen im Weckradius und hätten sie in Runde 1 erschlagen, bevor die Truppe den Nordwesten erreicht (Fehler 2026-11-14);
+  # sie versteckt sich vor den Schmugglern, bis jemand sie anspricht (die Anwerbung hebt das auf).
+  - { id: nell, char: nell, team: other, class: scout, at: [3, 5], items: [], ai: { profile: hold }, ignoreForRout: true, guest: true, untargetable: true, recruit: { by: any, dialogue: scn.m2_6.nell_talk } }
 reinforcements:
   # Boote von Westen
   - turn: 3

@@ -3,6 +3,8 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import {
   applyCampaign,
+  applyCommand,
+  runAiPhase,
   conditionContext,
   createBattle,
   newCampaign,
@@ -137,6 +139,27 @@ describe('map m2_6_kraehenholm', () => {
     expect(fire([8, 14])).toEqual([]);
     expect(fire([9, 12])).toEqual(['scn.m2_6.gold_proof']);
     expect(fire([10, 11])).toEqual([]);
+  });
+
+  it('keeps Nell alive until the company reaches her: the smugglers next to her neither wake nor strike, and talking makes her a target again', () => {
+    const s = battle();
+    const nell = s.units.find((u) => u.id === 'nell')!;
+    expect(nell.untargetable).toBe(true);
+    const full = nell.hp;
+    // one enemy phase with the company still on the south beach: before the fix d3 and d6 woke and struck Nell right here
+    runAiPhase(data, s, 'enemy', []);
+    expect(s.outcome).toBeNull();
+    expect(nell).toMatchObject({ team: 'other', hp: full });
+    expect(nell.downed).toBeFalsy();
+    expect(nell.gone).toBeUndefined();
+    const lucan = s.units.find((u) => u.id === 'lucan')!;
+    lucan.pos = [4, 5];
+    lucan.acted = false;
+    const talk = applyCommand(data, s, { type: 'act', unit: lucan.uid, to: [4, 5], action: { kind: 'talk', target: nell.uid } });
+    expect(talk.events).toContainEqual({ t: 'dialogue', id: 'scn.m2_6.nell_talk' });
+    const joined = talk.state.units.find((u) => u.id === 'nell')!;
+    expect(joined.team).toBe('player');
+    expect(joined.untargetable).toBeFalsy();
   });
 
   it('has Nell as a guest in the north-west who joins only when talked to, on P − 1; side goals Nell and the gold', () => {
