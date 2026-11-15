@@ -160,11 +160,12 @@ export class CastleView implements HostedView {
     applyLight(this.hemi, this.sun, look.ambient, look.sun);
     const shadowMap = data.render.quality[q].shadowMap;
     if (shadowMap > 0) {
-      const sg = new ShadowGenerator(shadowMap, this.sun);
+      // full-float depth, as on the battle board: half-float shows shadow acne on phones
+      const sg = new ShadowGenerator(shadowMap, this.sun, true, null, true);
       sg.usePercentageCloserFiltering = true;
       sg.filteringQuality = q === 'high' ? ShadowGenerator.QUALITY_HIGH : ShadowGenerator.QUALITY_MEDIUM;
-      sg.bias = 0.002;
-      sg.normalBias = 0.02;
+      sg.bias = 0.003;
+      sg.normalBias = 0.03;
       sg.darkness = 0.4;
       sg.getShadowMap()!.refreshRate = RenderTargetTexture.REFRESHRATE_RENDER_ONCE;
       this.shadows = sg;
