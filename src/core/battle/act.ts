@@ -349,6 +349,7 @@ export function doAction(data: GameData, s: BattleState, u: BattleUnit, a: Actio
       t.ai = undefined;
       t.acted = true;
       t.recruit = undefined;
+      t.untargetable = undefined; // a recruit hidden from the foes (mission 2-6) is one of the company now and a target like the others
       t.dropUids = [];
       s.stats.recruited.push(t.id);
       events.push({ t: 'recruited', unit: t.uid, by: u.uid });
