@@ -7,7 +7,7 @@ import type { BattleState, BattleUnit } from '../state';
 import { active, areaTiles, clone, findUnit, inArea, inBounds, neighbors, onDifficulty, onMap, unitAt } from '../util';
 import { activeVictory, escapeProgress, leftAlive, mustUnits } from './activeVictory';
 import { battleUnitFromPlan } from './create';
-import { atPosition, raiseMapChar } from '../campaign/position';
+import { atBattleLevel, raiseMapChar } from '../campaign/position';
 import { noteLieutenantSight } from './lieutenantSight';
 import { levelsLink } from '../rules/movement';
 
@@ -247,7 +247,7 @@ export function spawnUnits(data: GameData, s: BattleState, defs: MapUnitDef[], r
     const at = freeTileNear(data, s, def.at, data.classes[def.class]!.moveType);
     if (!at) continue;
     const uid = def.id ?? `r${s.nextUid++}`;
-    const u = battleUnitFromPlan(data, { ...atPosition(def, s.positionLevel), at }, s, def.team === 'enemy' ? pct : 0, uid, plan);
+    const u = battleUnitFromPlan(data, { ...atBattleLevel(data, def, s), at }, s, def.team === 'enemy' ? pct : 0, uid, plan);
     raiseMapChar(data, u, def.char, s.positionLevel);
     if (def.team === s.phase && !(reinforcement && data.balance.difficulty[s.settings.difficulty].ambushReinforcements)) {
       u.acted = true;

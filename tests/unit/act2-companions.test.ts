@@ -7,6 +7,7 @@ import {
   computeStats,
   joinLevel,
   joinLieutenant,
+  levelForEffective,
   lieutenantLevel,
   lieutenantSkills,
   ltOpeningLine,
@@ -75,7 +76,8 @@ describe('companions of act 2', () => {
     for (const r of c.roster) r.level = 14;
     c.lieutenants = { sable: { met: true, encounters: 2, grudge: 2, routs: 2, signatureDropped: false, target: 'lucan' } };
     const events: CampaignEvent[] = [];
-    const expected = Math.max(data.chars.sable!.level, lieutenantLevel(data, c, 0));
+    // lieutenantLevel is effective; the pro duelist stands advancedLevelOffset lower (fault 2026-11-21)
+    const expected = Math.max(data.chars.sable!.level, levelForEffective(data, 'duelist', lieutenantLevel(data, c, 0)));
     joinLieutenant(data, c, 'sable', events);
     const sable = c.roster.find((r) => r.id === 'sable')!;
     expect(sable.level).toBe(expected);

@@ -290,7 +290,9 @@ describe('finishMission with dialogue effects queued during the battle', () => {
     const hard = newCampaign(data, 7, { difficulty: 'hard', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
     const l = lost(hard);
     const r = run(hard, { type: 'finishMission', start: l.start, commands: l.log, effects: queue });
-    expect(r.campaign).toEqual(hard);
+    // only the play history (§6.2b) notes the lost attempt
+    expect({ ...r.campaign, history: hard.history }).toEqual(hard);
+    expect(r.campaign.history!.battles.map((b) => b.outcome)).toEqual(['defeat']);
     expect(r.events.filter((e) => e.t === 'flagSet' || e.t === 'stanceGained' || e.t === 'chronicleAdded' || e.t === 'goldChanged')).toEqual([]);
   });
 

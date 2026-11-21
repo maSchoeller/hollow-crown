@@ -539,6 +539,17 @@ export type WorkerResponse =
 
 **Datenschutz:** wie §11. Alles bleibt auf dem Gerät, bis der Spieler den Bericht selbst teilt; keine Telemetrie.
 
+### 6.2b Spielverlauf im Spielstand (Format 4)
+
+**Ziel:** Was der Spieler getan hat, liegt im Spielstand und lässt sich nachträglich auswerten (Balancing, Fehlerberichte), ohne Telemetrie.
+
+- **Ort:** `CampaignState.history` (`src/core/campaign/history.ts`), Plain-JSON. `applyCampaign` schreibt nach jedem Command aus Zustand vorher/nachher (`recordHistory`); die Handler sehen das Feld nie. Rein und deterministisch, Journal-Replays bauen denselben Verlauf. Alte Einträge werden geteilt, nicht kopiert.
+- **Kampfeintrag** (`BattleRecord`) je Versuch, den die Kampagne sieht: `finishMission` (Sieg, Niederlage), `restartMission` (Standard ohne Log: `restarted`; Klassik mit `lost`: `defeat` mit Log), `abandonMission` (`abandoned`, nur Zahl der Aktionen). Felder: `n`, `node`, `haunt?`, `map`, `act`, `attempt` (seit dem letzten Sieg an diesem Knoten), `outcome`, `rounds`, Schwierigkeit und Tod-Modus, `army` (Mittel der effektiven Stufen der `simulation.armySize` Stärksten vorher) gegen `expected` (`nodeLevel` bzw. `hauntLevel`), `goldBefore`/`goldAfter`, `ep`, `downs`, `fallen`, `side` (erfüllte Nebenziele), `units` (Klasse, Stufe und effektive Stufe vorher, Stufe nachher, EP, gefallen), `turnRestarts`, `actions`, `startHash` (`stateHash`) und `start` + `commands` (Replay).
+- **Lageraktionen** (`CampRecord { cmd, arg?, gold }`): Kauf, Verkauf, Ausrüsten, Aufwerten, Runen, Werkstatt, Lektion, Narben, Unterstützung, Loadout, Beförderung, Ausbau, Taverne, Entlassen; `effects` nur mit Goldänderung. Sie sammeln sich in `history.camp` und wandern mit dem nächsten Kampfeintrag in dessen `camp` (= Aktionen vor diesem Kampf). Story-Antworten stehen schon in `decisions`.
+- **Format 4:** Migration 3 → 4 gibt alten Ständen einen leeren Verlauf mit `since: 'migrated'` (neue Kampagnen `since: 'start'`); `normalizeCampaign` setzt denselben Default für ältere Checkpoints.
+- **Größe:** ein Eintrag rund 28 KB (Startzustand ~21 KB, Log ~6 KB); Akt 1+2 mit Heimsuchungen und Neustarts (~45 Einträge) ≈ 1,3 MB Verlauf, Export ≈ 1,6 MB (Grenze `MAX_IMPORT_BYTES` 5 MB). Wird es eng, fallen zuerst `start`/`commands` alter Einträge weg.
+- **Auswerten:** `pnpm journey <export|bericht>` zeigt je Kampf eine Zeile und eine Übersicht (Stufen je Karte, Kampf je erreichter Armeestufe, Lagerausgaben), `--json <datei>` maschinenlesbar, `--replay` spielt jedes gespeicherte Log mit `checkBattle` (§6.2a) nach und vergleicht Ausgang, Runden und Niederschläge.
+
 ### 6.3 Konfiguration
 
 | Art | Ort | Liest |

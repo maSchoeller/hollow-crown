@@ -15,6 +15,8 @@ nameKey: map.m2_8_kronfeld.name
 size: [30, 40]
 # Produktinhaber 2026-11-10 (Story 11.27): die vier Leutnants stehen fest auf P + levelOffset (+1), nicht nach Truppe + Groll; Groll-Waffen und -Fähigkeiten bleiben
 lieutenantLevel: position
+# Produktinhaber 2026-11-21: kein Gegnerzuschlag der Schwierigkeit (enemyLevelBonus); das Finale stand in der Simulation schon vorher bei 23–39 % Siegen
+enemyLevelBonus: false
 legend:
   "Q": ballista
   ",": grass

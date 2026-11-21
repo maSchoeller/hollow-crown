@@ -1,6 +1,7 @@
 /** Mission 2-1 "Wind über der Eisenmark" (story 11.12): line-up, ballistas and their lesson, waves, Jory, the pass hospice, the scenes. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
+import { enemyLevelBonus } from '../fixtures/enemyLevelBonus';
 import {
   applyCampaign,
   ballistaTargets,
@@ -56,11 +57,12 @@ describe('map m2_1_windscharte', () => {
     expect(map().units.find((u) => u.id === 'brakka')).toMatchObject({ lieutenant: 'brakka', team: 'enemy', ai: { profile: 'hold' } });
   });
 
-  it('puts every foe on the position level: start P−3 (guard east P−2), waves P−2, no riders or fliers', () => {
+  it('puts every foe on the position level: start P−3 (guard east P−2), waves P−2, plus the enemy level bonus, no riders or fliers', () => {
     const s = battle();
     expect(s.positionLevel).toBe(12);
     const m1 = s.units.find((u) => u.uid === 'm1')!;
-    expect(m1.level).toBe(9);
+    // P − 3 plus the difficulty's enemy level bonus of act 2 (Produktinhaber 2026-11-21)
+    expect(m1.level).toBe(12 - 3 + enemyLevelBonus(data, s));
     for (const u of [...map().units, ...map().reinforcements.flatMap((r) => r.units)].filter((x) => x.team === 'enemy' && !x.lieutenant)) {
       expect(u.level, u.id).toBeUndefined();
       expect(u.levelOffset).toBeGreaterThanOrEqual(-3);

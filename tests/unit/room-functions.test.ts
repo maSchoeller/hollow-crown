@@ -104,7 +104,8 @@ describe('the wished-for role in the next round of offers', () => {
     const set = run(c, { type: 'setTavernWish', role: 'marksman' });
     expect(set.campaign.tavernWish).toBe('marksman');
     expect(set.events).toEqual([]);
-    expect({ ...set.campaign, tavernWish: null }).toEqual(c);
+    expect({ ...set.campaign, tavernWish: null, history: c.history }).toEqual(c);
+    expect(set.campaign.history!.camp).toEqual([{ cmd: 'setTavernWish', arg: 'marksman', gold: 0 }]);
     expect(run(set.campaign, { type: 'setTavernWish', role: null }).campaign.tavernWish).toBeNull();
   });
 

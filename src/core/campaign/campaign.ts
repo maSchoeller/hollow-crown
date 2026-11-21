@@ -23,6 +23,7 @@ import { hauntGold, hauntHalved } from './haunts';
 import { trainReserve } from './training';
 import { merchantLevel } from './aid';
 import { parseHauntMapId } from '../battle/hauntMap';
+import { emptyHistory } from './history';
 
 export const SAVE_VERSION = 1;
 
@@ -66,6 +67,7 @@ export function newCampaign(data: GameData, seed: number, settings: BattleSettin
     haunts: [],
     hauntLast: {},
     hauntsSinceStory: 0,
+    history: emptyHistory('start'),
   };
   for (const def of Object.values(data.chars)) {
     if (def.joins !== 'prologue') continue;
@@ -125,6 +127,8 @@ export function normalizeCampaign(data: GameData, c: CampaignState): CampaignSta
     tavern: (c.tavern ?? []).map((u) => ({ ...u, bag: stackKeys(data, u.bag), traits: u.traits ?? [] })),
     // story 10.11: the wished-for role of the tavern of level 3, absent in saves from before it
     tavernWish: (c as Partial<CampaignState>).tavernWish ?? null,
+    // §6.2b: the play history, absent in saves from before format 4 (the migration marks it, a checkpoint may still lack it)
+    history: c.history ?? emptyHistory('migrated'),
     // pairs of content added since the save (a later act) start empty
     supports: { ...Object.fromEntries(Object.keys(data.supports).map((k) => [k, { points: 0, rank: null }])), ...c.supports },
     quests: old.quests ?? [],

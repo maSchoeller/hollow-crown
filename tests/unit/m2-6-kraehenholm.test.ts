@@ -1,6 +1,7 @@
 /** Mission 2-6 "Gold für Banditen" (story 11.17): line-up, Sable or the captain, the tides, Nell, the proof, the scenes, E6 and the burnt village. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
+import { enemyLevelBonus } from '../fixtures/enemyLevelBonus';
 import {
   applyCampaign,
   applyCommand,
@@ -63,9 +64,9 @@ describe('map m2_6_kraehenholm', () => {
     }
   });
 
-  it('puts the foes on the position level (P−3 … P−2, the captain P+1); no riders or fliers; two lieutenants, Grell and Sable', () => {
+  it('puts the foes on the position level (P−3 … P−2, the captain P+1, plus the enemy level bonus on the board); no riders or fliers; two lieutenants, Grell and Sable', () => {
     const s = battle();
-    expect(s.units.find((u) => u.uid === 'a1')!.level).toBe(s.positionLevel! - 3);
+    expect(s.units.find((u) => u.uid === 'a1')!.level).toBe(s.positionLevel! - 3 + enemyLevelBonus(data, s));
     for (const u of [...map().units, ...map().reinforcements.flatMap((r) => r.units)].filter((x) => x.team === 'enemy' && !x.lieutenant)) {
       expect(u.level, u.id).toBeUndefined();
       expect(u.levelOffset, u.id).toBeGreaterThanOrEqual(-3);

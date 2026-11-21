@@ -5,7 +5,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { applyCommand, type CampaignState } from '../../src/core';
+import { applyCommand, emptyHistory, type CampaignState } from '../../src/core';
 import { createAutoSaver, createPlayClock } from '../../src/persistence/autosave';
 import {
   CampaignLimitError,
@@ -135,7 +135,7 @@ describe('save format 2 (concept/24 §5.15)', () => {
   });
 
   it('exports and imports (migrating format 2) and rejects PoC saves and tampered files', () => {
-    expect(importSave(exportSave(format2))).toEqual({ ...format2, format: SAVE_FORMAT });
+    expect(importSave(exportSave(format2))).toEqual({ ...format2, format: SAVE_FORMAT, payload: { ...format2.payload, campaign: { ...format2.payload.campaign, history: emptyHistory('migrated') } } });
     expect(() => importSave(exportSave(format1))).toThrow('legacy');
     const tampered = JSON.parse(exportSave(format2)) as { body: string };
     tampered.body = tampered.body.replace('"Ilsa"', '"Eve"');

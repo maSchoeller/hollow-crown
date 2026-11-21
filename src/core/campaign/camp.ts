@@ -3,7 +3,7 @@ import type { GameData } from '../gameData';
 import type { Condition, RoomDef } from '../storyDefs';
 import { bagIsFull, canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slotFits, weaponProfile, type EquipError } from '../rules/items';
 import { levelCap, otherProPath, promotionTargets } from '../rules/progression';
-import { activeSkillIds } from '../rules/skills';
+import { activeSkillIds, expToNext } from '../rules/skills';
 import { relicCtx } from './relics';
 import { computeStats } from '../rules/stats';
 import { maxRank, pendingRank, rankIndex } from '../rules/supports';
@@ -491,7 +491,7 @@ export function expProgress(
   u: UnitRecord,
   act = 1,
 ): { exp: number; need: number; full: boolean; capped: boolean; cap: number; act: number } {
-  const need = data.balance.experience.levelUpAt;
+  const need = expToNext(data, u);
   const cap = levelCap(data, act);
   const full = u.level >= cap;
   return { exp: u.exp, need, full, capped: full && cap < data.balance.levels.max, cap, act };

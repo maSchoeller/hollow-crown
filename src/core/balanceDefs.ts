@@ -3,6 +3,45 @@ import type { Difficulty, MoveType, Rarity, StatusId, SupportRank } from './defs
 import type { TerrainConnector } from './mapDefs';
 import type { TavernDef } from './storyDefs';
 
+/** Battle behaviour of a simulated player (`simulation.profiles.*.battle`); the defaults are today's autoplay. */
+export interface SimBattleStyle {
+  /** drinks a healing item below this share of max HP, in % (50) */
+  healBelow: number;
+  /** below this share of max HP, in %, a unit plays safe: no threatened tiles, heavier threat penalty on attacks (60) */
+  lowHp: number;
+  /** factor on the threat penalty of attack plans (1) */
+  dangerWeight: number;
+  /** added to the threat a moving unit accepts (0; never for a unit that must survive) */
+  dangerShift: number;
+  /** threats a unit accepts for a village, a talk or a chest (2) */
+  errandDanger: number;
+  /** hunts every chest of the map, not only the chests of a treasure victory (false) */
+  chests: boolean;
+  /** share of decisions that take a worse option, drawn from an RNG of its own (0) */
+  mistakes: number;
+}
+
+/** Home behaviour of a simulated player (`simulation.profiles.*.home`); the defaults are today's home heuristic. */
+export interface SimHomeStyle {
+  /** chance that an open haunt is played on a day (1) */
+  haunts: number;
+  /** plays haunts also without `--haunts` (false) */
+  hauntsAlways: boolean;
+  /** share of the strongest units the heuristic buys a healing item for (1) */
+  healItems: number;
+  /** chance per camp visit that weapons are upgraded at all (1) */
+  upgrades: number;
+  /** promotes only this many levels after the earliest level that allows it (0) */
+  promoteDelay: number;
+  /** buys ember sparks (true) */
+  sparks: boolean;
+}
+
+export interface SimProfile {
+  battle: SimBattleStyle;
+  home: SimHomeStyle;
+}
+
 export interface Balance {
   /** castle stages: upgrades needed for tier 1, 2, 3 (art direction §7) */
   castle: { tierAt: [number, number, number] };
@@ -65,14 +104,17 @@ export interface Balance {
     seasonPairs: number;
     corePairs: number;
   };
+  /** EP from each effective level to the next (index 0 = level 1 → 2); past the end the last entry counts */
+  levelCurve: number[];
   experience: {
-    levelUpAt: number;
     advancedLevelOffset: number;
     combatBase: number;
     combatMin: number;
     combatMax: number;
     killBase: number;
     killPerLevelDiff: number;
+    /** extra kill EP per effective level the foe stands above the unit (none below), Produktinhaber 2026-11-21 */
+    killPerLevelAbove: number;
     killMin: number;
     killMax: number;
     bossBonus: number;
@@ -163,6 +205,8 @@ export interface Balance {
     craftIronOreAbove: number;
     /** story 11.28: the home heuristic hires tavern mercenaries up to the next mission's deploy limit, keeping `reserve` gold */
     hire: { reserve: number };
+    /** simulated player profiles (`pnpm sim --profile`): how a kind of player fights and uses the home; sim-only values */
+    profiles: Record<string, SimProfile>;
   };
   /** Nebel (story 2.6): `baseVision` plus the highest of `roleBonus` (class role) and `moveTypeBonus`; sight ends behind `blockers` terrain */
   /** height levels (GDD): range bonus from above, move types free of the connectors, connectors a melee blow reaches over */
@@ -236,6 +280,8 @@ export interface Balance {
     Difficulty,
     {
       enemyStatPercent: number;
+      /** by act (the last entry for later acts): levels on top of every enemy of a story map (not lieutenants, recruitable characters or haunts), Produktinhaber 2026-11-21 */
+      enemyLevelBonus?: number[];
       aiFinishDowned: 'never' | 'fallback' | 'prefer';
       enemyAffixes: boolean;
       aiDangerAware?: boolean;

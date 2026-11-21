@@ -40,11 +40,21 @@
  * --workers n      verteilt die Läufe auf n Threads (Standard: Kerne − 1, höchstens einer je Lauf; 1 = seriell im Prozess).
  *                  Jeder Lauf hängt nur an seinem Seed (seed + Lauf), seriell und parallel ergeben dasselbe. --haunt läuft seriell.
  * pnpm sim:diff a.json b.json [--threshold 0.02] [--all] vergleicht zwei --json-Ausgaben (tools/simDiff.ts).
+ *
+ * Spielerprofile (simulation.profiles in balance.yaml, nur die Simulation): wie verschiedene Spieler kämpfen und die Heimat nutzen.
+ *   standard (heutige KI, Vorgabe ohne Option), cautious (meidet Bedrohung, heilt früh, wartet, nur ein Teil der Heimsuchungen),
+ *   aggressive (sucht Kills, nimmt Konter und Bedrohung in Kauf), novice (ein Anteil der Züge mit schlechterer Wahl aus einem eigenen
+ *   RNG, kauft wenig, befördert spät, wertet selten auf, wenige Heimsuchungen), optimizer (heutige KI, alle Heimsuchungen auch ohne
+ *   --haunts, Aufwertungen, Beförderung sofort, Glutfunken), collector (jagt Truhen jeder Karte, Dörfer und Gespräche auch unter Bedrohung).
+ * --profile <name>     spielt eine Karte oder --campaign mit diesem Profil (Kampf; bei --campaign auch Heimat und Heimsuchungen).
+ * --profiles a,b|all   nur mit --campaign: jedes Profil mit denselben Seeds, danach je Mission eine Vergleichstabelle (Armee-Stufe gegen
+ *                      erwartete, Sieg-%, Niedergestreckte, bis dahin gespielte Heimsuchungen, Gold vor der Mission) und eine Tabelle
+ *                      je Profil (Gold und Armee-Stufe am Ende). --json schreibt `profiles.<name>.…`, so vergleicht sim:diff zwei Läufe.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { autoplay, createHauntBattle, emberSparkPrice, hauntLevel, makeHaunt, seedRng, startBattle, storyNodeOf, type DeathMode, type Difficulty } from '../src/core';
-import { mergeCampaignSims, missionFlags, prepareActData, simulateCampaign, type CampaignSim, type MissionFlags } from './simCampaign';
+import { mergeCampaignSims, missionFlags, prepareActData, simProfile, simulateCampaign, type CampaignSim, type CampaignSimOptions, type MissionFlags } from './simCampaign';
 import { campaignChained, printMap, simulateMapRun, summarizeMap, turnStats, type MapRun, type MapSimOptions } from './simMap';
 import { loadContentWithSets, parseSets } from './simOverrides';
 import { runParallel, workerCount } from './simPool';
@@ -65,6 +75,8 @@ const writeJson = (value: unknown) => {
   console.log(`json → ${jsonOut}`);
 };
 const workersArg = args.includes('--workers') ? opt('workers', '') : undefined;
+const profileArg = args.includes('--profile') ? opt('profile', '') : undefined;
+simProfile(data, profileArg);
 const campaignArg = args.includes('--campaign') ? opt('campaign', 'act1') : null;
 if (campaignArg) {
   await runCampaign(campaignArg);
@@ -93,6 +105,7 @@ const mapOptions: MapSimOptions = {
   flags: args.flatMap((a, i) => (a === '--flag' ? [args[i + 1]!] : [])),
   leave: opt('leave', '').split(',').filter(Boolean),
   ...(args.includes('--promote') ? { promote: opt('promote', 'a') as 'a' | 'b' } : {}),
+  ...(profileArg !== undefined ? { profile: profileArg } : {}),
 };
 if (mapOptions.promote && !['a', 'b'].includes(mapOptions.promote)) throw new Error(`--promote takes a or b, got ${mapOptions.promote}`);
 {
@@ -134,18 +147,28 @@ async function runCampaign(act: string) {
     ...(args.includes('--map-file') ? { mapFile: opt('map-file', '') } : {}),
     ...(args.includes('--node') ? { node: opt('node', '') } : {}),
   };
-  const options = { difficulty, deathMode, haunts, ...acts };
+  const options: Omit<CampaignSimOptions, 'runs' | 'seed'> = { difficulty, deathMode, haunts, ...acts, ...(profileArg !== undefined ? { profile: profileArg } : {}) };
   const actData = prepareActData(data, options);
   const workers = workerCount(workersArg, runs);
+  const play = async (o: Omit<CampaignSimOptions, 'runs' | 'seed'>): Promise<CampaignSim> =>
+    workers > 1 ? mergeCampaignSims(await runParallel({ kind: 'campaign', options: o }, runs, seed, workers, sets)) : simulateCampaign(actData, { runs, seed, ...o });
+  if (args.includes('--profiles')) {
+    if (profileArg !== undefined) throw new Error('--profile and --profiles exclude each other');
+    const spec = opt('profiles', '');
+    const names = spec === 'all' ? Object.keys(data.balance.simulation.profiles) : spec.split(',').filter(Boolean);
+    if (!names.length) throw new Error('--profiles needs a,b,c or all');
+    for (const n of names) simProfile(data, n);
+    await compareProfiles(act, names, (profile) => play({ ...options, profile }), { runs, seed, difficulty, deathMode, haunts }, acts);
+    return;
+  }
   const t0 = performance.now();
-  const sim: CampaignSim =
-    workers > 1
-      ? mergeCampaignSims(await runParallel({ kind: 'campaign', options }, runs, seed, workers, sets))
-      : simulateCampaign(actData, { runs, seed, ...options });
+  const sim = await play(options);
   const seconds = (performance.now() - t0) / 1000;
   const per = (n: number, d: number) => n / Math.max(1, d);
   const mark = (f: MissionFlags, k: keyof MissionFlags) => (f[k] ? (f[k] === 'low' ? ' ↓' : ' ↑') : '');
-  console.log(`${act} ${start === 'expected' ? '(--start expected)' : 'chained'} – ${runs} runs, ${difficulty}/${deathMode}, ${seconds.toFixed(1)} s (${workers} worker${workers === 1 ? '' : 's'})`);
+  console.log(
+    `${act} ${start === 'expected' ? '(--start expected)' : 'chained'} – ${runs} runs, ${difficulty}/${deathMode}${profileArg !== undefined ? `, profile ${profileArg}` : ''}, ${seconds.toFixed(1)} s (${workers} worker${workers === 1 ? '' : 's'})`,
+  );
   const rows = sim.missions.map((m) => {
     const f = missionFlags(actData, m, difficulty);
     return {
@@ -231,7 +254,8 @@ async function runCampaign(act: string) {
   writeJson({
     kind: 'campaign',
     act,
-    options: { runs, seed, difficulty, deathMode, haunts, actionS },
+    ...(profileArg !== undefined ? { profile: profileArg } : {}),
+    options: { runs, seed, difficulty, deathMode, haunts, actionS, ...(profileArg !== undefined ? { profile: profileArg } : {}) },
     sets,
     finished: sim.finished,
     finishRate: per(sim.finished, runs),
@@ -268,6 +292,94 @@ async function runCampaign(act: string) {
       flags: missionFlags(actData, m, difficulty),
     })),
     timing: { seconds, workers },
+  });
+}
+
+/**
+ * `--profiles`: plays the act once per profile with the same seeds, then one table per mission (a row per profile) and one per
+ * profile for the end of the act; `--json` keeps each profile's figures under `profiles.<name>` for `pnpm sim:diff`.
+ */
+async function compareProfiles(
+  act: string,
+  names: string[],
+  play: (profile: string) => Promise<CampaignSim>,
+  options: { runs: number; seed: number; difficulty: Difficulty; deathMode: DeathMode; haunts: boolean },
+  acts: object,
+) {
+  const per = (n: number, d: number) => n / Math.max(1, d);
+  const t0 = performance.now();
+  const sims = new Map<string, CampaignSim>();
+  for (const name of names) sims.set(name, await play(name));
+  const { runs } = options;
+  console.log(`${act} – ${runs} runs per profile, ${options.difficulty}/${options.deathMode}${options.haunts ? ', with haunts' : ''}, ${((performance.now() - t0) / 1000).toFixed(1)} s`);
+  const nodes = [...new Set([...sims.values()].flatMap((s) => s.missions.map((m) => m.node)))];
+  const row = (m: CampaignSim['missions'][number]) => ({
+    reached: m.reached,
+    armyLevel: per(m.armyLevel, m.reached),
+    expectedLevel: m.expectedLevel,
+    winRate: per(m.wins, m.reached),
+    downs: per(m.downs, m.reached),
+    hauntsBefore: per(m.hauntsBefore ?? 0, m.reached),
+    goldBefore: per(m.goldBefore ?? 0, m.reached),
+  });
+  for (const node of nodes) {
+    console.log(node);
+    console.table(
+      Object.fromEntries(
+        names.map((name) => {
+          const m = sims.get(name)!.missions.find((x) => x.node === node);
+          if (!m) return [name, { reached: 0 }];
+          const r = row(m);
+          return [
+            name,
+            {
+              reached: r.reached,
+              'army lv': r.armyLevel.toFixed(1),
+              expected: r.expectedLevel,
+              'lv − exp': (r.armyLevel - r.expectedLevel).toFixed(1),
+              'win %': (r.winRate * 100).toFixed(0),
+              downs: r.downs.toFixed(2),
+              'haunts so far': r.hauntsBefore.toFixed(1),
+              'gold before': r.goldBefore.toFixed(0),
+            },
+          ];
+        }),
+      ),
+    );
+  }
+  const end = (s: CampaignSim) => ({
+    finished: s.finished,
+    endGold: per(s.endGold, s.finished),
+    endArmyLevel: per(s.endArmyLevel, s.finished),
+    hauntsPerRun: per(s.haunts.played, runs),
+    hauntWinRate: per(s.haunts.won, s.haunts.played),
+  });
+  console.log('end of the act (finished runs)');
+  console.table(
+    Object.fromEntries(
+      names.map((name) => {
+        const e = end(sims.get(name)!);
+        return [
+          name,
+          { finished: `${e.finished}/${runs}`, 'end gold': e.endGold.toFixed(0), 'end army lv': e.endArmyLevel.toFixed(1), 'haunts/run': e.hauntsPerRun.toFixed(1), 'haunts won %': (e.hauntWinRate * 100).toFixed(0) },
+        ];
+      }),
+    ),
+  );
+  if (Object.keys(sets).length) console.log(`--set ${JSON.stringify(sets)}`);
+  writeJson({
+    kind: 'campaign',
+    act,
+    options: { ...options, profiles: names },
+    sets,
+    ...(Object.keys(acts).length ? { acts } : {}),
+    profiles: Object.fromEntries(
+      names.map((name) => {
+        const s = sims.get(name)!;
+        const e = end(s);
+        return [name, { ...e, finishRate: per(e.finished, runs), missions: s.missions.map((m) => ({ node: m.node, ...row(m), gold: per(m.gold, m.cleared) })) }];
+      }),
+    ),
   });
 }
 

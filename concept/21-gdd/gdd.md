@@ -244,8 +244,8 @@ Siehe **Rollenklassen**. Gegner pro Akt `[ASSUMPTION]`: Akt 1 Banditen, Wolfsrei
 ### Figurensystem
 
 - **Werte:** TP, STR, MAG, SKL, SPD, LCK, DEF, RES, MOV, Tragkraft.
-- **Stufen:** 1–20 je Klassenstufe, 100 EP pro Stufe. In Akt 1 Deckel bei Stufe 10; EP darüber verfallen. Nach Akt 1 offen bis 20.
-- **EP:** Kampf 11 + Δ (1–30), Besiegen/Vertreiben 34 ohne Stufenabschlag (10–100; bis 2026-11-07 30 + 3Δ, Story 15.10), Boss oder Leutnant +20, Heilen 12 + 3 je Zusatzziel, Bergen/Ansprechen 10; Profiklasse zählt 15 Stufen höher (effektive Stufe).
+- **Stufen:** 1–20 je Klassenstufe. Der EP-Bedarf je Stufe wächst mit der **effektiven Stufe** (`levelCurve` in `balance.yaml`): 100 EP bis Stufe 5, dann steigend bis 220 bei Stufe 14, 470 bei Stufe 20 und 760 ab effektiver Stufe 25; Beförderte zahlen also nach ihrer effektiven Stufe weiter, die Beförderung ist kein billiger Neustart (Produktinhaber 2026-11-21, vorher 100 EP je Stufe). In Akt 1 Deckel bei Stufe 10; EP darüber verfallen. Nach Akt 1 offen bis 20.
+- **EP:** Kampf 11 + Δ (1–30), Besiegen/Vertreiben 34 ohne Stufenabschlag, dafür +6 je Stufe, die der Gegner über der Figur steht (10–100; bis 2026-11-07 30 + 3Δ, Story 15.10; Zuschlag seit 2026-11-21: EP werden nie gekürzt, stärkere Gegner lohnen mehr), Boss oder Leutnant +20, Heilen 12 + 3 je Zusatzziel, Bergen/Ansprechen 10; Profiklasse zählt 15 Stufen höher (effektive Stufe).
 - **Erwartete effektive Armee-Stufe** (Durchschnitt der 6 stärksten) `[ASSUMPTION, per Simulation]`:
 
 | Akt | Story-Mission 1 → letzte |
@@ -344,6 +344,8 @@ Jede Interaktion braucht höchstens 2 Taps; kein Raum ist Pflicht.
 - Leicht/Normal/Schwer: Gegnerwerte −15/0/+15 %; Schwer mit 1 Gegner-Affix je Elite und Hinterhalten; Aufstellung je Schwierigkeit; nur absenkbar, in den Optionen der Kampagne. Tod-Modus unabhängig wählbar.
 - Zielkorridore je Story-Mission (Simulation über die verkettete Kampagne): Leicht ≥ 95 % Sieg und ≤ 0,5 Niedergestreckte; Normal 75–100 % und 0,4–1,3; Schwer 30–70 %.
 - Gegnerstufe = erwartete effektive Armee-Stufe der Mission + Akt-Zuschlag (+0/+1/+2) `[ASSUMPTION]`; große Schlachten am oberen Rand des Korridors.
+- **Gegnerzuschlag je Schwierigkeit** (Produktinhaber 2026-11-21, `difficulty.<stufe>.enemyLevelBonus` je Akt): Normal hebt jeden Kartengegner der Story- und Nebenquest-Karten in Akt 1 um +1 und ab Akt 2 um +3 Stufen; Leicht und Schwer ohne Zuschlag (Schwer hat +15 % Werte). Ausgenommen sind Leutnants (sie skalieren mit der Truppe), anwerbbare Figuren, Heimsuchungen und Karten mit `enemyLevelBonus: false` (Finale 2-8). Grund: Die Karten von Akt 2 stellen die meisten Gegner auf P − 3 / P − 2, und Normal war im Spieltest deutlich zu leicht (Armee 10 Stufen über Plan).
+- **Kalibrierziel Normal:** ohne Heimsuchungen Armee-Stufe im Plan (±1), mit allen Heimsuchungen höchstens etwa +2; gemessen mit `pnpm sim --campaign act2` und den Spielerprofilen (`--profiles`).
 - **Gegnerstufe nach Position (Akt 2):** In den Akt-2-Story-Missionen hängt die erwartete Stufe nicht am Knoten, sondern an der Zahl der schon erledigten Akt-2-Story-Missionen; die Kartengegner stehen +0 bis +2 Stufen darüber. Die Beitrittsstufe der Akt-2-Gefährten wächst genauso mit.
 
 ### Wirtschaft und Ressourcen

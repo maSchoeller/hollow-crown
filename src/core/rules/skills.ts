@@ -160,6 +160,25 @@ export function effectiveLevel(data: GameData, u: UnitRecord): number {
   return u.level + (cls?.tier === 'pro' ? data.balance.experience.advancedLevelOffset : 0);
 }
 
+/**
+ * The level a unit of `classId` stands on to reach the effective level `effective` (the inverse of `effectiveLevel`): a pro
+ * class counts `advancedLevelOffset` on top, so it stands that much lower (never below 1, never above `levels.max`).
+ */
+export function levelForEffective(data: GameData, classId: string, effective: number): number {
+  const pro = data.classes[classId]?.tier === 'pro';
+  const raw = effective - (pro ? data.balance.experience.advancedLevelOffset : 0);
+  return Math.max(1, pro ? Math.min(raw, data.balance.levels.max) : raw);
+}
+
+/**
+ * EP a unit needs from its level to the next (Produktinhaber 2026-11-21): `levelCurve` by effective level (entry 1 = from
+ * effective level 1 to 2); past the end of the list the last entry counts.
+ */
+export function expToNext(data: GameData, u: Pick<UnitRecord, 'classId' | 'level'>): number {
+  const curve = data.balance.levelCurve;
+  return curve[Math.min(effectiveLevel(data, u as UnitRecord), curve.length) - 1]!;
+}
+
 export interface SkillTotals {
   stats: StatMods;
   hit: number;

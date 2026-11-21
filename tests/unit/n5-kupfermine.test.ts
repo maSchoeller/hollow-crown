@@ -1,6 +1,7 @@
 /** Side quest N5 "Glut unter dem Berg" (story 11.21): treasure hunt, door or gate into the bone hall, Brann joins only when talked over. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
+import { enemyLevelBonus } from '../fixtures/enemyLevelBonus';
 import {
   addToRoster,
   applyCommand,
@@ -61,7 +62,7 @@ describe('map n5_kupfermine', () => {
     expect(map().deploy).toMatchObject({ max: 7, forced: ['avatar', 'lucan'] });
   });
 
-  it('has 12 / 15 / 18 foes with the wave from the entrance in round 4, all on P−3 to P−1', () => {
+  it('has 12 / 15 / 18 foes with the wave from the entrance in round 4, all on P−3 to P−1 plus the enemy level bonus', () => {
     const count = (d: Difficulty) => battle(d).units.filter((u) => u.team === 'enemy').length + map().reinforcements.flatMap((r) => r.units).length;
     expect([count('easy'), count('normal'), count('hard')]).toEqual([12, 15, 18]);
     expect(map().reinforcements.map((r) => [r.turn, r.phase, r.announce])).toEqual([[4, 'enemy', true]]);
@@ -70,10 +71,11 @@ describe('map n5_kupfermine', () => {
       expect(u.levelOffset, u.id).toBeGreaterThanOrEqual(-3);
       expect(u.levelOffset, u.id).toBeLessThanOrEqual(-1);
     }
-    // P after 2-1 to 2-4: base 12 + 4 story nodes
+    // P after 2-1 to 2-4: base 12 + 4 story nodes, then the difficulty's enemy level bonus of act 2
     const s = battle();
-    expect(s.units.find((u) => u.id === 'foreman')!.level).toBe(15);
-    expect(s.units.find((u) => u.id === 'a1')!.level).toBe(13);
+    const bonus = enemyLevelBonus(data, s);
+    expect(s.units.find((u) => u.id === 'foreman')!.level).toBe(15 + bonus);
+    expect(s.units.find((u) => u.id === 'a1')!.level).toBe(13 + bonus);
   });
 
   it('holds the four chests: Dragon Ember (with its scene), Earth Rune III, a chronicle page of act 2, moonsteel', () => {

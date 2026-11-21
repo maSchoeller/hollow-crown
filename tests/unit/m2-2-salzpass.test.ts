@@ -1,6 +1,7 @@
 /** Mission 2-2 "Das Siegel im Salzpass" (story 11.13): line-up, fog, rockfall, the seal chest with and without a scout, rearguard, scenes. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
+import { enemyLevelBonus } from '../fixtures/enemyLevelBonus';
 import { newItem } from '../../src/core/battle/create';
 import {
   applyCommand,
@@ -88,11 +89,12 @@ describe('map m2_2_salzpass', () => {
     for (const u of map().units.filter((x) => x.team === 'enemy')) expect(['scout', 'marksman', 'brigand', 'skirmisher', 'vanguard'], u.id).toContain(u.class);
   });
 
-  it('puts every foe on the position level only through levelOffset: P = 13 after 2-1, start P−3…P−1, rearguard P−2', () => {
+  it('puts every foe on the position level only through levelOffset: P = 13 after 2-1, start P−3…P−1, rearguard P−2, plus the enemy level bonus on the board', () => {
     const s = battle();
+    const bonus = enemyLevelBonus(data, s);
     expect(s.positionLevel).toBe(13);
-    expect(unit(s, 's1').level).toBe(10);
-    expect(unit(s, 'k1').level).toBe(12);
+    expect(unit(s, 's1').level).toBe(10 + bonus);
+    expect(unit(s, 'k1').level).toBe(12 + bonus);
     for (const u of [...map().units, ...map().reinforcements.flatMap((r) => r.units)].filter((x) => x.team === 'enemy' && !x.lieutenant)) {
       expect(u.level, u.id).toBeUndefined();
       expect(u.levelOffset).toBeGreaterThanOrEqual(-3);

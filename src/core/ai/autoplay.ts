@@ -16,6 +16,17 @@ import { asleep, attackPlans, ballistaPlans, bestApproach } from './ai';
 import { wardLine } from './wardLine';
 import { enemyView } from './enemyView';
 import { trapTiles } from '../rules/traps';
+import type { SimBattleStyle } from '../balanceDefs';
+import { hash32, nextFloat, nextInt, seedRng, type RngState } from '../rng';
+
+/** Today's player: what `autoCommand` plays without a profile (`simulation.profiles` in balance.yaml only changes these). */
+const STANDARD_STYLE: SimBattleStyle = { healBelow: 50, lowHp: 60, dangerWeight: 1, dangerShift: 0, errandDanger: 2, chests: false, mistakes: 0 };
+
+/**
+ * A simulated player profile for `autoCommand` (`pnpm sim --profile`): values left out play as today. `rng` is the profile's own
+ * stream for the mistakes (never the battle's RNG, so the combat rolls stay as they are); without it no mistakes are made.
+ */
+export type AutoStyle = Partial<SimBattleStyle> & { rng?: RngState };
 
 /** Farther than any walk of a unit plus any walk and reach of a foe, boosts included. */
 const DANGER_REACH = 26;
@@ -284,7 +295,10 @@ function errand(data: GameData, s: BattleState, u: BattleUnit, dests: Pos[], dan
  * visit villages and talk to recruitable foes, heal when low, attack the best target without walking
  * into crowds, Lucan walks to reach/seize goals, protect units that must survive. Deterministic.
  */
-export function autoCommand(data: GameData, s: BattleState): Command {
+export function autoCommand(data: GameData, s: BattleState, profile?: AutoStyle): Command {
+  const style = { ...STANDARD_STYLE, ...profile };
+  // a mistake (novice): drawn only when the profile makes them, so every other profile leaves its stream alone
+  const slip = (): boolean => !!profile?.rng && style.mistakes > 0 && nextFloat(profile.rng) < style.mistakes;
   const map = data.maps[s.mapId]!;
   const v = activeVictory(map, s);
   const goal = v.type === 'reach' || v.type === 'seize' || v.type === 'escape' ? areaTiles(v.area) : null;
@@ -297,10 +311,14 @@ export function autoCommand(data: GameData, s: BattleState): Command {
   // T6-13F6: once the goal chests are open while the side objective `open_chests` still runs, the hunt goes on for every chest
   const secured = v.type === 'treasure' && chestProgress(s, v.chests).have >= v.chests.length;
   const wanted = v.type !== 'treasure' ? [] : secured && chestHuntPending(data, s) ? s.objects.filter((o) => o.type === 'chest').map((o) => o.id) : v.chests;
+  // a collector (profile `chests`) hunts the shut chests of any map as a treasure hunt
+  const hunted = style.chests && v.type !== 'treasure' ? s.objects.filter((o) => o.type === 'chest' && o.state === 'closed').map((o) => o.id) : [];
   const openable =
     v.type === 'treasure'
       ? new Set([...wanted, ...s.objects.filter((o) => o.type === 'door').map((o) => o.id)].filter((id) => s.objects.some((o) => o.id === id && o.state === 'closed')))
-      : undefined;
+      : hunted.length
+        ? new Set(hunted)
+        : undefined;
   const npc = v.type === 'escort' ? s.units.find((o) => o.id === v.unit && active(o) && o.pos) : undefined;
   const defended = v.type === 'defend' ? s.units.find((o) => (o.id === v.unit || o.uid === v.unit) && active(o) && o.pos) : undefined;
   const line = holdLine(data, s, defended, enemies);
@@ -363,14 +381,14 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       }
       if (pick) return pick.action;
     }
-    const job = line ? null : errand(data, s, u, dests, danger, vip ? 0 : 2, openable);
+    const job = line ? null : errand(data, s, u, dests, danger, vip ? 0 : style.errandDanger, openable);
     if (job) return job;
     if (gate?.uid === u.uid) {
       const beside = dests.find((p) => availableActions(data, s, u, p).some((a) => a.kind === 'lever' && a.object === gate.lever.id));
       if (beside) return { type: 'act', unit: u.uid, to: beside, action: { kind: 'lever', object: gate.lever.id } };
     }
     const potion = u.bag.find((i) => itemDef(data, i).use?.heal && (i.charges ?? 1) > 0);
-    if (hpPct < 50 && potion) {
+    if (hpPct < style.healBelow && potion) {
       const safe = approach(s, u, dests, [u.pos], danger, 0);
       return { type: 'act', unit: u.uid, to: safe, action: { kind: 'item', item: potion.uid } };
     }
@@ -382,9 +400,14 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     const plans = [...attackPlans(data, s, u, dests), ...ballistaPlans(data, s, u, dests)]
       .filter((p) => placed(p.to))
       .filter((p) => (p.action.kind !== 'attack' && p.action.kind !== 'ballista') || !spare.has(posKey(s.units.find((o) => o.uid === (p.action as { target: string }).target)!.pos!)))
-      .map((p) => ({ ...p, score: p.score - (danger.get(posKey(p.to)) ?? 0) * (vip || hpPct < 60 ? 12 : 4) }))
+      .map((p) => ({ ...p, score: p.score - (danger.get(posKey(p.to)) ?? 0) * (vip || hpPct < style.lowHp ? 12 : 4) * style.dangerWeight }))
       .sort((a, b) => b.score - a.score);
-    const plan = plans.find((p) => p.score > 0);
+    let plan = plans.find((p) => p.score > 0);
+    // a mistake: the second or third best plan instead of the best
+    if (plan && plans.length > 1 && slip()) {
+      const alt = plans.slice(1, 3);
+      plan = alt[nextInt(profile!.rng!, alt.length)]!;
+    }
     // the way to the goal runs around walls and around foes that stay put; where they bar every way, the goal unit fights its way through
     const goalWay = isGoalUnit ? walkField(data, s, u, goal!, false, new Set(enemies.filter((o) => staysPut(data, s, o)).map((o) => posKey(o.pos!)))) : undefined;
     const barred = !!goalWay && !goalWay.has(posKey(u.pos));
@@ -409,7 +432,7 @@ export function autoCommand(data: GameData, s: BattleState): Command {
     const keys = lockAt ? [lockAt] : [];
     const nearWard = guarding ? [...enemies].sort((a, b) => dist(a.pos!, ward!.pos!) - dist(b.pos!, ward!.pos!)).map((o) => o.pos!) : [];
     // one healthy unit (the closest) walks to a downed ally when nothing more urgent calls
-    const fetch = rescuer === u.uid && hpPct >= 60 ? downedAllies.map((o) => o.pos!) : [];
+    const fetch = rescuer === u.uid && hpPct >= style.lowHp ? downedAllies.map((o) => o.pos!) : [];
     // treasure, no foe left: whoever has no key, no room and no errand walks on towards the locks and keys still open, but not onto the tiles next to a lock
     const treasureIdle = openable ? s.objects.filter((o) => openable.has(o.id)).map((o) => o.at) : [];
     const idleHunt = !!openable && !enemies.length && treasureIdle.length > 0;
@@ -441,11 +464,24 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       // escort: walk to the exit but end the turn within the radius the NPC follows in; too far off, walk back to it
       const radius = data.balance.ai.followRadius;
       const close = dests.filter((p) => dist(p, npc.pos!) <= radius);
-      const lead = close.length ? approach(s, u, close, areaTiles(v.area), danger, vip || hpPct < 60 ? 0 : 1) : null;
+      const lead = close.length ? approach(s, u, close, areaTiles(v.area), danger, vip || hpPct < style.lowHp ? 0 : 1) : null;
       const to = lead ?? approach(s, u, dests, [npc.pos!], danger, 1);
       return { type: 'act', unit: u.uid, to, action: { kind: 'wait' } };
     }
-    let maxDanger = guarding && hpPct >= 60 ? (vip ? 1 : 2) : errands.length && hpPct >= 60 ? 1 : vip || hpPct < 60 ? 0 : isGoalUnit ? 2 : 1;
+    let maxDanger =
+      guarding && hpPct >= style.lowHp
+        ? vip
+          ? 1
+          : 2
+        : errands.length && hpPct >= style.lowHp
+          ? Math.max(0, style.errandDanger - 1)
+          : vip || hpPct < style.lowHp
+            ? 0
+            : isGoalUnit
+              ? 2
+              : 1;
+    // a careful player keeps further off the foes' reach, a bold one charges into it
+    if (!vip) maxDanger = Math.max(0, maxDanger + style.dangerShift);
     let aim = targets.length ? targets : [u.pos];
     let field: Map<string, number> | undefined = goalWay && (barred ? walkField(data, s, u, goal!, false) : goalWay);
     const hunting = !isGoalUnit && !errands.length && !keys.length && !ward;
@@ -456,12 +492,12 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       (v.type === 'seize' ? enemies.every((o) => staysPut(data, s, o)) : (v.type === 'rout' || v.type === 'boss') && enemies.every((o) => idleFoe(data, s, o)));
     if (siege) {
       const alone = v.type === 'seize' && !s.units.some((o) => o.team === 'player' && active(o) && o.pos && !o.flags.includes('mustSurvive'));
-      if ((!vip || alone) && hpPct >= 60) maxDanger = Infinity;
+      if ((!vip || alone) && hpPct >= style.lowHp) maxDanger = Infinity;
       field = walkField(data, s, u, aim, false);
     }
     // a map with levels: a foe on the wall above is reached over its stairs, not by standing under it
     if (hunting && !field && s.levels) field = walkField(data, s, u, aim, false);
-    if (gate?.uid === u.uid && hpPct >= 60) {
+    if (gate?.uid === u.uid && hpPct >= style.lowHp) {
       maxDanger = Infinity;
       aim = [gate.lever.at];
       field = walkField(data, s, u, aim, false);
@@ -513,7 +549,9 @@ export function autoCommand(data: GameData, s: BattleState): Command {
       const rest = dests.filter((p) => !blocked.has(posKey(p)));
       if (rest.length) dests = rest;
     }
-    const to = approach(s, u, dests, aim, danger, maxDanger, field);
+    let to = approach(s, u, dests, aim, danger, maxDanger, field);
+    // a mistake: any tile the unit can stop on
+    if (dests.length > 1 && slip()) to = dests[nextInt(profile!.rng!, dests.length)]!;
     const trap = trapSpot(data, s, u, to, enemies);
     return { type: 'act', unit: u.uid, to, action: trap ? { kind: 'trap', at: trap } : { kind: 'wait' } };
   }
@@ -534,17 +572,25 @@ export function trapSpot(data: GameData, s: BattleState, u: BattleUnit, to: Pos,
   return best?.at ?? null;
 }
 
-/** Plays a battle to the end with autoCommand; returns the final state and the command log. */
+/**
+ * Plays a battle to the end with autoCommand; returns the final state and the command log. `profile` (`pnpm sim --profile`):
+ * a profile that makes mistakes draws them from a stream seeded from the start state's RNG, which it only reads.
+ */
 export function autoplay(
   data: GameData,
   start: BattleState,
   maxCommands = 2000,
+  profile?: Partial<SimBattleStyle>,
 ): { state: BattleState; log: Command[]; events: GameEvent[] } {
+  const style: AutoStyle | undefined = profile && {
+    ...profile,
+    ...(profile.mistakes ? { rng: seedRng(hash32((start.rng[0] ^ start.rng[2]) >>> 0, (start.rng[1] ^ start.rng[3]) >>> 0)) } : {}),
+  };
   let s = start;
   const log: Command[] = [];
   const events: GameEvent[] = [];
   for (let i = 0; i < maxCommands && !s.outcome; i++) {
-    const cmd = autoCommand(data, s);
+    const cmd = autoCommand(data, s, style);
     const r = applyCommand(data, s, cmd);
     s = r.state;
     log.push(cmd);

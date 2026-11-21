@@ -7,7 +7,7 @@ import { applyVillageAid } from '../rules/items';
 import { clone, onDifficulty, pairKey, posKey } from '../util';
 import { lockedMechanics, lockedRoles } from '../campaign/graph';
 import { actOf, findNode, nodeAct } from '../campaign/acts';
-import { atPosition, nodeLevel, positionOf, raiseMapChar } from '../campaign/position';
+import { atBattleLevel, nodeLevel, positionOf, raiseMapChar } from '../campaign/position';
 import { conditionContext, onConditions } from '../campaign/conditions';
 import { isJoined, planLieutenants } from '../campaign/lieutenants';
 import { relicStages } from '../campaign/relics';
@@ -128,7 +128,7 @@ export function placeMapUnits(data: GameData, c: CampaignState, s: BattleState, 
     const uid = def.id ?? def.char ?? `m${i}`;
     // a lieutenant is scaled to the company and its grudge (story 3.4); everything else is built as the map says
     const plan = def.lieutenant ? s.lieutenantPlan![def.lieutenant] : undefined;
-    const unit = battleUnitFromPlan(data, atPosition(def, s.positionLevel), s, def.team === 'enemy' ? pct : 0, uid, plan);
+    const unit = battleUnitFromPlan(data, atBattleLevel(data, def, s), s, def.team === 'enemy' ? pct : 0, uid, plan);
     raiseMapChar(data, unit, def.char, s.positionLevel);
     s.units.push(unit);
   });

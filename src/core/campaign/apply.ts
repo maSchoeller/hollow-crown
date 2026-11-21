@@ -9,7 +9,8 @@ import { allItems, bagIsFull, canEquip, isKey, isRune, itemDef, runeSlotCount, s
 import { changeProPath, loadoutSlots, otherProPath, promote } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { relicCtx } from './relics';
-import type { CampaignState } from '../state';
+import type { BattleState, CampaignState } from '../state';
+import { recordHistory } from './history';
 import { clone } from '../util';
 import { changePathError, craftCost, dismissError, mergeError, hireCost, potionUpgradeCost, potionUpgradeError, promoteError, roomBuild, scarCost, secondPathError, sealOf, hireError, tavernWishError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { dailyOffersOpen, emberSparkOffered, emberSparkPrice, shopPrice, storiesDone } from './aid';
@@ -228,6 +229,16 @@ function resourceEvents(before: CampaignState, after: CampaignState): CampaignEv
 export function applyCampaign(data: GameData, prev: CampaignState, cmd: CampaignCommand): CampaignApplyResult {
   const err = validateCampaign(data, prev, cmd);
   if (err) throw new CoreInvariantError('invalid_campaign_command', { command: cmd.type, reason: err });
+  // the play history (§6.2b) stays out of the handlers: they never copy it, and it is recorded from before and after
+  const { history, ...bare } = prev;
+  const r = applyBare(data, bare, cmd);
+  const { history: _none, ...after } = r.campaign;
+  const fin = r.events.find((e): e is Extract<CampaignEvent, { t: 'missionFinished' }> => e.t === 'missionFinished');
+  const next = recordHistory(data, history, bare, after, cmd, r.battle, fin?.result);
+  return { campaign: next ? { ...after, history: next } : after, events: r.events };
+}
+
+function applyBare(data: GameData, prev: CampaignState, cmd: CampaignCommand): CampaignApplyResult & { battle?: BattleState } {
   if (cmd.type === 'finishMission') {
     let s = cmd.start;
     for (const bc of cmd.commands) s = applyCommand(data, s, bc).state;
@@ -265,7 +276,7 @@ export function applyCampaign(data: GameData, prev: CampaignState, cmd: Campaign
       // the finale of an act moves the company on to the next act, where the build has it (story 11.1)
       enterNextAct(data, campaign, effectEvents);
     }
-    return { campaign, events: [...resourceEvents(prev, campaign), ...effectEvents, { t: 'missionFinished', result }] };
+    return { campaign, events: [...resourceEvents(prev, campaign), ...effectEvents, { t: 'missionFinished', result }], battle: s };
   }
   if (cmd.type === 'restartTurn') return { campaign: clone(prev), events: [{ t: 'battleRestarted', scope: 'turn', keep: cmd.keep }] };
   if (cmd.type === 'restartMission') return { campaign: clone(prev), events: [{ t: 'battleRestarted', scope: 'mission', keep: 0 }] };
