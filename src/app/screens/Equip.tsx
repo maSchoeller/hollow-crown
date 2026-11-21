@@ -88,7 +88,7 @@ export function EquipView({ unit, slot, index, onBack }: { unit: UnitRecord; slo
             onClick={() => setPick(pick === inst.uid ? null : inst.uid)}
           />
         ))}
-        {chosen && slot !== 'bag' && <ChangeList result={changeList(data, unit, chosen.inst, { slot })} />}
+        {chosen && slot !== 'bag' && <ChangeList result={changeList(data, unit, chosen.inst, { slot })} empty={worn?.def === chosen.inst.def ? 'ui.change.alreadyWorn' : undefined} />}
         {cands.length === 0 && !worn && <div style={{ color: 'var(--hc-soft)', padding: 12 }}>{t('ui.equip.none')}</div>}
       </Piece>
       <div class="hc-btns">
