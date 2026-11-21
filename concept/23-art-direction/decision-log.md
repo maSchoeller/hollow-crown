@@ -274,3 +274,8 @@ Ausgangspunkt: Der Produktinhaber fand Runen undurchsichtig und die Waffenmodell
 
 - Abgenommen (Produktinhaber 2026-11-21): Figur als Brettmodell über das ganze Handy, leichte Kampfhaltung (Beine breiter, Arme vom Körper weg, „nicht zu krass“); soll später jede Figur bekommen. Im Mockup per Hand an den Mixamo-Knochen gesetzt (`art/mockups/ausruestung-2026-11/truppe.html`, `POSE`), fürs Spiel als eigene Stand-Pose bzw. Animation (Thema 6).
 - Befunde aus der Abnahme: Der Stand dreht das Handgelenk und damit den Schild alle paar Sekunden weg – Hände im Stand ruhig halten. Der Schild greift in den Oberarm – weiter nach außen setzen. Rinne und Stein flimmerten gegen die Platte – Tiefenversatz bzw. Abstand im Modell.
+
+## 2026-11-21: Runen und Gelände auf dem Brett (Konzept „Ausrüstung zum Anfassen“, Thema 5)
+
+- Abgenommen (Produktinhaber 2026-11-21): In der Kampfvorschau leuchten die Runenwaffen von Angreifer und Ziel voll, alle anderen glimmen gedämpft weiter. Die Rune erscheint als Kreis in Elementfarbe mit römischer Stufe am Waffen-Chip; das Element-Band über der Tabelle zeigt beide Elemente in denselben Farben.
+- Gelände-Linse in Wirkungsfarben (grün Schutz, gold langsam, rot Schaden, Creme-Streifen schnell, Schraffur gesperrt), über dem Boden und unter den Figuren. Werte und Ablauf in `concept/25-ux/DESIGN.md` und `EXPERIENCE.md`, Mockup `art/mockups/ausruestung-2026-11/brett.html`.
