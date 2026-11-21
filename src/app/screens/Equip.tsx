@@ -4,6 +4,7 @@ import { changeList, equipCandidates, itemDef, type ChangeLine, type EquipSlot, 
 import { isKey } from '../../core/rules/items';
 import { t } from '../../i18n';
 import { ItemLine, itemName, Toast, unitName } from '../../ui/components';
+import { ChangeList } from '../../ui/ChangeList';
 import { Backdrop, Piece, PrimaryButton, ScreenHead, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
 import { campaign, campaignCommand, data } from '../state/session';
@@ -87,6 +88,7 @@ export function EquipView({ unit, slot, index, onBack }: { unit: UnitRecord; slo
             onClick={() => setPick(pick === inst.uid ? null : inst.uid)}
           />
         ))}
+        {chosen && slot !== 'bag' && <ChangeList result={changeList(data, unit, chosen.inst, { slot })} />}
         {cands.length === 0 && !worn && <div style={{ color: 'var(--hc-soft)', padding: 12 }}>{t('ui.equip.none')}</div>}
       </Piece>
       <div class="hc-btns">
