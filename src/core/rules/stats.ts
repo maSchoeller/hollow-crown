@@ -1,7 +1,7 @@
 import { STAT_KEYS, type Pos, type StatMods, type Stats } from '../defs';
 import type { GameData } from '../gameData';
 import type { BattleState, BattleUnit, UnitRecord } from '../state';
-import { armorAffinity, itemStatMods, itemWeight } from './items';
+import { armorAffinity, itemStatMods, itemWeight, shieldGuard } from './items';
 import { setBonuses, skillTotals, type SkillCtx, type SkillTotals } from './skills';
 import { scarDef } from '../campaign/acts';
 
@@ -18,6 +18,8 @@ export interface EffectiveStats {
   avoid: number;
   crit: number;
   affinity?: ReturnType<typeof armorAffinity>;
+  /** element rune of the shield (story 16.4); never mixed into `affinity` */
+  shield?: ReturnType<typeof shieldGuard>;
   skills: SkillTotals;
 }
 
@@ -110,6 +112,7 @@ export function computeStats(
     avoid,
     crit,
     affinity: armorAffinity(data, unit, ctx.state) ?? unit.affinity,
+    shield: shieldGuard(data, unit, ctx.state),
     skills,
   };
 }

@@ -6,6 +6,7 @@ import type { Condition, Effect } from '../core/storyDefs';
 import { flagEntry, UNSUPPORTED_EFFECTS } from '../core/campaign/effects';
 import { soleKey, UNSUPPORTED_CONDITIONS } from '../core/campaign/conditions';
 import { pairKey } from '../core/util';
+import { runeFits } from '../core/rules/items';
 import { findNode } from '../core/campaign/acts';
 
 export type Err = (file: string, message: string) => void;
@@ -16,7 +17,12 @@ export function contentRefs(data: GameData, err: Err) {
   const item = (file: string, ref: ItemRef | undefined, ctx: string) => {
     if (ref && !data.items[ref.def]) err(file, `${ctx}: unknown item ${ref.def}`);
     for (const a of ref?.affixes ?? []) if (!data.affixes[a]) err(file, `${ctx}: unknown affix ${a}`);
-    for (const r of ref?.runes ?? []) if (!data.runes[r]) err(file, `${ctx}: unknown rune ${r}`);
+    for (const r of ref?.runes ?? []) {
+      if (!data.runes[r]) err(file, `${ctx}: unknown rune ${r}`);
+      else if (ref && data.items[ref.def] && data.items[ref.def]!.kind === 'shield' && !runeFits(data, data.items[ref.def]!, data.runes[r]!))
+        err(file, `${ctx}: rune ${r} does not fit the shield ${ref.def} (element runes only, no light or dark)`);
+    }
+    if (ref && data.items[ref.def]?.kind === 'shield' && (ref.runes?.length ?? 0) > 1) err(file, `${ctx}: shield ${ref.def} has one rune slot`);
   };
   /** scenes that play during a battle (triggers, quotes, talks, rewards): they must not ask for answers */
   const battleScenes = new Set<string>();

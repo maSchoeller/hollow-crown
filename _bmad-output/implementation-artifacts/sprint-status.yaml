@@ -287,11 +287,11 @@ development_status:
   epic-15-retrospective: optional
 
   # Epic 16: Ausrüstung zum Anfassen
-  epic-16: backlog
+  epic-16: in-progress
   16-1-strassen-und-bruecken-kosten: backlog  # Straßen und Brücken kosten ½
   16-2-balancing-nachzug-fuer-prolog-1-2-2-1-und-2-8: backlog  # Balancing-Nachzug für Prolog, 1-2, 2-1 und 2-8
   16-3-gegnerphase-standardmaessig-2: backlog  # Gegnerphase standardmäßig 2×
-  16-4-schild-runen: backlog  # Schild-Runen
+  16-4-schild-runen: done  # Schild-Runen
   16-5-waffen-chronik-mit-kill-zaehler-und-beinamen: review  # Waffen-Chronik mit Kill-Zähler und Beinamen
   16-6-runenwaffen-v2-im-spiel-axt-schwert-lanze-schild: backlog  # Runenwaffen v2 im Spiel (Axt, Schwert, Lanze, Schild)
   16-7-runenwaffen-v2-fuer-alle-uebrigen-waffengruppen: backlog  # Runenwaffen v2 für alle übrigen Waffengruppen

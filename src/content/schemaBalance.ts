@@ -43,6 +43,7 @@ export const balanceSchema = z.object({
     lightEffectiveVs: z.array(z.string()),
     darkBonusVs: z.array(z.string()),
     statusOf: z.record(z.string(), statusId),
+    shieldRune: z.object({ factor: z.number(), statusImmuneTier: z.number(), terrainImmuneTier: z.number() }),
   }),
   status: z.record(z.string(), z.number()),
   terrainEffects: z.record(z.string(), z.number()),

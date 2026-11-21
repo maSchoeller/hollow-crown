@@ -66,6 +66,7 @@ export interface Balance {
     lightEffectiveVs: string[];
     darkBonusVs: string[];
     statusOf: Record<string, StatusId>;
+    shieldRune: { factor: number; statusImmuneTier: number; terrainImmuneTier: number };
   };
   status: {
     durationRounds: number;

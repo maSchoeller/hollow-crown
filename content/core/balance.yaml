@@ -23,6 +23,8 @@ element:
   lightEffectiveVs: [monster, undead]
   darkBonusVs: [holy]
   statusOf: { fire: burning, water: wet, earth: slowed, wind: knockback }
+  # Schild-Runen (Story 16.4): Faktor gegen das Element; ab Stufe statusImmuneTier immun gegen den Zustand, ab terrainImmuneTier gegen das Brandfeld
+  shieldRune: { factor: 0.8, statusImmuneTier: 2, terrainImmuneTier: 3 }
 status:
   durationRounds: 2
   burnPercentMaxHp: 10
