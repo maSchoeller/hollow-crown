@@ -339,6 +339,7 @@ Zu Beginn von Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, T
 - **Runen in Akt 1:** Der Verzauberer kommt erst mit Akt 2; in Akt 1 gibt es Runen nur als Beute.
 - **Söldner-Traits** (Taverne Stufe 2; Liste in `extract-01-decisions.md`) werden als eigener Baustein gebaut.
 - **Lebende Burg:** Jeder Gefährte bringt einen Gegenstand an einen festen Platz in der Burg; dort steht nur der Gegenstand. Wer die Truppe verlässt, nimmt ihn mit; wer fällt, lässt ihn liegen (Narrative). Die Liste der 20 Gegenstände wird aus Narrative und Art Direction abgeleitet.
+- **Waffenkammer (Produktinhaber 2026-11-21):** Ab der Burg zeigt der Bergfried eine Waffenkammer mit allen **Relikten und Signaturwaffen** der Truppe, auch getragenen. Sie ist kein Raum: keine Funktion, keine Stufen, kein Ausbau, keine Spielwerte. Waffen mit Beinamen und die Ausrüstung Gefallener kommen nicht hinein. Leere Ständer zeigen verborgene Relikte und Signaturen in Reichweite (Leutnant: Vertreibungen bis zur garantierten Signatur). Darstellung in Art Direction §7, Verhalten in `concept/25-ux/EXPERIENCE.md` („Waffenkammer (Bergfried)“).
 - **Darstellung:** Die Burg ist eine 3D-Szene (Art Direction §7). Jeder Raum zeigt seine Stufe als Modellteile, Mauern und Land die Burgstufe aus der Summe aller Raum-Ausbauten (Ruine, Gesichert, Wehrhaft, Festung; Schwellen 1/6/14 `[ASSUMPTION]`). Die Stufe steht zusätzlich als Punkte am Raumstein.
 
 Jede Interaktion braucht höchstens 2 Taps; kein Raum ist Pflicht.

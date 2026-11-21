@@ -289,3 +289,14 @@ Ausgangspunkt: Der Produktinhaber fand das Taumeln der Stand-Animation unnatürl
 - Brett: von „immer kampfbereit“ und „bei Auswahl“ gewählt **bei Auswahl** (passt zum vollen Runenleuchten aus Thema 5).
 - Hände: von „Faust im Turnaround“, „offene Hände reichen“ und „Fingerknochen riggen“ gewählt **Fingerknochen riggen**.
 - Befund Mockup: Der Animations-Mixer von three.js schreibt einen Knochen nur, wenn sich sein Wert ändert; Zusatzdrehungen müssen je Bild zurückgenommen werden, sonst laufen sie auf. Im Spiel betrifft das nichts, dort wird gebacken.
+
+## 2026-11-21: Waffenkammer im Bergfried (Konzept „Ausrüstung zum Anfassen“, Thema 8)
+
+Ausgangspunkt: Die Vitrine für besondere Waffen war beschlossen, offen waren Ort, Inhalt und Bild in der 3D-Burg. Ist im Dev-Build: Burg mit elf Räumen, keine Stelle zeigt besondere Waffen.
+
+- Ort: von „Flügel der Gedächtnishalle“, „Waffenwand beim Schmied“ und „eigener Ort im Bergfried“ gewählt **Bergfried**: eigener Stein, Gewölbe-Szene, Ständer auf einer Drehscheibe.
+- Inhalt: **Relikte und Signaturwaffen**, keine Beinamen-Waffen, keine Andenken Gefallener.
+- Getragene Stücke als **heller Umriss** mit dem Kopf der Trägerin; leere Ständer grau mit Fortschritt.
+- Außen am Bergfried **je Stück ein Banner** in Runenfarbe (ohne Rune gold).
+- Folge: Relikte und Signaturen ohne Waffenmodell (Drachenglut, Letzter Vorhang) brauchen ein Modell; bis dahin Item-Bild auf dem Ständer.
+- Mockup `art/mockups/ausruestung-2026-11/vitrine.html` (echte Modelle aus `art/models/weapons-v2/` und `runes-v2/`).
