@@ -5,7 +5,8 @@ import { FACINGS, HAUNT_VARIANTS } from '../core/mapDefs';
 import { area, itemRefSchema, pos, range, rank, team, weaponType } from './schemaBase';
 import { conditionSchema } from './schemaConditions';
 
-const nullableCost = z.number().nullable();
+// halbe Punkte sind erlaubt (Straße, Brücke: 0.5, Story 16.1), kleinere Schritte nicht
+const nullableCost = z.number().multipleOf(0.5).nullable();
 export const terrainSchema = z.object({
   id: z.string(),
   def: z.number(),
