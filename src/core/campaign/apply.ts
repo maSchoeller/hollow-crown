@@ -5,7 +5,7 @@ import type { Effect } from '../storyDefs';
 import { applyCommand } from '../battle/apply';
 import { newItem } from '../battle/create';
 import { rollAffixes } from '../loot';
-import { allItems, bagIsFull, canEquip, isKey, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
+import { allItems, bagIsFull, canEquip, isKey, isRune, itemDef, runeFits, runeSlotCount, sellPrice } from '../rules/items';
 import { changeProPath, loadoutSlots, otherProPath, promote } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { relicCtx } from './relics';
@@ -125,7 +125,7 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       while (runes.length < runeSlotCount(data, loc.inst)) runes.push(null);
       if (rdef.element && runes.some((r) => r && data.runes[r]?.element)) return 'no_slot';
       if (!runes.includes(null)) return 'no_slot';
-      if (itemDef(data, loc.inst).slot === 'body' && !rdef.element) return 'no_slot';
+      if (!runeFits(data, itemDef(data, loc.inst), rdef)) return 'no_slot';
       return null;
     }
     case 'removeRune': {
