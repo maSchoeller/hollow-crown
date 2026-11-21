@@ -269,3 +269,8 @@ Ausgangspunkt: Der Produktinhaber fand Runen undurchsichtig und die Waffenmodell
 - Abgenommen (Produktinhaber 2026-11-21): Der Verzauberer zeigt das gewählte Item als 3D-Modell aus `art/models/weapons-v2/`. Eine Rune zur Probe sitzt als Stein aus `art/models/runes-v2/` in der Fassung, die Rinne füllt sich nach Stufe wie in §4.7; der Stein wächst beim Einlegen kurz auf.
 - Verschmelzen in derselben Bühne: drei Steine kreisen zusammen, ein Lichtblitz in Elementfarbe, der Stein der nächsten Stufe wächst heraus.
 - Offen: Rüstung und Schild-Runen im Raum, solange Rüstung kein Modell hat (vorerst Bild mit Stein am Brustteil); die zweite, kleine Fassung ist im Modell noch nicht gebaut und erscheint vorerst nur als Stein über der Bühne.
+
+## 2026-11-21: Figur im Figurenblatt (Konzept „Ausrüstung zum Anfassen“, Thema 3)
+
+- Abgenommen (Produktinhaber 2026-11-21): Figur als Brettmodell über das ganze Handy, leichte Kampfhaltung (Beine breiter, Arme vom Körper weg, „nicht zu krass“); soll später jede Figur bekommen. Im Mockup per Hand an den Mixamo-Knochen gesetzt (`art/mockups/ausruestung-2026-11/truppe.html`, `POSE`), fürs Spiel als eigene Stand-Pose bzw. Animation (Thema 6).
+- Befunde aus der Abnahme: Der Stand dreht das Handgelenk und damit den Schild alle paar Sekunden weg – Hände im Stand ruhig halten. Der Schild greift in den Oberarm – weiter nach außen setzen. Rinne und Stein flimmerten gegen die Platte – Tiefenversatz bzw. Abstand im Modell.
