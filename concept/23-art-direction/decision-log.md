@@ -254,3 +254,12 @@ Die Abnahmebilder von Story 10.13 zeigten im Spielblick (375 × 812, Kamera 35°
 Abnahmebilder neu erzeugt mit `node tools/art/part-shots.mjs` nach `art/models/parts/shots/`. Die Namen der Teile bleiben unverändert (Produktinhaber 2026-11-14).
 
 **Abnahme:** Der Produktinhaber hat die sieben nachgearbeiteten Teile am 2026-11-14 an den neuen Abnahmebildern abgenommen. Damit sind alle 16 Teile von Story 10.13 abgenommen.
+
+## 2026-11-21: Runenwaffen (Konzept „Ausrüstung zum Anfassen“, Thema 1)
+
+Ausgangspunkt: Der Produktinhaber fand Runen undurchsichtig und die Waffenmodelle zu einfach. Drei Leucht-Varianten am alten Modell (ganze Waffe färbt sich, aufgesetzter Stein, schwebende Gravur) hat er verworfen: Die Rune muss sich ins Metall schmiegen, alles aus einem Guss. Daraus §4.7: eingelassene Fassung plus Gravurrinne, deren Füllstand die Stufe zeigt.
+
+- Tripo ist für Waffen zu teuer. Stattdessen ChatGPT-Baupläne aus allen Ansichten und Nachbau in Blender durch Subagenten.
+- Abgenommen (Produktinhaber 2026-11-21): Konzeptblatt, Axt, dann Schwert, Schild, Lanze und 20 Runensteine in der Waffenkammer-Ansicht („Sehr, sehr gut“).
+- Entschieden: Brett-Leuchten immer gedämpft, voll bei Auswahl und in der Vorschau; zweite Rune in kleiner zweiter Fassung; Material per Tönung; Gegnerwaffen leuchten auch.
+- Offen für eine spätere Runde: Schild wirkt einheitlich beige, Steinstufen I und II von vorn zu ähnlich, Krallen klein, Axt-Tülle kastig. Noch nicht im Spiel eingebaut.

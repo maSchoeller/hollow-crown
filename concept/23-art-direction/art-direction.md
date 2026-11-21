@@ -244,6 +244,18 @@ Die Brettfigur muss **nicht** 1:1 wie das Porträt aussehen: Sie ist eine bewuss
 
 **Credits:** sparsam (Decision Log). Je Figur Smart-Mesh (100, gleich ob 1 oder 4 Varianten, also immer 4), Textur (20) und Auto-Rig (20) = **140**; Presets kosten nichts, KI-Animationen (20) nur für die Bibliothek; Requisiten und Umgebung in Blender. Stand nach Brenna: 5 805 Credits.
 
+### 4.7 Runenwaffen (Waffen v2, Entscheidung Produktinhaber 2026-11-21)
+
+Die Rune ist Teil der Waffe, nie aufgesetzt. Löst die Waffen aus Schritt 6 von §4.6 ab, sobald sie im Spiel sind.
+
+- **Fassung:** Jede Waffe hat eine eingelassene runde Fassung mit Metallrand und vier Krallen, bei allen Waffen gleich groß, damit jeder Runenstein in jede Waffe passt. Lage: Axt im Blatt am Stiel, Schwert in der Parierstange, Schild im Buckel, Lanze in der Tülle.
+- **Rinne:** Von der Fassung läuft eine ins Metall geschnittene V-Rinne der Form entlang: Bogen der Axtschneide, Hohlkehle des Schwerts, Ring um den Schildbuckel, Grat der Lanze. Ein Füllwert (zweite UV `fill`, 0 an der Fassung bis 1 am Ende) steuert das Leuchten: Stufe I ein Drittel, Stufe II zwei Drittel, Stufe III ganz mit Puls.
+- **Runensteine:** eigene Modelle je Rune und Stufe. Stufe I glatter Cabochon, Stufe II höher mit facettiertem Rand, Stufe III geschliffener Kristall mit Symbol in Gold. Symbole: Flamme, Wirbel, Berg, Welle, Stern, Mond; Hilfsrunen silberweiß mit Fadenkreuz, Hammer, Klinge, Feder.
+- **Zweiter Runenplatz** (Selten und besser): eine zweite, kleinere Fassung ohne eigene Rinne.
+- **Material:** Eisen, Stahl und Silber unterscheiden sich durch Tönung bei gleicher Form (Eisen warm grau, Stahl kühler und heller, Silber fast weiß mit Glanz).
+- **Auf dem Brett:** Runenwaffen glimmen immer gedämpft; bei der gewählten Figur und in der Kampfvorschau leuchten sie voll. Gegnerwaffen leuchten genauso (Säule 3).
+- **Produktion:** kein Tripo für Waffen. ChatGPT zeichnet orthografische Baupläne (`art/mockups/weapons-2026-11/`, Protokoll `art/prompts/weapon_rune_concept.md`), Blender-Skripte bauen nach: `tools/art/blender_weapons_v2.py` (Axt), `blender_weapon_sword.py`, `blender_weapon_shield.py`, `blender_weapon_lance.py`, `blender_runes_v2.py` → `art/models/weapons-v2/`, `art/models/runes-v2/`. Geometrie gerade bauen, auch wenn ein Konzeptbild schräg ist. Budget großzügig: rund 8 000 Dreiecke je Waffe, unter 2 000 je Stein.
+
 ## 5. Bildebene [A]
 
 ### 5.1 Porträts
@@ -341,7 +353,7 @@ Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept
 
 ## 8. Effekte [A]
 
-Cartoon-Effekte: flache, klar umrissene Formen mit Kontur, wenige große Partikel, kurze knackige Timings. Glows nur für Feuer, Magie und Drachenglut, sparsam.
+Cartoon-Effekte: flache, klar umrissene Formen mit Kontur, wenige große Partikel, kurze knackige Timings. Glows nur für Feuer, Magie, Drachenglut und Runenwaffen (§4.7), sparsam.
 
 | Ereignis | Effekt |
 |---|---|
