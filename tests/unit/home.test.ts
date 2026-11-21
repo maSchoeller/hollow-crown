@@ -114,7 +114,9 @@ describe('node effects are applied when the mission is won (story 6.9)', () => {
     const hard = newCampaign(d, 7, { difficulty: 'hard', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
     const l = lost(d, hard);
     const r = applyCampaign(d, hard, { type: 'finishMission', start: l.start, commands: l.log });
-    expect(r.campaign).toEqual(hard);
+    // only the play history (§6.2b) notes the lost attempt
+    expect({ ...r.campaign, history: hard.history }).toEqual(hard);
+    expect(r.campaign.history!.battles.map((b) => b.outcome)).toEqual(['defeat']);
     expect(r.campaign.home.kind).toBe('camp');
     expect(r.events.some((e) => e.t === 'homeChanged')).toBe(false);
   });

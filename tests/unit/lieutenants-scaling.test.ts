@@ -3,6 +3,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import type { Locales } from '../../src/content/load';
 import { validateContent } from '../../src/content/validate';
+import { enemyLevelBonus } from '../fixtures/enemyLevelBonus';
 import { roundDiv } from '../../src/core/battle/create';
 import {
   activeSkillIds,
@@ -206,9 +207,10 @@ describe('the lieutenant on the board', () => {
     expect(play().state).toEqual(a.state);
   });
 
-  it('leaves other enemies at the level of the map', () => {
+  it('leaves other enemies at the level of the map plus the enemy level bonus', () => {
     const { s } = varnhold([9, 9, 9], 3);
-    expect(s.units.find((u) => u.uid === 'r4')!.level).toBe(data.maps.m1_2_erlbach!.units.find((u) => u.id === 'r4')!.level);
+    const mapLevel = data.maps.m1_2_erlbach!.units.find((u) => u.id === 'r4')!.level!;
+    expect(s.units.find((u) => u.uid === 'r4')!.level).toBe(mapLevel + enemyLevelBonus(data, s));
   });
 
   it('does not depend on the order of the roster', () => {
@@ -242,7 +244,9 @@ describe('expected values', () => {
     });
     const twin = s.units.find((u) => u.uid === 'twin')!;
     const hask = s.units.find((u) => u.lieutenant === 'hask')!;
-    expect(twin.stats).toEqual(genericStats(data, 'brigand', 4, 0));
+    // the twin gets the enemy level bonus on top of its map level, the lieutenant does not
+    expect(twin.level).toBe(4 + enemyLevelBonus(data, s));
+    expect(twin.stats).toEqual(genericStats(data, 'brigand', twin.level, 0));
     expect(hask.stats).toEqual(genericStats(data, 'brigand', 4, 0, 'nearest'));
   });
 });

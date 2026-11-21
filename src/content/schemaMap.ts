@@ -168,6 +168,8 @@ export const mapSchema = z.object({
    * units of the company plus grudge (story 3.4); `position` from the battle's position level P plus their `levelOffset` (the act 2 finale).
    */
   lieutenantLevel: z.enum(['company', 'position']).optional(),
+  // Produktinhaber 2026-11-21: false = the difficulty's enemyLevelBonus does not apply on this map (act 2 finale)
+  enemyLevelBonus: z.literal(false).optional(),
   legend: z.record(z.string(), z.string()),
   terrain: z.string(),
   levels: z.array(z.object({ level: z.number().int().min(0).max(2), area })).optional(),

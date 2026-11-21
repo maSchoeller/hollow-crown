@@ -1,13 +1,14 @@
 /**
- * Save games, format 3 (concept/24-architecture §5.15; format 3 = format 2 with the IDs of content/renames.yaml): IndexedDB `hollow-crown` v2 with up to three
+ * Save games, format 4 (concept/24-architecture §5.15; format 3 = format 2 with the IDs of content/renames.yaml, format 4 adds the play history §6.2b): IndexedDB `hollow-crown` v2 with up to three
  * campaigns, an auto slot + 3 manual slots each, a command journal and the untouched PoC saves (`legacy`).
  */
 import { openDB, type IDBPDatabase, type IDBPTransaction } from 'idb';
 import { applyRenames, type Renames } from '../content/ids';
 import { saveRecordSchema } from './schema';
+import { emptyHistory } from '../core/campaign/history';
 import type { BattleState, CampaignState, Command, DeathMode, Difficulty, QueuedEffects } from '../core';
 
-export const SAVE_FORMAT = 3;
+export const SAVE_FORMAT = 4;
 export const DB_NAME = 'hollow-crown';
 export const DB_VERSION = 2;
 export const MAX_CAMPAIGNS = 3;
@@ -27,7 +28,7 @@ export interface SavePayload {
 }
 
 export interface SaveRecord {
-  /** 3 since the rename migration; older records (2) are migrated on reading */
+  /** 4 since the play history (3 since the rename migration); older records (2, 3) are migrated on reading */
   format: number;
   campaignId: string;
   slot: SlotId;
@@ -103,6 +104,8 @@ const migrations: Record<number, (r: SaveRecord) => SaveRecord> = {
   // story 15.6 renamed Kael to Lucan (and the Varek scenes moved to n2) after players had saves: roster, fallen, flags,
   // supports, answers, seen scenes, the running battle and its command log all carry the old IDs. Replacing is idempotent.
   2: (r) => ({ ...applyRenames(r, needRenames()), format: 3 }),
+  // §6.2b: format 4 keeps the play history in the campaign; older saves start an empty one, marked `migrated` (earlier play is unknown)
+  3: (r) => ({ ...r, format: 4, payload: { ...r.payload, campaign: { ...r.payload.campaign, history: r.payload.campaign.history ?? emptyHistory('migrated') } } }),
 };
 
 /** From-formats that have a migration (for the fixture test). */

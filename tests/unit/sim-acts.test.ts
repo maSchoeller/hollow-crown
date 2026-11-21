@@ -39,7 +39,12 @@ const withoutBrandschneise = (d: GameData): GameData => {
   delete maps.m2_4_brandschneise;
   return { ...d, maps };
 };
-const sim = (o: CampaignSimOptions) => simulateCampaign(withoutBrandschneise(prepareActData(data, o)), o);
+/**
+ * The probe map keeps the levels it was built with: the difficulty's enemyLevelBonus (Produktinhaber 2026-11-21, +3 in act 2 on normal) is
+ * tuned for the real maps, and on the probe it makes the company lose 2-1, so the run would stop there. The real maps keep the bonus.
+ */
+const probeWithoutBonus = (d: GameData): GameData => ({ ...d, maps: { ...d.maps, dev_eisenmark: { ...d.maps.dev_eisenmark!, enemyLevelBonus: false } } });
+const sim = (o: CampaignSimOptions) => simulateCampaign(probeWithoutBonus(withoutBrandschneise(prepareActData(data, o))), o);
 /** the mission played on the probe map */
 const probe = (r: ReturnType<typeof sim>): MissionSim => r.missions.find((m) => m.map === 'dev_eisenmark')!;
 

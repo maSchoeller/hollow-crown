@@ -7,7 +7,7 @@ import type { BattleState, BattleUnit, UnitRecord } from '../state';
 import { clamp } from '../util';
 import { itemDef } from './items';
 import { campaignOfAct } from '../campaign/acts';
-import { effectiveLevel } from './skills';
+import { effectiveLevel, expToNext } from './skills';
 
 export function growthRate(data: GameData, u: UnitRecord, k: StatKey): number {
   const cls = data.classes[u.classId]!;
@@ -72,7 +72,6 @@ export interface ExpGain {
  * to the act's level cap `cap`, levelling up with `rng` as often as needed. At the cap further EP are forfeited (`capped`).
  */
 export function addExp(data: GameData, u: UnitRecord, amount: number, rng: RngState, cap: number): ExpGain {
-  const e = data.balance.experience;
   const out: ExpGain = { counted: 0, capped: false, levelUps: [] };
   if (amount <= 0) return out;
   if (u.level >= cap) {
@@ -80,12 +79,14 @@ export function addExp(data: GameData, u: UnitRecord, amount: number, rng: RngSt
     out.capped = true;
     return out;
   }
-  const room = (cap - u.level) * e.levelUpAt - u.exp;
+  // the EP that still count up to the cap: the curve (`levelCurve`) from the unit's level on, minus what it holds
+  let room = -u.exp;
+  for (let l = u.level; l < cap; l++) room += expToNext(data, { classId: u.classId, level: l });
   out.counted = Math.min(amount, room);
   out.capped = out.counted === room;
   u.exp += out.counted;
-  while (u.exp >= e.levelUpAt && u.level < cap) {
-    u.exp -= e.levelUpAt;
+  while (u.level < cap && u.exp >= expToNext(data, u)) {
+    u.exp -= expToNext(data, u);
     out.levelUps.push({ level: u.level + 1, gains: levelUp(data, u, rng) });
   }
   if (u.level >= cap) u.exp = 0;
@@ -106,6 +107,7 @@ export function grantExp(data: GameData, u: BattleUnit, amount: number, rng: Rng
   amount = expShare(amount, percent);
   if (amount <= 0) return;
   const before = u.level >= levelCap(data, act) ? 0 : u.exp;
+  const need = expToNext(data, u);
   const hpBefore = u.stats.hp;
   if (u.level < levelCap(data, act)) u.levelAtExpStart ??= u.level;
   const gain = addExp(data, u, amount, rng, levelCap(data, act));
@@ -114,7 +116,7 @@ export function grantExp(data: GameData, u: BattleUnit, amount: number, rng: Rng
     return;
   }
   u.battleExp = (u.battleExp ?? 0) + gain.counted;
-  const ev: GameEvent = { t: 'exp', unit: u.uid, amount, before, after: Math.min(before + gain.counted, data.balance.experience.levelUpAt) };
+  const ev: GameEvent = { t: 'exp', unit: u.uid, amount, before, after: Math.min(before + gain.counted, need) };
   if (gain.capped) ev.capped = true;
   events.push(ev);
   for (const l of gain.levelUps) events.push({ t: 'levelUp', unit: u.uid, level: l.level, gains: l.gains });
@@ -149,7 +151,7 @@ export function combatExp(
   const delta = effectiveLevel(data, foe) - effectiveLevel(data, u);
   if (!killed) return clamp(e.combatBase + delta, e.combatMin, e.combatMax);
   const bossLike = boss || !!foe.lieutenant;
-  return clamp(e.killBase + e.killPerLevelDiff * delta, e.killMin, e.killMax) + (bossLike ? e.bossBonus : 0);
+  return clamp(e.killBase + e.killPerLevelDiff * delta + e.killPerLevelAbove * Math.max(0, delta), e.killMin, e.killMax) + (bossLike ? e.bossBonus : 0);
 }
 
 /** Adds skill points to every item skill of equipped items; masters skills at the cost threshold. */

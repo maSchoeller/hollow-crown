@@ -208,6 +208,8 @@ export interface MapDef {
   noDeath?: boolean;
   /** lieutenants' level: `company` (default, story 3.4) or `position` = P + their `levelOffset` (story 11.27) */
   lieutenantLevel?: 'company' | 'position';
+  /** false: the difficulty's `enemyLevelBonus` does not apply on this map (Produktinhaber 2026-11-21, act 2 finale) */
+  enemyLevelBonus?: false;
   legend: Record<string, string>;
   terrain: string;
   /** tiles standing a level other than their terrain's (a stairs on the wall walk, a terrace of ordinary ground) */

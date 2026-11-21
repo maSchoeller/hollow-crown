@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { parse as parseYaml } from 'yaml';
 import { loadContentFromDisk } from '../../src/content/node';
+import { enemyLevelBonus } from '../fixtures/enemyLevelBonus';
 import { mapSchema } from '../../src/content/schemaMap';
 import { validateUnitLevels } from '../../src/content/validateLevels';
 import { validateContent } from '../../src/content/validate';
@@ -116,16 +117,19 @@ describe('nodeLevel', () => {
 });
 
 describe('levelOffset', () => {
-  it('createBattle puts P into the start state and the foes on P + offset', () => {
+  it('createBattle puts P into the start state and the foes on P + offset + the enemy level bonus', () => {
     const d = actTwo();
     const c = inActTwo(d, ['m2_1']);
     const s = createBattle(d, c, 'm2_2', []);
     const P = BASE + 1;
+    const bonus = enemyLevelBonus(d, s);
+    expect(bonus).toBeGreaterThan(0); // Normal, act 2
     expect(s.positionLevel).toBe(P);
     const lv = (id: string) => s.units.find((u) => u.uid === id)!.level;
-    expect(lv('dev_soldier_a')).toBe(P - 3);
-    expect(lv('dev_elite')).toBe(P - 1);
-    expect(lv('dev_captain')).toBe(P + 2);
+    expect(lv('dev_soldier_a')).toBe(P - 3 + bonus);
+    expect(lv('dev_elite')).toBe(P - 1 + bonus);
+    expect(lv('dev_captain')).toBe(P + 2 + bonus);
+    // a player unit gets no bonus
     expect(lv('dev_vanguard')).toBe(P);
     // replay-safe: the same campaign builds the same battle
     expect(createBattle(d, c, 'm2_2', [])).toEqual(s);
@@ -140,8 +144,9 @@ describe('levelOffset', () => {
     const spawn = map.triggers[0]!.then[0]!;
     if (spawn.action !== 'spawn') throw new Error('fixture: spawn trigger expected');
     spawnUnits(d, s, spawn.units, false, events);
-    expect(s.units.find((u) => u.uid === 'dev_wave')!.level).toBe(BASE - 2);
-    expect(s.units.find((u) => u.uid === 'dev_ambush')!.level).toBe(BASE - 2);
+    const bonus = enemyLevelBonus(d, s);
+    expect(s.units.find((u) => u.uid === 'dev_wave')!.level).toBe(BASE - 2 + bonus);
+    expect(s.units.find((u) => u.uid === 'dev_ambush')!.level).toBe(BASE - 2 + bonus);
   });
 
   it('a battle of act 1 has no positionLevel (start states unchanged)', () => {

@@ -65,9 +65,13 @@ describe('restartTurn / restartMission (story 1.5)', () => {
       const commands: Command[] = [{ type: 'endPhase' }, { type: 'endPhase' }];
       const turn = applyCampaign(data, c, { type: 'restartTurn', node, keep: restartKeep('turn', commands) });
       expect(turn.events).toEqual([{ t: 'battleRestarted', scope: 'turn', keep: 2 }]);
-      expect(turn.campaign).toEqual(c);
+      // only the play history (§6.2b) counts the restarts
+      expect({ ...turn.campaign, history: c.history }).toEqual(c);
+      expect(turn.campaign.history!.turnRestarts).toBe(1);
       const mission = applyCampaign(data, c, { type: 'restartMission', node });
       expect(mission.events).toEqual([{ t: 'battleRestarted', scope: 'mission', keep: 0 }]);
+      expect({ ...mission.campaign, history: c.history }).toEqual(c);
+      expect(mission.campaign.history!.battles.map((b) => b.outcome)).toEqual(['restarted']);
     }
   });
 
@@ -115,7 +119,9 @@ describe('abandonMission (story 1.9)', () => {
         expect(validateCampaign(data, c, cmd)).toBeNull();
         const r = applyCampaign(data, c, cmd);
         expect(r.events).toEqual([{ t: 'battleAbandoned' }]);
-        expect(r.campaign).toEqual(before);
+        // only the play history (§6.2b) notes the abandoned attempt
+        expect({ ...r.campaign, history: before.history }).toEqual(before);
+        expect(r.campaign.history!.battles.map((b) => [b.outcome, b.actions])).toEqual([['abandoned', commands.length]]);
       }
       expect(c).toEqual(before);
     }
@@ -124,7 +130,7 @@ describe('abandonMission (story 1.9)', () => {
   it('Classic allows it only before the first action', () => {
     const c = campaignOf('classic');
     expect(validateCampaign(data, c, { type: 'abandonMission', node: node(), commands: [] })).toBeNull();
-    expect(applyCampaign(data, c, { type: 'abandonMission', node: node(), commands: [] }).campaign).toEqual(c);
+    expect({ ...applyCampaign(data, c, { type: 'abandonMission', node: node(), commands: [] }).campaign, history: c.history }).toEqual(c);
     expect(validateCampaign(data, c, { type: 'abandonMission', node: node(), commands: played })).toBe('abandon_forbidden');
     expect(() => applyCampaign(data, c, { type: 'abandonMission', node: node(), commands: played })).toThrow();
   });

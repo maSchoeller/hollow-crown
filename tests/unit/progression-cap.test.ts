@@ -6,6 +6,7 @@ import {
   combatExp,
   effectiveLevel,
   expProgress,
+  expToNext,
   getUnit,
   grantExp,
   levelCap,
@@ -53,7 +54,9 @@ describe('level cap (story 6.5)', () => {
   it('counts EXP up to the cap and drops the rest', () => {
     const u = lucan();
     u.level = 9;
-    u.exp = 70;
+    // 30 EP short of the cap level (the EP per level come from the level curve)
+    const before = expToNext(data, u) - 30;
+    u.exp = before;
     u.battleExp = 0;
     const events: GameEvent[] = [];
     grantExp(data, u, 80, seedRng(1), events);
@@ -61,7 +64,7 @@ describe('level cap (story 6.5)', () => {
     expect(u.exp).toBe(0);
     expect(u.battleExp).toBe(30);
     const exp = events.find((e) => e.t === 'exp');
-    expect(exp).toMatchObject({ amount: 80, before: 70, capped: true });
+    expect(exp).toMatchObject({ amount: 80, before, capped: true });
     expect(events.filter((e) => e.t === 'levelUp')).toHaveLength(1);
   });
 
@@ -103,9 +106,10 @@ describe('EXP rules (GDD Figurensystem)', () => {
     expect(combatExp(data, at(u, 1), at(u, 20), false, false)).toBe(clampTo(e().combatBase + 19, e().combatMin, e().combatMax));
   });
 
-  it('defeat = base + killPerLevelDiff · delta within min-max, boss and lieutenant + bossBonus', () => {
+  it('defeat = base + killPerLevelDiff · delta + killPerLevelAbove · max(0, delta) within min-max, boss and lieutenant + bossBonus', () => {
     const u = lucan();
-    const kill = (delta: number) => clampTo(e().killBase + e().killPerLevelDiff * delta, e().killMin, e().killMax);
+    const kill = (delta: number) =>
+      clampTo(e().killBase + e().killPerLevelDiff * delta + e().killPerLevelAbove * Math.max(0, delta), e().killMin, e().killMax);
     expect(combatExp(data, at(u, 5), at(u, 5), true, false)).toBe(e().killBase);
     expect(combatExp(data, at(u, 5), at(u, 7), true, false)).toBe(kill(2));
     expect(combatExp(data, at(u, 20), at(u, 1), true, false)).toBe(kill(-19));
@@ -115,6 +119,9 @@ describe('EXP rules (GDD Figurensystem)', () => {
     expect(combatExp(data, at(u, 5), { ...at(u, 5), lieutenant: 'hask' }, false, false)).toBe(e().combatBase);
     // weaker foes are worth as much as equal ones (killPerLevelDiff 0): late in act 1 the foes stand below the army
     expect(e().killPerLevelDiff).toBe(0);
+    // stronger foes are worth more (killPerLevelAbove, Produktinhaber 2026-11-21)
+    expect(e().killPerLevelAbove).toBeGreaterThan(0);
+    expect(kill(2)).toBeGreaterThan(e().killBase);
   });
 
   it('pro classes count 15 levels higher', () => {
@@ -127,6 +134,6 @@ describe('EXP rules (GDD Figurensystem)', () => {
 
   it('balance holds the GDD values', () => {
     const e = data.balance.experience;
-    expect([e.levelUpAt, e.heal, e.healExtraTarget, e.rescueOrTalk, e.bossBonus]).toEqual([100, 12, 3, 10, 20]);
+    expect([e.heal, e.healExtraTarget, e.rescueOrTalk, e.bossBonus]).toEqual([12, 3, 10, 20]);
   });
 });

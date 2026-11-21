@@ -59,6 +59,7 @@ export * from './campaign/aid';
 export * from './campaign/gear';
 export * from './campaign/commands';
 export * from './campaign/apply';
+export * from './campaign/history';
 export * from './campaign/restart';
 export * from './campaign/conditions';
 export * from './campaign/effects';

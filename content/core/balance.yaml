@@ -62,8 +62,13 @@ supports:
   # fixed pairs of the season and how many of them reach S (GDD Supports, narrative "Die 25 Support-Paare")
   seasonPairs: 25
   corePairs: 6
+# EP-Kurve (Produktinhaber 2026-11-21, GDD Figurensystem): EP von jeder effektiven Stufe zur nächsten (Eintrag 1 = Stufe 1 → 2,
+# Beförderte zählen advancedLevelOffset dazu); hinter dem letzten Eintrag gilt der letzte. Bremst den Aufstieg über die Zeit,
+# statt EP zu kürzen; Gegner über der Figur geben dafür mehr EP (experience.killPerLevelAbove)
+# Kalibrierung 2026-11-21 (pnpm sim --campaign act2, 24 Läufe, Normal): vor 2-7 Armee-Stufe mit allen Heimsuchungen 20,1 statt
+# vorher 25,6 (Ziel: höchstens etwa +2), ohne Heimsuchungen 16,7 (Akt 2 begann schon vorher eine Stufe unter positionLevel.base)
+levelCurve: [100, 100, 100, 100, 110, 120, 130, 140, 150, 160, 175, 190, 205, 220, 260, 300, 340, 380, 420, 470, 520, 580, 640, 700, 760]
 experience:
-  levelUpAt: 100
   advancedLevelOffset: 15
   # Story 15.10, Nachtrag 2026-11-07 (Produktinhaber: mehr EP, Normal vor 1-7 Stufe 8, vor 1-8 Stufe 9): combatBase 10 → 11,
   # killBase 30 → 34, killPerLevelDiff 3 → 0. Ab 1-6 stehen die Gegner 2–5 Stufen unter der Truppe; der Abschlag je Stufe
@@ -73,6 +78,8 @@ experience:
   combatMax: 30
   killBase: 34
   killPerLevelDiff: 0
+  # Produktinhaber 2026-11-21: je Stufe, die der Gegner über der Figur steht, so viel EP mehr für den Kill (darunter kein Abschlag)
+  killPerLevelAbove: 6
   killMin: 10
   killMax: 100
   bossBonus: 20
@@ -186,6 +193,27 @@ simulation:
   # Story 11.28: die Heimat-Heuristik wirbt in der Taverne Söldner an, bis die Truppe das Einsatz-Limit der nächsten Mission füllt,
   # und behält dabei mindestens reserve Gold (für Heiltränke und Narben) [ASSUMPTION]; nur die Simulation, kein Spielwert
   hire: { reserve: 500 }
+  # Spielerprofile der Simulation (pnpm sim --profile / --profiles, vom Produktinhaber 2026-11-21 freigegeben); nur die Simulation,
+  # kein Spielwert [ASSUMPTION]. Nicht genannte Werte = standard (die heutige KI und Heimat-Heuristik).
+  # battle: healBelow Heiltrank unter so viel % LP; lowHp darunter spielt die Figur vorsichtig; dangerWeight Faktor auf den Abzug
+  #   für bedrohte Felder beim Angriff; dangerShift mehr (+) oder weniger (−) Bedrohung beim Ziehen; errandDanger Bedrohung für
+  #   Dörfer, Gespräche, Truhen; chests jagt alle Truhen der Karte; mistakes Anteil der Züge mit schlechterer Wahl (eigener RNG)
+  # home: haunts Anteil der offenen Heimsuchungen je Tag; hauntsAlways auch ohne --haunts; healItems Anteil der Starken mit
+  #   Heiltrank; upgrades Chance je Lagerbesuch auf Waffen-Aufwertungen; promoteDelay Stufen nach der frühesten Beförderung; sparks
+  profiles:
+    standard: {}
+    cautious:
+      battle: { healBelow: 70, lowHp: 75, dangerWeight: 2, dangerShift: -1, errandDanger: 1 }
+      home: { haunts: 0.5 }
+    aggressive:
+      battle: { healBelow: 30, lowHp: 35, dangerWeight: 0.25, dangerShift: 2, errandDanger: 3 }
+    novice:
+      battle: { healBelow: 35, lowHp: 50, mistakes: 0.2 }
+      home: { haunts: 0.3, healItems: 0.5, upgrades: 0.3, promoteDelay: 4 }
+    optimizer:
+      home: { hauntsAlways: true }
+    collector:
+      battle: { chests: true, errandDanger: 3 }
 # loading before missions (story 7.6): a download that stays silent this long counts as failed (shows the retry)
 loading:
   fetchTimeoutMs: 30000
@@ -291,10 +319,12 @@ economy:
   convoySize: 200
   rarityAffixes: { common: 0, rare: 1, epic: 2, legendary: 0 }
   rarityRuneSlots: { common: 1, rare: 2, epic: 2, legendary: 2 }
+# enemyLevelBonus (Produktinhaber 2026-11-21): je Akt (der letzte gilt für spätere) Stufen auf jeden Kartengegner einer Story- oder Nebenquest-Karte (nicht Leutnants, anwerbbare Figuren,
+# Heimsuchungen); GDD Schwierigkeitskurve „+0 bis +2 über der erwarteten Stufe“
 difficulty:
-  easy:   { enemyStatPercent: -15, aiFinishDowned: never,    enemyAffixes: false }
-  normal: { enemyStatPercent: 0,   aiFinishDowned: fallback, enemyAffixes: false }
-  hard:   { enemyStatPercent: 15,  aiFinishDowned: prefer,   enemyAffixes: true, aiDangerAware: true, ambushReinforcements: true }
+  easy:   { enemyStatPercent: -15, enemyLevelBonus: [0], aiFinishDowned: never,    enemyAffixes: false }
+  normal: { enemyStatPercent: 0,   enemyLevelBonus: [1, 3], aiFinishDowned: fallback, enemyAffixes: false }
+  hard:   { enemyStatPercent: 15,  enemyLevelBonus: [0], aiFinishDowned: prefer,   enemyAffixes: true, aiDangerAware: true, ambushReinforcements: true }
 ai:
   killChanceWeight: 50
   counterWeight: 0.5

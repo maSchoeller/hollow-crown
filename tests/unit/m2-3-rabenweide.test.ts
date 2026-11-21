@@ -1,6 +1,7 @@
 /** Mission 2-3 "Die Rabenweide" (story 11.14): line-up, Rowena (boss and lieutenant, flees = victory), fords and footbridge, Ilka, waves, scenes. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
+import { enemyLevelBonus } from '../fixtures/enemyLevelBonus';
 import {
   applyCommand,
   availableActions,
@@ -73,12 +74,13 @@ describe('map m2_3_rabenweide', () => {
       expect(['knight', 'vanguard', 'skirmisher', 'marksman', 'healer'], u.id).toContain(u.class);
   });
 
-  it('puts every foe on the position level only through levelOffset (P−3…P−1), Rowena on the lieutenant level; P = 13 after 2-1, 14 after 2-2', () => {
+  it('puts every foe on the position level only through levelOffset (P−3…P−1), Rowena on the lieutenant level; P = 13 after 2-1, 14 after 2-2, generic foes plus the enemy level bonus on the board', () => {
     const s = battle();
+    const bonus = enemyLevelBonus(data, s);
     expect(s.positionLevel).toBe(13);
     expect(battle('normal', true).positionLevel).toBe(14);
-    expect(unit(s, 's1').level).toBe(10);
-    expect(unit(s, 'k1').level).toBe(11);
+    expect(unit(s, 's1').level).toBe(10 + bonus);
+    expect(unit(s, 'k1').level).toBe(11 + bonus);
     for (const u of [...map().units, ...map().reinforcements.flatMap((r) => r.units)].filter((x) => x.team === 'enemy' && !x.lieutenant && !x.char)) {
       expect(u.level, u.id).toBeUndefined();
       expect(u.levelOffset).toBeGreaterThanOrEqual(-3);
