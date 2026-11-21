@@ -38,6 +38,7 @@ import {
   mergeError,
   mergeLevelFor,
   runeMerge,
+  runeFits,
   runeSlotCount,
   sellPrice,
   tavernWishOpen,
@@ -791,7 +792,7 @@ export function EnchanterRoom({ room, apply, onClose }: { room: RoomDef; apply: 
               </SecondaryButton>
             ) : null,
           )}
-          {runes.map((r) => (
+          {runes.filter((r) => runeFits(data, itemDef(data, selInst), data.runes[r.def]!)).map((r) => (
             <SecondaryButton key={r.uid} onClick={() => apply({ type: 'insertRune', item: selInst.uid, rune: r.uid }, t('ui.camp.enchanted'))}>
               <ItemImage data={data} item={r} size={24} /> {t(`item.${r.def}.name`)}
             </SecondaryButton>
