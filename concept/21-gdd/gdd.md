@@ -319,7 +319,7 @@ Zu Beginn von Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, T
 | Raum | Raum-Gefährten (für Stufe 3) | Funktion | Stufe 1 → 2 → 3 |
 |---|---|---|---|
 | Konvoi | Tobin, Nell | Items lagern (200 Plätze) | Sortieren → Ausrüstungs-Vorlagen (gespeicherte Belegung je Figur) → „Bestes anlegen“ |
-| Händler | Fenn, Nell | Kaufen, Verkaufen (50 %) | Sortiment des Akts → größeres Sortiment → Angebot des Tages, Rabatt 10 %, Glutfunke rotierend (siehe Fortschritt) |
+| Händler | Fenn, Nell | Kaufen für eine gewählte Person direkt in ihren Platz (das Getragene geht in den Konvoi) oder in den Konvoi, Verkaufen (50 %) | Sortiment des Akts → größeres Sortiment → Angebot des Tages, Rabatt 10 %, Glutfunke rotierend (siehe Fortschritt) |
 | Schmied | Brenna, Grosk | Aufwerten, Affix neu würfeln, Trank verstärken (ab Akt 2) | max. +3 → +4 → +5 und Neu würfeln |
 | Verzauberer (ab Akt 2) | Ysolde, Brann | Runen ein-/ausbauen und tauschen (kostenlos), verschmelzen (nur Runen im Konvoi), Rune I kaufen | Verschmelzen bis Rune I → II → III; Einsetzen und Ausbauen jeder Rune auf jeder Stufe |
 | Heiler | Liora, Amos | Narben entfernen | 2 500 → 1 800 → 1 200 Gold, Trauer 2 statt 3 Missionen |
