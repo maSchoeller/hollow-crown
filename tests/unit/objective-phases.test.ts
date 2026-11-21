@@ -15,9 +15,11 @@ import {
   applyCommand,
   autoplay,
   availableActions,
+  escapeProgress,
   replayBattle,
   type BattleState,
   type BattleUnit,
+  type EscapeObjectiveDef,
   type GameData,
   type GameEvent,
   type MapDef,
@@ -260,16 +262,25 @@ describe('escape phase', () => {
     const r = escapeAt(s, 'lucan', [5, 0]);
     expect(r.state.outcome).toBe('victory');
   });
-  it('is not won when fewer than min escaped, nor when a must unit stays behind', () => {
+  it('needs min only while that many can still get out (rule A, 2026-11-21); is not won when a must unit stays behind', () => {
     let s = escapePhase();
+    const v = activeVictory(data.maps.dev_phases!, s) as EscapeObjectiveDef;
+    expect(escapeProgress(s, v)).toEqual({ have: 0, min: 3 });
     remove(s, 'dev_vanguard', 'dev_marksman');
+    expect(escapeProgress(s, v)).toEqual({ have: 0, min: 2 }); // only Rhen and Lucan can still leave
     unit(s, 'avatar').pos = [6, 1];
     unit(s, 'lucan').pos = [5, 1];
     s = escapeAt(s, 'avatar', [6, 0]).state;
+    expect(s.outcome).toBeNull(); // Lucan is still on the board
     s = escapeAt(s, 'lucan', [5, 0]).state;
-    expect(s.outcome).toBeNull(); // 2 of 3
+    expect(s.outcome).toBe('victory'); // all who could leave are out
+    // a downed unit counts while somebody is left to carry it
+    const d = escapePhase();
+    remove(d, 'dev_marksman');
+    unit(d, 'dev_vanguard').hp = 0;
+    unit(d, 'dev_vanguard').downed = true;
+    expect(escapeProgress(d, v).min).toBe(3);
     const t = escapePhase();
-    const v = activeVictory(data.maps.dev_phases!, t) as { must?: string[] };
     expect(v.must).toEqual(['avatar', 'lucan']);
     unit(t, 'avatar').gone = 'dead';
     unit(t, 'avatar').pos = null;
