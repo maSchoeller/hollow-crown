@@ -266,7 +266,7 @@ Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übe
 - Paperdoll: Haupthand, Nebenhand, Kopf, Körper, 2 Accessoires, Beutel 3 (ohne Gewicht); kein Verschleiß. Die Waffengruppen der Rolle begrenzen, was eine Figur führen darf.
 - Gewicht: Tragkraft = STR + Bewegungstyp-Bonus (Fuß 4, Gepanzert 8, Beritten 6, Flieger 2, Monster 10); Überlast senkt AS 1:1, ab 5 −1 MOV, ab 10 −2 MOV.
 - Seltenheit Gewöhnlich/Selten/Episch/Legendär/Relikt mit 0/1/2/fest/fest Affixen und 1/2/2/2/1 Rune-Slots; Sets mit Bonus ab 2 bzw. 4 Teilen. Signaturen sind legendäre Unikate mit Besitzer-Effekt; drei Relikte (eins je Akt) erwachen mit der Story. Katalog, Waffengruppen und Unikate in `items.md`.
-- Runen I–III (Element, Status 30 %/50 %, Geländeeffekt); 1 Element-Rune je Waffe, zweiter Slot für Hilfs-Runen; Körperrüstung setzt die Affinität.
+- Runen I–III (Element, Status 30 %/50 %, Geländeeffekt); höchstens 1 Element-Rune je Item, sonst nimmt jeder Runenplatz jede Rune (auch die einzige Fassung einer gewöhnlichen Waffe darf eine Hilfs-Rune tragen); Körperrüstung nimmt nur Element-Runen und setzt damit die Affinität (Produktinhaber 2026-11-21).
 - Aufwerten +1…+5 (Waffe je +1 Mt/+3 Treffer, Rüstung je +1 DEF oder RES).
 - Ausrüstungs-Tier pro Akt: Akt 1 Eisen, Akt 2 Stahl, Akt 3 Silber und Mondstahl.
 - Verbrauchsgüter: Heiltrank (3 Ladungen) und Gegengift (2) füllen sich nach jeder Mission auf; Schlüssel, Feuerbombe, Hast und Glutfunke werden verbraucht.
@@ -321,7 +321,7 @@ Zu Beginn von Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, T
 | Konvoi | Tobin, Nell | Items lagern (200 Plätze) | Sortieren → Ausrüstungs-Vorlagen (gespeicherte Belegung je Figur) → „Bestes anlegen“ |
 | Händler | Fenn, Nell | Kaufen, Verkaufen (50 %) | Sortiment des Akts → größeres Sortiment → Angebot des Tages, Rabatt 10 %, Glutfunke rotierend (siehe Fortschritt) |
 | Schmied | Brenna, Grosk | Aufwerten, Affix neu würfeln, Trank verstärken (ab Akt 2) | max. +3 → +4 → +5 und Neu würfeln |
-| Verzauberer (ab Akt 2) | Ysolde, Brann | Runen ein-/ausbauen, verschmelzen | Verschmelzen bis Rune I → II → III; Einsetzen und Ausbauen jeder Rune auf jeder Stufe |
+| Verzauberer (ab Akt 2) | Ysolde, Brann | Runen ein-/ausbauen und tauschen (kostenlos), verschmelzen (nur Runen im Konvoi), Rune I kaufen | Verschmelzen bis Rune I → II → III; Einsetzen und Ausbauen jeder Rune auf jeder Stufe |
 | Heiler | Liora, Amos | Narben entfernen | 2 500 → 1 800 → 1 200 Gold, Trauer 2 statt 3 Missionen |
 | Taverne | Varek, Jory | Söldner anheuern | 3 Angebote → 4 Angebote + bessere Traits → Wunschrolle (die nächste Angebotsrunde enthält sicher ein Angebot dieser Rolle) |
 | Lagerfeuer | Jory, Brenna | Support-Gespräche | Ränge C und B → A → S (Kernpaare) |

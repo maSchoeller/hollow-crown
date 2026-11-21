@@ -263,3 +263,9 @@ Ausgangspunkt: Der Produktinhaber fand Runen undurchsichtig und die Waffenmodell
 - Abgenommen (Produktinhaber 2026-11-21): Konzeptblatt, Axt, dann Schwert, Schild, Lanze und 20 Runensteine in der Waffenkammer-Ansicht („Sehr, sehr gut“).
 - Entschieden: Brett-Leuchten immer gedämpft, voll bei Auswahl und in der Vorschau; zweite Rune in kleiner zweiter Fassung; Material per Tönung; Gegnerwaffen leuchten auch.
 - Offen für eine spätere Runde: Schild wirkt einheitlich beige, Steinstufen I und II von vorn zu ähnlich, Krallen klein, Axt-Tülle kastig. Noch nicht im Spiel eingebaut.
+
+## 2026-11-21: Runen im Verzauberer (Konzept „Ausrüstung zum Anfassen“, Thema 2)
+
+- Abgenommen (Produktinhaber 2026-11-21): Der Verzauberer zeigt das gewählte Item als 3D-Modell aus `art/models/weapons-v2/`. Eine Rune zur Probe sitzt als Stein aus `art/models/runes-v2/` in der Fassung, die Rinne füllt sich nach Stufe wie in §4.7; der Stein wächst beim Einlegen kurz auf.
+- Verschmelzen in derselben Bühne: drei Steine kreisen zusammen, ein Lichtblitz in Elementfarbe, der Stein der nächsten Stufe wächst heraus.
+- Offen: Rüstung und Schild-Runen im Raum, solange Rüstung kein Modell hat (vorerst Bild mit Stein am Brustteil); die zweite, kleine Fassung ist im Modell noch nicht gebaut und erscheint vorerst nur als Stein über der Bühne.
