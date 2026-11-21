@@ -1,6 +1,6 @@
 # Story 16.6: Runenwaffen v2 im Spiel (Axt, Schwert, Lanze, Schild)
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -118,8 +118,15 @@ Quelle: `concept/26-epics/epics/epic-16.md` Story 16.6 (Zeilen 97-111), Art Dire
 
 ### Agent Model Used
 
+Claude Sonnet 5.5 (Umsetzung, zwei Subagenten), Claude Opus 5.5 (Lenkung, Prüfung)
+
 ### Debug Log References
 
 ### Completion Notes List
+
+- T1–T6 umgesetzt; `pnpm check` grün. Abnahmebilder: `s4-16-6-modelle.png` (Blender, alle Waffen und Steine), `s4-16-6-brett.png` (Brett 375 × 812, Lucan gedämpft und voll) im Notizordner des Nachtlaufs.
+- Testlabor kann Runen setzen (`units.<id>.runes`, Lage `tests/fixtures/lab/runenwaffen-v2.yaml`).
+- Schild Ocker/Umbra statt Teamfarben; Werte gedämpft 0,3 und Steinleuchten 0,8 nach Sichtprüfung.
+- Offen für den Produktinhaber: Abnahme der Modelle, Lage der kleinen Fassung, Rinnenbreite auf dem Brett (Decision-Log 23 vom 2026-11-22). Folgepunkte aus dem Review: Glühmeshes nicht in `model.meshes` (Schatten), NullEngine-Test für Materialcache und Puls fehlt.
 
 ### File List
