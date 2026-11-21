@@ -401,7 +401,8 @@ function Who({ defId }: { defId: string }) {
 
 // ---------------------------------------------------------------- smith
 
-const GEAR_STAT_LABEL: Record<string, string> = { mt: 'ui.mt', hit: 'ui.hit', def: 'ui.stat.def', res: 'ui.stat.res' };
+/** Smith list: label keys of the upgrade preview (the written-out names of the change list). */
+const GEAR_STAT_LABEL: Record<string, string> = { mt: 'ui.change.stat.attack', hit: 'ui.change.stat.hit', def: 'ui.change.stat.defense', res: 'ui.change.stat.resistance' };
 
 function ownerOf(uid: string): UnitRecord | undefined {
   return locateItem(campaign.value!, uid)?.owner;
