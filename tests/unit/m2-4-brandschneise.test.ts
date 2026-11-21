@@ -1,6 +1,7 @@
 /** Mission 2-4 "Die Brandschneise" (story 11.15): line-up, the fire front (ignite, F1 = A), the firebreak, Brann as guest, Sable watching, looters, E7, scenes. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
+import { enemyLevelBonus } from '../fixtures/enemyLevelBonus';
 import {
   applyCommand,
   applyEffects,
@@ -92,10 +93,10 @@ describe('map m2_4_brandschneise', () => {
       expect(['vanguard', 'brigand', 'skirmisher', 'marksman'], u.id).toContain(u.class);
   });
 
-  it('puts every foe on P = 15 only through levelOffset (P−3…P−1), Grell on the lieutenant level as skirmisher with a steel sword', () => {
+  it('puts every foe on P = 15 only through levelOffset (P−3…P−1) plus the enemy level bonus on the board, Grell on the lieutenant level as skirmisher with a steel sword', () => {
     const s = battle();
     expect(s.positionLevel).toBe(15);
-    expect(unit(s, 'n1').level).toBe(12);
+    expect(unit(s, 'n1').level).toBe(12 + enemyLevelBonus(data, s));
     expect(unit(s, 'h0')).toBeUndefined();
     for (const u of [...map().units, ...map().reinforcements.flatMap((r) => r.units)].filter((x) => x.team === 'enemy' && !x.lieutenant)) {
       expect(u.level, u.id).toBeUndefined();

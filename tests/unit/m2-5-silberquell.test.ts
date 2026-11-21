@@ -1,6 +1,7 @@
 /** Mission 2-5 "Die verstoßene Leibwache" (story 11.16): line-up, Sable or the captain, the west bridge, Odile's escort, Amos, the scenes and E5. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
+import { enemyLevelBonus } from '../fixtures/enemyLevelBonus';
 import {
   applyCampaign,
   checkObjectives,
@@ -59,10 +60,10 @@ describe('map m2_5_silberquell', () => {
     }
   });
 
-  it('puts the foes on the position level: start P−3, waves P−2 (hard elite P−2), the captain P+1; no riders or fliers', () => {
+  it('puts the foes on the position level: start P−3, waves P−2 (hard elite P−2), the captain P+1, plus the enemy level bonus on the board; no riders or fliers', () => {
     const s = battle();
     const y1 = s.units.find((u) => u.uid === 'y1')!;
-    expect(y1.level).toBe(s.positionLevel! - 3);
+    expect(y1.level).toBe(s.positionLevel! - 3 + enemyLevelBonus(data, s));
     for (const u of [...map().units, ...map().reinforcements.flatMap((r) => r.units)].filter((x) => x.team === 'enemy' && !x.lieutenant)) {
       expect(u.level, u.id).toBeUndefined();
       expect(u.levelOffset, u.id).toBeGreaterThanOrEqual(-3);

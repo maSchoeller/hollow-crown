@@ -10,7 +10,7 @@ import type { LieutenantDef } from '../storyDefs';
 import { autoEquip, newItem, recordFromChar, roundDiv } from '../battle/create';
 import { nextFloat, nextInt, type RngState } from '../rng';
 import { allItems } from '../rules/items';
-import { effectiveLevel } from '../rules/skills';
+import { effectiveLevel, levelForEffective } from '../rules/skills';
 import { fogOn, visibleTiles } from '../rules/vision';
 import { onDifficulty, posKey } from '../util';
 import type { BountyResult } from './campaign';
@@ -107,7 +107,7 @@ export function lieutenantUnit(data: GameData, c: Pick<CampaignState, 'roster' |
   const { items, kept } = lieutenantItems(data, lt, def.items, grudge);
   const drops = def.drops?.map((i) => kept.indexOf(i)).filter((i) => i >= 0);
   return {
-    def: { ...def, level: position !== undefined && def.levelOffset !== undefined ? atPosition(def, position).level! : lieutenantLevel(data, c, grudge), items, ...(drops ? { drops } : {}) },
+    def: { ...def, level: position !== undefined && def.levelOffset !== undefined ? atPosition(def, position).level! : levelForEffective(data, def.class, lieutenantLevel(data, c, grudge)), items, ...(drops ? { drops } : {}) },
     skills: lieutenantSkills(data, lt, grudge),
   };
 }
@@ -162,7 +162,8 @@ export function joinLieutenant(data: GameData, c: CampaignState, id: string, eve
   const def = data.chars[id];
   const lt = data.lieutenants?.[id];
   if (!def || !lt || isJoined(c, id) || c.roster.some((r) => r.id === id)) return;
-  const level = Math.max(def.level, lieutenantLevel(data, c, 0));
+  // lieutenantLevel is an effective level: a pro class (Sable) stands advancedLevelOffset lower (fault 2026-11-21: she joined on 21)
+  const level = Math.max(def.level, levelForEffective(data, def.class, lieutenantLevel(data, c, 0)));
   // the signature item the company holds already (convoy, bag or hand) goes to him; otherwise a new one is made
   const held: ItemInstance | undefined = [...c.convoy, ...c.roster.flatMap((u) => allItems(u))].find((i) => i.def === lt.signatureItem);
   const kept = held ? takeItem(c, held.uid) : null;

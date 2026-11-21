@@ -90,7 +90,8 @@ describe('rename migration 2 → 3 (story 15.6: Kael is Lucan)', () => {
 
   it('loads the act 1 finale save with the academy defaults, without a migration (story 10.2)', () => {
     const rec = JSON.parse(readFileSync(join(dir, 'format3-act1-finale-done.json'), 'utf8')) as SaveRecord;
-    expect(rec.format).toBe(SAVE_FORMAT);
+    // written in format 3; since format 4 (play history) it migrates without a change to the act 1 state
+    expect(rec.format).toBe(3);
     const raw = rec.payload.campaign;
     const c = normalizeCampaign(data, migrate(rec).payload.campaign);
     expect(c.roster.length).toBe(raw.roster.length);

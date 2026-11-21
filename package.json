@@ -25,6 +25,7 @@
     "sim:diff": "tsx tools/simDiff.ts",
     "lab": "tsx tools/lab.ts",
     "report": "tsx tools/report.ts",
+    "journey": "tsx tools/journey.ts",
     "levels": "tsx tools/levels/atlas.ts",
     "bench:ai": "tsx tools/bench-ai.ts",
     "art:build": "python tools/art/build.py",

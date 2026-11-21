@@ -2,7 +2,7 @@ import { STAT_KEYS, type CharDef, type Stats } from '../defs';
 import type { GameData } from '../gameData';
 import type { MapUnitDef } from '../mapDefs';
 import type { CampaignNodeDef } from '../storyDefs';
-import type { BattleUnit, CampaignState, UnitRecord } from '../state';
+import type { BattleState, BattleUnit, CampaignState, UnitRecord } from '../state';
 import { roundDiv } from '../battle/create';
 import { growthRate } from '../rules/progression';
 import { computeStats } from '../rules/stats';
@@ -40,6 +40,20 @@ export function positionNow(data: GameData, c: Pick<CampaignState, 'completed'> 
   const act = actOf(c);
   const pos = positionOf(data, act);
   return pos ? pos.base + storyDone(data, c, act) : undefined;
+}
+
+/**
+ * A map unit at its level for the battle: `atPosition`, then the difficulty's `enemyLevelBonus` of the battle's act (the last entry for later acts) on top
+ * of every enemy of a story map (Produktinhaber 2026-11-21). Lieutenants (they scale with the company), recruitable characters, haunts and a map with
+ * `enemyLevelBonus: false` keep their level.
+ */
+export function atBattleLevel(data: GameData, def: MapUnitDef, s: Pick<BattleState, 'positionLevel' | 'hauntId' | 'settings' | 'act'> & { mapId?: string }): MapUnitDef {
+  const placed = atPosition(def, s.positionLevel);
+  if (s.mapId && data.maps[s.mapId]?.enemyLevelBonus === false) return placed;
+  const byAct = data.balance.difficulty[s.settings.difficulty]?.enemyLevelBonus ?? [];
+  const bonus = byAct.length ? byAct[Math.min(s.act ?? 1, byAct.length) - 1]! : 0;
+  if (!bonus || def.team !== 'enemy' || def.lieutenant || def.char || s.hauntId) return placed;
+  return { ...placed, level: (placed.level ?? 1) + bonus };
 }
 
 /** A map unit at its level: a `levelOffset` stands on the battle's position level (never below 1); any other unit comes back unchanged. */

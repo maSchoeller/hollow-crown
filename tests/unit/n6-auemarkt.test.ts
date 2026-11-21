@@ -1,6 +1,7 @@
 /** Side quest N6 "Die Gauklertruppe" (story 11.22): node and memorial variant, escort of the troupe master, the tide, the boats (east in round 4 since story 11.27 round 2), the lute. */
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
+import { enemyLevelBonus } from '../fixtures/enemyLevelBonus';
 import {
   addToRoster,
   availableNodes,
@@ -92,7 +93,7 @@ describe('map n6_auemarkt', () => {
     expect(master).toMatchObject({ team: 'other', classId: 'minstrel', pos: [10, 5], ai: { profile: 'follow' }, level: 15 });
   });
 
-  it('has 13 / 16 / 19 foes with boats in rounds 4 (east) and 5 (west), all on P−3 to P−1', () => {
+  it('has 13 / 16 / 19 foes with boats in rounds 4 (east) and 5 (west), all on P−3 to P−1 plus the enemy level bonus', () => {
     // story 11.27 round 3: every boat crew exists twice, for [easy, normal] and as a hard copy with prefer: player,
     // so the waves are counted per difficulty like the foes on the map
     const waves = (d: Difficulty) => map().reinforcements.flatMap((r) => r.units).filter((u) => !u.difficulty || u.difficulty.includes(d));
@@ -113,10 +114,11 @@ describe('map n6_auemarkt', () => {
       expect(u.levelOffset, u.id).toBeLessThanOrEqual(-1);
       expect(u.lieutenant, u.id).toBeUndefined();
     }
-    // P after 2-1 to 2-6: base 12 + 6 story nodes
+    // P after 2-1 to 2-6: base 12 + 6 story nodes, then the difficulty's enemy level bonus of act 2
     const s = battle();
-    expect(s.units.find((u) => u.id === 'boss')!.level).toBe(17);
-    expect(s.units.find((u) => u.id === 'a1')!.level).toBe(15);
+    const bonus = enemyLevelBonus(data, s);
+    expect(s.units.find((u) => u.id === 'boss')!.level).toBe(17 + bonus);
+    expect(s.units.find((u) => u.id === 'a1')!.level).toBe(15 + bonus);
   });
 
   it('the stage is a terrace on level 1 with stairs; the tide takes the west footbridge in round 6, warned from round 5', () => {

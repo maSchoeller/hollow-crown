@@ -54,6 +54,12 @@ import {
   type Difficulty,
   type GameData,
   nodeLevel,
+  hash32,
+  nextFloat,
+  seedRng,
+  type RngState,
+  type SimHomeStyle,
+  type SimProfile,
 } from '../src/core';
 import { aiPhaseTimes } from './enemyPhase';
 
@@ -82,6 +88,8 @@ export interface CampaignSimOptions {
   mapFile?: string;
   /** story 11.4, `--node`: the target node for `--map-file` and `--position` (default: the first story node of the act without a map) */
   node?: string;
+  /** `--profile`: the simulated player of `simulation.profiles` (battle and home); without it the run plays exactly as before */
+  profile?: string;
 }
 
 /** Per story mission, summed over all runs that reached it. */
@@ -129,6 +137,9 @@ export interface MissionSim {
   winTurns: number[];
   /** Testlabor S1: side objective id → runs whose won attempt fulfilled it (out of `cleared`) */
   side: Record<string, number>;
+  /** `--profiles`: haunts the run played before the mission and the gold it held then, summed over the runs that reached it */
+  hauntsBefore?: number;
+  goldBefore?: number;
 }
 
 export interface CampaignSim {
@@ -157,6 +168,20 @@ export interface MissionFlags {
   side?: 'low' | 'high';
   level?: 'low' | 'high';
 }
+
+/** `--profile <name>`: the profile of `simulation.profiles`; undefined without a name (today's play). */
+export function simProfile(data: GameData, name: string | undefined): SimProfile | undefined {
+  if (name === undefined) return undefined;
+  const p = data.balance.simulation.profiles[name];
+  if (!p) throw new Error(`unknown profile ${name}, balance.yaml simulation.profiles has ${Object.keys(data.balance.simulation.profiles).join(', ')}`);
+  return p;
+}
+
+/** The home part of a profile with its own random stream (haunts and upgrades left out by chance), seeded from the run's seed. */
+export type HomeProfile = SimHomeStyle & { rng: RngState };
+export const homeProfile = (p: SimProfile | undefined, seed: number): HomeProfile | undefined => p && { ...p.home, rng: seedRng(hash32(seed, 0x686f6d65)) };
+/** A share below 1 draws from the profile's stream; 1 (today's play) never draws. */
+const byChance = (home: HomeProfile | undefined, share: number | undefined): boolean => !home || share === undefined || share >= 1 || nextFloat(home.rng) < share;
 
 const AVATAR = { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' } as const;
 /** first try plus three restarts */
@@ -271,14 +296,14 @@ export function buildRooms(data: GameData, c0: CampaignState, reserveUpgrade: nu
  * Between missions: unlock ready supports, promote, build rooms up, heal scars, hire mercenaries up to the next mission's deploy
  * limit (story 11.28, `next` = that mission's node), buy one healing item per strong unit, then upgrade weapons.
  */
-export function homeHeuristic(data: GameData, c0: CampaignState, spent: CampaignSim['spent'], next?: string): CampaignState {
+export function homeHeuristic(data: GameData, c0: CampaignState, spent: CampaignSim['spent'], next?: string, home?: HomeProfile): CampaignState {
   let c = c0;
   const pay = (key: keyof CampaignSim['spent'], before: number) => (spent[key] += before - c.gold);
   for (const pair of Object.keys(c.supports)) c = tryCmd(data, c, { type: 'unlockSupport', pair });
   const strong = () =>
     [...c.roster].sort((a, b) => effectiveLevel(data, b) - effectiveLevel(data, a)).slice(0, data.balance.simulation.armySize);
   // ember sparks (story 10.9): the merchant of level 3 sells one whenever its price is free
-  for (;;) {
+  for (; home?.sparks ?? true; ) {
     const g = c.gold;
     const next = tryCmd(data, c, { type: 'buyEmberSpark' });
     if (next === c) break;
@@ -289,6 +314,8 @@ export function homeHeuristic(data: GameData, c0: CampaignState, spent: Campaign
   for (;;) {
     const cand = [...c.roster]
       .filter((u) => promotionTargets(data, u.classId).length > 0 && !promoteError(data, c, u.id, promotionTargets(data, u.classId)[0]!))
+      // a profile that promotes late waits `promoteDelay` levels past the earliest
+      .filter((u) => !home?.promoteDelay || u.level >= data.balance.levels.promoteFrom + home.promoteDelay)
       .sort((a, b) => b.level - a.level)[0];
     if (!cand) break;
     const next = tryCmd(data, c, { type: 'promote', unit: cand.id, classId: promotionTargets(data, cand.classId)[0]! });
@@ -322,7 +349,8 @@ export function homeHeuristic(data: GameData, c0: CampaignState, spent: Campaign
     .sort((a, b) => itemDef(data, a).price - itemDef(data, b).price);
   const healing = stock[0];
   if (healing) {
-    for (const u of strong()) {
+    const buyers = strong();
+    for (const u of buyers.slice(0, Math.round((home?.healItems ?? 1) * buyers.length))) {
       const rec = c.roster.find((r) => r.id === u.id)!;
       if (rec.bag.some((i) => itemDef(data, i).use?.heal)) continue;
       const g = c.gold;
@@ -335,7 +363,7 @@ export function homeHeuristic(data: GameData, c0: CampaignState, spent: Campaign
     }
   }
   // upgrade: main-hand weapons of the strongest units, one level per pass, cheapest first
-  for (let pass = 0; pass < 10; pass++) {
+  for (let pass = 0, upgrading = byChance(home, home?.upgrades); upgrading && pass < 10; pass++) {
     const weapons = strong()
       .map((u) => c.roster.find((r) => r.id === u.id)?.equip.mainHand)
       .filter((i): i is NonNullable<typeof i> => !!i && itemCategory(itemDef(data, i)) === 'weapon')
@@ -474,11 +502,13 @@ const emptySim = (): CampaignSim => ({
  * A day goes by (the packet of `day`), then every haunt that is open is played once with the whole company, oldest first; a
  * lost haunt stays open (story 5.6). The home heuristic runs after each, as a player would visit the camp.
  */
-function playHaunts(data: GameData, c0: CampaignState, day: number, stats: CampaignSim['haunts']): CampaignState {
+function playHaunts(data: GameData, c0: CampaignState, day: number, stats: CampaignSim['haunts'], profile?: SimProfile, home?: HomeProfile): CampaignState {
   let c = tryCmd(data, c0, { type: 'advanceDay', day });
   for (const h of [...c.haunts]) {
+    // a profile that plays only some haunts leaves this one open for another day
+    if (!byChance(home, home?.haunts)) continue;
     stats.played++;
-    const { state } = autoplay(data, startBattle(data, createHauntBattle(data, c, h.id, c.roster.map((u) => u.id))).state);
+    const { state } = autoplay(data, startBattle(data, createHauntBattle(data, c, h.id, c.roster.map((u) => u.id))).state, undefined, profile?.battle);
     if (state.outcome !== 'victory') continue;
     const won = finishBattle(data, c, state);
     stats.won++;
@@ -495,8 +525,12 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
   const act = o.act ?? 1;
   if (o.start === 'expected' && act === 1) throw new Error('--start expected needs a later act (--campaign act2)');
   const flags = parseFlags(data, o.flags);
+  const profile = simProfile(data, o.profile);
+  const withHaunts = o.haunts || !!profile?.home.hauntsAlways;
   for (let run = 0; run < o.runs; run++) {
     const seed = o.seed + run;
+    const home = homeProfile(profile, seed);
+    const hauntsAtStart = out.haunts.played;
     let c: CampaignState;
     if (o.start === 'expected') {
       c = entryCampaign(data, seed, o);
@@ -539,13 +573,15 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
           .set(id, {
             node: id, map: node.map, expectedLevel: nodeLevel(data, c, node), reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, rooms: 0, materials: 0, deaths: 0, reserve: 0, reserveLevel: 0, reserveExp: 0,
             turns: 0, actions: 0, deployed: 0, phases: 0, phaseSingle: 0, phaseMarch: 0, phaseSingleMax: 0, phaseMarchMax: 0, phaseShown: 0, phaseShownMax: 0,
-            winTurns: [], side: Object.fromEntries(data.maps[node.map]!.objectives.side.map((s) => [s.id, 0])),
+            winTurns: [], side: Object.fromEntries(data.maps[node.map]!.objectives.side.map((s) => [s.id, 0])), hauntsBefore: 0, goldBefore: 0,
           })
           .get(id)!;
       m.reached++;
       m.armyLevel += armyLevel(data, c);
       m.rooms += roomUpgrades(data, c);
       m.materials += materialUnits(c);
+      m.hauntsBefore = (m.hauntsBefore ?? 0) + out.haunts.played - hauntsAtStart;
+      m.goldBefore = (m.goldBefore ?? 0) + c.gold;
       o.onMission?.(id, c, run);
       let won: { campaign: CampaignState; result: BattleResult; deployed: Set<string> } | null = null;
       for (let attempt = 0; attempt < MAX_ATTEMPTS && !won; attempt++) {
@@ -553,7 +589,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
         // keeps it, but a player plays differently). The campaign keeps its own seed afterwards.
         const from = attempt === 0 ? c : { ...c, seed: (c.seed + attempt * 104729) >>> 0 };
         const begun = beginBattle(data, from, id, from.roster.map((u) => u.id)).state;
-        const { state, log, events } = autoplay(data, begun);
+        const { state, log, events } = autoplay(data, begun, undefined, profile?.battle);
         if (attempt === 0) {
           if (state.outcome === 'victory') {
             m.wins++;
@@ -599,9 +635,9 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
       for (const so of won.result.side) if (so.done) m.side[so.id] = (m.side[so.id] ?? 0) + 1;
       // story 11.28: hire for the next mission's places; mercenaries join only through the tavern, so the difference is the hires
       const mercs = (x: CampaignState) => x.roster.filter(isMercenary).length;
-      c = homeHeuristic(data, won.campaign, out.spent, nextNode(data, won.campaign, o.order));
+      c = homeHeuristic(data, won.campaign, out.spent, nextNode(data, won.campaign, o.order), home);
       out.hired += mercs(c) - mercs(won.campaign);
-      if (o.haunts) c = playHaunts(data, c, 1000 + day++, out.haunts);
+      if (withHaunts) c = playHaunts(data, c, 1000 + day++, out.haunts, profile, home);
     }
     if (finished) {
       out.finished++;

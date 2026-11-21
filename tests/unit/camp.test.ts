@@ -3,6 +3,7 @@ import { loadContentFromDisk } from '../../src/content/node';
 import {
   applyCampaign,
   armyCount,
+  expToNext,
   canPromote,
   clone,
   equipCandidates,
@@ -49,7 +50,7 @@ describe('troop helpers (story 6.1)', () => {
     expect(canPromote(data, c, brenna)).toBe(false);
     const castle = { ...clone(c), act: 2, home: { kind: 'castle' as const, rooms: {} } };
     expect(canPromote(data, castle, unit(castle, 'brenna'))).toBe(true);
-    expect(expProgress(data, brenna).need).toBe(data.balance.experience.levelUpAt);
+    expect(expProgress(data, brenna).need).toBe(expToNext(data, brenna));
   });
 
   it('counts the conversations of a unit', () => {

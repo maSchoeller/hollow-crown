@@ -20,8 +20,9 @@ import {
   type DeathMode,
   type Difficulty,
   type GameData,
+  type SimBattleStyle,
 } from '../src/core';
-import { applyNodeRewards, entryCampaign } from './simCampaign';
+import { applyNodeRewards, entryCampaign, simProfile } from './simCampaign';
 
 export interface MapSimOptions {
   node: string;
@@ -37,6 +38,8 @@ export interface MapSimOptions {
   leave: string[];
   /** `--promote a|b` (story 10.3): before the mission every unit of the promotion level rises to its first (a) or second (b) path */
   promote?: 'a' | 'b';
+  /** `--profile`: the simulated player of `simulation.profiles` (its battle part, also in the chain before the target) */
+  profile?: string;
 }
 
 /** One run. `arrived` is false when a chained run lost a mission before the target. */
@@ -102,7 +105,7 @@ export function campaignAt(d: GameData, seed: number, nodeId: string, difficulty
  * In a later act the acts before it are not replayed (that is what `--campaign act2` is for): the run starts at the entry of the
  * act (`campaignAt`) and chains this act's own story nodes before the target.
  */
-export function campaignChained(d: GameData, seed: number, nodeId: string, difficulty: Difficulty, chainDifficulty: Difficulty, deathMode: DeathMode) {
+export function campaignChained(d: GameData, seed: number, nodeId: string, difficulty: Difficulty, chainDifficulty: Difficulty, deathMode: DeathMode, battle?: Partial<SimBattleStyle>) {
   const { act } = actOrder(d, nodeId);
   const first = d.acts[act]!.nodes[0]!.id;
   // the missions before the target can run on another difficulty (e.g. hard target with a normal chain, so enough runs arrive)
@@ -114,7 +117,7 @@ export function campaignChained(d: GameData, seed: number, nodeId: string, diffi
     }
     // in a later act a chained run plays the story line, as `--campaign` does without `--order`; act 1 keeps playing every node
     if ((act > 1 && n.kind !== 'story') || !d.maps[n.map]) continue;
-    const { state } = autoplay(d, beginBattle(d, c, n.id, c.roster.map((u) => u.id)).state);
+    const { state } = autoplay(d, beginBattle(d, c, n.id, c.roster.map((u) => u.id)).state, undefined, battle);
     if (state.outcome !== 'victory') return null;
     c = finishBattle(d, c, state).campaign;
     applyNodeRewards(d, c, n.id);
@@ -123,7 +126,8 @@ export function campaignChained(d: GameData, seed: number, nodeId: string, diffi
 }
 
 export function simulateMapRun(data: GameData, o: MapSimOptions, run: number, seed: number): MapRun {
-  const c = o.chained ? campaignChained(data, seed, o.node, o.difficulty, o.chainDifficulty, o.deathMode) : campaignAt(data, seed, o.node, o.difficulty, o.deathMode);
+  const battle = simProfile(data, o.profile)?.battle;
+  const c = o.chained ? campaignChained(data, seed, o.node, o.difficulty, o.chainDifficulty, o.deathMode, battle) : campaignAt(data, seed, o.node, o.difficulty, o.deathMode);
   if (!c) return { run, seed, arrived: false };
   for (const f of o.flags) {
     const [name, value] = f.split('=');
@@ -138,7 +142,7 @@ export function simulateMapRun(data: GameData, o: MapSimOptions, run: number, se
     }
   const t0 = performance.now();
   const start = beginBattle(data, c, o.node, c.roster.map((u) => u.id)).state;
-  const { state, events } = autoplay(data, start);
+  const { state, events } = autoplay(data, start, undefined, battle);
   const ms = performance.now() - t0;
   const map = data.maps[state.mapId]!;
   const lost: string[] = [];
@@ -268,7 +272,7 @@ const pct = (x: number) => `${(x * 100).toFixed(0)} %`;
 /** Text output: the three lines of before, then rounds, side objectives and a hint when few chained runs arrive. */
 export function printMap(s: MapSummary): void {
   const o = s.options;
-  console.log(`${s.node} (${s.map}) – ${s.arrived}/${s.runs} runs ${o.chained ? '(chained campaign)' : '(fresh roster)'}, ${o.difficulty}/${o.deathMode}${o.promote ? `, promoted to path ${o.promote}` : ''}`);
+  console.log(`${s.node} (${s.map}) – ${s.arrived}/${s.runs} runs ${o.chained ? '(chained campaign)' : '(fresh roster)'}, ${o.difficulty}/${o.deathMode}${o.promote ? `, promoted to path ${o.promote}` : ''}${o.profile ? `, profile ${o.profile}` : ''}`);
   console.log(
     `win rate ${pct(s.winRate)}, avg turns ${(s.avgTurns ?? 0).toFixed(1)}, median turns ${s.turns.p50 ?? '-'}, avg losses ${s.avgDowns.toFixed(2)}, avg ${s.timing.msPerRun.toFixed(0)} ms/run`,
   );

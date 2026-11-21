@@ -5,6 +5,7 @@ import {
   beginBattle,
   campfireLock,
   clone,
+  expToNext,
   finishBattle,
   firstNode,
   levelCap,
@@ -81,9 +82,12 @@ describe('trainReserve (story 10.8)', () => {
     };
     const a = run();
     const b = run();
-    // the mercenary held 90 EP: half of 100 lifts it to the next level, the rest stays
+    // the mercenary held 90 EP: its share of 100 lifts it to the next level (EP per level from the level curve), the rest stays
+    const share = reserveShare(100, data.balance.training.reservePctByLevel[2]!);
+    const need = expToNext(data, { classId: a.merc.classId, level: 5 });
+    expect(90 + share).toBeGreaterThanOrEqual(need);
     expect(a.out.find((r) => r.unit === 'merc9')).toMatchObject({ levelBefore: 5, levelAfter: 6 });
-    expect(a.merc.exp).toBe(40);
+    expect(a.merc.exp).toBe(90 + share - need);
     expect(a.merc.stats).toEqual(b.merc.stats);
     expect(a.out).toEqual(b.out);
   });
@@ -92,10 +96,14 @@ describe('trainReserve (story 10.8)', () => {
     const c = castle(3);
     const cap = levelCap(data, 2);
     c.roster.find((u) => u.id === 'bench')!.level = cap;
-    c.roster.find((u) => u.id === 'merc9')!.level = cap - 1;
-    const out = trainReserve(data, c, battle(c.roster.filter((u) => u.id !== 'bench' && u.id !== 'merc9').map((u) => u.id)), [{ exp: 400 }], seedRng(1));
+    const merc = c.roster.find((u) => u.id === 'merc9')!;
+    merc.level = cap - 1;
+    // the merc holds 90 EP; an average of 4 levels' worth gives a share well past the cap (EP per level from the level curve)
+    const need = expToNext(data, merc);
+    const out = trainReserve(data, c, battle(c.roster.filter((u) => u.id !== 'bench' && u.id !== 'merc9').map((u) => u.id)), [{ exp: 4 * need }], seedRng(1));
+    expect(reserveShare(4 * need, data.balance.training.reservePctByLevel[2]!)).toBeGreaterThan(need - 90);
     expect(out.find((r) => r.unit === 'bench')).toMatchObject({ exp: 0, levelAfter: cap });
-    expect(out.find((r) => r.unit === 'merc9')).toMatchObject({ exp: 10, levelAfter: cap });
+    expect(out.find((r) => r.unit === 'merc9')).toMatchObject({ exp: need - 90, levelAfter: cap });
   });
 
   it('takes the average on the haunt share and gives a member above the expected level only the catch-up part', () => {

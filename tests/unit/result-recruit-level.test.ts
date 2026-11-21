@@ -1,6 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
-import { applyCommand, beginBattle, finishBattle, getUnit, grantExp, newCampaign, seedRng, type CampaignState, type GameData, type GameEvent } from '../../src/core';
+import { applyCommand, beginBattle, finishBattle, getUnit, expToNext, grantExp, newCampaign, seedRng, type CampaignState, type GameData, type GameEvent } from '../../src/core';
 
 let data: GameData;
 let base: CampaignState;
@@ -21,7 +21,7 @@ describe('result of a unit recruited mid-battle', () => {
     const mira = getUnit(s, 'mira');
     const joined = mira.level;
     expect(mira.fromRoster).toBe(false);
-    grantExp(data, mira, data.balance.experience.levelUpAt + 7, seedRng(3), [] as GameEvent[]);
+    grantExp(data, mira, expToNext(data, mira) + 7, seedRng(3), [] as GameEvent[]);
     expect(mira.level).toBe(joined + 1);
     s.outcome = 'victory';
     const { campaign, result } = finishBattle(data, c, s);

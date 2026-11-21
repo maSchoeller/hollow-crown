@@ -2,6 +2,31 @@ import { z } from 'zod';
 import { moveType, statusId } from './schemaBase';
 import { conditionSchema } from './schemaConditions';
 
+/** A simulated player profile (`simulation.profiles`, `pnpm sim --profile`): every value left out plays as today's heuristic. */
+const simProfileSchema = z.strictObject({
+  battle: z
+    .strictObject({
+      healBelow: z.number().min(0).max(100).default(50),
+      lowHp: z.number().min(0).max(100).default(60),
+      dangerWeight: z.number().min(0).default(1),
+      dangerShift: z.number().int().default(0),
+      errandDanger: z.number().int().min(0).default(2),
+      chests: z.boolean().default(false),
+      mistakes: z.number().min(0).max(1).default(0),
+    })
+    .prefault({}),
+  home: z
+    .strictObject({
+      haunts: z.number().min(0).max(1).default(1),
+      hauntsAlways: z.boolean().default(false),
+      healItems: z.number().min(0).max(1).default(1),
+      upgrades: z.number().min(0).max(1).default(1),
+      promoteDelay: z.number().int().min(0).default(0),
+      sparks: z.boolean().default(true),
+    })
+    .prefault({}),
+});
+
 /** Balance is validated structurally (all sections present, numbers numeric); see core/defs.ts Balance. */
 export const balanceSchema = z.object({
   /** castle stages: upgrades needed for tier 1, 2, 3 (art direction §7) */
@@ -32,6 +57,7 @@ export const balanceSchema = z.object({
     seasonPairs: z.number().int().min(1),
     corePairs: z.number().int().min(0),
   }),
+  levelCurve: z.array(z.number().int().min(1)).min(1),
   experience: z.record(z.string(), z.number()),
   growth: z.record(z.string(), z.union([z.number(), z.boolean()])),
   levels: z.record(z.string(), z.number()),
@@ -94,6 +120,7 @@ export const balanceSchema = z.object({
     roomOrder: z.array(z.string()).default([]),
     craftIronOreAbove: z.number().int().min(0).default(4),
     hire: z.object({ reserve: z.number().int().min(0) }).default({ reserve: 0 }),
+    profiles: z.record(z.string().min(1), simProfileSchema).default({}),
   }),
   elevation: z.object({
     rangedBonus: z.number().int().min(0),
@@ -147,7 +174,7 @@ export const balanceSchema = z.object({
       classes: z.array(z.object({ class: z.string(), items: z.array(z.string()), requires: z.array(conditionSchema).optional() })).min(1),
     }),
   }),
-  difficulty: z.record(z.string(), z.looseObject({ enemyStatPercent: z.number() })),
+  difficulty: z.record(z.string(), z.looseObject({ enemyStatPercent: z.number(), enemyLevelBonus: z.array(z.number().int().min(0)).min(1).optional() })),
   ai: z.record(z.string(), z.number()),
   lieutenant: z.strictObject({
     grudge: z.strictObject({ max: z.number().int().min(1) }),

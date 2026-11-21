@@ -1,6 +1,7 @@
 import type { DeathMode, Difficulty, Element, EquipSlot, FlagValue, HomeKind, ItemRef, Mechanic, Pos, Stance, Stats, StatusId, SupportRank, Team } from './defs';
 import type { AiDef, HauntVariant, MapDef } from './mapDefs';
 import type { RngState } from './rng';
+import type { PlayHistory } from './campaign/history';
 
 /** One concrete item. Plain JSON. */
 export interface ItemInstance {
@@ -386,6 +387,11 @@ export interface CampaignState {
   villageAid: number | null;
   /** lieutenants the company has met (AR5; Epic 3 adds grudge, target, routs …); absent until the first meeting */
   lieutenants?: Record<string, LieutenantState>;
+  /**
+   * the play history (architecture §6.2b): one record per battle attempt plus the camp actions between, written by
+   * `applyCampaign`; `newCampaign` starts it, saves before format 4 get one marked `migrated`
+   */
+  history?: PlayHistory;
 }
 
 /**

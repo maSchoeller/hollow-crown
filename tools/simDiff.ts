@@ -57,9 +57,11 @@ if (process.argv[1]?.replace(/\\/g, '/').endsWith('tools/simDiff.ts')) {
   if (files.length !== 2) throw new Error('usage: pnpm sim:diff <a.json> <b.json> [--threshold 0.02] [--all]');
   const ti = args.indexOf('--threshold');
   const threshold = ti >= 0 ? Number(args[ti + 1]) : 0.02;
-  const [a, b] = files.map((f) => JSON.parse(readFileSync(f!, 'utf8')) as { kind?: string; sets?: unknown });
+  const [a, b] = files.map((f) => JSON.parse(readFileSync(f!, 'utf8')) as { kind?: string; sets?: unknown; profile?: string });
   if (a!.kind !== b!.kind) throw new Error(`cannot compare a ${a!.kind} run with a ${b!.kind} run`);
-  console.log(`a ${files[0]} ${JSON.stringify(a!.sets ?? {})}\nb ${files[1]} ${JSON.stringify(b!.sets ?? {})}`);
+  // `--profile` runs name their profile; `--profiles` runs keep each one under `profiles.<name>`, which the keys show
+  const profile = (x: { profile?: string }) => (x.profile ? ` profile ${x.profile}` : '');
+  console.log(`a ${files[0]} ${JSON.stringify(a!.sets ?? {})}${profile(a!)}\nb ${files[1]} ${JSON.stringify(b!.sets ?? {})}${profile(b!)}`);
   const rows = diffSims(a, b, threshold, args.includes('--all'));
   if (rows.length) console.table(rows);
   else console.log(`no value moved by more than ${threshold}`);
