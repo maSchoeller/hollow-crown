@@ -258,6 +258,10 @@ export function itemInfo(data: GameData, item: ItemInstance | string, rc: RelicC
     if (d.element && d.slot === 'body')
       effects.push(t('ui.itemInfo.affinity', { element: t(`ui.element.${d.element}`) }));
     else if (d.element) facts.push({ key: 'element', label: t('ui.element'), value: t(`ui.element.${d.element}`) });
+    if (d.kind === 'shield') {
+      const guard = inst.runes.map((r) => (r ? data.runes[r] : undefined)).find((r) => r?.element && r.element in data.balance.element.statusOf);
+      if (guard?.element) effects.push(t('ui.itemInfo.shieldGuard', { element: t(`ui.element.${guard.element}`) }));
+    }
     facts.push(...statFacts(itemStatMods(data, inst, rc)));
     const wt = itemWeight(data, inst);
     if (wt || d.slot !== 'bag')
