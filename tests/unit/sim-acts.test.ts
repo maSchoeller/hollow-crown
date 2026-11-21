@@ -123,6 +123,8 @@ describe('simulation over the acts (story 11.4)', { timeout: 45_000 }, () => {
       cleared: 1,
       armyLevel: base,
       deaths: 0,
+      kills: 0,
+      epithets: 0,
       reserve: 0,
       reserveLevel: 0,
       reserveExp: 0,

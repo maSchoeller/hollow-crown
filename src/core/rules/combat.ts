@@ -12,6 +12,7 @@ import { combatExp, expPercent, grantExp, grantSp } from './progression';
 import { computeStats, type EffectiveStats } from './stats';
 import { adjacencyBonus, adjacentPartners, addSupportPoints, rankIndex } from './supports';
 import { setBonuses } from './skills';
+import { recordKill } from './chronicle';
 
 export interface SideForecast {
   uid: string;
@@ -512,6 +513,7 @@ export function resolveAttack(
     if (wasDowned) break;
   }
   // tandem: partner strikes once, 50 % damage, no crit, no counter
+  let tandemFelled = false;
   if (f.tandem && active(a) && active(d)) {
     const p = getUnit(s, f.tandem.uid);
     const hit = data.balance.combat.twoRnHit ? roll2(s.rng, f.tandem.hit) : roll1(s.rng, f.tandem.hit);
@@ -532,7 +534,12 @@ export function resolveAttack(
     const key = pairKey(a.id, p.id);
     const gained = addSupportPoints(data, s.supports, key, data.balance.supports.pointsTandemHealRescue);
     if (gained) events.push({ t: 'support', a: a.uid, b: p.uid, points: gained });
-    if (d.hp <= 0) knockOut(data, s, d, events, p.uid);
+    if (d.hp <= 0) {
+      knockOut(data, s, d, events, p.uid);
+      // weapon chronicle (story 16.5): the tandem partner's blow felled the foe, so it counts for the partner's weapon
+      tandemFelled = true;
+      if (p.team !== 'enemy' && d.team === 'enemy' && (d.gone === 'dead' || d.gone === 'fled') && p.equip.mainHand) recordKill(data, p, d, p.equip.mainHand, events);
+    }
   }
   if (landed.a && active(d)) applyOnHitEffects(data, s, a, d, f.attacker, aWp, events);
   if (landed.d && active(a)) applyOnHitEffects(data, s, d, a, f.defender, dWp, events);
@@ -549,6 +556,11 @@ export function resolveAttack(
     [d, a],
   ] as const) {
     grantSp(data, me, sp, events);
+    // weapon chronicle (story 16.5): the blow that felled the foe (dead or fled, not just downed) counts for the weapon in the slot
+    if (!(me === a && tandemFelled) && me.team !== 'enemy' && foe.team === 'enemy' && (foe.gone === 'dead' || foe.gone === 'fled') && active(me)) {
+      const used = me === a ? aInst : me.equip.mainHand;
+      if (used) recordKill(data, me, foe, used, events);
+    }
     if (me.team !== 'player' || !active(me)) continue;
     const killed = foe.gone === 'dead' || foe.gone === 'fled' || (!wasDowned && foe.downed);
     const used = me === a ? aInst : me.equip.mainHand;

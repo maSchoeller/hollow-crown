@@ -12,6 +12,7 @@ import { ballistaForecast, ballistaTargets } from '../rules/ballista';
 import { crewSpots, holdZone, levelAt, levelStep, moveCost, stepCost, destinations, pathTo, reachable, threatTiles, waitsToJoin, walkPath } from '../rules/movement';
 import { castSource, castTargets, fireArea } from '../rules/cast';
 import { computeStats } from '../rules/stats';
+import { recordKill } from '../rules/chronicle';
 import { itemDef } from '../rules/items';
 import { afterActionMove } from '../rules/skills';
 import type { BattleState, BattleUnit } from '../state';
@@ -558,6 +559,9 @@ function aiAct(data: GameData, real: BattleState, u: BattleUnit, events: GameEve
         if (fleesAtZero(u)) {
           // a lieutenant who withdraws on his own (a map trigger set `flee`, story 9.9) is driven off like one who fell to 0 HP: loot, grudge, bounty, flee line
           withdraw(real, u, events);
+          // weapon chronicle (story 16.5): the unit that drove him off scores the kill with its weapon
+          const by = u.fledBy ? getUnit(real, u.fledBy) : undefined;
+          if (by && by.team !== 'enemy' && u.team === 'enemy' && by.equip.mainHand) recordKill(data, by, u, by.equip.mainHand, events);
         } else {
           u.gone = 'escaped';
           events.push({ t: 'escaped', unit: u.uid });
