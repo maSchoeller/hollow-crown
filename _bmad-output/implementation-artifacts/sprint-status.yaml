@@ -287,8 +287,8 @@ development_status:
   epic-15-retrospective: optional
 
   # Epic 16: Ausrüstung zum Anfassen
-  epic-16: backlog
-  16-1-strassen-und-bruecken-kosten: backlog  # Straßen und Brücken kosten ½
+  epic-16: in-progress
+  16-1-strassen-und-bruecken-kosten: review  # Straßen und Brücken kosten ½
   16-2-balancing-nachzug-fuer-prolog-1-2-2-1-und-2-8: backlog  # Balancing-Nachzug für Prolog, 1-2, 2-1 und 2-8
   16-3-gegnerphase-standardmaessig-2: backlog  # Gegnerphase standardmäßig 2×
   16-4-schild-runen: backlog  # Schild-Runen
