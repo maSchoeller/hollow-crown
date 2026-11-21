@@ -51,7 +51,7 @@ supersedes: concept/09-ux-mobile.md §4–§5 (Wireframes, Bildschirmliste) und 
 | Ergebnis | Missionsende | Beute, Kopfgeld, Nebenziele, EP, Gefallene |
 | Abschied | Ergebnis, je Gefallenem | Tod erzählerisch tragen |
 | Epilog-Mosaik | Staffelfinale | Kacheln je Gefährte und Region |
-| Optionen | Titel, Menü | Sprache, Tempo, Gegnerzüge (Gemeinsam/Einzeln), Qualität, Lautstärke, Bildschirmwackeln; Block **Brett-Anzeige**: Raster, Lebensleisten, Gegner-Leiste, Gefahrenzone standardmäßig |
+| Optionen | Titel, Menü | Sprache, Tempo, Tempo der Gegnerphase (Standard 2×), Gegnerzüge (Gemeinsam/Einzeln), Qualität, Lautstärke, Bildschirmwackeln; Block **Brett-Anzeige**: Raster, Lebensleisten, Gegner-Leiste, Gefahrenzone standardmäßig |
 | Handbuch | Menü im Kampf, Menü auf der Weltkarte, Titel | Spielregeln nachschlagen: Kategorien als Steine, Suche, Einträge mit Grafik, Werten aus den Daten und Querverweisen |
 | Handbuch-Eintrag | Handbuch, Kontext-„?“ im Kampf | ein Eintrag als Overlay-Blatt, ohne den Kampf zu verlassen |
 
@@ -123,7 +123,7 @@ Beträge immer als Symbol + Zahl (`{components.currency}`), auch in Sätzen.
 
 | Fläche | Zustände |
 |---|---|
-| Kampf | Leerlauf · Einheit gewählt (Kill-Marker) · Bewegung gesetzt (zurücknehmbar bis zur Aktion, Zielfeld-Check) · Ziel gewählt (Vorschau, Schaden in der Lebensleiste) · Gegnerphase (Tempo 1×/2×/Überspringen; Gegner, die nur laufen, ziehen bei „Gegnerzüge: Gemeinsam“ gleichzeitig, Schläge bleiben einzeln; dauerte eine Gegnerphase bei „Gemeinsam“ und gewähltem Tempo länger als die Zeitgrenze, läuft sie als Ganzes schneller, höchstens um einen festen Faktor, Werte in `render.yaml aiPace` [ASSUMPTION Story 15.11]) · Rückblick nach der Gegnerphase · Lektion (max. 1 je Runde, 3 Zeilen) · Niederlage (Gründe + Neustart je Tod-Modus) |
+| Kampf | Leerlauf · Einheit gewählt (Kill-Marker) · Bewegung gesetzt (zurücknehmbar bis zur Aktion, Zielfeld-Check) · Ziel gewählt (Vorschau, Schaden in der Lebensleiste) · Gegnerphase (Tempo 1×/2×/Überspringen, Standard 2× (Thema 7, 2026-11-21); Gegner, die nur laufen, ziehen bei „Gegnerzüge: Gemeinsam“ gleichzeitig, Schläge bleiben einzeln; dauerte eine Gegnerphase bei „Gemeinsam“ und gewähltem Tempo länger als die Zeitgrenze, läuft sie als Ganzes schneller, höchstens um einen festen Faktor, Werte in `render.yaml aiPace` [ASSUMPTION Story 15.11]) · Rückblick nach der Gegnerphase · Lektion (max. 1 je Runde, 3 Zeilen) · Niederlage (Gründe + Neustart je Tod-Modus) |
 | Einheit | bereit · in Gefahr (Warn-Totenkopf) · erschöpft (entsättigt, Ring gestrichelt, Häkchen) · kritisch (Lebensleiste unter 25 % mit pulsierendem Glutrand) · niedergestreckt (grau, Puls, Verblutungs-Zähler) · geflohen (Leutnant, Wimpel fällt) · tot |
 | Weltkarte | normal · neuer Tag (Hinweis mit Zahl der Heimsuchungen) · Paket lädt · Akt beendet, nächster nicht veröffentlicht („erscheint bald“ im Nebel) · neuer Akt erreicht (einmal Titeltafel „Akt 2 · Glut“, dann lichtet sich der Nebel) · Akt erreicht, noch keine Mission spielbar (Nebel über den unfertigen Orten, Band „Weitere Missionen folgen“ wie „erscheint bald“; Heimsuchungen, Burg und Akademie bleiben nutzbar, UX-Log 2026-11-07) · offline mit fehlendem Paket (Knoten sichtbar, „Wird geladen, sobald du online bist“) |
 | Heimat | Lager (Akt 1 bis Mission 1-6, sechs Stationen) · Burg (ab 1-6: sechs Räume auf Stufe 1 und Gedächtnishalle; ab Akt 2 elf Räume) · Raum gesperrt · ausbaubar · Neues vorhanden |

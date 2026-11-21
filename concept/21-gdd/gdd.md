@@ -164,12 +164,14 @@ Tippen zum Wählen mit Geistervorschau, Aktionsleiste unten; Bewegung bis zur Ak
 
 - Quadratisches Raster, 4 Richtungen, keine Diagonalen. Reichweiten werden in Feldschritten gezählt (Manhattan).
 - **Höhe (Entscheidung 2026-11-04):** 3 Stufen (Feld; Wehrgang, Dach, Terrasse; Turm, Felsnase). Stufenwechsel nur über Rampe (alle), Treppe (ohne Reiter), Leiter (nur zu Fuß). Die Leiter lehnt an der Wand zwischen zwei Feldern (Entscheidung 2026-11-08): Das Feld davor bleibt gewöhnlicher Boden für alle, nur das Klettern über diese Kante ist auf Fuß beschränkt und kostet 1 Bewegung extra. Fernkampf von oben +1 Reichweite; Nahkampf nur auf gleicher Stufe oder bei 1 Stufe Unterschied an Rampe und Treppe. Flieger wechseln die Stufe frei; die Nahkampfregel gilt für keinen Kampf, an dem ein Flieger beteiligt ist, als Angreifer, Ziel oder beim Konter.
+- **Straßen und Brücken (Produktinhaber 2026-11-21, Thema 7):** kosten für alle Bewegungsarten und beide Seiten ½, eine Figur mit Bewegung 4 kommt auf der Straße 8 Felder weit. Tor, Rampe und Treppe bleiben bei 1. Übrige Bewegung kann halb sein („noch 1½“); ein Feld mit Kosten 1 braucht dann eine ganze Bewegung. Gegner nutzen die Straßen genauso; Karten, die dadurch aus dem Siegkorridor fallen (Sim 2026-11-21: Prolog, 1-2, 2-1, 2-8), werden über Weckrunden und Startpositionen nachgezogen.
 - Durch Verbündete darf man hindurchziehen, aber nicht auf ihnen stehen bleiben. Gegner blockieren, auch niedergestreckte.
 - Angriffe brauchen keine Sichtlinie. Im Nebel blockieren Mauern und geschlossene Türen die Sicht `[ASSUMPTION]`.
 
 | Gelände | Fuß | Gepanzert | Beritten | Flieger | Monster |
 |---|---|---|---|---|---|
-| Ebene, Straße, Brücke, Asche, Gras | 1 | 1 | 1 | 1 | 1 |
+| Straße, Brücke | ½ | ½ | ½ | ½ | ½ |
+| Ebene, Asche, Gras | 1 | 1 | 1 | 1 | 1 |
 | Wald, Sand | 2 | 3 | 3 | 1 | 2 |
 | Seichtes Wasser | 3 | – | 4 | 1 | 2 |
 | Berg | – (Kletterer 3) | – | – | 1 | 3 |
@@ -267,6 +269,8 @@ Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übe
 - Gewicht: Tragkraft = STR + Bewegungstyp-Bonus (Fuß 4, Gepanzert 8, Beritten 6, Flieger 2, Monster 10); Überlast senkt AS 1:1, ab 5 −1 MOV, ab 10 −2 MOV.
 - Seltenheit Gewöhnlich/Selten/Episch/Legendär/Relikt mit 0/1/2/fest/fest Affixen und 1/2/2/2/1 Rune-Slots; Sets mit Bonus ab 2 bzw. 4 Teilen. Signaturen sind legendäre Unikate mit Besitzer-Effekt; drei Relikte (eins je Akt) erwachen mit der Story. Katalog, Waffengruppen und Unikate in `items.md`.
 - Runen I–III (Element, Status 30 %/50 %, Geländeeffekt); höchstens 1 Element-Rune je Item, sonst nimmt jeder Runenplatz jede Rune (auch die einzige Fassung einer gewöhnlichen Waffe darf eine Hilfs-Rune tragen); Körperrüstung nimmt nur Element-Runen und setzt damit die Affinität (Produktinhaber 2026-11-21).
+- **Schild-Runen (Produktinhaber 2026-11-21, Thema 7):** Jeder Schild hat 1 Runenplatz, nur für Element-Runen (Feuer, Wasser, Erde, Wind). Die Rune schützt gegen ihr Element und bringt keine Schwäche (anders als die Affinität der Körperrüstung). Stufe I: Schaden dieses Elements ×0,8. Stufe II: dazu immun gegen dessen Zustand (Brennen, Nass, Verlangsamt, Rückstoß). Stufe III: dazu immun gegen dessen Geländewirkung (Feuer: Brandfeld kostet keinen Schaden; bei den übrigen Elementen heute wie II). Tragen Schild und Körper dasselbe Element, gilt der bessere Faktor, nicht beide.
+- **Waffen-Chronik (Produktinhaber 2026-11-21, Thema 7):** Jede Waffe zählt ihre Kills, der letzte Schlag zählt (auch beim Konter); ein vertriebener Leutnant zählt als Kill. Die Chronik hängt an der einzelnen Waffe und wandert mit ihr. Beim 10. Kill bekommt die Waffe einen Beinamen aus dem Namen der führenden Figur und einem Wort je Waffengruppe („Brennas Kerbe“, Wortliste in den Locales). Vertreibt oder fällt sie einen Leutnant, bekommt sie sofort einen Beinamen nach ihm („Haskbrecher“), wenn sie noch keinen hat. Ein Beiname bleibt, auch wenn die Waffe weitergegeben wird. Keine Spielwerte. Sim 2026-11-21: rund 6 Beinamen je Durchgang in Akt 1, der erste meist in 1-4 bis 1-6.
 - Aufwerten +1…+5 (Waffe je +1 Mt/+3 Treffer, Rüstung je +1 DEF oder RES).
 - Ausrüstungs-Tier pro Akt: Akt 1 Eisen, Akt 2 Stahl, Akt 3 Silber und Mondstahl.
 - Verbrauchsgüter: Heiltrank (3 Ladungen) und Gegengift (2) füllen sich nach jeder Mission auf; Schlüssel, Feuerbombe, Hast und Glutfunke werden verbraucht.
@@ -301,7 +305,7 @@ Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übe
 
 ### Kampfsystem
 
-Rundenbasiert-taktisch auf dem Raster, Kampfauflösung direkt auf der Karte mit Kurzanimation (Tempo 1×/2×/Überspringen). Klassen-Aktionen und Item-Skills sind das Fähigkeitensystem; Magie läuft über Zauberwaffen mit Element.
+Rundenbasiert-taktisch auf dem Raster, Kampfauflösung direkt auf der Karte mit Kurzanimation (Tempo 1×/2×/Überspringen). Die Gegnerphase läuft standardmäßig mit 2× (Produktinhaber 2026-11-21, Thema 7); Gegner, die nur laufen, ziehen gleichzeitig. Klassen-Aktionen und Item-Skills sind das Fähigkeitensystem; Magie läuft über Zauberwaffen mit Element.
 
 ## Progression and Balance
 

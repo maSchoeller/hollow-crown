@@ -1,0 +1,233 @@
+<meta charset="utf-8">
+<title>Hollow Crown Regeln mit Zahlen</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: Konzeptseite wie Thema 2–6 – je Regel ein Block: Beschluss, Zahlen aus der Simulation, Varianten, Empfehlung.
+   Bewusst nur die helle Spiel-Optik (Studio-Look B), wie die übrigen Seiten der Reihe. */
+:root{
+  --bg:#F6EEDF; --panel:#FFF8EC; --tone:#F4E9D6; --line:#3B2A20; --soft:#7A6553; --ember:#E8743B; --ember-d:#B44C18;
+  --pos:#2F8A4C; --neg:#B83A2E; --rule:#E3D5BE; --gold:#D9A62E;
+  --fire:#F2603A; --wind:#7BD389; --earth:#B9874B; --water:#4AA8E8;
+  --f-name:'Fraunces',Georgia,serif; --f-body:'Barlow',system-ui,sans-serif; --f-label:'Barlow Condensed','Arial Narrow',sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--line);font-family:var(--f-body);font-size:16px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:26px 64px}
+.wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--f-name);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800}
+h2{font-size:26px;font-weight:800;display:flex;align-items:center;gap:10px}
+h3{font-size:18px;font-weight:600}
+p{margin:0;max-width:68ch}
+section{display:flex;flex-direction:column;gap:16px}
+.kicker{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.09em;font-size:13px;color:var(--ember-d);font-weight:700}
+.lead{font-size:18px}
+.small{font-size:14px;color:var(--soft)}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.ico{width:26px;height:26px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ico.s{width:18px;height:18px;vertical-align:-3px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-label);font-weight:700;font-size:13px;letter-spacing:.05em;text-transform:uppercase;border-radius:99px;padding:2px 10px;border:1.5px solid currentColor}
+.b-done{color:var(--pos)} .b-ask{color:var(--ember-d)} .b-warn{color:var(--neg)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.fact{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.fact b{font-family:var(--f-name);font-weight:800;font-size:26px;font-variant-numeric:tabular-nums;line-height:1.1}
+.fact span{font-size:14px;color:var(--soft)}
+.tbl{overflow-x:auto;background:var(--panel);border:1px solid var(--rule);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--rule);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.06em;font-size:12px;color:var(--soft);font-weight:700}
+td.n,th.n{text-align:right}
+.dn{color:var(--neg);font-weight:700} .up{color:var(--pos);font-weight:700}
+.hl td{background:#fde9de}
+.var{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.opt{background:var(--panel);border:2px solid var(--rule);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.opt.rec{border-color:var(--ember)}
+.opt header{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.opt .key{font-family:var(--f-name);font-weight:800;font-size:22px;color:var(--ember-d)}
+.opt .tag{margin-left:auto;font-family:var(--f-label);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--ember);border-radius:99px;padding:2px 9px}
+/* Balken der Gegnerphase: eine Skala 0–13 s (Zeitgrenze) */
+.bars{display:flex;flex-direction:column;gap:6px;background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:14px}
+.bar{display:grid;grid-template-columns:62px minmax(0,1fr) 92px;gap:10px;align-items:center;font-size:14px;font-variant-numeric:tabular-nums}
+.bar .tr{position:relative;height:18px;background:var(--tone);border-radius:6px}
+.bar .one,.bar .two{position:absolute;left:0;top:0;height:100%;border-radius:6px}
+.bar .one{background:#e7cdb8}
+.bar .two{background:var(--ember);height:10px;top:4px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--soft)}
+.legend i{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:6px;vertical-align:0}
+.scale{display:grid;grid-template-columns:62px minmax(0,1fr) 92px;gap:10px;font-size:12px;color:var(--soft)}
+.scale div{display:flex;justify-content:space-between}
+.elrow{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--tone);border-radius:99px;padding:2px 10px;font-family:var(--f-label);font-weight:700;font-size:13px}
+.ladder{display:grid;grid-template-columns:56px minmax(0,1fr);gap:6px 12px;align-items:start}
+.ladder .t{font-family:var(--f-name);font-weight:800;font-size:18px;color:var(--ember-d)}
+.note{border-left:3px solid var(--gold);padding:6px 12px;background:#fbf1d9;border-radius:0 10px 10px 0;font-size:15px}
+.ask{display:flex;flex-direction:column;gap:8px}
+.ask li b{font-family:var(--f-name)}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M4 6l5-2 6 2 5-2v14l-5 2-6-2-5 2zM9 4v14M15 6v14"/></symbol>
+  <symbol id="i-skip" viewBox="0 0 24 24"><path d="M5 6l7 6-7 6zM13 6l7 6-7 6z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></symbol>
+  <symbol id="i-blade" viewBox="0 0 24 24"><path d="M12 2.5l2.5 3.5v8h-5V6zM6.5 14h11M12 14v5.5M10 21h4"/></symbol>
+  <symbol id="i-danger" viewBox="0 0 24 24"><path d="M12 4l9 16H3zM12 10v4M12 17h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+  <symbol id="i-fire" viewBox="0 0 24 24"><path d="M12 3c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1.5 4 3 4 0-3-1.5-6 0-9z"/></symbol>
+  <symbol id="i-water" viewBox="0 0 24 24"><path d="M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z"/></symbol>
+  <symbol id="i-wind" viewBox="0 0 24 24"><path d="M3 9h11a3 3 0 1 0-3-3M3 14h15a3 3 0 1 1-3 3M3 19h7"/></symbol>
+  <symbol id="i-earth" viewBox="0 0 24 24"><path d="M3 19l6-10 4 6 3-4 5 8z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z"/></symbol>
+  <symbol id="i-log" viewBox="0 0 24 24"><path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4"/></symbol>
+</svg>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:12px">
+  <span class="kicker">Hollow Crown · Ausrüstung zum Anfassen · Thema 7 · 21.11.2026</span>
+  <h1>Regeln mit Zahlen</h1>
+  <p class="lead">Die Party-Mode-Runde hat vier Regeln beschlossen. Hier stehen die Zahlen dazu, je zwei Varianten und meine Empfehlung. Grundlage sind 50 Läufe je Kampagne (Normal, Standard-Tod) mit der heutigen <code>balance.yaml</code>. Die Varianten liefen in einer Arbeitskopie, im Repo ist nichts geändert.</p>
+  <div class="facts">
+    <div class="fact"><b>−14 %</b><span>Spielzeit Akt 1 und 2 mit Straße ½ (5,2 → 4,5 h)</span></div>
+    <div class="fact"><b>12 → 6 min</b><span>Wartezeit in Gegnerphasen je Akt mit 2× als Standard</span></div>
+    <div class="fact"><b>9 von 650</b><span>Gegnern in Akt 1 und 2 greifen mit einem Element an</span></div>
+    <div class="fact"><b>6 Beinamen</b><span>pro Durchgang in Akt 1 bei Schwelle 10, rund 8 bis Ende Akt 2</span></div>
+  </div>
+</header>
+
+<!-- 1 Straßen -->
+<section id="strasse">
+  <span class="kicker">Regel 1 · Laufwege</span>
+  <h2><svg class="ico"><use href="#i-map"/></svg>Straßen und Brücken kosten ½</h2>
+  <p>Beschlossen: Straße und Brücke kosten für alle Bewegungsarten ½ statt 1. Eine Figur mit Bewegung 4 kommt auf der Straße 8 Felder weit. Tor, Rampe und Treppe bleiben bei 1. Die Anzeige „noch n“ am Pfeil aus Thema 5 zeigt dann auch Halbe („noch 1½“).</p>
+  <div class="note">Straßen bedecken auf den meisten Karten nur 4–10 % der Felder (Steckbriefe 29 %, Prolog 23 %, Hungerlager 0 %). Trotzdem wird es spürbar schneller. Weil die Gegner dieselben Straßen nutzen, kippen aber vier Karten.</div>
+  <div class="tbl"><table>
+    <thead><tr><th>Mission</th><th class="n">Sieg heute</th><th class="n">Sieg mit ½</th><th class="n">Runden heute</th><th class="n">Runden mit ½</th></tr></thead>
+    <tbody>
+      <tr class="hl"><td>Prolog Paktnacht</td><td class="n">88 %</td><td class="n dn">38 %</td><td class="n">12,7</td><td class="n">11,4</td></tr>
+      <tr><td>1-1 Steckbriefe</td><td class="n">98 %</td><td class="n">92 %</td><td class="n">18,1</td><td class="n up">14,6</td></tr>
+      <tr class="hl"><td>1-2 Erlbach</td><td class="n">96 %</td><td class="n dn">70 %</td><td class="n">9,0</td><td class="n">9,0</td></tr>
+      <tr><td>1-3 Silberbach</td><td class="n">98 %</td><td class="n">98 %</td><td class="n">13,0</td><td class="n up">8,7</td></tr>
+      <tr><td>1-4 Wolfslager</td><td class="n">100 %</td><td class="n">100 %</td><td class="n">9,0</td><td class="n up">7,6</td></tr>
+      <tr><td>1-6 Paktwacht</td><td class="n">100 %</td><td class="n">100 %</td><td class="n">19,5</td><td class="n up">17,6</td></tr>
+      <tr class="hl"><td>2-1 Windscharte</td><td class="n">100 %</td><td class="n dn">86 %</td><td class="n">11,0</td><td class="n">11,0</td></tr>
+      <tr><td>2-2 Salzpass</td><td class="n">100 %</td><td class="n">100 %</td><td class="n">11,0</td><td class="n up">8,7</td></tr>
+      <tr><td>2-7 Kontor</td><td class="n">100 %</td><td class="n">100 %</td><td class="n">9,3</td><td class="n up">7,5</td></tr>
+      <tr class="hl"><td>2-8 Kronfeld</td><td class="n">60 %</td><td class="n dn">36 %</td><td class="n">17,9</td><td class="n">17,7</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small">Sieg = im ersten Versuch. Übrige Missionen ohne nennenswerte Änderung. Kampagne zu Ende gespielt: Akt 1 100 → 96 %, Akt 2 92 → 74 %. Im Prolog fällt der Avatar (51 statt 17 von 100 Läufen): Die Sim-Truppe läuft auf der Straße zu weit vor und wird umstellt. Menschen halten eher zurück, das Risiko bleibt aber. 2-8 wird ohnehin gerade in der Balancing-Session (PR #230) bearbeitet.</p>
+  <p class="small">Geprüft und verworfen: ½ nur für Fuß und Gepanzert. Das ergibt exakt dieselben Zahlen, weil Akt 1 und 2 keine Reiter, Flieger oder Monster haben.</p>
+  <div class="var">
+    <div class="opt rec"><header><span class="key">A</span><h3>½ für alle, vier Karten nachziehen</h3><span class="tag">Empfehlung</span></header>
+      <p>Wie beschlossen. Prolog, 1-2, 2-1 und 2-8 bekommen in der Balancing-Session neue Weckrunden bzw. Startpositionen, bis sie wieder im Korridor liegen. Gegner auf Straßen sind dann auch eine Gefahr, das passt zu Säule 3 (Gefahr lesbar).</p></div>
+    <div class="opt"><header><span class="key">B</span><h3>½ nur für die eigene Truppe</h3></header>
+      <p>Gegner und dritte Partei zahlen auf der Straße weiter 1. Keine Karte muss nachgezogen werden. Die Regel wird aber unsichtbar ungleich, und die Kosten in der Feldkarte hängen dann an der Seite. Weicht vom Beschluss „für alle“ ab, nicht simuliert (braucht Code).</p></div>
+  </div>
+</section>
+
+<!-- 2 Gegnerphase -->
+<section id="gegnerphase">
+  <span class="kicker">Regel 2 · Tempo</span>
+  <h2><svg class="ico"><use href="#i-skip"/></svg>Gegnerphase standardmäßig 2×</h2>
+  <p>Beschlossen: Neue Spielstände starten mit Tempo 2× in der Gegnerphase, laufende Gegner ziehen weiter gleichzeitig („Gegnerzüge: Gemeinsam“). Das nimmt die Entscheidung vom 28.10.2026 zurück (Standard 1×, gespeichertes 2× wurde einmal zurückgesetzt) und kommt so ins Decision-Log. Spielregeln und Replays ändern sich nicht, nur die Wiedergabe.</p>
+  <div class="bars" role="img" aria-label="Durchschnittliche Gegnerphase je Mission bei 1× und 2×">
+    <div class="legend"><span><i style="background:#e7cdb8"></i>1× heute</span><span><i style="background:var(--ember)"></i>2× neu</span><span>Skala 0–13 s (heutige Zeitgrenze)</span></div>
+    <div class="bar"><span>Prolog</span><div class="tr"><div class="one" style="width:26%"></div><div class="two" style="width:13%"></div></div><span>3,4 → 1,7 s</span></div>
+    <div class="bar"><span>1-2</span><div class="tr"><div class="one" style="width:58%"></div><div class="two" style="width:33%"></div></div><span>7,6 → 4,3 s</span></div>
+    <div class="bar"><span>1-5</span><div class="tr"><div class="one" style="width:85%"></div><div class="two" style="width:48%"></div></div><span>11,0 → 6,2 s</span></div>
+    <div class="bar"><span>1-8</span><div class="tr"><div class="one" style="width:68%"></div><div class="two" style="width:43%"></div></div><span>8,9 → 5,6 s</span></div>
+    <div class="bar"><span>2-4</span><div class="tr"><div class="one" style="width:73%"></div><div class="two" style="width:49%"></div></div><span>9,5 → 6,4 s</span></div>
+    <div class="bar"><span>2-8</span><div class="tr"><div class="one" style="width:65%"></div><div class="two" style="width:47%"></div></div><span>8,4 → 6,1 s</span></div>
+    <div class="scale"><span></span><div><span>0</span><span>6,5</span><span>13 s</span></div><span></span></div>
+  </div>
+  <p class="small">Ø Gegnerphase je Mission aus dem Zeitplan des Bretts (<code>aiPacing.ts</code>), Akt 1 und 2 zusammen. Ganzer Akt: Akt 1 12 → 6 min, Akt 2 11 → 6 min. Die längsten Phasen (1-2, 1-5, 1-8, 2-4, 2-8) laufen heute schon an der Zeitgrenze von 13 s. Bei 2× brauchen sie ungebremst 15–22 s und stoßen deshalb weiter an die Grenze.</p>
+  <div class="var">
+    <div class="opt rec"><header><span class="key">A</span><h3>2× Standard, Zeitgrenze bleibt 13 s</h3><span class="tag">Empfehlung</span></header>
+      <p>Halbiert die normale Wartezeit. Lange Phasen bleiben bei höchstens 13 s. Wer 1× gespeichert hat, wird einmal auf 2× gesetzt (wie beim Zurücksetzen am 28.10.). Wer danach 1× wählt, behält es.</p></div>
+    <div class="opt"><header><span class="key">B</span><h3>2× Standard, Zeitgrenze 9 s bei 2×</h3></header>
+      <p>Wie A, zusätzlich endet keine Phase bei 2× später als nach 9 s. Die fünf langen Phasen werden dabei bis zu 4× schneller abgespielt (heutiger Höchstwert <code>maxBoost</code>). Spart weitere rund 4 s je langer Phase, schnelle Züge sind aber schwerer zu verfolgen.</p></div>
+  </div>
+</section>
+
+<!-- 3 Schild-Runen -->
+<section id="schild">
+  <span class="kicker">Regel 3 · Runen</span>
+  <h2><svg class="ico"><use href="#i-shield"/></svg>Schild-Runen geben Widerstand</h2>
+  <p>Beschlossen: Ein Element am Schild schützt gegen dieses Element. Heute haben Schilde 0 Runenplätze, und nur die Körperrüstung setzt die Affinität. Die Affinität wirkt in beide Richtungen: Schaden des gleichen Elements ×0,8, des überlegenen Elements ×1,2. Der Schild soll nur schützen und keine Schwäche bringen.</p>
+  <div class="note"><b>Wichtig für die Zahlen:</b> In Akt 1 und 2 greifen nur 9 von rund 650 Gegnern mit einem Element an (2× Glut, 2× Steinschlag, 2× Glanz, 1× Böe, 1× Steinfaust, 1 Runenwaffe in N5). Elementschaden kommt dort vor allem von Brandfeldern (1-2 Erlbach, 2-4 Brandschneise, Feuerbomben). Voll greift ein reiner Prozent-Widerstand erst in Akt 3 (Glut-Orden).</div>
+  <p>Für beide Varianten gilt: jeder Schild bekommt 1 Runenplatz, nur für Element-Runen (wie die Körperrüstung). Tragen Schild und Körper dasselbe Element, zählt der bessere Wert, es wird nicht verrechnet.</p>
+  <div class="var">
+    <div class="opt rec"><header><span class="key">A</span><h3>Stufenleiter wie bei Waffen</h3><span class="tag">Empfehlung</span></header>
+      <div class="ladder">
+        <span class="t">I</span><span>Schaden dieses Elements ×0,8</span>
+        <span class="t">II</span><span>dazu immun gegen dessen Zustand (Feuer: kein Brennen, Wasser: nicht nass, Erde: nicht verlangsamt, Wind: kein Rückstoß)</span>
+        <span class="t">III</span><span>dazu immun gegen dessen Geländewirkung (Feuer: Brandfeld kostet keine 5 TP)</span>
+      </div>
+      <p class="small">Spiegelt die Waffe (I Element, II Zustand 30/50 %, III Gelände), ist also mit einer Regel erklärt. Wirkt schon in Akt 1 und 2, weil Brand und Zustände dort häufiger sind als Elementangriffe.</p></div>
+    <div class="opt"><header><span class="key">B</span><h3>Nur Prozent je Stufe</h3></header>
+      <div class="ladder">
+        <span class="t">I</span><span>Schaden dieses Elements ×0,9</span>
+        <span class="t">II</span><span>×0,8</span>
+        <span class="t">III</span><span>×0,7</span>
+      </div>
+      <p class="small">Einfach zu rechnen und gut in der Vorschau zu zeigen („×0,8“ am Element-Band). Wirkt in Akt 1 und 2 aber fast nie. Brandfelder machen festen Schaden und blieben unberührt.</p></div>
+  </div>
+  <div class="elrow"><span class="chip"><svg class="ico s" style="color:var(--fire)"><use href="#i-fire"/></svg>Feuer · Brennen · Brandfeld</span><span class="chip"><svg class="ico s" style="color:var(--water)"><use href="#i-water"/></svg>Wasser · Nass · –</span><span class="chip"><svg class="ico s" style="color:var(--earth)"><use href="#i-earth"/></svg>Erde · Verlangsamt · –</span><span class="chip"><svg class="ico s" style="color:var(--wind)"><use href="#i-wind"/></svg>Wind · Rückstoß · –</span></div>
+  <p class="small">Stufe III hat bei Wasser, Erde und Wind heute keine eigene Geländewirkung, die gegnerisch wirken könnte. Dort wäre III gleich II. Licht und Dunkel nehmen Schilde in beiden Varianten nicht an (heute keine Runen dafür).</p>
+</section>
+
+<!-- 4 Chronik -->
+<section id="chronik">
+  <span class="kicker">Regel 4 · Ausrüstung mit Geschichte</span>
+  <h2><svg class="ico"><use href="#i-blade"/></svg>Waffen-Chronik und Beiname</h2>
+  <p>Beschlossen: Jede Waffe zählt ihre Kills, der letzte Schlag zählt. Ab 10 bekommt die Waffe einen Beinamen. Die Chronik hängt an der einzelnen Waffe, nicht an der Figur: Wer von Eisen auf Stahl wechselt, beginnt bei 0, und die alte Waffe behält Namen und Zählerstand. Damit hat die Waffenkammer-Vitrine aus Thema 8 etwas zu zeigen.</p>
+  <div class="grid2">
+    <div class="tbl"><table>
+      <thead><tr><th>Schwelle</th><th class="n">Beinamen bis Ende Akt 1</th><th class="n">bis Ende Akt 2</th></tr></thead>
+      <tbody>
+        <tr><td>5 Kills</td><td class="n">9,1</td><td class="n">11,9</td></tr>
+        <tr><td>8 Kills</td><td class="n">7,2</td><td class="n">9,6</td></tr>
+        <tr class="hl"><td><b>10 Kills</b></td><td class="n"><b>6,0</b></td><td class="n"><b>8,3</b></td></tr>
+        <tr><td>15 Kills</td><td class="n">4,2</td><td class="n">6,4</td></tr>
+        <tr><td>20 Kills</td><td class="n">2,7</td><td class="n">5,2</td></tr>
+      </tbody>
+    </table></div>
+    <div class="card">
+      <h3>Was die Läufe zeigen</h3>
+      <ul>
+        <li>Rund 150 Kills je Durchgang in Akt 1, verteilt auf 12 Waffen.</li>
+        <li>Der erste Beiname kommt meist in 1-4 bis 1-6, also zur Mitte von Akt 1.</li>
+        <li>Die stärkste Waffe eines Durchgangs hat in Akt 1 rund 34 Kills.</li>
+        <li>Am häufigsten: Lucans Lanze, Brennas Axt, das Schwert des Avatars.</li>
+      </ul>
+      <p class="small">Die Sim tauscht Waffen kaum (kein Wechsel auf Stahl). Bei echtem Spiel verteilt sich Akt 2 auf neue Waffen, die Spalte „bis Ende Akt 2“ ist also eine Obergrenze.</p>
+    </div>
+  </div>
+  <p>Der Beiname entsteht beim 10. Kill aus dem Namen der Figur, die ihn führt, und einem Wort je Waffenart aus einer festen Liste in den Locales („Brennas Kerbe“, „Lucans Dorn“). Er bleibt, wenn die Waffe weitergegeben wird. Spielwerte ändern sich nicht. Offen ist nur, ob ein Leutnant mehr zählt:</p>
+  <div class="var">
+    <div class="opt rec"><header><span class="key">A</span><h3>Leutnant gibt den Beinamen sofort</h3><span class="tag">Empfehlung</span></header>
+      <p>Wer einen Leutnant vertreibt oder fällt, bekommt den Beinamen sofort, und zwar nach dem Leutnant („Haskbrecher“). Sonst gilt die Schwelle 10. Etwa 6–7 Waffen je Durchgang treffen bis Akt 2 einen Leutnant. Passt zu Groll und Steckbrief: die Waffe erinnert an den Gegner.</p></div>
+    <div class="opt"><header><span class="key">B</span><h3>Leutnant zählt wie jeder Kill</h3></header>
+      <p>Nur die Schwelle 10, ein Name je Figur und Waffenart. Einfacher, keine Namensliste je Leutnant nötig. Die Chronik nennt den Leutnant trotzdem als Eintrag („Hask vertrieben, 1-2“).</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Zur Entscheidung</span>
+  <h2><svg class="ico"><use href="#i-check"/></svg>Vier Fragen</h2>
+  <ol class="ask">
+    <li><b>Straße ½:</b> A für alle mit Nachbalancing von Prolog, 1-2, 2-1, 2-8 oder B nur für die eigene Truppe?</li>
+    <li><b>Gegnerphase 2×:</b> A Zeitgrenze bleibt 13 s oder B 9 s bei 2×?</li>
+    <li><b>Schild-Runen:</b> A Stufenleiter (×0,8, Zustand, Gelände) oder B nur Prozent (×0,9 / 0,8 / 0,7)?</li>
+    <li><b>Chronik:</b> Schwelle 10, und A Leutnant gibt sofort einen Beinamen oder B zählt wie jeder Kill?</li>
+  </ol>
+  <p class="small">Nach deiner Antwort trage ich die Regeln ins GDD (Raster und Bewegung, Inventar und Ausrüstung) und dessen Decision-Log ein, die Tempo-Zeile in EXPERIENCE.md und das UX-Log. <code>balance.yaml</code> und die Karten fasst die Balancing-Session an.</p>
+</section>
+
+<footer class="small">Grundlage: <code>pnpm sim --campaign act1|act2 --runs 50</code> am Stand 06e21e19, Varianten in einer Arbeitskopie (<code>terrain.yaml</code> road/bridge ½), Kill-Zähler als Zusatz in der Arbeitskopie von <code>tools/simCampaign.ts</code>. Gegnerphase aus <code>tools/enemyPhase.ts</code> (Zeitplan bei 1×, 2× als halbe Dauer, höchstens die Zeitgrenze).</footer>
+</div>
