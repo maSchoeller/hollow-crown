@@ -279,3 +279,13 @@ Ausgangspunkt: Der Produktinhaber fand Runen undurchsichtig und die Waffenmodell
 
 - Abgenommen (Produktinhaber 2026-11-21): In der Kampfvorschau leuchten die Runenwaffen von Angreifer und Ziel voll, alle anderen glimmen gedämpft weiter. Die Rune erscheint als Kreis in Elementfarbe mit römischer Stufe am Waffen-Chip; das Element-Band über der Tabelle zeigt beide Elemente in denselben Farben.
 - Gelände-Linse in Wirkungsfarben (grün Schutz, gold langsam, rot Schaden, Creme-Streifen schnell, Schraffur gesperrt), über dem Boden und unter den Figuren. Werte und Ablauf in `concept/25-ux/DESIGN.md` und `EXPERIENCE.md`, Mockup `art/mockups/ausruestung-2026-11/brett.html`.
+
+## 2026-11-21: Ruhe, Haltung und Griff-Rig (Konzept „Ausrüstung zum Anfassen“, Thema 6)
+
+Ausgangspunkt: Der Produktinhaber fand das Taumeln der Stand-Animation unnatürlich. Ist im Dev-Build: eine Stand-Animation für alle mit vollem Ausschlag, die Hand dreht Waffe und Schild weg, Haltung je Waffe nur als ein Winkel am Griff (Lanze −125°).
+
+- Ruhe: von „gedämpft“, „nur Atmen“ und „Atmen + Gesten“ gewählt **Atmen + Gesten**.
+- Haltung: von „alle gesenkt“, „je Waffengruppe“ und „alle in Wache“ gewählt **je Waffengruppe**, mit dem Auftrag, jede Waffe sauber an die Figur zu riggen (Schwert normal mit Spitze nach oben, Lanze und Stab sauber austariert), aufgeteilt nach Waffenarten, weil dieselben Griffe später die Kampfanimationen tragen. Daraus das Griff-Rig in §4.5. Zwei Abnahmerunden: Schwert mit Schneide nach vorn statt quer, Axt zweimal gedreht bis die Schneide nach unten zeigt, Buch nicht mehr an die Brust gepappt, sondern zugeklappt an der Hüfte und in der Kampfhaltung aufgeschlagen.
+- Brett: von „immer kampfbereit“ und „bei Auswahl“ gewählt **bei Auswahl** (passt zum vollen Runenleuchten aus Thema 5).
+- Hände: von „Faust im Turnaround“, „offene Hände reichen“ und „Fingerknochen riggen“ gewählt **Fingerknochen riggen**.
+- Befund Mockup: Der Animations-Mixer von three.js schreibt einen Knochen nur, wenn sich sein Wert ändert; Zusatzdrehungen müssen je Bild zurückgenommen werden, sonst laufen sie auf. Im Spiel betrifft das nichts, dort wird gebacken.

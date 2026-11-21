@@ -226,6 +226,26 @@ Story-NSC ohne Kampfrolle (Halvard, Seraphine, Dravn, Maelis, Gerrit) bekommen n
 
 FE-Set aus GA8/D13 auf jedem Rumpf: Idle (atmen, gelegentlich blinzeln), Laufen, Angriff je Waffengruppe, Treffer, Niedergestreckt; dazu **Flucht** (Leutnants) und **Jubel** (Sieg, Stufenaufstieg). Bewegung mit leichtem Squash-and-Stretch, Laufen als kleines Hüpfen. Dauer einer Angriffsanimation ≤ 600 ms bei 1×.
 
+**Ruhe, Haltung und Kampfhaltung (Entscheidung Produktinhaber 2026-11-21, Konzept „Ausrüstung zum Anfassen“, Thema 6):** Mockup `art/mockups/ausruestung-2026-11/animation.html`.
+
+- **Ruhe:** Die Figur steht still und atmet (Brust und Schultern heben sich etwa alle vier Sekunden); alle 6 bis 10 Sekunden eine kleine Geste – umsehen, Gewicht verlagern, Waffe nachfassen –, jede Figur zu einer anderen Zeit. Das bisherige Taumeln der Stand-Animation „Inaktiv“ entfällt; jede Figur startet ihre Schleife an einer anderen Stelle. Die Hände bleiben ruhig, Waffe und Schild drehen nicht weg.
+- **Haltung je Waffenart** über ein **Griff-Rig**: Jedes Waffenmodell hat einen Griffpunkt mit fester Achse (Schaft → Spitze bzw. Kopf, Breitseite bzw. Schneide), jede Figur einen Griff-Sockel in der Handfläche (heute sitzt `socket_r`/`socket_l` am Handgelenk und je Figur anders gedreht), und die Waffenart legt Hand, Griffpunkt und Haltung fest. Dieselben Griffe tragen später die Kampfanimationen.
+
+| Waffenart | Hand · Griffpunkt | Ruhe | Kampfhaltung |
+|---|---|---|---|
+| Stangen: Lanze, Speer, Stab | rechts · Schaft auf Schulterhöhe | senkrecht, Schaftende auf dem Boden | Lanze waagerecht zum Stoß, Stab schräg vor |
+| Klingen: Schwert, Dolch | rechts · Heft unter der Parierstange, Schneide nach vorn | Spitze nach oben, Hand vor der Hüfte | schräg nach vorn oben |
+| Äxte und Hämmer | rechts · unteres Stielviertel | auf der Schulter, Kopf hinten außen, Schneide nach unten | erhoben, Schneide nach vorn |
+| Bögen | links · Griffmitte | senkrecht neben dem Bein | senkrecht vor dem Körper |
+| Bücher und Foki | links · Buchrücken | zugeklappt an der Hüfte | aufgeschlagen auf der flachen Hand, Seiten zur Figur; die Rechte zaubert |
+| Schilde | links · Armschlaufe am Unterarm | außen am Unterarm, frei vom Oberarm (§4.7) | leicht vor den Körper |
+| Instrumente: Laute | links am Hals, rechts am Korpus | vor dem Bauch | wie in Ruhe |
+
+- **Kampfhaltung** ist die leichte Kampfhaltung aus dem Figurenblatt (§4.7), mit der Waffe nach der Tabelle. Auf dem Brett stehen Figuren in Ruhe in der Haltung ihrer Waffenart; die gewählte Figur und Angreifer und Ziel der Kampfvorschau gehen in die Kampfhaltung (Wechsel 0,25 s), so wie ihre Runen dann voll leuchten.
+- **Hände:** Die Tripo-Figuren bekommen **Fingerknochen** (Tripo-Rig mit Fingern oder Nachrig in Blender), damit sich die Hand je Griffart schließt: Faust um Schaft und Heft, flache Hand unter dem aufgeschlagenen Buch.
+- **Buch:** Das Buchmodell wird neu gezeichnet, zugeklappt und aufgeschlagen (im Mockup ein Platzhalter).
+- **Umsetzung:** Auf dem Brett laufen die Figuren als gebackene Vertex-Animation; Ruhe je Waffenart, Kampfhaltung und die Gesten werden deshalb als eigene kurze Clips gebacken, nicht zur Laufzeit gerechnet. Der Griffwinkel `hold` in `content/core/render.yaml` `gear` geht im Griff-Rig auf.
+
 ### 4.6 Produktion (Bild-zu-3D) [A]
 
 Erprobt an Lucan (Free-Tarif-Probe, Dateien am 2026-10-24 aus dem Repo entfernt; Ergebnis im Entscheidungslog).
@@ -254,8 +274,8 @@ Die Rune ist Teil der Waffe, nie aufgesetzt. Löst die Waffen aus Schritt 6 von 
 - **Zweiter Runenplatz** (Selten und besser): eine zweite, kleinere Fassung ohne eigene Rinne.
 - **Material:** Eisen, Stahl und Silber unterscheiden sich durch Tönung bei gleicher Form (Eisen warm grau, Stahl kühler und heller, Silber fast weiß mit Glanz).
 - **Im Verzauberer** (Entscheidung Produktinhaber 2026-11-21): das Item als drehbares Modell auf dunkel-warmem Grund; eine Rune zur Probe sitzt sofort als Stein in der Fassung, wächst kurz auf, und die Rinne füllt sich nach Stufe. Verschmelzen: drei Steine kreisen zusammen, Lichtblitz in Elementfarbe, der Stein der nächsten Stufe wächst heraus. Ablauf und Liste in `concept/25-ux/EXPERIENCE.md` („Verzauberer (Werkbank)“).
-- **Im Figurenblatt** (Entscheidung Produktinhaber 2026-11-21): die Figur als ihr Brettmodell in **leichter Kampfhaltung** – Beine etwas breiter, Arme vom Körper weg, Waffenhand leicht vorn, nicht zu krass, „im Stehen da sein“. Das soll später jede Figur haben (eigene Stand-Pose bzw. Stand-Animation, Thema 6). Die Hände bleiben im Stand ruhig, damit Waffe und Schild nicht wegdrehen. Der Schild sitzt so weit außen am Unterarm, dass er nicht in den Oberarm greift (Auflage an Sockel bzw. Schildmodell). Rinne und Stein brauchen einen Tiefenversatz gegen die Platte, sonst flimmern sie.
-- **Auf dem Brett:** Runenwaffen glimmen immer gedämpft; bei der gewählten Figur und in der Kampfvorschau leuchten sie voll (Angreifer und Ziel). Gegnerwaffen leuchten genauso (Säule 3). In der Kampfvorschau steht die Rune als Kreis in Elementfarbe mit Stufe am Waffen-Chip, das Element-Band nutzt dieselben Elementfarben (Produktinhaber 2026-11-21, Thema 5; Ablauf in `concept/25-ux/EXPERIENCE.md` unter „Kampfvorschau“).
+- **Im Figurenblatt** (Entscheidung Produktinhaber 2026-11-21): die Figur als ihr Brettmodell in **leichter Kampfhaltung** – Beine etwas breiter, Arme vom Körper weg, Waffenhand leicht vorn, nicht zu krass, „im Stehen da sein“. Das soll später jede Figur haben (Kampfhaltung, §4.5). Die Hände bleiben im Stand ruhig, damit Waffe und Schild nicht wegdrehen. Der Schild sitzt so weit außen am Unterarm, dass er nicht in den Oberarm greift (Auflage an Sockel bzw. Schildmodell). Rinne und Stein brauchen einen Tiefenversatz gegen die Platte, sonst flimmern sie.
+- **Auf dem Brett:** Runenwaffen glimmen immer gedämpft; bei der gewählten Figur und in der Kampfvorschau leuchten sie voll (Angreifer und Ziel). Dieselben Figuren stehen dann in der Kampfhaltung (§4.5). Gegnerwaffen leuchten genauso (Säule 3). In der Kampfvorschau steht die Rune als Kreis in Elementfarbe mit Stufe am Waffen-Chip, das Element-Band nutzt dieselben Elementfarben (Produktinhaber 2026-11-21, Thema 5; Ablauf in `concept/25-ux/EXPERIENCE.md` unter „Kampfvorschau“).
 - **Produktion:** kein Tripo für Waffen. ChatGPT zeichnet orthografische Baupläne (`art/mockups/weapons-2026-11/`, Protokoll `art/prompts/weapon_rune_concept.md`), Blender-Skripte bauen nach: `tools/art/blender_weapons_v2.py` (Axt), `blender_weapon_sword.py`, `blender_weapon_shield.py`, `blender_weapon_lance.py`, `blender_runes_v2.py` → `art/models/weapons-v2/`, `art/models/runes-v2/`. Geometrie gerade bauen, auch wenn ein Konzeptbild schräg ist. Budget großzügig: rund 8 000 Dreiecke je Waffe, unter 2 000 je Stein.
 
 ## 5. Bildebene [A]

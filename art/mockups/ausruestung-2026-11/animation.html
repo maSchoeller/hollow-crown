@@ -1,0 +1,365 @@
+<title>Figuren in Ruhe</title>
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Thema 6 Animation: Ist, dann drei Fragen (Ruhe-Bewegung, Haltung je Waffe, Stand auf dem Brett), je eine 3D-Bühne mit den echten Brettfiguren */
+:root{
+  --bg:#F6EEDF; --panel:#FFF8EC; --tone:#F4E9D6; --line:#3B2A20; --soft:#7A6553; --ember:#E8743B; --ember-d:#B44C18; --rule:#E3D5BE;
+  --f-name:'Fraunces',Georgia,serif; --f-body:'Barlow',system-ui,sans-serif; --f-label:'Barlow Condensed','Arial Narrow',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1F1813;--panel:#2A211A;--tone:#352a21;--line:#F3E6D2;--soft:#C2AE98;--rule:#4a3b2e;--ember-d:#F08a55;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1F1813;--panel:#2A211A;--tone:#352a21;--line:#F3E6D2;--soft:#C2AE98;--rule:#4a3b2e;--ember-d:#F08a55;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--line);font-family:var(--f-body);font-size:16px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:26px 64px}
+.wrap{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:48px}
+h1,h2,h3{font-family:var(--f-name);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,4.6vw,42px);font-weight:800} h2{font-size:clamp(22px,3vw,29px);font-weight:800} h3{font-size:19px;font-weight:600}
+p{margin:0;max-width:68ch}
+.kicker{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.09em;font-size:13px;color:var(--ember-d);font-weight:700}
+.lead{font-size:18px;color:var(--soft)} .small{font-size:14px;color:var(--soft)}
+section{display:flex;flex-direction:column;gap:16px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.shot{width:100%;max-width:340px;border-radius:16px;border:2px solid var(--line);display:block}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font-family:var(--f-label);font-weight:700;font-size:15px;border:2px solid var(--line);background:var(--panel);color:var(--line);border-radius:99px;padding:6px 13px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--line);color:var(--panel)}
+.seg button:focus-visible{outline:3px solid var(--ember);outline-offset:2px}
+.seg.small button{font-size:13px;padding:3px 10px}
+.stage{position:relative;border-radius:16px;overflow:hidden;background:radial-gradient(80% 70% at 50% 55%,#6b5644,#2a2018);border:2px solid var(--line)}
+.stage.board{background:#5f7a3e}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage .hint{position:absolute;left:10px;bottom:8px;color:#f3e6d2;background:rgba(0,0,0,.5);border-radius:99px;padding:2px 10px;font-size:12px;font-family:var(--f-label);pointer-events:none}
+.stage .lab{position:absolute;left:10px;top:8px;color:#f3e6d2;background:rgba(0,0,0,.5);border-radius:99px;padding:2px 10px;font-size:13px;font-family:var(--f-label);font-weight:700;pointer-events:none}
+.h-idle{height:440px}.h-line{height:380px}.h-board{height:420px}
+.vars{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.vars .card{padding:12px 14px;gap:4px;font-size:15px}
+.vars .card b{font-family:var(--f-name);font-weight:600;font-size:16px}
+.vars .card.on{border-color:var(--ember);box-shadow:0 0 0 2px var(--ember) inset}
+.ctl{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.ctl .caps{font-family:var(--f-label);font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:12px;color:var(--soft)}
+.names{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;font-family:var(--f-label);font-weight:700;font-size:13px;text-align:center;color:var(--soft)}
+@media (max-width:560px){.names{font-size:11px}}
+.ic{width:16px;height:16px;vertical-align:-3px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+table{border-collapse:collapse;font-size:14.5px;width:100%}td,th{text-align:left;padding:5px 8px;border-bottom:1px solid var(--rule);vertical-align:top}th{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.06em;font-size:12px;color:var(--soft)}
+</style>
+
+<div class="wrap">
+<header style="display:flex;flex-direction:column;gap:10px">
+  <span class="kicker">Ausrüstung zum Anfassen · Thema 6 von 8</span>
+  <h1>Figuren in Ruhe</h1>
+  <p class="lead">Drei Fragen: Wie bewegt sich eine Figur, die wartet? Wie hält sie ihre Waffe? Und steht sie auf dem Brett entspannt oder kampfbereit da? Alle Bühnen zeigen die echten Brettmodelle mit den echten Waffen. Ziehen dreht.</p>
+</header>
+
+<section>
+  <span class="kicker">Ist-Zustand</span>
+  <h2>Heute taumeln alle gleich</h2>
+  <div class="two">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <img class="shot" src="ist-brett-idle.jpg" alt="Dev-Build, Mission 1-4 auf dem Handy, Zoomstufe Nah: die Figuren stehen mit Waffe und Lebensbalken auf dem Brett">
+      <p class="small">Dev-Build, Handy 375 × 812, Zoom „Nah“. Eine Figur ist rund 50 Bildpunkte hoch.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="stage h-idle" id="st-ist"><canvas aria-label="Brenna mit der heutigen Stand-Animation"></canvas><span class="lab">Heute · Brenna</span><span class="hint">lädt …</span></div>
+      <ul class="small">
+        <li>Eine Stand-Animation („Inaktiv“ aus der Tripo-Bibliothek) für alle Figuren, voller Ausschlag: Oberkörper pendelt, Kopf nickt, die Hand dreht das Handgelenk und damit Waffe und Schild weg.</li>
+        <li>Haltung je Waffe gibt es nur als einen Winkel am Griff (Lanze −125°), sonst hält jede Figur ihre Waffe gleich.</li>
+        <li>Auf dem Brett laufen alle Figuren gleichzeitig dieselbe Schleife; das wirkt wie Schwanken im Wind.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Frage 1</span>
+  <h2>Wie bewegt sich eine wartende Figur?</h2>
+  <div class="ctl">
+    <div class="seg" id="seg-idle" role="group" aria-label="Variante Ruhe-Bewegung"></div>
+    <div class="seg small" id="seg-cam" role="group" aria-label="Blick"></div>
+  </div>
+  <div class="stage h-idle" id="st-idle"><canvas aria-label="Brenna, Lucan und Tobin in der gewählten Ruhe-Bewegung"></canvas><span class="lab" data-lab></span><span class="hint">lädt …</span></div>
+  <div class="vars" id="vars-idle"></div>
+</section>
+
+<section>
+  <span class="kicker">Frage 2</span>
+  <h2>Wie hält jede Figur ihre Waffe?</h2>
+  <div class="ctl"><div class="seg" id="seg-hold" role="group" aria-label="Variante Haltung"></div></div>
+  <div class="stage h-line" id="st-line"><canvas aria-label="Sechs Figuren nebeneinander, je eine Waffengruppe"></canvas><span class="lab" data-lab></span><span class="hint">lädt …</span></div>
+  <div class="names"><span>Brenna · Axt</span><span>Lucan · Schwert</span><span>Tobin · Lanze</span><span>Mira · Bogen</span><span>Liora · Stab</span><span>Ysolde · Buch</span></div>
+  <div class="vars" id="vars-hold"></div>
+</section>
+
+<section>
+  <span class="kicker">Frage 3</span>
+  <h2>Entspannt oder kampfbereit auf dem Brett?</h2>
+  <div class="ctl"><div class="seg" id="seg-board" role="group" aria-label="Variante Stand auf dem Brett"></div></div>
+  <div class="stage board h-board" id="st-board"><canvas aria-label="Ausschnitt des Bretts mit drei Figuren; Tippen wählt eine Figur"></canvas><span class="lab" data-lab></span><span class="hint">lädt …</span></div>
+  <div class="vars" id="vars-board"></div>
+</section>
+
+<section>
+  <span class="kicker">Griff-Rig</span>
+  <h2>Jede Waffenart sitzt sauber in der Hand</h2>
+  <p>Heute hängt jede Waffe am Handgelenk und wird nur um einen Winkel gedreht; dadurch liegen Lanze und Stab neben der Hand und das Schwert zeigt nach vorn. Künftig hat jedes Waffenmodell einen Griffpunkt mit fester Achse, jede Figur einen Griff-Sockel in der Handfläche, und die Waffenart legt fest, wie gegriffen wird. Dieselben Griffe tragen später die Kampfanimationen.</p>
+  <div style="overflow-x:auto"><table>
+    <tr><th>Waffenart</th><th>Hand · Griffpunkt</th><th>In Ruhe</th><th>Kampfhaltung</th></tr>
+    <tr><td>Stangen: Lanze, Speer, Stab</td><td>rechts · Schaft auf Schulterhöhe</td><td>senkrecht, Schaftende auf dem Boden</td><td>Lanze waagerecht zum Stoß, Stab schräg vor</td></tr>
+    <tr><td>Klingen: Schwert, Dolch</td><td>rechts · Heft unter der Parierstange, Schneide nach vorn</td><td>Spitze nach oben, Hand vor der Hüfte</td><td>schräg nach vorn oben</td></tr>
+    <tr><td>Äxte und Hämmer</td><td>rechts · unteres Stielviertel</td><td>auf der Schulter, Kopf hinten außen, Schneide nach oben</td><td>erhoben, Schneide nach vorn</td></tr>
+    <tr><td>Bögen</td><td>links · Griffmitte</td><td>senkrecht neben dem Bein</td><td>senkrecht vor dem Körper</td></tr>
+    <tr><td>Bücher und Foki</td><td>links · Buchrücken</td><td>zugeklappt an der Hüfte</td><td>aufgeschlagen auf der flachen Hand, Seiten zur Figur; die Rechte zaubert</td></tr>
+    <tr><td>Schilde</td><td>links · Armschlaufe am Unterarm</td><td>außen am Unterarm, frei vom Oberarm (Thema 3)</td><td>leicht vor den Körper</td></tr>
+    <tr><td>Instrumente: Laute</td><td>links am Hals, rechts am Korpus</td><td>vor dem Bauch</td><td>wie in Ruhe</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <span class="kicker">Zur Umsetzung</span>
+  <h2>Was daraus im Spiel wird</h2>
+  <div class="card">
+    <ul>
+      <li>Auf dem Brett laufen die Figuren als gebackene Vertex-Animation (VAT). Jede gewählte Ruhe-Bewegung und Haltung wird deshalb in Blender als eigener kurzer Clip gebacken (<code>idle</code> je Haltung, <code>guard</code> für die Kampfhaltung), nicht zur Laufzeit gerechnet. Die Gesten sind eigene kurze Clips.</li>
+      <li>Jede Figur startet ihre Ruhe-Schleife an einer anderen Stelle, damit das Brett nicht im Gleichtakt atmet.</li>
+      <li>Die Hände bleiben in allen Varianten ruhig: Waffe und Schild drehen nicht mehr weg.</li>
+      <li>Die Tripo-Figuren bekommen Fingerknochen, damit sich die Hand je Griffart schließt (Faust um den Schaft, flache Hand unter dem Buch). Das aufgeschlagene Buch ist hier ein Platzhalter; das Buchmodell wird neu gezeichnet, zugeklappt und aufgeschlagen.</li>
+      <li>Die Kampfhaltung ist die aus dem Figurenblatt (Thema 3). Der Wechsel dauert eine Viertelsekunde.</li>
+    </ul>
+  </div>
+</section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/meshopt_decoder.js"></script>
+<script>
+/* ---------- Inhalte ---------- */
+const IDLE=[
+  {k:'today',l:'Heute',t:'Heute',d:'Die Stand-Animation mit vollem Ausschlag, zum Vergleich.'},
+  {k:'damp',l:'A · gedämpft',t:'Gedämpft',d:'Dieselbe Animation mit etwa einem Drittel Ausschlag, etwas langsamer, Hände ruhig. Bleibt lebendig, wiegt aber kaum noch.'},
+  {k:'breath',l:'B · nur Atmen',t:'Nur Atmen',d:'Die Figur steht still, nur Brust und Schultern heben sich alle vier Sekunden. Sehr ruhig, auf dem Brett fast reglos.'},
+  {k:'gest',l:'C · Atmen + Gesten',t:'Atmen und Gesten',d:'Wie B, dazu alle 6 bis 10 Sekunden eine kleine Geste: umsehen, Gewicht verlagern, Waffe nachfassen. Jede Figur zu einer anderen Zeit.'}];
+const CAMS=[{k:'near',l:'Nah'},{k:'board',l:'Brett-Blick'}];
+const HOLD=[
+  {k:'low',l:'A · alle gesenkt',t:'Alle gleich gesenkt',d:'Wie heute: jede Waffe hängt in der Hand nach unten, nur ruhiger. Einheitlich, aber die Waffengruppe liest man nur am Modell.'},
+  {k:'group',l:'B · je Waffengruppe',t:'Je Waffengruppe, sauber gegriffen',d:'Jede Waffe sitzt mit ihrem Griffpunkt in der Handfläche: Axt auf der Schulter, Schwert mit der Spitze nach oben, Lanze und Stab senkrecht auf den Boden gestützt, Bogen senkrecht in der Linken, Buch zugeklappt an der Hüfte.'},
+  {k:'guard',l:'C · alle in Wache',t:'Alle in Wache',d:'Alle stehen in der leichten Kampfhaltung aus dem Figurenblatt, die Waffe nach Gruppe vorn: Axt erhoben, Schwert schräg vor, Lanze waagerecht zum Stoß. Das ist zugleich die Haltung bei Auswahl (Frage 3).'}];
+const BOARD=[
+  {k:'always',l:'A · immer kampfbereit',t:'Immer kampfbereit',d:'Alle Figuren stehen auf dem Brett dauernd in der Kampfhaltung.'},
+  {k:'select',l:'B · bei Auswahl',t:'Entspannt, bei Auswahl kampfbereit',d:'In Ruhe die Haltung je Waffengruppe. Die gewählte Figur und beide Seiten der Kampfvorschau gehen in die Kampfhaltung, so wie ihre Runen dann voll leuchten (Thema 5). Tippen wählt.'}];
+
+/* Figuren: Waffe rechts (r) / links (l), Rune nur bei Waffen v2 */
+const EL={fire:'#F2603A',wind:'#7BD389',earth:'#B9874B',water:'#4AA8E8',light:'#F7D96B'};
+const CAST={
+  brenna:{r:{m:'v2_axe',rune:['fire',2]},l:{m:'v2_shield',rune:['water',1],dx:.045},grp:'axe'},
+  lucan:{r:{m:'v2_sword',rune:['light',1]},grp:'sword'},
+  tobin:{r:{m:'v2_lance',rune:['earth',1]},l:{m:'v2_shield',rune:['earth',1],dx:.045},grp:'lance'},
+  mira:{l:{m:'w_bow'},grp:'bow'},
+  liora:{r:{m:'w_staff'},grp:'staff'},
+  ysolde:{l:{m:'w_book'},l2:{proc:'openBook'},grp:'book'}};
+
+/* Haltungen: Zusatzdrehung je Knochen in Grad im Rahmen der Figur (X nach ihrer Linken, Y hoch, Z nach vorn), nach der Animation;
+   grip = Drehung der Waffe um die X-Achse des Hand-Sockels (wie `hold` in content/core/render.yaml) */
+/* Griff-Rig: Jede Waffe hat einen Griffpunkt und eine Längsachse (Schaft → Spitze bzw. Kopf). In der Hand liegt der Griffpunkt
+   in der Handfläche; die Gruppe legt fest, wohin die Spitze zeigt (T) und wohin die Schneide bzw. Breitseite (W), im Rahmen der Figur.
+   W bei Äxten: Richtung der Schneide. at: Griffpunkt als Anteil vom Schaftende (0) zur Spitze (1), oder 'floor' = Schaftende steht auf dem Boden. */
+const GUARD={Hips:[0,-14,0],LeftUpLeg:[0,0,12],RightUpLeg:[0,0,-12],LeftFoot:[0,0,-8],RightFoot:[0,0,8],Spine:[6,6,0],Head:[0,8,0],
+  LeftArm:[-10,0,26],RightArm:[-14,0,-16],RightForeArm:[-30,0,0],LeftForeArm:[-20,0,0]};
+const POSES={
+  low:{_:{}},
+  guard:{
+    axe:{bones:GUARD,rig:{r:{T:[0,.75,.65],W:[0,-.65,.75],at:.15}}},
+    sword:{bones:GUARD,rig:{r:{T:[-.15,.7,.7],W:[0,.7,-.7],at:.17}}},
+    lance:{bones:{...GUARD,RightForeArm:[-20,0,0]},rig:{r:{T:[0,.2,1],W:[1,0,0],at:.35}}},
+    bow:{bones:GUARD,rig:{l:{T:[0,1,.35],W:[0,0,1],at:.5}}},
+    staff:{bones:GUARD,rig:{r:{T:[.1,.9,.45],W:[1,0,0],at:.45}}},
+    book:{bones:{...GUARD,LeftArm:[-30,0,4],LeftForeArm:[-75,0,0]},rig:{l2:{T:[0,.45,.9],W:[1,0,0],at:.5}}},
+    _:{bones:GUARD}},
+  group:{
+    axe:{bones:{RightArm:[-20,0,-10],RightForeArm:[-100,0,0]},rig:{r:{T:[.5,.45,-.75],W:[0,-1,0],at:.12}}},
+    sword:{bones:{RightArm:[-8,0,-10],RightForeArm:[-55,0,0]},rig:{r:{T:[0,1,.12],W:[0,-.12,1],at:.17}}},
+    lance:{bones:{RightArm:[0,0,-18],RightForeArm:[-70,0,0]},rig:{r:{T:[0,1,0],W:[1,0,0],at:'floor'}}},
+    bow:{bones:{LeftArm:[0,0,8],LeftForeArm:[-15,0,0]},rig:{l:{T:[.1,1,.25],W:[0,0,1],at:.5}}},
+    staff:{bones:{RightArm:[0,0,-18],RightForeArm:[-70,0,0]},rig:{r:{T:[0,1,0],W:[1,0,0],at:'floor'}}},
+    book:{bones:{LeftArm:[0,0,12],LeftForeArm:[-25,0,0]},rig:{l:{T:[0,1,.1],W:[0,0,1],at:.5}}}}};
+/* je Waffenmodell: welches Ende die Spitze ist (heavy = das schwerere Ende, light = das leichtere), Breitseite umdrehen */
+const MODEL={v2_axe:{tip:'heavy',flipW:true},v2_sword:{tip:'light'},v2_lance:{tip:'heavy'},w_staff:{tip:'heavy'},w_bow:{tip:'heavy'},w_book:{tip:'heavy'}};
+const PALM=.035;/* Handfläche: so weit vom Handgelenk Richtung Finger */
+/* heutiger Griff-Winkel je Gruppe aus render.yaml */
+const TODAY_GRIP={lance:-125};
+const poseFor=(hold,grp)=>{const P=POSES[hold];return P[grp]||P._};
+
+/* ---------- Laden ---------- */
+const loader=new THREE.GLTFLoader();if(window.MeshoptDecoder)loader.setMeshoptDecoder(MeshoptDecoder);const raw={};
+const repoPath=u=>u.startsWith('u_')?'../../models/units/'+u.slice(2)+'.glb':u.startsWith('v2_')?'../../models/weapons-v2/'+u.slice(3)+'.glb':'../../models/weapons/'+u.slice(2)+'.glb';
+const bytes=u=>raw[u]||(raw[u]=fetch(u+'.glb.txt').then(r=>{if(!r.ok)throw new Error(u);return r.text()}).then(t=>{const s=atob(t.trim()),a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a.buffer}).catch(()=>fetch(repoPath(u)).then(r=>{if(!r.ok)throw new Error(u);return r.arrayBuffer()})));
+const fresh=u=>bytes(u).then(b=>new Promise((res,rej)=>loader.parse(b.slice(0),'',res,rej)));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const D2R=Math.PI/180;
+function channelMat(col,fill){return new THREE.ShaderMaterial({uniforms:{col:{value:new THREE.Color(col)},fill:{value:fill},t:{value:0}},
+  vertexShader:'attribute vec2 uv2;varying float f;void main(){f=uv2.x;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-4,fragmentShader:'uniform vec3 col;uniform float fill;uniform float t;varying float f;void main(){float lit=1.0-smoothstep(fill-0.03,fill+0.01,f);vec3 dark=vec3(0.16,0.12,0.11);gl_FragColor=vec4(mix(dark,col*1.25,lit),1.0);}'})}
+function styleRune(root,el,tier){root.traverse(o=>{if(!o.isMesh)return;const n=(o.name+'|'+(o.material&&o.material.name||'')).toLowerCase();
+  if(n.includes('rune_channel'))o.material=channelMat(EL[el],[0,.34,.67,1.01][tier]);
+  else if(n.includes('rune_stone'))o.material=new THREE.MeshStandardMaterial({color:new THREE.Color(EL[el]),emissive:new THREE.Color(EL[el]),emissiveIntensity:.6,roughness:.35,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-8})})}
+
+/* ---------- Bühne ---------- */
+function Stage(el){
+  const canvas=el.querySelector('canvas');const r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});r.setPixelRatio(Math.min(2,devicePixelRatio||1));r.outputEncoding=THREE.sRGBEncoding;
+  const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(30,1,.05,40);
+  scene.add(new THREE.HemisphereLight(0xfff1dc,0x3a2c22,1.05));const key=new THREE.DirectionalLight(0xffe2c0,1.15);key.position.set(2,4,3);scene.add(key);const rim=new THREE.DirectionalLight(0x9fb6ff,.45);rim.position.set(-3,2,-3);scene.add(rim);
+  const pivot=new THREE.Group();scene.add(pivot);
+  const st={el,canvas,r,scene,cam,pivot,tick:[],yaw:0,pitch:0,target:new THREE.Vector3(),dist:3,want:null,figs:[],onTap:null};
+  let drag=null,moved=0;canvas.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];moved=0;canvas.setPointerCapture(e.pointerId)});
+  canvas.addEventListener('pointermove',e=>{if(drag){const dx=e.clientX-drag[0];moved+=Math.abs(dx)+Math.abs(e.clientY-drag[1]);st.yaw+=dx*.012;drag=[e.clientX,e.clientY]}});
+  canvas.addEventListener('pointerup',e=>{drag=null;if(moved<6&&st.onTap)st.onTap(e)});
+  const size=()=>{const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};new ResizeObserver(size).observe(canvas);size();
+  let vis=true;new IntersectionObserver(es=>es.forEach(e=>vis=e.isIntersecting)).observe(canvas);let last=performance.now(),t0=0;
+  st.frame=(dt)=>{t0+=dt;pivot.rotation.set(0,st.yaw,0);
+    if(st.want){const k=reduce?1:.1;st.target.lerp(st.want.t,k);st.dist+=(st.want.d-st.dist)*k;st.pitch+=(st.want.p-st.pitch)*k}
+    cam.position.set(st.target.x,st.target.y+Math.sin(st.pitch)*st.dist,st.target.z+Math.cos(st.pitch)*st.dist);cam.lookAt(st.target);
+    st.tick.forEach(f=>f(dt,t0));r.render(scene,cam)};
+  (function loop(n){const dt=Math.min(.05,(n-last)/1000);last=n;if(vis&&canvas.clientWidth)st.frame(dt);requestAnimationFrame(loop)})(last);
+  return st}
+
+/* ---------- Griff-Rig ---------- */
+function modelFrame(inner,def){/* Hauptachsen der Waffe im Griff-Rahmen: e1 Längsachse zur Spitze, e2 Breitseite */
+  inner.updateMatrix();const pts=[],v=new THREE.Vector3();inner.updateMatrixWorld(true);const M=inner.matrix;
+  inner.traverse(o=>{if(!o.isMesh)return;const P=o.geometry.attributes.position;const L=new THREE.Matrix4().copy(M);const chain=[];let q=o;while(q&&q!==inner){chain.unshift(q);q=q.parent}
+    chain.forEach(c=>{c.updateMatrix();L.multiply(c.matrix)});for(let i=0;i<P.count;i+=3)pts.push(v.fromBufferAttribute(P,i).applyMatrix4(L).clone())});
+  const c=new THREE.Vector3();pts.forEach(p=>c.add(p));c.divideScalar(pts.length);
+  const C=[0,0,0,0,0,0,0,0,0];pts.forEach(p=>{const d=[p.x-c.x,p.y-c.y,p.z-c.z];for(let i=0;i<3;i++)for(let j=0;j<3;j++)C[i*3+j]+=d[i]*d[j]});
+  const pow=(seed,orth)=>{let x=seed.clone();for(let k=0;k<60;k++){const y=new THREE.Vector3(C[0]*x.x+C[1]*x.y+C[2]*x.z,C[3]*x.x+C[4]*x.y+C[5]*x.z,C[6]*x.x+C[7]*x.y+C[8]*x.z);if(orth)y.addScaledVector(orth,-y.dot(orth));x=y.normalize()}return x};
+  let e1=pow(new THREE.Vector3(.31,.83,.47));const e2=pow(new THREE.Vector3(.7,-.2,.4).addScaledVector(e1,-.5),e1);
+  let lo=1e9,hi=-1e9;pts.forEach(p=>{const t=p.clone().sub(c).dot(e1);lo=Math.min(lo,t);hi=Math.max(hi,t)});
+  /* Spitze: das Ende, dem der Schwerpunkt der Fläche näher liegt (heavy) bzw. ferner (light); c liegt bei 0 */
+  const heavyIsHi=Math.abs(hi)<Math.abs(lo);const flip=(def.tip==='heavy')!==heavyIsHi;if(flip){e1.negate();[lo,hi]=[-hi,-lo]}
+  /* Breitseite: zum weiter ausladenden Ende, bei der Axt also zur Schneide */
+  let a=1e9,b=-1e9;pts.forEach(p=>{const t=p.clone().sub(c).dot(e2);a=Math.min(a,t);b=Math.max(b,t)});if(Math.abs(a)>Math.abs(b))e2.negate();
+  if(def.flipW)e2.negate();return {c,e1,e2,e3:new THREE.Vector3().crossVectors(e1,e2),lo,hi}}
+const _m=new THREE.Matrix4(),_m2=new THREE.Matrix4(),_q=new THREE.Quaternion(),_v=new THREE.Vector3(),_v2=new THREE.Vector3();
+function placeRig(f,s,g,fr,rg,dt,key=s){
+  const hand=f.bones[s==='r'?'RightHand':'LeftHand'];if(!hand)return;f.root.updateMatrixWorld(true);
+  /* Handfläche im Rahmen der Figur */
+  const hp=hand.getWorldPosition(new THREE.Vector3()),hd=hand.localToWorld(new THREE.Vector3(0,1,0)).sub(hp).normalize();
+  const palm=f.root.worldToLocal(hp.clone().addScaledVector(hd,PALM));
+  const t1=new THREE.Vector3(...rg.T).normalize(),W=new THREE.Vector3(...rg.W);const t2=W.addScaledVector(t1,-W.dot(t1)).normalize(),t3=new THREE.Vector3().crossVectors(t1,t2);
+  const R=new THREE.Matrix4().makeBasis(t1,t2,t3).multiply(new THREE.Matrix4().makeBasis(fr.e1,fr.e2,fr.e3).transpose());
+  const q=new THREE.Quaternion().setFromRotationMatrix(R);const cur=f.wq[key]||(f.wq[key]=q.clone());cur.slerp(q,Math.min(1,dt*14||1));
+  let sAlong=rg.at==='floor'?fr.lo+(t1.y>.2?palm.y/t1.y:0):fr.lo+rg.at*(fr.hi-fr.lo);sAlong=Math.min(fr.hi,Math.max(fr.lo,sAlong));
+  const gp=fr.c.clone().addScaledVector(fr.e1,sAlong);/* Griffpunkt im Waffenrahmen */
+  const pos=palm.clone().sub(gp.clone().applyQuaternion(cur));
+  /* gewünschte Lage im Rahmen der Figur → Weltrahmen → Rahmen des Sockels */
+  _m.compose(pos,cur,new THREE.Vector3(1,1,1)).premultiply(f.root.matrixWorld);_m2.copy(g.parent.matrixWorld).invert().multiply(_m);
+  _m2.decompose(g.position,g.quaternion,_v2);g.scale.copy(_v2);g.children[0].position.copy(g.userData.base);g.updateMatrixWorld(true)}
+
+/* ---------- Figur ---------- */
+const norm=s=>(s||'').replace(/^mixamorig:?/,'').replace(/[^A-Za-z]/g,'');
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+async function Figure(id,opt={}){
+  const def=CAST[id];const g=await fresh('u_'+id);const root=new THREE.Group();const body=g.scene;root.add(body);
+  const mixer=new THREE.AnimationMixer(body);const clip=g.animations.find(a=>a.name==='idle')||g.animations[0];
+  const calm=clip.clone();calm.tracks=calm.tracks.filter(t=>!/(Left|Right)Hand/.test(t.name));
+  const restClip=new THREE.AnimationClip('rest',1,clip.tracks.map(tr=>{const n=tr.getValueSize(),v=Array.from(tr.values.slice(0,n));return new tr.constructor(tr.name,[0,1],v.concat(v))}));
+  const A={full:mixer.clipAction(clip),calm:mixer.clipAction(calm),rest:mixer.clipAction(restClip)};Object.values(A).forEach(a=>a.play());
+  const off=opt.phase!=null?opt.phase:rnd()*clip.duration;A.full.time=off;A.calm.time=off;
+  const bones={};body.traverse(o=>{if(o.isBone)bones[norm(o.name)]=o});
+  const sock={};body.traverse(o=>{const m=(o.name||'').match(/socket_(r|l)\b/);if(m&&!sock[m[1]])sock[m[1]]=o});
+  const grips={};
+  if(def.l2&&sock.l){/* aufgeschlagenes Buch (Platzhalter, bis das Modell neu gezeichnet ist): zwei Deckel und Seiten, Rücken entlang Y, Seiten nach +Z */
+    const ob=new THREE.Group(),cov=new THREE.MeshStandardMaterial({color:0x6b1f24,roughness:.8}),pg=new THREE.MeshStandardMaterial({color:0xf3e6c8,roughness:.9});
+    [-1,1].forEach(d=>{const h=new THREE.Group();h.rotation.y=d*.18;ob.add(h);const c=new THREE.Mesh(new THREE.BoxGeometry(.105,.15,.008),cov);c.position.set(d*.055,0,-.004);h.add(c);
+      const p=new THREE.Mesh(new THREE.BoxGeometry(.095,.14,.014),pg);p.position.set(d*.05,0,.007);h.add(p)});
+    const grip=new THREE.Group();sock.l.add(grip);const inner=new THREE.Group();inner.add(ob);grip.add(inner);grip.userData.base=inner.position.clone();
+    grip.userData.frame={c:new THREE.Vector3(),e1:new THREE.Vector3(0,1,0),e2:new THREE.Vector3(-1,0,0),e3:new THREE.Vector3(0,0,1),lo:-.075,hi:.075};grip.visible=false;grips.l2=grip}
+  for(const side of ['r','l']){const w=def[side];if(!w||!sock[side])continue;const gm=await fresh(w.m);const grip=new THREE.Group();sock[side].add(grip);
+    const inner=new THREE.Group();inner.add(gm.scene);if(w.dx)inner.position.x+=w.dx;grip.add(inner);if(w.rune)styleRune(gm.scene,w.rune[0],w.rune[1]);grips[side]=grip;
+    /* Längsachse der Waffe (im Griff-Rahmen) für slide */
+    gm.scene.updateMatrixWorld(true);const bb=new THREE.Box3().setFromObject(gm.scene),sz=bb.getSize(new THREE.Vector3());const ax=sz.x>sz.y&&sz.x>sz.z?'x':sz.y>sz.z?'y':'z';
+    grip.userData.axis=new THREE.Vector3()[ax==='x'?'setX':ax==='y'?'setY':'setZ'](sz[ax]);grip.userData.base=inner.position.clone();
+    if(MODEL[w.m])grip.userData.frame=modelFrame(inner,MODEL[w.m])}
+  const f={id,root,grp:def.grp,mode:'damp',hold:'low',pose:{},blend:{from:{},to:{},t:1,dur:.25},grip:{r:0,l:0},gripFrom:{r:0,l:0},gripTo:{r:0,l:0},slideTo:{r:0,l:0},
+    breathPh:rnd()*6.28,nextGest:2+rnd()*5,gest:null,selected:false,bones,wq:{},rig:{}};
+  f.setMode=m=>{f.mode=m;const W={today:[1,0,0],damp:[0,.35,.65],breath:[0,0,1],gest:[0,0,1]}[m];A.full.setEffectiveWeight(W[0]);A.calm.setEffectiveWeight(W[1]);A.rest.setEffectiveWeight(W[2]);
+    A.full.setEffectiveTimeScale(1);A.calm.setEffectiveTimeScale(.8);if(m!=='gest')f.gest=null};
+  f.setHold=(h,instant)=>{f.hold=h;const p=h==='today'?{}:(poseFor(h,f.grp).bones||{});const gr=h==='today'?{r:TODAY_GRIP[f.grp]||0,l:0}:Object.assign({r:h==='low'?(TODAY_GRIP[f.grp]||0):0,l:0},poseFor(h,f.grp).grip||{});
+    f.rig=(h!=='today'&&poseFor(h,f.grp).rig)||{};
+    const sl=(h!=='today'&&poseFor(h,f.grp).slide)||{};f.slideTo={r:sl.r||0,l:sl.l||0};f.socketGrip=h==='today'||h==='low';
+    f.blend={from:cur(),to:p,t:instant?1:0,dur:.25};f.gripFrom={r:V3(f.grip.r),l:V3(f.grip.l)};f.gripTo={r:V3(gr.r),l:V3(gr.l)};if(instant)f.grip={...f.gripTo}};
+  const cur=()=>{const o={};const k=ease(f.blend.t);const keys=new Set([...Object.keys(f.blend.from),...Object.keys(f.blend.to)]);keys.forEach(b=>{const a=f.blend.from[b]||[0,0,0],c=f.blend.to[b]||[0,0,0];o[b]=[0,1,2].map(i=>a[i]+(c[i]-a[i])*k)});return o};
+  const ease=x=>x<0?0:x>1?1:x*x*(3-2*x);const V3=v=>Array.isArray(v)?v:[v||0,0,0];
+  const RQ=new THREE.Quaternion(),PQ=new THREE.Quaternion(),T=new THREE.Quaternion(),Q=new THREE.Quaternion(),E=new THREE.Euler();
+  const addTo=(o,b,v,s=1)=>{const a=o[b]||(o[b]=[0,0,0]);a[0]+=v[0]*s;a[1]+=v[1]*s;a[2]+=v[2]*s};
+  const GEST=[ /* Gesten: Zusatzdrehung, mit Sinus-Hülle ein- und ausgeblendet */
+    {d:1.8,b:{Head:[0,26,0],Neck:[0,10,0]}},{d:1.8,b:{Head:[0,-24,0],Neck:[0,-8,0]}},
+    {d:2.2,b:{Hips:[0,0,-5],Spine:[0,0,4],LeftUpLeg:[0,0,4],RightUpLeg:[0,0,4]}},
+    {d:1.4,b:{RightForeArm:[-14,0,0],RightArm:[-6,0,0],Head:[-10,-8,0]}}];
+  const saved=new Map();/* der Mixer schreibt einen Knochen nur, wenn sich sein Wert ändert: die Zusatzdrehung vom letzten Bild erst zurücknehmen */
+  f.update=(dt,t)=>{saved.forEach((q,b)=>b.quaternion.copy(q));saved.clear();mixer.update(dt);
+    if(f.blend.t<1)f.blend.t=Math.min(1,f.blend.t+dt/f.blend.dur);const k=ease(f.blend.t);
+    for(const s of ['r','l']){const a=V3(f.gripFrom[s]),c=V3(f.gripTo[s]);f.grip[s]=[0,1,2].map(i=>a[i]+(c[i]-a[i])*k)}
+    const add=cur();
+    if(f.mode==='breath'||f.mode==='gest'){const b=Math.sin(t*1.6+f.breathPh);addTo(add,'Spine1',[-1.2,0,0],b);addTo(add,'Spine2',[-1.6,0,0],b);addTo(add,'LeftShoulder',[0,0,1.4],b);addTo(add,'RightShoulder',[0,0,-1.4],b);addTo(add,'Head',[0.9,0,0],b)}
+    if(f.mode==='gest'){if(!f.gest){f.nextGest-=dt;if(f.nextGest<=0){f.gest={g:GEST[Math.floor(rnd()*GEST.length)],t:0}}}
+      else{f.gest.t+=dt;const p=f.gest.t/f.gest.g.d;if(p>=1){f.gest=null;f.nextGest=6+rnd()*4}else{const s=Math.sin(Math.PI*p);Object.entries(f.gest.g.b).forEach(([b,v])=>addTo(add,b,v,s))}}}
+    root.updateMatrixWorld(true);root.getWorldQuaternion(RQ);const RI=RQ.clone().invert();
+    Object.entries(add).forEach(([b,v])=>{const bone=bones[b];if(!bone||(!v[0]&&!v[1]&&!v[2]))return;saved.set(bone,bone.quaternion.clone());bone.parent.getWorldQuaternion(PQ);
+      Q.setFromEuler(E.set(v[0]*D2R,v[1]*D2R,v[2]*D2R));T.copy(RQ).multiply(Q).multiply(RI);T.premultiply(PQ.clone().invert()).multiply(PQ);bone.quaternion.premultiply(T);bone.updateMatrixWorld(true)});
+    /* Waffe: Neigung um die Querachse der Figur (Grad), am Griff; slide schiebt sie entlang ihrer Länge (Anteil) */
+    for(const s of ['r','l']){const g=grips[s];if(!g)continue;g.quaternion.identity();g.position.set(0,0,0);g.updateMatrixWorld(true);g.parent.getWorldQuaternion(PQ);
+      const gv=f.grip[s];if(f.socketGrip)g.rotation.x=gv[0]*D2R;/* wie im Spiel heute: Drehung um die X-Achse des Sockels */
+      else{Q.setFromEuler(E.set(gv[0]*D2R,gv[1]*D2R,gv[2]*D2R,'ZYX'));T.copy(RQ).multiply(Q).multiply(RI);T.premultiply(PQ.clone().invert()).multiply(PQ);g.quaternion.copy(T)}
+      if(g.userData.axis)g.children[0].position.copy(g.userData.base).addScaledVector(g.userData.axis,f.slideTo[s]||0);g.updateMatrixWorld(true);
+      const rg=f.rig&&f.rig[s],fr=g.userData.frame;if(rg&&fr)placeRig(f,s,g,fr,rg,dt);g.visible=!(s==='l'&&f.rig&&f.rig.l2)}
+    if(grips.l2){const g=grips.l2,rg=f.rig&&f.rig.l2;g.visible=!!rg;if(rg)placeRig(f,'l',g,g.userData.frame,rg,dt,'l2')}};
+  f.setMode('damp');
+  return f}
+
+/* ---------- Bedienung ---------- */
+function seg(id,list,cur,on){const el=document.getElementById(id);el.innerHTML=list.map(v=>`<button type="button" data-k="${v.k}" aria-pressed="${v.k===cur}">${v.l}</button>`).join('');
+  el.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;el.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));on(b.dataset.k)})}
+function cards(id,list,cur){const el=document.getElementById(id);el.innerHTML=list.map(v=>`<div class="card${v.k===cur?' on':''}" data-k="${v.k}"><b>${v.t}</b><span class="small">${v.d}</span></div>`).join('');
+  return k=>el.querySelectorAll('.card').forEach(c=>c.classList.toggle('on',c.dataset.k===k))}
+const setLab=(st,t)=>st.el.querySelector('[data-lab]').textContent=t;
+const done=(st,t)=>st.el.querySelector('.hint').textContent=t;
+const fail=(st,e)=>{st.el.querySelector('.hint').textContent='Modell lädt nicht';console.error(e)};
+function frameOn(st,objs,pad=1.12,p=.12){st.scene.updateMatrixWorld(true);const box=new THREE.Box3();objs.forEach(o=>box.expandByObject(o));const c=box.getCenter(new THREE.Vector3()),s=box.getSize(new THREE.Vector3());
+  const tan=Math.tan(15*D2R);const d=Math.max(s.y,s.x/st.cam.aspect)*pad/2/tan;return {t:c,d,p,box}}
+
+/* Ist */
+(async()=>{const st=Stage(document.getElementById('st-ist'));try{const f=await Figure('brenna',{phase:0});st.pivot.add(f.root);f.setMode('today');f.setHold('today',true);st.tick.push(f.update);
+  st.yaw=-.35;st.frame(0);const v=frameOn(st,[f.root]);v.d*=1.45;v.t.y+=.03;st.target.copy(v.t);st.dist=v.d;st.pitch=v.p;st.want=v;done(st,'ziehen dreht')}catch(e){fail(st,e)}})();
+
+/* Frage 1 */
+(async()=>{const st=Stage(document.getElementById('st-idle'));let mode='damp',cam='near';const mark=cards('vars-idle',IDLE,mode);
+  try{const ids=['tobin','brenna','lucan'];const fs=await Promise.all(ids.map(i=>Figure(i)));fs.forEach((f,i)=>{f.root.position.x=(i-1)*.62;f.root.position.z=i===1?.15:0;st.pivot.add(f.root);f.setHold('group',true);st.tick.push(f.update)});
+    st.frame(0);const near=frameOn(st,fs.map(f=>f.root),1.1,.1);const board={t:near.t.clone().add(new THREE.Vector3(0,-.15,0)),d:near.d*3.2,p:.95};
+    const apply=()=>{fs.forEach(f=>{f.setMode(mode);f.setHold(mode==='today'?'today':'group',true)});const v=IDLE.find(x=>x.k===mode);setLab(st,v.t+(cam==='board'?' · so groß wie auf dem Handy':''));mark(mode);st.want=cam==='near'?near:board};
+    st.target.copy(near.t);st.dist=near.d;st.pitch=near.p;
+    seg('seg-idle',IDLE,mode,k=>{mode=k;apply()});seg('seg-cam',CAMS,cam,k=>{cam=k;apply()});apply();done(st,'ziehen dreht');window.__idle={st,fs}}catch(e){fail(st,e)}})();
+
+/* Frage 2 */
+(async()=>{const st=Stage(document.getElementById('st-line'));let hold='group';const mark=cards('vars-hold',HOLD,hold);
+  try{const ids=['brenna','lucan','tobin','mira','liora','ysolde'];const fs=await Promise.all(ids.map(i=>Figure(i)));
+    fs.forEach((f,i)=>{f.root.position.x=(i-2.5)*.58;st.pivot.add(f.root);f.setMode('breath');f.setHold(hold,true);st.tick.push(f.update)});
+    st.frame(0);const v=frameOn(st,fs.map(f=>f.root),1.06,.08);st.target.copy(v.t);st.dist=v.d;st.pitch=v.p;st.want=v;
+    const apply=()=>{fs.forEach(f=>f.setHold(hold));setLab(st,HOLD.find(x=>x.k===hold).t);mark(hold)};
+    seg('seg-hold',HOLD,hold,k=>{hold=k;apply()});apply();done(st,'ziehen dreht');window.__line={st,fs}}catch(e){fail(st,e)}})();
+
+/* Frage 3: Brett-Ausschnitt */
+(async()=>{const st=Stage(document.getElementById('st-board'));let mode='select';const mark=cards('vars-board',BOARD,mode);
+  try{const T=.62;const grid=new THREE.Group();st.pivot.add(grid);
+    for(let x=-5;x<=5;x++)for(let z=-4;z<=3;z++){const m=new THREE.Mesh(new THREE.BoxGeometry(T*.98,.06,T*.98),new THREE.MeshStandardMaterial({color:(x+z)&1?0x24331a:0x2a3b1e,roughness:1}));m.position.set(x*T,-.03,z*T);grid.add(m)}
+    const ring=new THREE.Mesh(new THREE.RingGeometry(T*.32,T*.42,40),new THREE.MeshBasicMaterial({color:0xf7d96b,transparent:true,opacity:.95}));ring.rotation.x=-Math.PI/2;ring.position.y=.005;ring.visible=false;st.pivot.add(ring);
+    const place=[['brenna',-1,0],['tobin',0,-1],['mira',1,0]];const fs=await Promise.all(place.map(p=>Figure(p[0])));
+    fs.forEach((f,i)=>{f.root.position.set(place[i][1]*T,0,place[i][2]*T);st.pivot.add(f.root);f.setMode('breath');st.tick.push(f.update)});
+    let sel=null;const apply=(instant)=>{fs.forEach(f=>f.setHold(mode==='always'||f===sel?'guard':'group',instant));ring.visible=!!sel;if(sel)ring.position.set(sel.root.position.x,.005,sel.root.position.z);
+      setLab(st,BOARD.find(x=>x.k===mode).t+(sel?' · '+sel.id[0].toUpperCase()+sel.id.slice(1)+' gewählt':''));mark(mode)};
+    st.yaw=0;st.frame(0);const v={t:new THREE.Vector3(0,.25,-.2),d:3.4*Math.max(1,1.6/st.cam.aspect),p:.85};st.target.copy(v.t);st.dist=v.d;st.pitch=v.p;st.want=v;
+    st.onTap=e=>{const rc=st.canvas.getBoundingClientRect();const m=new THREE.Vector2((e.clientX-rc.left)/rc.width*2-1,-(e.clientY-rc.top)/rc.height*2+1);
+      let best=null,bd=.25;fs.forEach(f=>{const p=new THREE.Vector3();f.root.getWorldPosition(p);p.y+=.35;p.project(st.cam);const d=Math.hypot(p.x-m.x,p.y-m.y);if(d<bd){bd=d;best=f}});sel=best===sel?null:best;apply()};
+    seg('seg-board',BOARD,mode,k=>{mode=k;apply()});apply(true);done(st,'tippen wählt eine Figur · ziehen dreht');window.__board3={st,fs}}catch(e){fail(st,e)}})();
+</script>
