@@ -3,7 +3,7 @@ title: 'Hollow Crown – Epics und Stories (Staffel 1)'
 stepsCompleted: [1, 2, 3, 4]
 status: final
 created: 2026-10-23
-updated: 2026-10-30
+updated: 2026-11-21
 readiness: concept/26-epics/implementation-readiness-report-2026-10-23.md (Auflösung der Befunde in Abschnitt 9)
 source: BMAD-Workflow gds-create-epics-and-stories
 decisions: concept/26-epics/decision-log.md
@@ -50,6 +50,7 @@ Je Epic eine Datei; nur die Datei des Epics lesen, an dem gearbeitet wird.
 | [epic-13.md](epic-13.md) | Epic 13: Kampf lesbar machen |
 | [epic-14.md](epic-14.md) | Epic 14: Handbuch |
 | [epic-15.md](epic-15.md) | Epic 15: Umbau von Akt 1 |
+| [epic-16.md](epic-16.md) | Epic 16: Ausrüstung zum Anfassen |
 
 ## Epic List
 
@@ -113,7 +114,11 @@ Spieler schlagen jede Regel im Spiel nach, aus dem Menü oder über ein „?“ 
 Spieler bekommen Akt 1 in der abgenommenen Fassung der Überarbeitung: größere Karten mit mehr, schwächeren Gegnern, neue Missionsfolge, Weltkarte v5, angepasste Szenen, Lucan statt Kael und die ersten Brettfiguren zu den neuen Porträts. Festgeschrieben am 2026-11-05: 11 Stories (15.1 Format-Reste, 15.2 Kampagnenfolge, 15.3–15.5 Karten klein, mittel, groß, 15.6 Szenen, 15.7 Weltkarte v5, 15.8 Galerie-Modelle, 15.9 Brettfiguren Schritt 1, 15.10 Abstimmung, 15.11 Leistung). Nachgetragen am 2026-11-06: 15.12 Weltkarte flüssig, Paktwacht als Ruine (nach dem Handy-Test) und 15.13 Figuren auf Treppen (Fehlerbehebung zu 15.3–15.5) und 15.14 Brettfigur Dorfältester (Folge zu 15.9). Das Release bleibt Story 9.14. Nachgetragen am 2026-11-06: 15.15 Jahreszeiten-Boden (Vorbereitung für Akt 2 und 3, nach `map-assets/jahreszeiten-plan.md`). Nachgetragen am 2026-11-07: 15.16 Winter-Deko und Waldvarianten (Folge zu 15.15).
 **FRs covered:** FR55, FR60, FR63 (Umbau) · NFR1 (neuer Maßstab)
 
-**Stand 2026-11-05:** Epic 1–8, 13 und 14 sind fertig, Epic 9 bis 9.13. Neu gilt: 15 → 9.14 (Release von Akt 1) → 10 → 11 → 12. Akt 2 geht erst nach dem Release von Akt 1 live. **Stand 2026-11-06:** Epic 11 ist auf die Überarbeitung neu geschnitten und Epic 10 nachgezogen (Lückenliste in `concept/27-ueberarbeitung/umsetzung-lueckenliste-akt2.md`, F1–F4 entschieden). Die Reihenfolge darunter ist die ursprüngliche Planung.
+### Epic 16: Ausrüstung zum Anfassen
+Spieler sehen und begreifen ihre Ausrüstung: Runenwaffen v2 für alle Waffengruppen mit der Rune im Metall, Signaturen und Relikte mit eigenem Merkmal, Griff-Rig mit Fingern und Kampfhaltung bei Auswahl für alle 45 Brettfiguren, Figurenblatt als 3D-Ankleidepuppe mit Waffenansicht, Verzauberer als Werkbank, Händler „zuerst die Person“, ein Brett, das Gelände, Kosten und Elemente selbst erklärt, die Regeln Straße ½, Gegnerphase 2×, Schild-Runen und Waffen-Chronik sowie die Waffenkammer im Bergfried. Festgeschrieben am 2026-11-21 nach den acht abgenommenen Themen der Konzeptreihe: 19 Stories (16.1 Straße ½, 16.2 Balancing-Nachzug Prolog, 1-2, 2-1, 2-8, 16.3 Gegnerphase 2×, 16.4 Schild-Runen, 16.5 Waffen-Chronik, 16.6 Runenwaffen v2 im Spiel, 16.7 übrige Waffengruppen, 16.8 Signaturen und Relikte, 16.9 Griff-Rig und Finger, 16.10 Ruhe und Kampfhaltung, 16.11 Gelände und Kosten, 16.12 Element-Band, 16.13 Änderungsliste und Icons, 16.14 Waffenansicht, 16.15 Figurenblatt, 16.16 Verzauberer, 16.17 Händler, 16.18 Waffenkammer, 16.19 Handbuch, Leistung und Abnahme). Läuft vor Story 9.14.
+**FRs covered:** FR64–FR69 · NFR17 · AR24–AR26 · UX-DR32–UX-DR39
+
+**Stand 2026-11-05:** Epic 1–8, 13 und 14 sind fertig, Epic 9 bis 9.13. Neu gilt: 15 → 9.14 (Release von Akt 1) → 10 → 11 → 12. Akt 2 geht erst nach dem Release von Akt 1 live. **Stand 2026-11-06:** Epic 11 ist auf die Überarbeitung neu geschnitten und Epic 10 nachgezogen (Lückenliste in `concept/27-ueberarbeitung/umsetzung-lueckenliste-akt2.md`, F1–F4 entschieden). Die Reihenfolge darunter ist die ursprüngliche Planung. **Stand 2026-11-21:** Epic 16 „Ausrüstung zum Anfassen“ kommt vor Story 9.14 (Produktinhaber); neu gilt: 15 → 16 → 9.14 → 12.
 
 **Reihenfolge (ursprünglich):** 1 → 2 → 4 → 3 → 5 → 6 → 7 → 8 → 9 bis 9.13 → 13 → 9.14 (MVP-Release) → 14, danach 10 → 11 → 12 (Course Correction 2026-10-30: Epic 13 vor dem MVP-Release, Epic 14 direkt danach und vor Akt 2). Epic 4 läuft vor Epic 3 (oder beide zusammen), weil Groll-Wirkung, Bedingungen und Szenen der Leutnants aus Epic 4 kommen. Gebaut wird Epic für Epic auf die Endfassung hin; ein Epic darf intern unfertig sein, solange das nächste darauf aufbaut. Epic 8 kann ab Epic 2 parallel laufen (Asset-Arbeit), seine Einbindung setzt die jeweiligen Szenen voraus. Die Burg ist ab 1-6 Heimat (Story 6.9); ihr Ausbau (Epic 10) ist spätestens mit Akt 2 fertig. Epic 10 und 11 laufen verschränkt (Verfeinerung und Readiness-Fixes 2026-10-31): 11.1 (Akt-Übergang) zuerst, dann 10.2, 10.3 und 10.4 parallel zu 11.2–11.7, danach die übrigen Stories von Epic 10 und die Missionen ab 11.10; 11.8 (Ziel-Phasen) vor 11.17 (Kronfeld); 11.22 (Abstimmung Akt 2) zuletzt, nach allen Epic-10-Stories bis 10.12. Details in den Absätzen „Reihenfolge“ beider Epics.
 
@@ -121,8 +126,8 @@ Spieler bekommen Akt 1 in der abgenommenen Fassung der Überarbeitung: größere
 
 ## Validierung
 
-- **FR-Abdeckung:** FR1–FR63 sind in der Coverage Map einem Epic zugeordnet und in mindestens einer Story mit Kriterien hinterlegt; bestehende Regeln (FR1–FR3, FR6, FR9, FR10, FR45) werden in Story 2.1/2.2 bzw. 6.2 übernommen und nicht neu gebaut.
-- **UX-Abdeckung:** UX-DR1–UX-DR31 sind Epics zugeordnet (Epic List) und in Stories mit Mockup-Verweis abgedeckt; UX-DR26–UX-DR31 kamen mit der Course Correction 2026-10-30 (Epics 13 und 14, 16 Stories).
+- **FR-Abdeckung:** FR1–FR69 sind in der Coverage Map einem Epic zugeordnet und in mindestens einer Story mit Kriterien hinterlegt; bestehende Regeln (FR1–FR3, FR6, FR9, FR10, FR45) werden in Story 2.1/2.2 bzw. 6.2 übernommen und nicht neu gebaut.
+- **UX-Abdeckung:** UX-DR1–UX-DR39 sind Epics zugeordnet (Epic List) und in Stories mit Mockup-Verweis abgedeckt; UX-DR26–UX-DR31 kamen mit der Course Correction 2026-10-30 (Epics 13 und 14, 16 Stories).
 - **Architektur:** Kein Starter-Template (Projekt existiert). Bausteine entstehen beim ersten Bedarf: Speicherformat 2 und Kampagnen-Commands (1.2, 1.4), Worker (2.8), Content-Layout, Bedingungen, Szenen-Schema (4.1, 4.2, 4.4), Szenen-Host (5.1), Pakete und ID-Sperre (7.1, 7.4).
 - **Abhängigkeiten:** Jede Story baut nur auf früheren Stories auf; Verweise auf spätere Epics nennen nur, wo eine Ansicht später zusätzlich erreichbar wird (z. B. Steckbriefe über die Leiste ab Epic 5). Epic 8 kann ab Epic 2 parallel laufen.
 - **Dateiwechsel:** Rollenmodell und Kampf-HUD liegen in einem Epic (2), Heimat-Räume in Epic 6 (Lager, Burg auf Stufe 1 ab 1-6) und Epic 10 (Burg-Ausbau ab Akt 2) mit demselben Raum-Muster; keine Mehrfach-Umbauten derselben Dateien über Epics ohne Grund.

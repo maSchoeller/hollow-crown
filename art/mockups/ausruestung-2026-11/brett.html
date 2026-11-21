@@ -1,0 +1,604 @@
+<meta charset="utf-8">
+<title>Hollow Crown Brett</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: Konzeptseite wie Thema 2–4 – Ist-Zustand, dann je Teil ein Variantenschalter und ein klickbares Handy, am Ende die Fragen.
+   Bewusst nur die helle Spiel-Optik (Studio-Look B): die Handys zeigen das Spiel, wie es aussieht. */
+:root{
+  --bg:#F6EEDF; --panel:#FFF8EC; --tone:#F4E9D6; --line:#3B2A20; --soft:#7A6553; --ember:#E8743B; --ember-d:#B44C18;
+  --pos:#2F8A4C; --neg:#B83A2E; --rule:#E3D5BE; --gold:#D9A62E; --blue:#2F64C8;
+  --fire:#F2603A; --wind:#7BD389; --earth:#B9874B; --water:#4AA8E8; --light:#F7D96B; --dark:#8E5BD9;
+  --f-name:'Fraunces',Georgia,serif; --f-body:'Barlow',system-ui,sans-serif; --f-label:'Barlow Condensed','Arial Narrow',sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--line);font-family:var(--f-body);font-size:16px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:26px 64px}
+.wrap{max-width:1040px;margin:0 auto;display:flex;flex-direction:column;gap:52px}
+h1,h2,h3{font-family:var(--f-name);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(30px,5vw,44px);font-weight:800}
+h2{font-size:26px;font-weight:800}
+h3{font-size:19px;font-weight:600}
+p{margin:0;max-width:68ch}
+section{display:flex;flex-direction:column;gap:16px}
+.kicker{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.09em;font-size:13px;color:var(--ember-d);font-weight:700}
+.lead{font-size:18px}
+.small{font-size:14px;color:var(--soft)}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.ic{display:inline-block;vertical-align:-2px;flex:0 0 auto}
+
+/* Ist-Zustand */
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.shot{display:flex;flex-direction:column;gap:8px;min-width:0}
+.shot img{width:100%;max-width:240px;border-radius:16px;border:2px solid var(--line);display:block}
+.shot p{font-size:14.5px}
+
+/* Teil-Abschnitt: links Schalter und Text, rechts das Handy */
+.part{display:grid;grid-template-columns:minmax(0,1fr) 352px;gap:28px;align-items:start}
+@media (max-width:820px){.part{grid-template-columns:1fr}}
+.side{display:flex;flex-direction:column;gap:14px;min-width:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font-family:var(--f-label);font-weight:700;font-size:15px;border:2px solid var(--line);background:var(--panel);color:var(--line);border-radius:99px;padding:6px 13px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--line);color:var(--panel)}
+.seg button:focus-visible,.phone button:focus-visible{outline:3px solid var(--ember);outline-offset:2px}
+.vdesc{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.vdesc b.t{font-family:var(--f-name);font-size:17px}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px}
+.pc div{display:flex;flex-direction:column;gap:2px}
+.pc .lbl{font-family:var(--f-label);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:12px}
+.try{font-size:14px;color:var(--soft);display:flex;gap:6px;align-items:flex-start}
+.fixed{border-left:3px solid var(--gold);padding-left:12px;font-size:14.5px}
+
+/* ---------- Handy im Spiel-Look ---------- */
+.phone{width:340px;max-width:100%;height:720px;border-radius:34px;border:6px solid #1c1410;background:#2a2019;position:relative;overflow:hidden;margin:0 auto;font-size:13px;line-height:1.3;color:var(--line);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.boardwrap{position:absolute;left:0;top:0;right:0;height:100%;overflow:hidden}
+.board{position:absolute;left:2px;top:58px;width:324px;height:468px;transition:transform .35s ease}
+.tile{position:absolute;width:36px;height:36px}
+.tile svg{position:absolute;inset:0}
+.ov{position:absolute;width:36px;height:36px;pointer-events:none}
+.mv{position:absolute;width:32px;height:32px;margin:2px;border-radius:5px;pointer-events:none}
+.unit{position:absolute;width:36px;height:36px;pointer-events:none}
+.unit .bar{position:absolute;left:7px;top:-3px;width:22px;height:4px;border-radius:2px;border:1px solid #2b1d14;background:#fff}
+.unit .bar i{display:block;height:100%;border-radius:1px}
+.wpn{position:absolute;right:-4px;bottom:1px;width:17px;height:17px;border-radius:50%;background:#FFF8EC;border:1.5px solid #3B2A20;display:grid;place-items:center;color:#3B2A20}
+.wpn.dim{box-shadow:0 0 4px 1px var(--g)}
+.wpn.full{box-shadow:0 0 9px 4px var(--g),0 0 2px 1px var(--g) inset;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 13px 6px var(--g),0 0 2px 1px var(--g) inset}}
+.unit.done{filter:saturate(.3) brightness(.85)}
+.pathsvg{position:absolute;left:0;top:0;pointer-events:none}
+.mark{position:absolute;display:flex;gap:1px;pointer-events:none}
+.mk{min-width:14px;height:14px;border-radius:7px;background:#FFF8EC;border:1.3px solid #3B2A20;display:inline-flex;align-items:center;justify-content:center;gap:1px;padding:0 2px;font-family:var(--f-label);font-weight:700;font-size:9.5px;color:#3B2A20;line-height:1}
+.pips{position:absolute;right:3px;bottom:3px;display:flex;gap:2px;pointer-events:none}
+.pips i{width:5px;height:5px;border-radius:50%;background:#3B2A20;box-shadow:0 0 0 1px #FFF8EC}
+.half{position:absolute;right:2px;bottom:2px;font-family:var(--f-label);font-weight:700;font-size:10px;color:#3B2A20;background:#FFF8EC;border-radius:4px;padding:0 2px;line-height:12px;pointer-events:none}
+.rest{position:absolute;transform:translate(-50%,-100%);background:var(--ember);color:#fff;border:2px solid #3B2A20;border-radius:99px;padding:1px 7px;font-family:var(--f-label);font-weight:700;font-size:12px;white-space:nowrap;pointer-events:none;display:flex;gap:3px;align-items:center}
+.hit{position:absolute;inset:0}
+
+.top{position:absolute;left:8px;right:8px;top:8px;display:flex;gap:6px;align-items:center;z-index:5}
+.pill{background:#FFF8EC;border:2px solid #3B2A20;border-radius:99px;box-shadow:0 3px 0 #3B2A20;padding:3px 10px 3px 4px;display:flex;align-items:center;gap:7px;flex:1;min-width:0}
+.pill .rd{width:30px;height:30px;border-radius:50%;background:var(--ember);color:#fff;border:2px solid #3B2A20;display:grid;place-items:center;font-family:var(--f-name);font-weight:800;font-size:16px}
+.pill .ph{font-family:var(--f-label);font-weight:700;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--blue)}
+.pill .gl{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rbtn{width:38px;height:38px;border-radius:50%;background:#FFF8EC;border:2px solid #3B2A20;box-shadow:0 3px 0 #3B2A20;display:grid;place-items:center;flex:0 0 auto}
+.legend{position:absolute;left:8px;right:8px;top:56px;z-index:5;background:#FFF8EC;border:2px solid #3B2A20;border-radius:14px;box-shadow:0 3px 0 #3B2A20;padding:5px 7px;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-family:var(--f-label);font-weight:700;font-size:11.5px}
+.legend .sw{width:13px;height:13px;border-radius:3px;border:1.3px solid #3B2A20;display:inline-block;vertical-align:-2px;margin-right:3px}
+.legend .who{display:flex;gap:4px;align-items:center;width:100%}
+.legend .who .lbl{flex:1}
+.med{width:26px;height:26px;border-radius:50%;border:2px solid #3B2A20;display:grid;place-items:center;font-family:var(--f-name);font-weight:800;font-size:12px;cursor:pointer;background:#cfd8e8;padding:0;color:#3B2A20}
+.med[aria-pressed="true"]{outline:2.5px solid var(--ember);outline-offset:1px}
+
+.bottom{position:absolute;left:8px;right:8px;bottom:10px;display:flex;flex-direction:column;gap:8px;z-index:6}
+.dock{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.dock.four{grid-template-columns:repeat(4,1fr)}
+.db{background:#FFF8EC;border:2px solid #3B2A20;border-radius:14px;box-shadow:0 3px 0 #3B2A20;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-family:var(--f-label);font-weight:700;font-size:13px;color:#3B2A20;cursor:pointer;position:relative;padding:0;overflow:hidden}
+.db.main{background:var(--ember);color:#fff;box-shadow:0 3px 0 var(--ember-d)}
+.db.on{background:#fde3d8}
+.db.lens{background:#e3efd9}
+.db small{font-size:10px;font-weight:600;opacity:.85}
+.db.dimmed{opacity:.45}
+.db .hold{position:absolute;inset:0;background:conic-gradient(rgba(47,138,76,.28) calc(var(--p,0)*1turn),transparent 0);pointer-events:none}
+.db .corner{position:absolute;right:6px;top:5px;display:flex;gap:2px}
+.db .corner i{width:3px;height:3px;border-radius:50%;background:currentColor;opacity:.6}
+.panel{background:#FFF8EC;border:2px solid #3B2A20;border-radius:18px;box-shadow:0 4px 0 #3B2A20;padding:9px 11px;display:flex;flex-direction:column;gap:7px}
+.hint{align-self:flex-start;background:#FFF8EC;border:2px solid #3B2A20;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:600;box-shadow:0 2px 0 #3B2A20;display:flex;gap:5px;align-items:center}
+.ptitle{font-family:var(--f-name);font-weight:800;font-size:17px;line-height:1.1}
+.caps{font-family:var(--f-label);font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:10.5px;color:var(--soft)}
+.chip{display:inline-flex;align-items:center;gap:3px;background:var(--tone);border-radius:99px;padding:2px 8px;font-family:var(--f-label);font-weight:700;font-size:12.5px;color:#3B2A20;font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip.pos{color:var(--pos)} .chip.neg{color:var(--neg)}
+.chip.big{font-size:14px;padding:3px 10px;background:#fff1e7;border:1.5px solid var(--ember)}
+.q{width:18px;height:18px;border-radius:50%;border:1.5px solid #3B2A20;background:#FFF8EC;display:inline-grid;place-items:center;font-family:var(--f-label);font-weight:700;font-size:11px;cursor:pointer;padding:0;color:#3B2A20;flex:0 0 auto}
+.fhead{display:flex;align-items:center;gap:9px}
+.swatch{width:34px;height:34px;border-radius:8px;border:2px solid #3B2A20;position:relative;overflow:hidden;flex:0 0 auto}
+.mtab{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.mtab div{background:var(--tone);border-radius:9px;padding:3px 2px;text-align:center;font-family:var(--f-label);font-weight:700;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:0}
+.mtab div b{font-size:15px;font-variant-numeric:tabular-nums}
+.mtab div.me{background:#fff1e7;outline:1.5px solid var(--ember)}
+.mtab div.no b{color:var(--neg)}
+.ucard{display:flex;gap:9px;align-items:center}
+.port{width:48px;height:48px;border-radius:50%;border:2.5px solid var(--blue);background:#cfd8e8;display:grid;place-items:center;font-family:var(--f-name);font-weight:800;font-size:20px;flex:0 0 auto}
+.port.en{border-color:var(--neg);background:#f0cfcf}
+.wchip{display:inline-flex;align-items:center;gap:4px;border:1.5px solid #3B2A20;border-radius:99px;padding:1px 7px 1px 5px;font-family:var(--f-label);font-weight:700;font-size:12px;background:#FFF8EC;white-space:nowrap}
+.gem{width:15px;height:15px;border-radius:50%;border:1.3px solid #3B2A20;display:inline-grid;place-items:center;font-family:var(--f-label);font-weight:700;font-size:8.5px;color:#2b1d14;flex:0 0 auto}
+.eb{width:20px;height:20px;border-radius:50%;border:1.5px solid #3B2A20;display:inline-grid;place-items:center;color:#2b1d14;flex:0 0 auto}
+.fc{gap:6px}
+.fc .vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px}
+.fc .side2{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center}
+.fc .nm{font-family:var(--f-name);font-weight:800;font-size:15px}
+.tri{font-family:var(--f-label);font-weight:700;font-size:11px;border-radius:99px;padding:0 7px;border:1.5px solid currentColor}
+.tbl{background:var(--tone);border-radius:12px;padding:4px 10px;display:flex;flex-direction:column}
+.tr{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:3px 0;border-bottom:1px solid #e6d7bf;font-variant-numeric:tabular-nums}
+.tr:last-child{border-bottom:0}
+.tr .l{font-family:var(--f-name);font-weight:800;font-size:18px;display:flex;align-items:center;gap:4px}
+.tr .r{font-family:var(--f-name);font-weight:800;font-size:18px;text-align:right;display:flex;align-items:center;gap:4px;justify-content:flex-end}
+.tr .m{font-family:var(--f-label);font-weight:700;font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--soft);text-align:center;padding:0 4px;display:flex;align-items:center;gap:3px;justify-content:center}
+.tr.el .l,.tr.el .r{font-size:15px}
+.mult{font-family:var(--f-label);font-weight:700;font-size:12px;border-radius:99px;padding:0 5px;color:#fff}
+.mult.pos{background:var(--pos)} .mult.neg{background:var(--neg)}
+.band{display:flex;align-items:center;justify-content:center;gap:6px;border-radius:99px;padding:3px 10px;font-weight:600;font-size:12.5px;border:1.5px solid #3B2A20}
+.stat{display:flex;align-items:center;gap:6px;justify-content:center;font-size:12.5px}
+.btnrow{display:grid;grid-template-columns:1fr 1.6fr;gap:8px}
+.bt{border:2px solid #3B2A20;border-radius:99px;height:44px;font-family:var(--f-label);font-weight:700;font-size:16px;cursor:pointer;background:#FFF8EC;color:#3B2A20;box-shadow:0 3px 0 #3B2A20}
+.bt.main{background:var(--ember);color:#fff;box-shadow:0 3px 0 var(--ember-d)}
+.sheet{position:absolute;inset:auto 8px 10px 8px;z-index:9}
+.scrim{position:absolute;inset:0;background:rgba(30,20,12,.35);z-index:8}
+.ring{display:flex;gap:10px;align-items:center}
+.lifebar{height:7px;border-radius:4px;background:#e9c9bd;border:1.3px solid #3B2A20;overflow:hidden;position:relative}
+.lifebar i{position:absolute;left:0;top:0;bottom:0;background:var(--blue)}
+.lifebar i.en{background:var(--neg)}
+.lifebar s{position:absolute;top:0;bottom:0;background:#fff;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:.2}}
+.zchip{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+@media (prefers-reduced-motion: reduce){.wpn.full,.lifebar s{animation:none}.board{transition:none}}
+table.q5{border-collapse:collapse;width:100%;font-size:14.5px}
+table.q5 td,table.q5 th{text-align:left;padding:7px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.q5 th{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.06em;font-size:12px;color:var(--soft)}
+.tblw{overflow-x:auto}
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:12px">
+  <span class="kicker">Hollow Crown · Ausrüstung zum Anfassen · Thema 5 von 8 · 21.11.2026</span>
+  <h1>Das Brett erklärt sich selbst</h1>
+  <p class="lead">Drei Stellen auf dem Kampfbrett: die Gelände-Linse auf langem Druck auf „Gefahr“, die Bewegungskosten der gewählten Figur und die Rune in der Kampfvorschau. Jedes Handy unten ist klickbar. Die Varianten-Schalter gelten für alle drei Handys, du kannst also Teile frei kombinieren.</p>
+</header>
+
+<section>
+  <span class="kicker">Ist-Zustand · Dev-Build heute</span>
+  <h2>Was heute hakt</h2>
+  <div class="shots">
+    <div class="shot"><img src="ist-brett-feldkarte.jpg" alt="Feldkarte Gras mit VER 0 und Ausw. 0"><p><b>Feldkarte.</b> Tipp auf ein leeres Feld zeigt „Gras · VER 0 · Ausw. 0“. Abkürzungen statt Symbole, keine Bewegungskosten, kein Hinweis, dass es die Karte überhaupt gibt. Bäume, die nur Deko sind, sehen aus wie Wald.</p></div>
+    <div class="shot"><img src="ist-brett-bewegung.jpg" alt="Bewegungsbereich des Vorkämpfers"><p><b>Bewegungsbereich.</b> Man sieht, wohin die Figur kommt, aber nicht warum es hinter den Bäumen endet. Welche Felder teuer sind, muss man durch Ausprobieren lernen.</p></div>
+    <div class="shot"><img src="ist-brett-vorschau.jpg" alt="Kampfvorschau Stahlaxt gegen Stahlschwert"><p><b>Kampfvorschau.</b> Die Axt trägt Feuer II, aber das sieht man nur am Chip „Brennen 30 %“. Ob das Element gerade hilft, steht nirgends, der Faktor steckt unsichtbar im Schaden. Dazu zwei „?“ nebeneinander.</p></div>
+  </div>
+  <div class="card fixed" style="border-left-color:var(--gold)">
+    <span><b>Schon beschlossen</b> (Party-Mode und Thema 1): kein vierter Dock-Knopf, die Linse hängt am langen Druck auf „Gefahr“. Straßen kosten ½ Bewegung, die genauen Zahlen kommen in Thema 7. Die Vorschau rechnet mit demselben Formelcode wie die Auflösung. Runenwaffen glimmen gedämpft und leuchten voll, wenn die Figur gewählt ist und in der Vorschau (Art Direction §4.7). Schild- und Rüstungsrunen geben dem Träger ihr Element, also Widerstand.</span>
+  </div>
+</section>
+
+<!-- Teil 1 -->
+<section id="teil-linse">
+  <span class="kicker">Teil 1 · Gelände-Linse</span>
+  <h2>Langer Druck auf „Gefahr“ zeigt das Gelände</h2>
+  <div class="part">
+    <div class="side">
+      <div class="seg" id="seg-lens" role="group" aria-label="Variante Gelände-Linse"></div>
+      <div class="vdesc" id="d-lens" aria-live="polite"></div>
+      <p class="try"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 11v5M12 7.5h.01"/></svg><span>Zum Ausprobieren: „Gefahr“ kurz tippen schaltet die Gefahrenzone, gedrückt halten (0,4 s) die Linse. Felder antippen öffnet die Feldkarte. Am PC wäre es die Taste G.</span></p>
+    </div>
+    <div class="phone" id="ph1" aria-label="Handy: Gelände-Linse"></div>
+  </div>
+</section>
+
+<!-- Teil 2 -->
+<section id="teil-bewegung">
+  <span class="kicker">Teil 2 · Bewegungskosten</span>
+  <h2>Was ein Feld die gewählte Figur kostet</h2>
+  <div class="part">
+    <div class="side">
+      <div class="seg" id="seg-move" role="group" aria-label="Variante Bewegungskosten"></div>
+      <div class="vdesc" id="d-move" aria-live="polite"></div>
+      <p class="try"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 11v5M12 7.5h.01"/></svg><span>Brenna ist gewählt (gepanzert, Bewegung 4). Tipp auf ein blaues Feld setzt das Ziel, Tipp auf Wald oder Furt zeigt, warum es dort endet. Rhen und Tobin gehen zu Fuß und kommen weiter.</span></p>
+    </div>
+    <div class="phone" id="ph2" aria-label="Handy: Bewegungskosten"></div>
+  </div>
+</section>
+
+<!-- Teil 3 -->
+<section id="teil-vorschau">
+  <span class="kicker">Teil 3 · Runen in der Kampfvorschau</span>
+  <h2>Element mit Faktor, Status mit Chance</h2>
+  <div class="part">
+    <div class="side">
+      <div class="seg" id="seg-fc" role="group" aria-label="Variante Kampfvorschau"></div>
+      <div class="vdesc" id="d-fc" aria-live="polite"></div>
+      <div><div class="caps" style="font-size:12px;margin-bottom:6px">Der Söldner trägt</div><div class="seg" id="seg-gear" role="group" aria-label="Ausrüstung des Ziels"></div></div>
+      <p class="try"><svg class="ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 11v5M12 7.5h.01"/></svg><span>Brennas Stahlaxt trägt Feuer II. Sieh auf das Brett hinter der Vorschau: ihre Axt leuchtet voll, die Runenwaffen von Tobin und dem Axtkämpfer glimmen nur. Hätte die Gegnerwaffe eine Rune, leuchtete sie ebenfalls voll. Das „?“ am Element öffnet das Elementrad.</span></p>
+    </div>
+    <div class="phone" id="ph3" aria-label="Handy: Kampfvorschau"></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Zur Entscheidung</span>
+  <h2>Was ich von dir wissen möchte</h2>
+  <div class="tblw"><table class="q5">
+    <tr><th>Teil</th><th>Varianten</th><th>Meine Empfehlung</th></tr>
+    <tr><td>Gelände-Linse</td><td>A Farbflächen · B Feld-Marken · C Für die Figur</td><td>A: liest sich auf einen Blick, die genauen Zahlen stehen in der Feldkarte.</td></tr>
+    <tr><td>Linse an und aus</td><td>bleibt an bis zum nächsten Tipp auf „Gefahr“ · nur solange gedrückt</td><td>bleibt an: man will danach Felder antippen.</td></tr>
+    <tr><td>Bewegungskosten</td><td>A Tabelle in der Feldkarte · B Am Weg und für die Figur</td><td>B: die Kosten stehen dort, wo man plant.</td></tr>
+    <tr><td>Kampfvorschau</td><td>A Element-Zeile · B Element-Band</td><td>B: ein Satz mit Faktor, der Schaden trägt den Faktor sichtbar.</td></tr>
+  </table></div>
+  <p class="small">Werte aus <code>terrain.yaml</code>, <code>runes.yaml</code> und <code>balance.yaml</code> (Element ×1,2 / ×0,8, Status 30 % bei Stufe II). Straße mit ½ ist der beschlossene Richtwert, die Zahlen folgen in Thema 7. Die Figuren sind Platzhalter, auf dem echten Brett stehen die 3D-Modelle.</p>
+</section>
+</div>
+
+<script>
+(function(){
+/* Linien-Icons im Stil von src/ui/icons.tsx (24er Raster, Strich 1,9, runde Enden). Element-, Dock- und Kampf-Icons wie dort, ab „neu“ ergänzt. */
+const IP={danger:'M12 4l9 16H3zM12 10v4M12 17h.01',next:'M5 12h12M13 6l6 6-6 6',end:'M6 5l7 7-7 7M13 5l7 7-7 7',map:'M4 6l5-2 6 2 5-2v14l-5 2-6-2-5 2zM9 4v14M15 6v14',
+ menu:'M4 7h16M4 12h16M4 17h10',back:'M15 5l-7 7 7 7',attack:'M4 20l6-6M7 13l4 4M10 14L20 4v-.5h-.5L9.5 13.5',shield:'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',
+ item:'M9 3h6M10 3v5l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3',wait:'M6 3h12M6 21h12M7 3c0 5 10 6 10 9s-10 4-10 9M17 3c0 5-10 6-10 9s10 4 10 9',
+ avoid:'M4 18c5 0 6-11 11-11h5M17 4l3 3-3 3',healer:'M12 4v16M4 12h16',lock:'M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3',
+ blade:'M12 2.5l2.5 3.5v8h-5V6zM6.5 14h11M12 14v5.5M10 21h4',bow:'M6 3c8 3 8 15 0 18M6 3v18M4 12h16M17 9l3 3-3 3',castle:'M4 21V8h3V5h3v3h4V5h3v3h3v13zM10 21v-5h4v5',
+ fire:'M12 3c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1.5 4 3 4 0-3-1.5-6 0-9z',wind:'M3 9h11a3 3 0 1 0-3-3M3 14h15a3 3 0 1 1-3 3M3 19h7',earth:'M3 19l6-10 4 6 3-4 5 8z',
+ water:'M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z',light:'M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
+ dark:'M15 3a9 9 0 1 0 6 13A7 7 0 0 1 15 3z',aim:'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2v4M12 18v4M2 12h4M18 12h4',
+ heart:'M12 20c-4-3-8-6-8-10.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5C20 14 16 17 12 20z',crit:'M12 3l1.6 5 4.8-2.4-2.4 4.8L21 12l-5 1.6 2.4 4.8-4.8-2.4L12 21l-1.6-5-4.8 2.4 2.4-4.8L3 12l5-1.6L5.6 5.6l4.8 2.4z',
+ /* neu */
+ boot:'M8 3h5v9l5 2.5a2 2 0 0 1 1.5 2V20H6V9z',armored:'M5 14a7 7 0 0 1 14 0v5H5zM12 7v12M5 14h14',mounted:'M5 20l2-6-3-3 4-6 6 2 4 5-2 3-3-1-1 6z',
+ flier:'M3 13c4-6 10-8 18-9-2 6-6 10-12 11l3 4c-4 0-7-2-9-6z',fast:'M5 7l5 5-5 5M12 7l5 5-5 5',axe:'M6 21L16 6M14 3c4 1 6 4 6 8-3 0-5-1-7-3z',lance:'M5 21L17 7M15 3h6v6l-3-1-2-2z',
+ close:'M6 6l12 12M18 6L6 18',up:'M12 19V5M6 11l6-6 6 6',house:'M4 11l8-7 8 7M6 10v10h12V10M10 20v-5h4v5',lens:'M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM15.5 15.5L20 20M10.5 7.5v6M7.5 10.5h6',drop:'M12 4l-2 6h4zM12 20v-6'};
+const ic=(n,s=14,w=1.9)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IP[n]}"/></svg>`;
+const EL={fire:{n:'Feuer',c:'#F2603A'},wind:{n:'Wind',c:'#7BD389'},earth:{n:'Erde',c:'#B9874B'},water:{n:'Wasser',c:'#4AA8E8'},light:{n:'Licht',c:'#F7D96B'},dark:{n:'Dunkel',c:'#8E5BD9'}};
+const ROMAN=['','I','II','III'];
+const eb=(el,s=20)=>`<span class="eb" style="background:${EL[el].c};width:${s}px;height:${s}px">${ic(el,s*.62,2.1)}</span>`;
+const gem=r=>r?`<span class="gem" style="background:${EL[r.el].c}">${ROMAN[r.t]}</span>`:'';
+const frac=v=>{const w=Math.floor(v),h=v-w>0.01;return (w||!h?String(w):'')+(h?'½':'');};
+
+/* ---------- Gelände (terrain.yaml, Straße ½ als Richtwert) ---------- */
+const MT=['foot','armored','mounted','flier'];
+const MTN={foot:'zu Fuß',armored:'gepanzert',mounted:'beritten',flier:'Flieger'};
+const all1={foot:1,armored:1,mounted:1,flier:1};
+const T={
+ '.':{n:'Ebene',bg:'#CDB07A',c:all1},
+ g:{n:'Gras',bg:'#9DBB5E',c:all1,burn:1},
+ r:{n:'Straße',bg:'#E2CC98',c:{foot:.5,armored:.5,mounted:.5,flier:1},fast:1},
+ f:{n:'Wald',bg:'#86A951',def:1,av:20,c:{foot:2,armored:3,mounted:3,flier:1},burn:1},
+ s:{n:'Sand',bg:'#E9D49A',av:5,c:{foot:2,armored:3,mounted:3,flier:1}},
+ m:{n:'Berg',bg:'#A89F8E',def:2,av:30,c:{foot:null,armored:null,mounted:null,flier:1}},
+ w:{n:'Furt',bg:'#8CCBDD',av:-10,c:{foot:3,armored:null,mounted:4,flier:1}},
+ R:{n:'Fluss',bg:'#3C8FC0',c:{foot:null,armored:null,mounted:null,flier:1}},
+ b:{n:'Brücke',bg:'#A97A4B',c:all1},
+ F:{n:'Festung',bg:'#C9B48E',def:2,av:20,heal:20,c:all1},
+ u:{n:'Ruine',bg:'#BBA98A',def:1,av:10,c:all1},
+ x:{n:'Brennendes Gras',bg:'#D9773F',c:{foot:2,armored:2,mounted:2,flier:1},dmg:5},
+ h:{n:'Haus',bg:'#CDB07A',av:10,c:all1,visit:1}
+};
+const MAP=['mmffFffgm','mffgrggfm','fgggrgssg','ggugrgssg','gffgrggff','RRwRbRRRR','ggwgrgxxg','gffgrggfg','gffgrgggg','ssggrghgf','sgggrgggf','gggrrggff','gggrggggg'];
+const W=9,H=13,S=36;
+const ter=(x,y)=>T[MAP[y][x]];
+
+/* Figuren: Platzhalter-Medaillons. Waffe mit Rune glimmt gedämpft, gewählt oder in der Vorschau voll. */
+const UNITS0=[
+ {id:'brenna',n:'Brenna',cls:'Vorkämpfer',team:'p',mt:'armored',mov:4,x:3,y:9,w:'axe',wn:'Stahlaxt',rune:{el:'fire',t:2},hp:27,mx:27,rng:[1,1]},
+ {id:'rhen',n:'Rhen',cls:'Hauptmann',team:'p',mt:'foot',mov:5,x:5,y:10,w:'blade',wn:'Eisenschwert',hp:24,mx:24,rng:[1,1]},
+ {id:'tobin',n:'Tobin',cls:'Schütze',team:'p',mt:'foot',mov:5,x:6,y:11,w:'bow',wn:'Eisenbogen',rune:{el:'wind',t:1},hp:20,mx:20,rng:[2,2]},
+ {id:'soeldner',n:'Söldner',cls:'Lanzenträger',team:'e',mt:'foot',mov:5,x:4,y:6,w:'lance',wn:'Stahllanze',hp:30,mx:30,rng:[1,1]},
+ {id:'axt',n:'Axtkämpfer',cls:'Plünderer',team:'e',mt:'foot',mov:5,x:6,y:3,w:'axe',wn:'Eisenaxt',rune:{el:'earth',t:1},hp:28,mx:28,rng:[1,1]},
+ {id:'bogen',n:'Bogenschütze',cls:'Schütze',team:'e',mt:'foot',mov:5,x:7,y:2,w:'bow',wn:'Eisenbogen',hp:20,mx:20,rng:[2,2]},
+ {id:'brakka',n:'Brakka',cls:'Anführerin',team:'e',mt:'foot',mov:0,x:4,y:0,w:'blade',wn:'Stahlschwert',rune:{el:'fire',t:1},hp:36,mx:36,rng:[1,1],lead:1}
+];
+const GEAR={wind:{n:'Kettenhemd mit Wind-Rune',short:'Wind-Rüstung',aff:'wind',k:'Kettenhemd'},water:{n:'Schild mit Wasser-Rune',short:'Wasser-Schild',aff:'water',k:'Eisenschild'},none:{n:'Kettenhemd ohne Rune',short:'ohne Rune',aff:null,k:'Kettenhemd'}};
+const CYCLE={fire:'wind',wind:'earth',earth:'water',water:'fire'};
+/* dieselbe Rechnung wie combat.ts elementMultiplier: Angriffs-Element gegen die Affinität des Ziels (Rüstungs- oder Schildrune) */
+function elMult(el,aff){if(!el||!aff)return 1;if(el===aff)return .8;if(CYCLE[el]===aff)return 1.2;if(CYCLE[aff]===el)return .8;return 1;}
+
+/* ---------- globale Varianten ---------- */
+const V={lens:'A',move:'B',fc:'B',hold:'stay'};
+const VAR={
+ lens:{A:{t:'A · Farbflächen',d:'Die Linse färbt das Brett nach Wirkung: grün schützt, gelb kostet mehr, hell gestreift ist schnell (Straße), rot schadet, grau gesperrt. Oben eine Legende. Wald ist zweifarbig, weil er schützt und bremst. Zahlen gibt es erst in der Feldkarte.',p:'auf einen Blick lesbar, ruhig, passt zur Gefahrenzone',c:'zeigt keine genauen Werte, Mischfelder brauchen zwei Farben'},
+   B:{t:'B · Feld-Marken',d:'Keine Farbe, dafür eine kleine Marke auf jedem besonderen Feld: Schild mit Verteidigung, Stiefel mit Bewegungskosten zu Fuß, ½ auf der Straße, Schloss bei gesperrt, Flamme mit Schaden.',p:'genaue Zahlen ohne Tippen',c:'auf dem Handy dicht und klein, Bewegung nur für eine Bewegungsart'},
+   C:{t:'C · Für die Figur',d:'Die Linse rechnet für eine Figur: die gewählte, sonst die nächste bereite. Je dunkler, desto teurer für genau diese Figur, gesperrt ist schraffiert, Deckung als grüne Ecke. Oben lässt sich die Figur wechseln.',p:'beantwortet „wo kommt Brenna durch?“ direkt',c:'Linse sieht je Figur anders aus, Deckung tritt zurück'}},
+ move:{A:{t:'A · Tabelle in der Feldkarte',d:'Die Feldkarte bekommt eine Zeile mit allen vier Bewegungsarten. Die Art der gewählten (oder nächsten) Figur ist hervorgehoben. Auf dem Brett ändert sich nichts.',p:'vollständig, ein Ort für alles',c:'man muss jedes Feld einzeln antippen'},
+   B:{t:'B · Am Weg und für die Figur',d:'Ist eine Figur gewählt, tragen teure Felder im Bewegungsbereich Punkte (zwei Punkte = 2 Bewegung), die Straße ein ½. Am Ziel des Wegs steht, wie viel Bewegung übrig bleibt. Die Feldkarte nennt die Kosten nur für diese Figur, andere Arten klappen auf.',p:'Kosten stehen dort, wo man plant; erklärt Straße ½ ohne Text',c:'mehr Zeichen im Bewegungsbereich'}},
+ fc:{A:{t:'A · Element-Zeile',d:'Die Tabelle bekommt zwei Zeilen: „Element“ mit beiden Elementen und dem Faktor, darunter der Status mit Chance. Der Waffen-Chip trägt den Runenstein mit Stufe.',p:'alles an einem Ort, gleiche Form wie die übrigen Werte',c:'Tabelle wird länger, Faktor steht neben dem Schaden statt daran'},
+   B:{t:'B · Element-Band',d:'Unter den Namen steht ein Satz: „Feuer schlägt Wind · Schaden ×1,2“, mit beiden Elementen als Kreis. Die Schadenszahl trägt den Faktor als kleine Marke. Der Status steht als eigene Zeile unter der Tabelle, mit Dauer und Schaden je Runde.',p:'Grund und Wirkung in einem Satz, Faktor direkt an der Zahl',c:'ein Band mehr über der Tabelle'}}
+};
+
+/* ---------- Wegsuche (Dijkstra, wie movement.ts) ---------- */
+function reach(units,u){
+  const occ={};units.forEach(o=>{if(o!==u)occ[o.x+','+o.y]=o});
+  const dist={},prev={},q=[[0,u.x,u.y]];dist[u.x+','+u.y]=0;
+  while(q.length){q.sort((a,b)=>a[0]-b[0]);const [d,x,y]=q.shift();if(d>dist[x+','+y])continue;
+    for(const [dx,dy] of [[1,0],[-1,0],[0,1],[0,-1]]){const nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=W||ny>=H)continue;
+      const c=ter(nx,ny).c[u.mt];if(c==null)continue;const o=occ[nx+','+ny];if(o&&o.team!==u.team)continue;
+      const nd=d+c;if(nd>u.mov+1e-9)continue;const k=nx+','+ny;if(dist[k]==null||nd<dist[k]-1e-9){dist[k]=nd;prev[k]=x+','+y;q.push([nd,nx,ny])}}}
+  Object.keys(dist).forEach(k=>{if(occ[k])delete dist[k]});
+  return {dist,prev};
+}
+function attackTiles(units,u,dist){const set={};for(const k in dist){const [x,y]=k.split(',').map(Number);
+  for(let dx=-u.rng[1];dx<=u.rng[1];dx++)for(let dy=-u.rng[1];dy<=u.rng[1];dy++){const m=Math.abs(dx)+Math.abs(dy);if(m<u.rng[0]||m>u.rng[1])continue;const nx=x+dx,ny=y+dy;if(nx<0||ny<0||nx>=W||ny>=H)continue;const kk=nx+','+ny;if(dist[kk]==null)set[kk]=1}}
+  return set;}
+function danger(units){const cnt={};units.filter(u=>u.team==='e').forEach(u=>{const {dist}=reach(units,u);dist[u.x+','+u.y]=0;const a=attackTiles(units,u,dist);const z={...dist,...a};for(const k in z)cnt[k]=(cnt[k]||0)+1});return cnt;}
+function pathTo(prev,from,to){const out=[to];let k=to;while(k!==from&&prev[k]){k=prev[k];out.unshift(k)}return out;}
+
+/* ---------- Gelände-Darstellung ---------- */
+function deco(code){
+  switch(code){
+    case 'f':return `<svg viewBox="0 0 36 36"><circle cx="12" cy="14" r="8" fill="#3F7A3A" stroke="#2b1d14" stroke-width="1.2"/><circle cx="24" cy="21" r="8" fill="#4E8C40" stroke="#2b1d14" stroke-width="1.2"/><rect x="11" y="21" width="2.5" height="6" fill="#6b4a2a"/></svg>`;
+    case 'm':return `<svg viewBox="0 0 36 36"><path d="M4 30L15 9l6 9 4-5 8 17z" fill="#8f8574" stroke="#2b1d14" stroke-width="1.3" stroke-linejoin="round"/><path d="M15 9l-3 8 4-2" fill="#d8d2c4"/></svg>`;
+    case 'R':return `<svg viewBox="0 0 36 36"><path d="M4 14c4-3 7 3 11 0s7 3 11 0 6 2 6 2M4 24c4-3 7 3 11 0s7 3 11 0 6 2 6 2" fill="none" stroke="#bfe3f3" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+    case 'w':return `<svg viewBox="0 0 36 36"><path d="M5 18c3-2 6 2 9 0s6 2 9 0 6 2 8 0" fill="none" stroke="#e9f6fb" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="27" r="2" fill="#b9a885"/><circle cx="25" cy="10" r="2.2" fill="#b9a885"/></svg>`;
+    case 'b':return `<svg viewBox="0 0 36 36"><path d="M2 8h32M2 28h32" stroke="#5a3d22" stroke-width="2"/><path d="M8 8v20M15 8v20M22 8v20M29 8v20" stroke="#7a5532" stroke-width="1.2"/></svg>`;
+    case 'r':return `<svg viewBox="0 0 36 36"><circle cx="9" cy="10" r="2.4" fill="#cdb27c"/><circle cx="24" cy="15" r="2" fill="#cdb27c"/><circle cx="14" cy="26" r="2.6" fill="#cdb27c"/><circle cx="28" cy="29" r="1.8" fill="#cdb27c"/></svg>`;
+    case 's':return `<svg viewBox="0 0 36 36"><g fill="#c9ad6a"><circle cx="8" cy="9" r="1"/><circle cx="20" cy="7" r="1"/><circle cx="29" cy="14" r="1"/><circle cx="12" cy="20" r="1"/><circle cx="24" cy="24" r="1"/><circle cx="9" cy="30" r="1"/><circle cx="30" cy="30" r="1"/></g></svg>`;
+    case 'F':return `<svg viewBox="0 0 36 36"><path d="M7 31V14h4v-4h4v4h6v-4h4v4h4v17zM15 31v-7h6v7" fill="#a89574" stroke="#2b1d14" stroke-width="1.3" stroke-linejoin="round"/></svg>`;
+    case 'u':return `<svg viewBox="0 0 36 36"><path d="M8 30V14h5v16M22 30V20h5v10M5 30h26" fill="#9b8a6c" stroke="#2b1d14" stroke-width="1.2"/></svg>`;
+    case 'x':return `<svg viewBox="0 0 36 36"><path d="M18 6c3 4 7 7 7 12a7 7 0 0 1-14 0c0-3 2-5 3-6 0 3 2 4 3 4 0-3-1.5-6 1-10z" fill="#FFB347" stroke="#8a3a12" stroke-width="1.2"/></svg>`;
+    case 'h':return `<svg viewBox="0 0 36 36"><path d="M8 18l10-9 10 9v12H8z" fill="#e7d3b0" stroke="#2b1d14" stroke-width="1.3" stroke-linejoin="round"/><path d="M6 19l12-11 12 11" fill="none" stroke="#a1452c" stroke-width="3" stroke-linecap="round"/></svg>`;
+    case 'g':return `<svg viewBox="0 0 36 36"><path d="M9 12l1-3 1 3M24 26l1-3 1 3M27 9l1-3 1 3M12 28l1-3 1 3" stroke="#6f8f3c" stroke-width="1.2" fill="none"/></svg>`;
+  }return '';
+}
+const HATCH='repeating-linear-gradient(45deg,rgba(60,50,40,.55) 0 3px,rgba(60,50,40,.12) 3px 7px)';
+function lensClass(t,mt){
+  const c=t.c[mt];
+  if(c==null)return 'block';
+  if(t.dmg)return 'dmg';
+  const cover=(t.def||0)>0||(t.av||0)>0, slow=c>=2, fast=c<1;
+  if(cover&&slow)return 'cover-slow';
+  if(cover)return 'cover';
+  if(slow)return 'slow';
+  if(fast)return 'fast';
+  return '';
+}
+const LC={cover:'rgba(47,138,76,.55)',slow:'rgba(217,166,46,.6)',dmg:'rgba(184,58,46,.6)'};
+function lensA(t){
+  const k=lensClass(t,'foot');
+  if(k==='block')return `background:${HATCH};outline:1px solid rgba(60,50,40,.3)`;
+  if(k==='cover')return `background:${LC.cover}`;
+  if(k==='slow')return `background:${LC.slow}`;
+  if(k==='dmg')return `background:${LC.dmg}`;
+  if(k==='cover-slow')return `background:linear-gradient(135deg,${LC.cover} 50%,${LC.slow} 50%)`;
+  if(k==='fast')return `background:repeating-linear-gradient(90deg,rgba(255,250,235,.75) 0 4px,rgba(255,250,235,.25) 4px 8px)`;
+  if(t.heal)return `background:${LC.cover}`;
+  return 'background:rgba(40,30,20,.25)';
+}
+function lensC(t,mt){
+  const c=t.c[mt];
+  if(c==null)return `background:${HATCH}`;
+  let a=c<1?0:c===1?.05:c===2?.42:c===3?.62:.75;
+  let s=c<1?`background:repeating-linear-gradient(90deg,rgba(255,250,235,.75) 0 4px,rgba(255,250,235,.25) 4px 8px)`:`background:rgba(70,45,20,${a})`;
+  if(t.dmg)s=`background:${LC.dmg}`;
+  return s;
+}
+function marksB(t){
+  const m=[];
+  if(t.c.foot==null)m.push(`<span class="mk">${ic('lock',9,2.4)}</span>`);
+  if(t.dmg)m.push(`<span class="mk" style="background:#fde3d8">${ic('fire',9,2.4)}${t.dmg}</span>`);
+  if(t.def)m.push(`<span class="mk">${ic('shield',9,2.4)}+${t.def}</span>`);
+  else if((t.av||0)>0&&!t.def&&t.c.foot!=null&&t.av>=10)m.push(`<span class="mk">${ic('avoid',9,2.4)}+${t.av}</span>`);
+  if(t.c.foot!=null&&t.c.foot>=2)m.push(`<span class="mk" style="background:#f7e7bf">${ic('boot',9,2.4)}${t.c.foot}</span>`);
+  if(t.fast)m.push(`<span class="mk">½</span>`);
+  if(t.heal)m.push(`<span class="mk" style="color:var(--pos)">${ic('healer',9,2.6)}</span>`);
+  return m.slice(0,2).join('');
+}
+
+/* ---------- ein Handy ---------- */
+const phones=[];
+function Phone(el,init){
+  const P={el,units:UNITS0.map(u=>({...u})),mode:'idle',sel:null,dest:null,lens:false,danger:false,card:null,target:null,gear:'wind',sheet:false,lensUnit:'brenna',coach:true,...init};
+  phones.push(P);
+  el.addEventListener('click',e=>onClick(P,e));
+  el.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-hold]');if(!b)return;startHold(P,b,e)});
+  render(P);return P;
+}
+const U=(P,id)=>P.units.find(u=>u.id===id);
+const at=(P,x,y)=>P.units.find(u=>u.x===x&&u.y===y);
+function focusUnit(P){return P.sel?U(P,P.sel):U(P,P.lensUnit||'brenna');}
+
+let hold=null;
+function startHold(P,b,e){
+  const t0=performance.now();let fired=false;
+  const step=now=>{if(!hold)return;const p=Math.min(1,(now-t0)/400);b.style.setProperty('--p',p);if(p>=1&&!fired){fired=true;hold.fired=true;P.lens=!P.lens;P.coach=false;if(P.lens)P.danger=false;b.style.setProperty('--p',0);if(V.hold==='peek')hold.peek=true;render(P);return}if(!fired)hold.raf=requestAnimationFrame(step)};
+  hold={P,b,raf:requestAnimationFrame(step),fired:false};
+  const up=()=>{cancelAnimationFrame(hold&&hold.raf);b.style.setProperty('--p',0);const h=hold;hold=null;window.removeEventListener('pointerup',up);window.removeEventListener('pointercancel',up);
+    if(h&&h.peek){P.lens=false;render(P);}
+    if(h)P._skipClick=h.fired;};
+  window.addEventListener('pointerup',up);window.addEventListener('pointercancel',up);
+}
+
+function onClick(P,e){
+  const a=e.target.closest('[data-a]');if(!a)return;
+  const act=a.dataset.a;
+  if(act==='danger'){if(P._skipClick){P._skipClick=false;return}if(P.lens){P.lens=false}else{P.danger=!P.danger}P.coach=false;render(P);return}
+  if(act==='lensunit'){P.lensUnit=a.dataset.id;render(P);return}
+  if(act==='back'||act==='cancel'){if(P.mode==='fc'){P.mode='sel';P.target=null;P.dest=P.prevDest||null}else{P.mode='idle';P.sel=null;P.dest=null}render(P);return}
+  if(act==='q'){P.sheet=true;render(P);return}
+  if(act==='closesheet'){P.sheet=false;render(P);return}
+  if(act==='attack'){const u=U(P,P.sel);if(u&&P.dest){const [x,y]=P.dest.split(',').map(Number);u.x=x;u.y=y}u.done=true;P.mode='idle';P.sel=null;P.dest=null;P.target=null;render(P);return}
+  if(act==='wait'){const u=U(P,P.sel);if(u&&P.dest){const [x,y]=P.dest.split(',').map(Number);u.x=x;u.y=y}if(u)u.done=true;P.mode='idle';P.sel=null;P.dest=null;render(P);return}
+  if(act==='next'){const r=P.units.find(u=>u.team==='p'&&!u.done);if(r){P.sel=r.id;P.mode='sel';P.dest=null;P.card=null;P.lensUnit=r.id}render(P);return}
+  if(act==='reset'){P.units=UNITS0.map(u=>({...u}));P.mode='idle';P.sel=null;P.dest=null;render(P);return}
+  if(act==='tile'){
+    const x=+a.dataset.x,y=+a.dataset.y,k=x+','+y,u=at(P,x,y);
+    if(P.mode==='fc'){P.mode='sel';P.target=null;P.dest=P.prevDest||null;render(P);return}
+    if(P.mode==='sel'){
+      const me=U(P,P.sel);const {dist,prev}=reach(P.units,me);dist[me.x+','+me.y]=0;
+      if(u&&u.team==='e'){ // Angriff: bestes Feld in Reichweite
+        let best=null;for(const kk in dist){const [tx,ty]=kk.split(',').map(Number);const m=Math.abs(tx-x)+Math.abs(ty-y);if(m>=me.rng[0]&&m<=me.rng[1]){if(P.dest===kk){best=kk;break}if(!best||dist[kk]<dist[best])best=kk}}
+        if(best){P.prevDest=P.dest;P.dest=best===me.x+','+me.y?null:best;P.mode='fc';P.target=u.id;render(P);return}
+        P.card={x,y};render(P);return}
+      if(u&&u.team==='p'&&u.id!==me.id){if(!u.done){P.sel=u.id;P.dest=null;P.lensUnit=u.id}render(P);return}
+      if(u&&u.id===me.id){P.dest=null;render(P);return}
+      if(dist[k]!=null){P.dest=k;P.card={x,y};render(P);return}
+      P.card={x,y};render(P);return}
+    if(u&&u.team==='p'&&!u.done){P.mode='sel';P.sel=u.id;P.dest=null;P.card=null;P.lensUnit=u.id;render(P);return}
+    P.card=(P.card&&P.card.x===x&&P.card.y===y)?null:{x,y};render(P);return}
+}
+
+/* ---------- Bausteine ---------- */
+function costLine(t,u){const c=t.c[u.mt];return c==null?`<span class="chip neg">${ic('lock',12)} ${u.n} kommt nicht hin</span>`:`<span class="chip big">${ic(u.mt==='foot'?'boot':u.mt,13)} ${u.n}: ${frac(c)} Bewegung</span>`;}
+function fieldCard(P,x,y){
+  const t=ter(x,y),u=focusUnit(P);
+  const chips=[];
+  if(t.def)chips.push(`<span class="chip pos">${ic('shield',12)} Verteidigung +${t.def}</span>`);
+  if(t.av)chips.push(`<span class="chip ${t.av>0?'pos':'neg'}">${ic('avoid',12)} Ausweichen ${t.av>0?'+':'−'}${Math.abs(t.av)}</span>`);
+  if(t.heal)chips.push(`<span class="chip pos">${ic('healer',12)} heilt ${t.heal} %</span>`);
+  if(t.dmg)chips.push(`<span class="chip neg">${ic('fire',12)} ${t.dmg} Schaden beim Betreten</span>`);
+  if(t.burn)chips.push(`<span class="chip">${ic('fire',12)} brennbar</span>`);
+  if(!chips.length)chips.push(`<span class="chip">keine Wirkung</span>`);
+  let mv='';
+  if(V.move==='A'){
+    mv=`<div class="caps">Bewegung je Art</div><div class="mtab">${MT.map(m=>{const c=t.c[m];return `<div class="${m===u.mt?'me':''} ${c==null?'no':''}">${ic(m==='foot'?'boot':m,14)}<b>${c==null?'–':frac(c)}</b><span>${MTN[m]}</span></div>`}).join('')}</div>`;
+  }else{
+    const others=MT.filter(m=>m!==u.mt).map(m=>`${MTN[m]} ${t.c[m]==null?'–':frac(t.c[m])}`).join(' · ');
+    mv=`<div class="zchip">${costLine(t,u)}</div><div class="small" style="font-size:11.5px">${others}</div>`;
+  }
+  return `<div class="panel"><div class="fhead"><div class="swatch" style="background:${t.bg}">${deco(MAP[y][x])}</div><div style="flex:1"><div class="ptitle">${t.n}</div><div class="small" style="font-size:11.5px">${t.fast?'schnell: halbe Bewegung':t.c.foot==null?'zu Fuß nicht begehbar':'Feld '+(x+1)+'·'+(y+1)}</div></div><button class="q" data-a="q" aria-label="Handbuch Gelände">?</button></div>
+    <div class="zchip">${chips.join('')}</div>${mv}</div>`;
+}
+function unitCard(P,u){
+  const t=P.dest?ter(...P.dest.split(',').map(Number)):null;
+  const {dist}=reach(P.units,u);const used=P.dest?dist[P.dest]:0;
+  return `<div class="panel"><div class="ucard"><div class="port">${u.n[0]}</div><div style="flex:1;min-width:0"><div class="ptitle">${u.n}</div><div class="small" style="font-size:11.5px">${u.cls} · ${MTN[u.mt]}</div><div style="display:flex;gap:5px;margin-top:3px;flex-wrap:wrap"><span class="wchip">${ic(u.w,12)} ${u.wn} ${gem(u.rune)}</span><span class="chip">${ic(u.mt==='foot'?'boot':u.mt,12)} ${u.mov}</span></div></div><div style="font-family:var(--f-label);font-weight:700;font-size:13px">${u.hp}/${u.mx} TP</div></div></div>`;
+}
+function zielChip(P,u){
+  if(!P.dest)return `<div class="hint">${ic('back',12)} Zielfeld antippen, oder einen Gegner für die Vorschau</div>`;
+  const [x,y]=P.dest.split(',').map(Number);const t=ter(x,y);const {dist}=reach(P.units,u);const rest=u.mov-dist[P.dest];
+  const ch=[];if(t.def)ch.push(`${ic('shield',11)} +${t.def}`);if(t.av)ch.push(`${ic('avoid',11)} ${t.av>0?'+':'−'}${Math.abs(t.av)}`);
+  return `<div class="hint" style="gap:7px"><b style="font-family:var(--f-name)">${t.n}</b>${ch.map(c=>`<span style="display:inline-flex;gap:2px;align-items:center">${c}</span>`).join('')}</div>`;
+}
+
+function forecast(P){
+  const a=U(P,P.sel),d=U(P,P.target);const g=GEAR[P.gear];
+  const el=a.rune&&a.rune.el,aff=d.id==='soeldner'?g.aff:(d.rune?null:null);
+  const mult=d.id==='soeldner'?elMult(el,aff):1;
+  const base=d.id==='soeldner'?14:11;const dmg=Math.floor(base*mult);
+  const hit=78,crit=4,edmg=9,ehit=52;
+  const st=a.rune&&a.rune.t>=2?{n:'Brennen',p:a.rune.t===2?30:50,r:2,per:Math.floor(d.mx*.1)}:null;
+  const hpA=a.hp-edmg,hpD=Math.max(0,d.hp-dmg);
+  const multTag=mult!==1?`<span class="mult ${mult>1?'pos':'neg'}">×${String(mult).replace('.',',')}</span>`:'';
+  const why=mult>1?`${EL[el].n} schlägt ${EL[aff].n}`:mult<1?(el===aff?`${EL[aff].n} gegen ${EL[aff].n}`:`${EL[aff].n} hält ${EL[el].n} ab`):'';
+  let elRow='',band='',statRow='';
+  if(V.fc==='A'){
+    if(el)elRow=`<div class="tr el"><span class="l">${eb(el,18)}${multTag||'<span class="small">×1</span>'}</span><span class="m">Element <button class="q" data-a="q" aria-label="Elementrad">?</button></span><span class="r">${aff&&d.id==='soeldner'?eb(aff,18):'<span class="small">–</span>'}</span></div>`;
+    if(st)elRow+=`<div class="tr el"><span class="l">${ic('fire',15)}${st.p} %</span><span class="m">${st.n}</span><span class="r"><span class="small">–</span></span></div>`;
+  }else{
+    if(el&&mult!==1)band=`<div class="band" style="background:${mult>1?'#e3f3e6':'#f9e1dc'}">${eb(el,18)}<span>${why} · Schaden ${multTag}</span>${eb(aff,18)}<button class="q" data-a="q" aria-label="Elementrad">?</button></div>`;
+    else if(el)band=`<div class="band" style="background:#f4e9d6">${eb(el,18)}<span>${EL[el].n} · kein Vorteil, kein Nachteil</span><button class="q" data-a="q" aria-label="Elementrad">?</button></div>`;
+    if(st)statRow=`<div class="stat">${eb(el,18)}<span><b>${st.p} %</b> ${st.n} · ${st.r} Runden je ${st.per} TP</span></div>`;
+  }
+  return `<div class="panel fc">
+   <div class="vs"><div class="side2"><div class="port">${a.n[0]}</div><span class="nm">${a.n}</span><span class="wchip">${ic(a.w,12)} ${a.wn} ${gem(a.rune)}</span></div>
+     <div class="caps">gegen</div>
+     <div class="side2"><div class="port en">${d.n[0]}</div><span class="nm">${d.n}</span><span class="wchip">${ic(d.w,12)} ${d.wn}</span>${d.id==='soeldner'&&g.aff?`<span class="wchip" style="font-size:11px">${ic(P.gear==='water'?'shield':'armored',11)} ${g.k} ${gem({el:g.aff,t:1})}</span>`:''}</div></div>
+   <div style="display:flex;justify-content:space-between"><span class="tri" style="color:var(--pos)">${ic('up',10,2.6)} Vorteil</span><span class="tri" style="color:var(--neg)">Nachteil</span></div>
+   ${band}
+   <div class="tbl">
+     <div class="tr"><span class="l">${dmg}${V.fc==='B'?multTag:''}</span><span class="m">Schaden</span><span class="r">${edmg}</span></div>
+     <div class="tr"><span class="l">${hit} %</span><span class="m">Treffer</span><span class="r">${ehit} %</span></div>
+     <div class="tr"><span class="l">${crit} %</span><span class="m">Krit</span><span class="r">0 %</span></div>
+     ${elRow}
+     <div class="tr"><span class="l" style="font-size:14px">${a.hp} → ${hpA}</span><span class="m">TP danach</span><span class="r" style="font-size:14px">${d.hp} → ${hpD}</span></div>
+     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:2px 0 5px"><div class="lifebar"><i style="width:${hpA/a.mx*100}%"></i><s style="left:${hpA/a.mx*100}%;width:${edmg/a.mx*100}%"></s></div><div class="lifebar"><i class="en" style="width:${hpD/d.mx*100}%"></i><s style="left:${hpD/d.mx*100}%;width:${dmg/d.mx*100}%"></s></div></div>
+   </div>
+   ${statRow}
+  </div>
+  <div class="btnrow"><button class="bt" data-a="cancel">Abbrechen</button><button class="bt main" data-a="attack">Angreifen</button></div>`;
+}
+function sheet(P){
+  const wheel=`<svg viewBox="0 0 120 120" width="112" height="112" aria-label="Elementrad"><circle cx="60" cy="60" r="38" fill="none" stroke="#c9b89c" stroke-width="2"/>
+   ${[['fire',60,20],['wind',100,60],['earth',60,100],['water',20,60]].map(([e,x,y])=>`<circle cx="${x}" cy="${y}" r="14" fill="${EL[e].c}" stroke="#3B2A20" stroke-width="2"/><g transform="translate(${x-8},${y-8}) scale(.667)" fill="none" stroke="#2b1d14" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="${IP[e]}"/></g>`).join('')}
+   <g fill="none" stroke="#3B2A20" stroke-width="2" stroke-linecap="round"><path d="M74 26l14 14M93 75l-14 14M46 94L32 80M27 45l14-14"/></g></svg>`;
+  return `<div class="scrim" data-a="closesheet"></div><div class="sheet panel"><div style="display:flex;align-items:center;gap:8px"><span class="ptitle" style="flex:1">Elemente</span><button class="q" data-a="closesheet" aria-label="Schließen" style="width:26px;height:26px">${ic('close',12)}</button></div>
+   <div class="ring">${wheel}<div style="font-size:12.5px;display:flex;flex-direction:column;gap:4px"><span>Jedes Element schlägt das nächste im Kreis: <b style="color:var(--pos)">×1,2</b></span><span>Rückwärts und gleiches Element: <b style="color:var(--neg)">×0,8</b></span><span>Licht und Dunkel schlagen einander: ×1,2</span><span class="small" style="font-size:11.5px">Rune in Rüstung oder Schild gibt dem Träger ihr Element.</span></div></div>
+   <div class="small" style="font-size:12px">Stufe II: 30 % Status bei Treffer, Stufe III: 50 % und Wirkung aufs Gelände.</div></div>`;
+}
+
+/* ---------- Zeichnen ---------- */
+function render(P){
+  const u=P.sel?U(P,P.sel):null;
+  let tiles='',ov='',marks='';
+  let dz=P.danger?danger(P.units):null;
+  let mv=null,atk=null,prev=null;
+  if(u&&P.mode!=='idle'){const r=reach(P.units,u);mv=r.dist;mv[u.x+','+u.y]=0;prev=r.prev;atk=attackTiles(P.units,u,mv);}
+  const fu=focusUnit(P);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    const code=MAP[y][x],t=T[code],k=x+','+y,L=x*S,Tp=y*S;
+    tiles+=`<div class="tile" style="left:${L}px;top:${Tp}px;background:${t.bg}">${deco(code)}<button class="hit" data-a="tile" data-x="${x}" data-y="${y}" aria-label="${t.n} ${x+1}·${y+1}" style="background:none;border:0;padding:0;cursor:pointer"></button></div>`;
+    if(P.lens){
+      if(V.lens==='A')ov+=`<div class="ov" style="left:${L}px;top:${Tp}px;${lensA(t)}"></div>`;
+      if(V.lens==='C'){ov+=`<div class="ov" style="left:${L}px;top:${Tp}px;${lensC(t,fu.mt)}"></div>`;if(((t.def||0)>0||(t.av||0)>=10)&&t.c[fu.mt]!=null)ov+=`<div class="ov" style="left:${L}px;top:${Tp}px;background:linear-gradient(135deg,rgba(47,138,76,.95) 0 9px,transparent 9px)"></div>`;}
+      if(V.lens==='B'){ov+=`<div class="ov" style="left:${L}px;top:${Tp}px;background:rgba(40,30,20,.18)"></div>`;const m=marksB(t);if(m)marks+=`<div class="mark" style="left:${L+1}px;top:${Tp+1}px;flex-direction:column">${m}</div>`;}
+    }
+    if(dz&&dz[k]){const n=dz[k];const a=n>=3?.45:n===2?.32:.2;const ed=[[0,-1,'0 3px 0 0'],[1,0,'-3px 0 0 0'],[0,1,'0 -3px 0 0'],[-1,0,'3px 0 0 0']].filter(([dx,dy])=>!dz[(x+dx)+','+(y+dy)]).map(([, ,s])=>`inset ${s} #B83A2E`).join(',');ov+=`<div class="ov" style="left:${L}px;top:${Tp}px;background:rgba(184,58,46,${a});${ed?'box-shadow:'+ed:''}"></div>`;}
+    if(mv&&P.mode==='sel'){
+      if(mv[k]!=null&&k!==u.x+','+u.y){ov+=`<div class="mv" style="left:${L}px;top:${Tp}px;background:rgba(47,100,200,.42);border:1.5px solid rgba(220,232,255,.9)"></div>`;
+        if(V.move==='B'){const c=t.c[u.mt];if(c>=2)marks+=`<div class="pips" style="left:${L+36-3-(c*7)}px;top:${Tp+36-9}px;right:auto;bottom:auto">${'<i></i>'.repeat(c)}</div>`;else if(c<1&&k!==P.dest)marks+=`<span class="half" style="left:${L+22}px;top:${Tp+22}px;right:auto;bottom:auto">½</span>`;}}
+      else if(atk[k])ov+=`<div class="mv" style="left:${L}px;top:${Tp}px;background:rgba(184,58,46,.4);border:1.5px solid rgba(255,220,214,.9)"></div>`;
+    }
+    if(P.card&&P.card.x===x&&P.card.y===y&&P.mode!=='fc')ov+=`<div class="ov" style="left:${L}px;top:${Tp}px;box-shadow:inset 0 0 0 2.5px #FFF8EC,inset 0 0 0 4px #3B2A20"></div>`;
+  }
+  // Weg
+  let path='';
+  if(u&&P.dest&&(P.mode==='sel'||P.mode==='fc')){
+    const pts=pathTo(prev,u.x+','+u.y,P.dest).map(k=>k.split(',').map(Number)).map(([x,y])=>[x*S+18,y*S+18]);
+    if(pts.length>1){const [lx,ly]=pts[pts.length-1],[px,py]=pts[pts.length-2];const ang=Math.atan2(ly-py,lx-px);const tip=[lx+Math.cos(ang)*7,ly+Math.sin(ang)*7],bx=lx-Math.cos(ang)*5,by=ly-Math.sin(ang)*5;
+      const l=pts.slice(0,-1).concat([[bx,by]]);
+      path=`<svg class="pathsvg" width="${W*S}" height="${H*S}"><polyline points="${l.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#3B2A20" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><polyline points="${l.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#FFF8EC" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M${tip[0]},${tip[1]} L${bx-Math.sin(ang)*8},${by+Math.cos(ang)*8} L${bx+Math.sin(ang)*8},${by-Math.cos(ang)*8}z" fill="#FFF8EC" stroke="#3B2A20" stroke-width="2" stroke-linejoin="round"/></svg>`;
+      if(V.move==='B'&&P.mode==='sel'){const rest=u.mov-mv[P.dest];path+=`<div class="rest" style="left:${lx+17}px;top:${ly}px;transform:translate(0,-50%)">${ic('boot',11,2.2)} noch ${frac(rest)}</div>`;}}
+  }
+  // Figuren
+  let units='';
+  P.units.forEach(o=>{
+    let x=o.x,y=o.y;if(o.id===P.sel&&P.dest){[x,y]=P.dest.split(',').map(Number)}
+    const team=o.team==='p'?'#2F64C8':'#B83A2E',body=o.team==='p'?'#cfd8e8':'#f0cfcf';
+    const full=(o.id===P.sel)||(P.mode==='fc'&&o.id===P.target);
+    const glow=o.rune?`style="--g:${EL[o.rune.el].c}${full?'':'99'}" class="wpn ${full?'full':'dim'}"`:'class="wpn"';
+    const ghost=o.id===P.sel&&P.dest?`<div class="unit" style="left:${o.x*S}px;top:${o.y*S}px;opacity:.35"><svg viewBox="0 0 36 36" width="36" height="36"><ellipse cx="18" cy="30" rx="11" ry="4" fill="rgba(0,0,0,.25)"/><path d="M10 30c0-7 3-11 8-11s8 4 8 11z" fill="${body}" stroke="#2b1d14" stroke-width="1.4"/><circle cx="18" cy="13" r="7" fill="${body}" stroke="#2b1d14" stroke-width="1.4"/></svg></div>`:'';
+    units+=ghost+`<div class="unit ${o.done?'done':''}" style="left:${x*S}px;top:${y*S}px"><svg viewBox="0 0 36 36" width="36" height="36"><ellipse cx="18" cy="31" rx="12" ry="4.5" fill="${team}" opacity=".55"/>${o.lead?`<ellipse cx="18" cy="31" rx="14" ry="5.5" fill="none" stroke="#D9A62E" stroke-width="2"/>`:''}<path d="M10 30c0-7 3-11 8-11s8 4 8 11z" fill="${body}" stroke="#2b1d14" stroke-width="1.4"/><circle cx="18" cy="13" r="7" fill="${body}" stroke="#2b1d14" stroke-width="1.4"/><path d="M11 12a7 7 0 0 1 14 0z" fill="${team}" stroke="#2b1d14" stroke-width="1.2"/><text x="18" y="29" text-anchor="middle" font-family="Fraunces,Georgia,serif" font-weight="800" font-size="9" fill="#2b1d14">${o.n[0]}</text></svg>
+      <div class="bar"><i style="width:${o.hp/o.mx*100}%;background:${team}"></i></div><div ${glow}>${ic(o.w,11,2.2)}</div></div>`;
+  });
+  // Kamera: in der Vorschau rückt das Brett nach oben
+  let shift=0;if(P.mode==='fc'){shift=-150}else if(P.mode==='sel'){shift=-60}
+  // Oberfläche
+  let legend='';
+  if(P.lens&&P.mode!=='fc'){
+    if(V.lens==='A')legend=`<div class="legend"><span><span class="sw" style="background:${LC.cover}"></span>Schutz</span><span><span class="sw" style="background:${LC.slow}"></span>langsam</span><span><span class="sw" style="background:repeating-linear-gradient(90deg,#fffaeb 0 3px,#e2cc98 3px 6px)"></span>schnell</span><span><span class="sw" style="background:${LC.dmg}"></span>Schaden</span><span><span class="sw" style="background:${HATCH}"></span>gesperrt</span></div>`;
+    if(V.lens==='B')legend=`<div class="legend"><span>${ic('shield',12)} Verteidigung</span><span>${ic('avoid',12)} Ausweichen</span><span>${ic('boot',12)} Bewegung zu Fuß</span><span>½ Straße</span><span>${ic('lock',12)} gesperrt</span></div>`;
+    if(V.lens==='C')legend=`<div class="legend"><div class="who"><span class="lbl">Gelände für <b>${fu.n}</b> · ${MTN[fu.mt]}</span>${P.units.filter(o=>o.team==='p').map(o=>`<button class="med" data-a="lensunit" data-id="${o.id}" aria-pressed="${o.id===fu.id}" aria-label="${o.n}">${o.n[0]}</button>`).join('')}</div><span><span class="sw" style="background:repeating-linear-gradient(90deg,#fffaeb 0 3px,#e2cc98 3px 6px)"></span>½</span><span><span class="sw" style="background:#cdb07a"></span>1</span><span><span class="sw" style="background:rgba(70,45,20,.42)"></span>2</span><span><span class="sw" style="background:rgba(70,45,20,.62)"></span>3</span><span><span class="sw" style="background:${HATCH}"></span>gesperrt</span><span><span class="sw" style="background:linear-gradient(135deg,#2F8A4C 0 6px,#cdb07a 6px)"></span>Deckung</span></div>`;
+  }
+  const top=`<div class="top"><div class="pill"><span class="rd">1</span><div style="min-width:0"><div class="ph">Runde 1 · Spielerphase</div><div class="gl">Besiege die Anführerin</div></div></div><span class="rbtn">${ic('map',18)}</span><span class="rbtn">${ic('menu',18)}</span></div>`;
+  let bottom='';
+  const ready=P.units.filter(o=>o.team==='p'&&!o.done).length;
+  if(P.mode==='idle'){
+    const coach=P.coach&&!P.lens?`<div class="hint">${ic('danger',12)} „Gefahr“ gedrückt halten: Gelände</div>`:P.lens?`<div class="hint" style="background:#e3efd9">${ic('lens',12)} Gelände-Linse · Feld antippen · „Gefahr“ tippen beendet</div>`:'';
+    bottom=`${coach}${P.card?fieldCard(P,P.card.x,P.card.y):''}<div class="dock">
+      <button class="db ${P.lens?'lens':P.danger?'on':''}" data-a="danger" data-hold="1" aria-label="Gefahr, gedrückt halten für Gelände"><span class="hold"></span><span class="corner"><i></i><i></i><i></i></span>${ic(P.lens?'lens':'danger',20)}${P.lens?'Gelände':'Gefahr'}</button>
+      <button class="db" data-a="next">${ic('next',20)}Nächste</button>
+      <button class="db main" data-a="${ready?'next':'reset'}">${ic('end',20)}${ready?'Phase beenden':'Neu starten'}<small>${ready} bereit</small></button></div>`;
+  }else if(P.mode==='sel'){
+    bottom=`<div style="display:flex;gap:6px;align-items:center"><button class="bt" data-a="back" style="height:34px;font-size:14px;padding:0 12px;display:inline-flex;align-items:center;gap:4px">${ic('back',13)} Zurück</button>${zielChip(P,u)}</div>
+      ${P.card&&!(P.dest&&P.card.x+','+P.card.y===P.dest)?fieldCard(P,P.card.x,P.card.y):unitCard(P,u)}
+      <div class="dock four"><button class="db dimmed">${ic('attack',20)}Angriff</button><button class="db">${ic('shield',20)}Halten<small>bereit</small></button><button class="db">${ic('item',20)}Item</button><button class="db" data-a="wait">${ic('wait',20)}Warten</button></div>`;
+  }else if(P.mode==='fc'){bottom=forecast(P);}
+  el_(P).innerHTML=`<div class="boardwrap"><div class="board" style="transform:translateY(${shift}px)">${tiles}${ov}${path}${units}${marks}</div></div>${top}${legend}<div class="bottom">${bottom}</div>${P.sheet?sheet(P):''}`;
+}
+const el_=P=>P.el;
+
+/* ---------- Schalter ---------- */
+function seg(id,key,opts,cb){const el=document.getElementById(id);el.innerHTML='';opts.forEach(([v,l])=>{const b=document.createElement('button');b.type='button';b.textContent=l;b.setAttribute('aria-pressed',String(V[key]===v||(key==='gear'&&ph3&&ph3.gear===v)));b.onclick=()=>{[...el.children].forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');cb(v)};el.appendChild(b)})}
+function desc(key){const v=VAR[key][V[key]];document.getElementById('d-'+key).innerHTML=`<b class="t">${v.t}</b><span>${v.d}</span><div class="pc"><div><span class="lbl" style="color:var(--pos)">Stärke</span>${v.p}</div><div><span class="lbl" style="color:var(--neg)">Schwäche</span>${v.c}</div></div>`;}
+let ph3=null;
+['lens','move','fc'].forEach(k=>{seg('seg-'+k,k,Object.keys(VAR[k]).map(v=>[v,VAR[k][v].t]),v=>{V[k]=v;desc(k);phones.forEach(render)});desc(k)});
+
+const ph1=Phone(document.getElementById('ph1'),{lens:true,coach:false,card:{x:2,y:7}});
+const ph2=Phone(document.getElementById('ph2'),{mode:'sel',sel:'brenna',dest:'4,7',card:{x:2,y:8}});
+ph3=Phone(document.getElementById('ph3'),{mode:'fc',sel:'brenna',dest:'4,7',target:'soeldner',prevDest:'4,7'});
+seg('seg-gear','gear',[['wind','Kettenhemd mit Wind-Rune'],['water','Schild mit Wasser-Rune'],['none','keine Rune']],v=>{ph3.gear=v;render(ph3)});
+})();
+</script>

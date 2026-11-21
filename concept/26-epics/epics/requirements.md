@@ -94,6 +94,15 @@
 - FR62 (neu): Akt 3: 8 Story-Missionen inkl. 2 großer Schlachten, N7–N10, Leutnants Eluned, Cassian, Mael, Torvald, Drachen als dritte Partei, E9–E12, Region 3, Epilog.
 - FR63 (neu): Alle Texte in DE und EN.
 
+**Ausrüstung zum Anfassen (Konzeptreihe 2026-11-21, Epic 16)**
+
+- FR64 (neu 2026-11-21): Straßen und Brücken kosten für alle Bewegungsarten und beide Seiten ½ Bewegung; Tor, Rampe und Treppe bleiben 1; übrige Bewegung darf halb sein.
+- FR65 (geändert 2026-11-21): Die Gegnerphase läuft standardmäßig mit 2×; gespeichertes 1× wird einmal auf 2× gesetzt; Zeitgrenze 13 s und „Gegnerzüge: Gemeinsam“ bleiben.
+- FR66 (neu 2026-11-21): Jeder Schild hat 1 Runenplatz nur für Element-Runen: I Schaden des Elements ×0,8, II dazu Zustand-Immunität, III dazu Gelände-Immunität; bei gleichem Element an Schild und Körper zählt der bessere Faktor.
+- FR67 (neu 2026-11-21): Waffen-Chronik: Kills je Waffen-Instanz (letzter Schlag, Konter, vertriebener Leutnant), Beiname ab dem 10. Kill bzw. sofort nach einem Leutnant; keine Spielwerte.
+- FR68 (neu 2026-11-21): Waffenkammer im Bergfried ab der Burg: alle Relikte und Signaturwaffen der Truppe als Spiegel (Getragenes als Umriss), leere Ständer mit Fortschritt, außen je Stück ein Banner; kein Raum, keine Spielwerte.
+- FR69 (geändert 2026-11-21): Der Händler kauft für die gewählte Person direkt in ihren Platz, das bisher Getragene geht in den Konvoi; Kaufen in den Konvoi bleibt als zweite Taste. Der Verzauberer tauscht Runen in einem Schritt, verschmolzen wird nur aus dem Konvoi.
+
 ### NonFunctional Requirements
 
 - NFR1: 60 FPS auf Pixel 6a / iPhone 12 über eine komplette Gegnerphase auf Karten bis 1 200 Felder (30 × 40) mit 50 und mehr Figuren und in der 3D-Burg (alle Räume ausgebaut); Desktop-Ersatz `PERF_LARGE=1 pnpm perf`: 60 FPS bei 2×, 30 FPS bei 4× CPU-Drosselung, kein Frame über 100 ms. Die Wiedergabe einer Gegnerphase dauert bei Tempo 1× und „Gegnerzüge: Gemeinsam“ höchstens 15 s (ohne KI-Rechenzeit, NFR3). Vorschlag Story 15.11, vom Produktinhaber zu bestätigen; bis dahin gilt das alte Maß (24×32, ~40 Einheiten) als erfüllt.
@@ -112,6 +121,7 @@
 - NFR14: Nemesis-Leitplanken: keine prozedurale Erzeugung von Gegnern oder Persönlichkeiten, keine Rangordnung unter Gegnern, keine Beförderung durch Spielerniederlagen.
 - NFR15: KI-Assets nur nach den Auflagen aus `concept/23-art-direction/licensing.md` §6 (GA26 seit 2026-10-24 geklärt).
 - NFR16: Spielzeit Staffel 1 30–35 Stunden auf Normal.
+- NFR17 (neu 2026-11-21): Waffenmodelle ohne Tripo (ChatGPT-Baupläne, Blender-Skript), rund 8 000 Dreiecke je Waffe, unter 2 000 je Runenstein; Sichtbares nur mit Linien-Icons, keine Emojis.
 
 ### Additional Requirements
 
@@ -135,6 +145,9 @@ Aus `concept/24-architecture/architecture.md` (AR = Architekturentscheidung):
 - AR20: `c.archive.s1` bei E12 und eigener Export.
 - AR21: `navigator.storage.persist()`, Installationshinweis, Backup-Erinnerung nach Akt-Finale.
 - AR22: `CoreInvariantError`, Fehlerbericht (Checkpoint + Journal + Kampf + 500 Log-Zeilen), Logpuffer `src/app/log.ts`.
+- AR24 (neu 2026-11-21): Griff-Rig: Griffpunkt mit fester Achse je Waffenmodell, Griff-Sockel in der Handfläche und Fingerknochen je Brettfigur; Hand, Griffpunkt und Haltung je Waffenart in `render.yaml`, der Winkel `hold` entfällt; Ruhe, Gesten und Kampfhaltung als gebackene Vertex-Clips (Art Direction §4.5).
+- AR25 (neu 2026-11-21): Kill-Zähler und Beiname an `ItemInstance` im Speicherformat, gesetzt aus dem Kampf-Event; vor dem ersten `content:lock` (Epic 16 vor Story 9.14).
+- AR26 (neu 2026-11-21): Eine gemeinsame 3D-Item-Bühne (Waffenansicht, Verzauberer, Waffenkammer) und die Ankleidepuppe nutzen den Asset-Cache des Szenen-Hosts (AR12/AR13); Runen-Leuchten über den Füllwert `fill` der Rinne (§4.7).
 - Kein Starter-Template: Das Projekt existiert (PoC); Epic 1 beginnt nicht mit einem Projekt-Setup.
 
 ### UX Design Requirements
@@ -172,6 +185,14 @@ Aus `concept/25-ux/DESIGN.md` und `EXPERIENCE.md`:
 - UX-DR29 (neu 2026-10-30): Gegnerphase-Rückblick, Gegner-Leiste (Option), Fertig-Häkchen, Doppeltipp zentriert, Zoomstufe „ganze Karte“ (PC M), Rechtsklick nimmt die Bewegung zurück (Zurück-Stein an der Geist-Figur entfällt, Playtest 2026-10-30).
 - UX-DR30 (neu 2026-10-30): Handbuch aus Kampfmenü, Weltkarte und Titel mit Kategorien, Suche und Einträgen (Grafik, Werte aus den Daten, Querverweise), Klassen-Steckbriefe, Lektionen.
 - UX-DR31 (neu 2026-10-30): Kontext-„?“ an Kampfvorschau, Gelände-Chip, Zuständen und Lektionen öffnet den passenden Handbuch-Eintrag über dem Kampf.
+- UX-DR32 (neu 2026-11-21): Gelände-Linse (langer Druck auf „Gefahr“, PC G, bleibt an), Feldkarte mit Kosten der gewählten bzw. nächsten Figur, Kosten-Punkte, „½“ und „noch n“ im Bewegungsbereich (`terrain-lens`, `tile-card`, `cost-pips`).
+- UX-DR33 (neu 2026-11-21): Kampfvorschau mit Runenstein am Waffen-Chip, Element-Band mit Satz und Faktor, Faktor-Marke am Schaden und Status-Zeile (`element-band`).
+- UX-DR34 (neu 2026-11-21): Änderungsliste (nur Unterschiede) als gemeinsamer Baustein für Verzauberer, Händler, Figurenblatt und Waffenansicht (`change-list`); fehlende Linien-Icons in `src/ui/icons.tsx`.
+- UX-DR35 (neu 2026-11-21): Figurenblatt als 3D-Ankleidepuppe (Figur über das ganze Handy, Plätze über dem Bild, heller Bereich mit Leistungs-Tabelle, Beutel aus dem Konvoi) und Waffenansicht mit Rune, Werten, Chronik, „Verzaubern“ und „Aufwerten“.
+- UX-DR36 (neu 2026-11-21): Verzauberer als Werkbank in 3D: Probe + Haupttaste, Tauschen, Ausbauen, Kaufen, Verschmelzen mit Animation (`workbench-stage`, `rune-gem`).
+- UX-DR37 (neu 2026-11-21): Händler „zuerst die Person“: Kopfleiste mit Medaillons und Konvoi, nur Tragbares nach Platz, Änderungs-Chips, „Kaufen und anlegen“ (`person-bar`).
+- UX-DR38 (neu 2026-11-21): Waffenkammer als 3D-Gewölbe mit Ständern auf Drehscheibe, Umriss für Getragenes, leere Ständer mit Fortschritt (`stand-plate`).
+- UX-DR39 (neu 2026-11-21): Ruhe (Atmen, Gesten alle 6–10 s) und Haltung je Waffenart auf dem Brett; Kampfhaltung (0,25 s) und volles Runenleuchten bei der gewählten Figur und in der Kampfvorschau.
 
 ### FR Coverage Map
 
@@ -201,3 +222,4 @@ Aus `concept/25-ux/DESIGN.md` und `EXPERIENCE.md`:
 | FR61 | Epic 11 | Inhalte Akt 2 |
 | FR62 | Epic 12 | Inhalte Akt 3 |
 | FR63 | Epic 9/11/12 | DE und EN je Akt |
+| FR64–FR69 | Epic 16 | Straße ½, Gegnerphase 2×, Schild-Runen, Waffen-Chronik, Waffenkammer, Kaufen in die Hand |
