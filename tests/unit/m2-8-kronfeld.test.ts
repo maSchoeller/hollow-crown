@@ -56,8 +56,8 @@ describe('map m2_8_kronfeld', () => {
     expect([map().size, map().timeOfDay]).toEqual([[30, 40], 'evening']);
   });
 
-  it('has 36 / 40 / 28 foes with the waves (hard thinned out, story 11.27 rounds 1 and 3)', () => {
-    for (const [d, n] of [['easy', 36], ['normal', 40], ['hard', 28]] as const) {
+  it('has 28 foes with the waves on every difficulty (story 11.27; Normal and Easy thinned out 2026-11-21)', () => {
+    for (const [d, n] of [['easy', 28], ['normal', 28], ['hard', 28]] as const) {
       const s = battle(inAct2({}, d));
       const start = s.units.filter((u) => u.team === 'enemy').length;
       const waves = map().reinforcements.flatMap((r) => r.units).filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
@@ -133,13 +133,21 @@ describe('map m2_8_kronfeld', () => {
     expect(s.objectivePhase).toBe(1);
   });
 
-  it('has the waves in rounds 3 (west), 5 (east), 7 (south) and 9 (lances at the ford), all announced', () => {
+  it('has the waves in rounds 7 (south) and 9 (lances at the ford), both announced', () => {
     const waves = map().reinforcements.map((r) => ({ turn: r.turn, announce: r.announce, at: r.units.map((u) => u.at) }));
-    expect(waves.map((w) => [w.turn, w.announce])).toEqual([[3, true], [5, true], [7, true], [9, true]]);
-    expect(waves[0]!.at.every((p) => p[0] === 0)).toBe(true);
-    expect(waves[1]!.at.every((p) => p[0] === 29)).toBe(true);
-    expect(waves[2]!.at.every((p) => p[1] === 39)).toBe(true);
-    expect(waves[3]!.at.every((p) => p[0] >= 23 && p[0] <= 25 && p[1] <= 7)).toBe(true);
+    expect(waves.map((w) => [w.turn, w.announce])).toEqual([[7, true], [9, true]]);
+    expect(waves[0]!.at.every((p) => p[1] === 39)).toBe(true);
+    expect(waves[1]!.at.every((p) => p[0] >= 23 && p[0] <= 25 && p[1] <= 7)).toBe(true);
+  });
+
+  it('lets Sable (or the captain) guard the south on Easy and Normal; on Hard she storms the hill', () => {
+    for (const d of ['easy', 'normal', 'hard'] as const) {
+      for (const flags of [{}, { e07: 'warn' }] as Record<string, string>[]) {
+        const south = battle(inAct2(flags, d)).units.filter((u) => u.uid === 'sable' || u.uid === 'captain');
+        expect(south.length, d).toBe(1);
+        expect(south[0]!.ai?.profile, d).toBe(d === 'hard' ? 'trigger' : 'guard');
+      }
+    }
   });
 
   it('pays 3 000 gold (top of the act-2 corridor), side goals 800 and 500, and has two haunt anchors', () => {
