@@ -226,6 +226,26 @@ Story-NSC ohne Kampfrolle (Halvard, Seraphine, Dravn, Maelis, Gerrit) bekommen n
 
 FE-Set aus GA8/D13 auf jedem Rumpf: Idle (atmen, gelegentlich blinzeln), Laufen, Angriff je Waffengruppe, Treffer, Niedergestreckt; dazu **Flucht** (Leutnants) und **Jubel** (Sieg, Stufenaufstieg). Bewegung mit leichtem Squash-and-Stretch, Laufen als kleines Hüpfen. Dauer einer Angriffsanimation ≤ 600 ms bei 1×.
 
+**Ruhe, Haltung und Kampfhaltung (Entscheidung Produktinhaber 2026-11-21, Konzept „Ausrüstung zum Anfassen“, Thema 6):** Mockup `art/mockups/ausruestung-2026-11/animation.html`.
+
+- **Ruhe:** Die Figur steht still und atmet (Brust und Schultern heben sich etwa alle vier Sekunden); alle 6 bis 10 Sekunden eine kleine Geste – umsehen, Gewicht verlagern, Waffe nachfassen –, jede Figur zu einer anderen Zeit. Das bisherige Taumeln der Stand-Animation „Inaktiv“ entfällt; jede Figur startet ihre Schleife an einer anderen Stelle. Die Hände bleiben ruhig, Waffe und Schild drehen nicht weg.
+- **Haltung je Waffenart** über ein **Griff-Rig**: Jedes Waffenmodell hat einen Griffpunkt mit fester Achse (Schaft → Spitze bzw. Kopf, Breitseite bzw. Schneide), jede Figur einen Griff-Sockel in der Handfläche (heute sitzt `socket_r`/`socket_l` am Handgelenk und je Figur anders gedreht), und die Waffenart legt Hand, Griffpunkt und Haltung fest. Dieselben Griffe tragen später die Kampfanimationen.
+
+| Waffenart | Hand · Griffpunkt | Ruhe | Kampfhaltung |
+|---|---|---|---|
+| Stangen: Lanze, Speer, Stab | rechts · Schaft auf Schulterhöhe | senkrecht, Schaftende auf dem Boden | Lanze waagerecht zum Stoß, Stab schräg vor |
+| Klingen: Schwert, Dolch | rechts · Heft unter der Parierstange, Schneide nach vorn | Spitze nach oben, Hand vor der Hüfte | schräg nach vorn oben |
+| Äxte und Hämmer | rechts · unteres Stielviertel | auf der Schulter, Kopf hinten außen, Schneide nach unten | erhoben, Schneide nach vorn |
+| Bögen | links · Griffmitte | senkrecht neben dem Bein | senkrecht vor dem Körper |
+| Bücher und Foki | links · Buchrücken | zugeklappt an der Hüfte | aufgeschlagen auf der flachen Hand, Seiten zur Figur; die Rechte zaubert |
+| Schilde | links · Armschlaufe am Unterarm | außen am Unterarm, frei vom Oberarm (§4.7) | leicht vor den Körper |
+| Instrumente: Laute | links am Hals, rechts am Korpus | vor dem Bauch | wie in Ruhe |
+
+- **Kampfhaltung** ist die leichte Kampfhaltung aus dem Figurenblatt (§4.7), mit der Waffe nach der Tabelle. Auf dem Brett stehen Figuren in Ruhe in der Haltung ihrer Waffenart; die gewählte Figur und Angreifer und Ziel der Kampfvorschau gehen in die Kampfhaltung (Wechsel 0,25 s), so wie ihre Runen dann voll leuchten.
+- **Hände:** Die Tripo-Figuren bekommen **Fingerknochen** (Tripo-Rig mit Fingern oder Nachrig in Blender), damit sich die Hand je Griffart schließt: Faust um Schaft und Heft, flache Hand unter dem aufgeschlagenen Buch.
+- **Buch:** Das Buchmodell wird neu gezeichnet, zugeklappt und aufgeschlagen (im Mockup ein Platzhalter).
+- **Umsetzung:** Auf dem Brett laufen die Figuren als gebackene Vertex-Animation; Ruhe je Waffenart, Kampfhaltung und die Gesten werden deshalb als eigene kurze Clips gebacken, nicht zur Laufzeit gerechnet. Der Griffwinkel `hold` in `content/core/render.yaml` `gear` geht im Griff-Rig auf.
+
 ### 4.6 Produktion (Bild-zu-3D) [A]
 
 Erprobt an Lucan (Free-Tarif-Probe, Dateien am 2026-10-24 aus dem Repo entfernt; Ergebnis im Entscheidungslog).
@@ -243,6 +263,21 @@ Die Brettfigur muss **nicht** 1:1 wie das Porträt aussehen: Sie ist eine bewuss
 **Budget je Brettfigur:** etwa **6 000–7 000 Dreiecke**, Textur **512 × 512** (nur Grundfarbe), **≤ 0,5 MB Transfergröße** (gzip, wie der Build-Check). Auf dem Handy ist eine Figur in der Zoomstufe „Nah“ nur rund 120 Gerätepixel hoch; mehr Auflösung ist nicht sichtbar. Große Einheiten (Reittiere, Drachen) dürfen das Doppelte haben. Lucan: 6 385 Dreiecke, 0,91 MB roh, ≈ 0,4 MB übertragen; Lucan (seit Story 15.9 unter `lucan`): 6 179 Dreiecke, 0,28 MB gz. [A]
 
 **Credits:** sparsam (Decision Log). Je Figur Smart-Mesh (100, gleich ob 1 oder 4 Varianten, also immer 4), Textur (20) und Auto-Rig (20) = **140**; Presets kosten nichts, KI-Animationen (20) nur für die Bibliothek; Requisiten und Umgebung in Blender. Stand nach Brenna: 5 805 Credits.
+
+### 4.7 Runenwaffen (Waffen v2, Entscheidung Produktinhaber 2026-11-21)
+
+Die Rune ist Teil der Waffe, nie aufgesetzt. Löst die Waffen aus Schritt 6 von §4.6 ab, sobald sie im Spiel sind.
+
+- **Fassung:** Jede Waffe hat eine eingelassene runde Fassung mit Metallrand und vier Krallen, bei allen Waffen gleich groß, damit jeder Runenstein in jede Waffe passt. Lage: Axt im Blatt am Stiel, Schwert in der Parierstange, Schild im Buckel, Lanze in der Tülle.
+- **Rinne:** Von der Fassung läuft eine ins Metall geschnittene V-Rinne der Form entlang: Bogen der Axtschneide, Hohlkehle des Schwerts, Ring um den Schildbuckel, Grat der Lanze. Ein Füllwert (zweite UV `fill`, 0 an der Fassung bis 1 am Ende) steuert das Leuchten: Stufe I ein Drittel, Stufe II zwei Drittel, Stufe III ganz mit Puls.
+- **Runensteine:** eigene Modelle je Rune und Stufe. Stufe I glatter Cabochon, Stufe II höher mit facettiertem Rand, Stufe III geschliffener Kristall mit Symbol in Gold. Symbole: Flamme, Wirbel, Berg, Welle, Stern, Mond; Hilfsrunen silberweiß mit Fadenkreuz, Hammer, Klinge, Feder.
+- **Zweiter Runenplatz** (Selten und besser): eine zweite, kleinere Fassung ohne eigene Rinne.
+- **Material:** Eisen, Stahl und Silber unterscheiden sich durch Tönung bei gleicher Form (Eisen warm grau, Stahl kühler und heller, Silber fast weiß mit Glanz).
+- **Im Verzauberer** (Entscheidung Produktinhaber 2026-11-21): das Item als drehbares Modell auf dunkel-warmem Grund; eine Rune zur Probe sitzt sofort als Stein in der Fassung, wächst kurz auf, und die Rinne füllt sich nach Stufe. Verschmelzen: drei Steine kreisen zusammen, Lichtblitz in Elementfarbe, der Stein der nächsten Stufe wächst heraus. Ablauf und Liste in `concept/25-ux/EXPERIENCE.md` („Verzauberer (Werkbank)“).
+- **Im Figurenblatt** (Entscheidung Produktinhaber 2026-11-21): die Figur als ihr Brettmodell in **leichter Kampfhaltung** – Beine etwas breiter, Arme vom Körper weg, Waffenhand leicht vorn, nicht zu krass, „im Stehen da sein“. Das soll später jede Figur haben (Kampfhaltung, §4.5). Die Hände bleiben im Stand ruhig, damit Waffe und Schild nicht wegdrehen. Der Schild sitzt so weit außen am Unterarm, dass er nicht in den Oberarm greift (Auflage an Sockel bzw. Schildmodell). Rinne und Stein brauchen einen Tiefenversatz gegen die Platte, sonst flimmern sie.
+- **Auf dem Brett:** Runenwaffen glimmen immer gedämpft; bei der gewählten Figur und in der Kampfvorschau leuchten sie voll (Angreifer und Ziel). Dieselben Figuren stehen dann in der Kampfhaltung (§4.5). Gegnerwaffen leuchten genauso (Säule 3). In der Kampfvorschau steht die Rune als Kreis in Elementfarbe mit Stufe am Waffen-Chip, das Element-Band nutzt dieselben Elementfarben (Produktinhaber 2026-11-21, Thema 5; Ablauf in `concept/25-ux/EXPERIENCE.md` unter „Kampfvorschau“).
+- **In der Waffenkammer** (Produktinhaber 2026-11-21, Thema 8): Relikte und Signaturwaffen auf Ständern im Gewölbe des Bergfrieds (§7), dieselben Modelle wie im Figurenblatt, Rinne nach Stufe gefüllt. Tippen öffnet die Waffenansicht mit dem Stein in der Fassung.
+- **Produktion:** kein Tripo für Waffen. ChatGPT zeichnet orthografische Baupläne (`art/mockups/weapons-2026-11/`, Protokoll `art/prompts/weapon_rune_concept.md`), Blender-Skripte bauen nach: `tools/art/blender_weapons_v2.py` (Axt), `blender_weapon_sword.py`, `blender_weapon_shield.py`, `blender_weapon_lance.py`, `blender_runes_v2.py` → `art/models/weapons-v2/`, `art/models/runes-v2/`. Geometrie gerade bauen, auch wenn ein Konzeptbild schräg ist. Budget großzügig: rund 8 000 Dreiecke je Waffe, unter 2 000 je Stein.
 
 ## 5. Bildebene [A]
 
@@ -335,13 +370,14 @@ Bilder für Inventar, Konvoi, Händler und Beute. Katalog und Regeln in `concept
 | 3 Festung | Kegeldächer, Banner an der ganzen Mauer, Wachturm am Pass, **Vorwerk am Passfuß** (F4, Produktinhaber 2026-11-06: nur Bild, kein Raum und keine Regel) | Alle Felder, Weiler an der Brücke, Laternen an der Straße, Heuhaufen |
 
 - **Gefährten-Gegenstände** (Brennas Axtständer, Jorys Laute, Ysoldes Bücherstapel …) stehen als Modelle an festen Plätzen: je Story-Gefährte einer, Avatar und Lucan bekommen keinen (Liste abgenommen 2026-11-07, `concept/22-narrative/burg-gegenstaende-vorschlag.md`). Seit Story 10.14 sind alle fünfzehn gebaut; der Platz steht im Modell (`LAYOUT` in `tools/art/blender_paktwacht.py`), die Id am Gefährten (`homeObject` in `content/acts/*/units.yaml`). Was ein Platz zeigt, sagt `castleScene`: ist der Gefährte da, steht sein Gegenstand dort; ist er gefallen, bleibt der Gegenstand liegen und verliert seine Farben (Gedenken-Stil), und in der Gedächtnishalle steht sein Gedenkstein; ist er gegangen, nimmt er den Gegenstand mit; wer nie beitrat, hinterlässt nichts. Söldner haben keinen Platz. Die Gegenstände stehen 1,35× größer als ihr wahres Maß, sonst sind sie auf dem Referenzgerät nicht zu lesen `[ASSUMPTION]`.
+- **Waffenkammer im Bergfried** (Produktinhaber 2026-11-21, Konzept „Ausrüstung zum Anfassen“, Thema 8): Der Bergfried bekommt einen eigenen Stein ohne Stufen und innen ein **Gewölbe** als eigene kleine 3D-Szene: Steinwand mit Säulen, dunkler Boden, warmes Licht von vorn oben, Ständer (runder Steinsockel mit Ring in Runenfarbe) auf einer Drehscheibe, das vordere Stück im Licht. Auf den Ständern stehen nur **Relikte und Signaturwaffen**, die Stücke drehen sich langsam, Runen leuchten wie auf dem Brett. Getragene Stücke erscheinen als heller, halb durchsichtiger Umriss; leere Ständer bleiben grau. Außen hängt am Bergfried **je Stück ein Banner** in der Farbe seiner Rune (ohne Rune gold), die Banner zählen also mit. Relikte und Signaturen ohne Waffenmodell (Drachenglut, Letzter Vorhang) brauchen ein eigenes Modell; bis dahin steht ihr Item-Bild auf dem Ständer. Mockup `art/mockups/ausruestung-2026-11/vitrine.html`.
 - Alle Burg-Modelle sind **von Hand in Blender** gebaut (`blender_paktwacht.py`, `blender_castle.py`, Vertex-Farben), kein KI-Asset; `licensing.md` §6 greift darum nicht. Abnahme-Bilder und Bauanleitung in `art/models/castle/README.md`.
 - Antippen eines Raums oder seines Steins öffnet ein Panel (U21) über der Ansicht; es gibt kein eigenes Raumbild.
 - Licht immer abendlich warm (Narrative: Ruhe).
 
 ## 8. Effekte [A]
 
-Cartoon-Effekte: flache, klar umrissene Formen mit Kontur, wenige große Partikel, kurze knackige Timings. Glows nur für Feuer, Magie und Drachenglut, sparsam.
+Cartoon-Effekte: flache, klar umrissene Formen mit Kontur, wenige große Partikel, kurze knackige Timings. Glows nur für Feuer, Magie, Drachenglut und Runenwaffen (§4.7), sparsam.
 
 | Ereignis | Effekt |
 |---|---|

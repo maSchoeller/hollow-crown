@@ -1,0 +1,385 @@
+<title>Truppe in 3D</title>
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: ein Lesestrang (max 1100px); Ist-Zustand, dann drei Handy-Rahmen nebeneinander (Handy: untereinander), darunter Gemeinsames */
+:root{
+  --bg:#F6EEDF; --panel:#FFF8EC; --tone:#F4E9D6; --line:#3B2A20; --soft:#7A6553; --ember:#E8743B; --ember-d:#B44C18;
+  --pos:#2F8A4C; --neg:#B83A2E; --rule:#E3D5BE;
+  --fire:#F2603A; --wind:#7BD389; --earth:#B9874B; --water:#4AA8E8; --light:#F7D96B;
+  --f-name:'Fraunces',Georgia,serif; --f-body:'Barlow',system-ui,sans-serif; --f-label:'Barlow Condensed','Arial Narrow',sans-serif;
+  --g-cream:#FFF8EC; --g-tone:#F4E9D6; --g-line:#3B2A20; --g-soft:#7A6553; --g-pos:#2F8A4C; --g-neg:#B83A2E;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1F1813;--panel:#2A211A;--tone:#352a21;--line:#F3E6D2;--soft:#C2AE98;--rule:#4a3b2e;--pos:#5cc27e;--neg:#e2766b;--ember-d:#F08a55;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1F1813;--panel:#2A211A;--tone:#352a21;--line:#F3E6D2;--soft:#C2AE98;--rule:#4a3b2e;--pos:#5cc27e;--neg:#e2766b;--ember-d:#F08a55;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--line);font-family:var(--f-body);font-size:16px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:26px 64px}
+.wrap{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:48px}
+h1,h2,h3{font-family:var(--f-name);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,4.6vw,42px);font-weight:800} h2{font-size:clamp(22px,3vw,29px);font-weight:800} h3{font-size:19px;font-weight:600}
+p{margin:0;max-width:68ch}
+.kicker{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.09em;font-size:13px;color:var(--ember-d);font-weight:700}
+.lead{font-size:18px;color:var(--soft)} .small{font-size:14px;color:var(--soft)}
+section{display:flex;flex-direction:column;gap:16px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.ist{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:700px){.ist{grid-template-columns:1fr}}
+.ist .pics{display:flex;gap:10px}.ist img{width:50%;border-radius:16px;border:2px solid var(--line);display:block;object-fit:cover;object-position:top;aspect-ratio:305/540}
+.mocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:30px;align-items:start}
+.mock{display:flex;flex-direction:column;gap:10px;min-width:0}
+.mock h3{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.tag{display:inline-block;font-family:var(--f-label);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:1px 8px;border-radius:99px;border:1.5px solid currentColor;color:var(--ember-d)}
+.note{font-size:14.5px;color:var(--soft)}
+.pro{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media (max-width:420px){.pro{grid-template-columns:1fr}}
+.pro .card{padding:10px 12px;gap:4px;font-size:14px}.pro b{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.06em;font-size:12px}
+.up{color:var(--g-pos)} .dn{color:var(--g-neg)} .mut{color:var(--g-soft)}
+.qs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}.qs .card b{font-family:var(--f-name);font-weight:600;font-size:16px}
+
+/* Spiel-Look im Handy */
+.phone{width:100%;max-width:340px;height:740px;border-radius:34px;border:6px solid #1c1410;background:radial-gradient(120% 80% at 50% 15%,#8b6f52,#3e2f24);position:relative;overflow:hidden;margin:0 auto;color:var(--g-line);font-size:13px;line-height:1.3}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;gap:7px;padding:12px 10px}
+.pill{background:var(--g-cream);border:2px solid var(--g-line);border-radius:99px;box-shadow:0 3px 0 var(--g-line);padding:3px 6px;display:flex;align-items:center;gap:8px}
+.pill .nm{font-family:var(--f-name);font-weight:800;font-size:16px;flex:1}
+.rb{width:28px;height:28px;border-radius:50%;border:2px solid var(--g-line);background:var(--g-cream);display:grid;place-items:center;font-weight:700;cursor:pointer;padding:0;color:var(--g-line);font-size:14px}
+.panel{background:var(--g-cream);border:2px solid var(--g-line);border-radius:16px;box-shadow:0 4px 0 var(--g-line);padding:8px;display:flex;flex-direction:column;gap:6px;min-height:0}
+.caps{font-family:var(--f-label);font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:11px;color:var(--g-soft)}
+.btn{background:var(--ember);color:#fff;border:2px solid var(--g-line);border-radius:99px;box-shadow:0 3px 0 var(--ember-d);font-family:var(--f-label);font-weight:700;font-size:15px;padding:7px 12px;text-align:center;cursor:pointer;flex:1}
+.btn2{background:var(--g-cream);color:var(--g-line);border:2px solid var(--g-line);border-radius:99px;box-shadow:0 3px 0 var(--g-line);font-family:var(--f-label);font-weight:700;font-size:14px;padding:6px 10px;text-align:center;cursor:pointer;flex:1}
+.chip{display:inline-flex;align-items:center;gap:3px;background:var(--g-tone);border-radius:99px;padding:2px 8px;font-family:var(--f-label);font-weight:700;font-size:13px;color:var(--g-line);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip.ghost{background:none;border:1.5px solid #d9c9ad;color:var(--g-soft);cursor:pointer}
+.head{display:flex;gap:8px;align-items:center}
+.head .t{flex:1;min-width:0}.head .t b{font-family:var(--f-name);font-weight:800;font-size:19px;display:block;line-height:1.1}
+.cls{display:inline-flex;gap:4px;align-items:center;border:1.5px solid var(--g-line);border-radius:99px;padding:0 7px;font-family:var(--f-label);font-weight:700;font-size:12px}
+.exp{height:6px;background:#eadcc4;border-radius:9px;overflow:hidden;margin-top:4px}.exp i{display:block;height:100%;width:40%;background:#2F8A4C}
+.stage{position:relative;border-radius:14px;overflow:hidden;background:radial-gradient(80% 70% at 50% 60%,#6b5644,#2a2018);border:2px solid var(--g-line);min-height:0}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage .hint{position:absolute;left:8px;bottom:6px;color:#f3e6d2;background:rgba(0,0,0,.45);border-radius:99px;padding:1px 8px;font-size:11px;font-family:var(--f-label)}
+.slot{width:46px;height:46px;border-radius:12px;background:var(--g-tone);border:2px solid var(--g-line);box-shadow:0 2px 0 var(--g-line);display:grid;place-items:center;position:relative;cursor:pointer;padding:0}
+.slot img{width:84%;height:84%;object-fit:contain}
+.slot.empty{border-style:dashed;box-shadow:none;background:none;border-color:#c9b89c}
+.slot.sel{outline:3px solid var(--ember);outline-offset:2px}
+.slot .rn{position:absolute;right:-5px;bottom:-5px;width:15px;height:15px;border-radius:50%;border:1.5px solid var(--g-line)}
+.slot .lb{position:absolute;left:50%;transform:translateX(-50%);bottom:-15px;font-size:9.5px;font-family:var(--f-label);font-weight:700;color:#f3e6d2;white-space:nowrap;text-shadow:0 1px 2px #000}
+.sheetA{position:absolute;left:0;right:0;bottom:0;height:25%;background:rgba(255,248,236,.95);border-top:2px solid var(--g-line);border-radius:18px 18px 0 0;padding:4px 12px max(14px,env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:6px;transition:height .28s ease;overflow:hidden}
+.sheetA.big{height:58%}
+.grab{border:0;background:none;padding:2px 0 0;cursor:pointer;display:flex;justify-content:center}.grab i{width:40px;height:5px;border-radius:9px;background:#c9b89c;display:block}
+.perf{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.perf div{background:var(--g-tone);border-radius:9px;padding:2px 4px;display:flex;flex-direction:column;align-items:center;line-height:1.1}
+.perf b{font-family:var(--f-label);font-size:16px;font-variant-numeric:tabular-nums}.perf small{font-family:var(--f-label);font-weight:700;font-size:9.5px;color:var(--g-soft);text-transform:uppercase;letter-spacing:.04em}
+.perf .good b{color:var(--g-pos)}
+.load{width:52px;height:7px;border-radius:9px;background:#eadcc4;overflow:hidden}.load i{display:block;height:100%;background:#7A6553}
+.base{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;text-align:center}.base div{border:1.5px solid #eadcc4;border-radius:8px;padding:1px 0}.base small{display:block;font-size:9.5px;color:var(--g-soft)}.base b{font-family:var(--f-label);font-size:15px}
+.base .hi{border-color:var(--g-pos)}
+.ic{display:inline-block;vertical-align:-2px;flex:0 0 auto}
+[hidden]{display:none!important}
+.sheetA [data-card]{min-height:0;overflow-y:auto;flex:1;padding:0 8px 12px 0;scrollbar-gutter:stable;scrollbar-width:thin;margin-right:-6px}
+.eli{display:inline-grid;place-items:center;border-radius:50%;border:1.5px solid var(--g-line);color:var(--g-line);flex:0 0 auto}
+.det{display:flex;flex-direction:column;gap:6px}
+.vals{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px}.vals div{display:flex;gap:5px;align-items:center;font-size:12.5px}.vals span{flex:1}.vals b{font-family:var(--f-label);font-size:14px}
+.skl{display:flex;gap:6px;align-items:flex-start;font-size:12.5px}.fp{display:block;height:5px;border-radius:9px;background:#eadcc4;overflow:hidden;margin:3px 0 1px}.fp i{display:block;height:100%;background:#2F8A4C}
+.rare{color:#1F9E94;font-weight:700}
+.sheetA.det-on{height:64%}
+#pA .slot.empty{background:rgba(255,248,236,.18);border-color:#e6d7bf}
+.slot.sm{width:36px;height:36px;border-radius:10px}
+.irow{display:flex;gap:8px;align-items:center;padding:4px;border-radius:10px;cursor:pointer;border:1.5px solid transparent;background:none;width:100%;text-align:left;font:inherit;color:var(--g-line)}
+.irow[aria-pressed="true"]{border-color:var(--ember);background:#fff}
+.irow .tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.irow .tx b{font-size:13.5px}
+.segm{display:flex;background:var(--g-tone);border-radius:99px;padding:2px;gap:2px}
+.segm button{flex:1;border:0;background:none;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:13px;padding:4px 6px;color:var(--g-line);cursor:pointer}
+.segm button[aria-pressed="true"]{background:var(--g-line);color:var(--g-cream)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center}
+.stats div{background:var(--g-tone);border-radius:8px;padding:2px 0}.stats small{display:block;font-family:var(--f-label);font-weight:700;font-size:10px;color:var(--g-soft)}.stats b{font-family:var(--f-label);font-size:16px}
+.overlay{position:absolute;inset:0;background:#1d1611;display:flex;flex-direction:column;gap:8px;padding:12px 10px;transform:translateY(100%);transition:transform .3s ease;z-index:6}
+.overlay.on{transform:none}
+.overlay .stage{flex:1}
+.toast{position:absolute;left:50%;top:56px;transform:translateX(-50%);background:var(--g-line);color:var(--g-cream);border-radius:99px;padding:4px 12px;font-family:var(--f-label);font-weight:700;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;z-index:9}
+.toast.on{opacity:1}
+.drow{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:6px;align-items:center;font-size:12.5px;padding:2px 0;border-bottom:1px dashed #eadcc4}.drow:last-child{border:0}
+.drow b{font-family:var(--f-label);font-size:14px}
+.gem{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--g-line);display:inline-grid;place-items:center;font-family:var(--f-label);font-weight:700;font-size:10px}
+.scrollable{overflow:auto;min-height:0}
+button:focus-visible{outline:3px solid var(--ember);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+<header style="display:flex;flex-direction:column;gap:10px">
+  <span class="kicker">Ausrüstung zum Anfassen · Thema 3 von 8 · zur Abnahme</span>
+  <h1>Truppe in 3D</h1>
+  <div class="card" style="border-color:var(--pos)"><b style="font-family:var(--f-label);text-transform:uppercase;letter-spacing:.06em;font-size:13px;color:var(--pos)">Abgenommen am 21.11.2026</b><span>Variante A, Fassung 5: Figur über das ganze Handy in leichter Kampfhaltung, Plätze darüber ohne Zoom, unten ein heller Bereich mit Leistungs-Tabelle, Beutel und Last, hochziehbar für Grundwerte, Können und Elemente. Ein gewählter Gegenstand zeigt seine Kauf-Details. Linien-Icons statt Emojis.</span></div>
+  <p class="lead">Das Figurenblatt als Ankleidepuppe: die Figur steht als Spielmodell im Bild und trägt, was ausgerüstet ist. Drei Varianten, alle mit Brennas echtem Brettmodell und den neuen Waffen aus Thema 1. Tippe auf die Axt oder den Schild, dann „Waffe ansehen“.</p>
+</header>
+
+<section>
+  <span class="kicker">Ist-Zustand · Dev-Build heute, Akt 2</span>
+  <h2>Wo es heute hakt</h2>
+  <div class="ist">
+    <div class="pics"><img src="ist-truppe.jpg" alt="Truppe heute: vier Porträt-Medaillons im Raster"><img src="ist-figur.png" alt="Brennas Figurenblatt heute: Porträt, zehn Werte, zwölf Kästen"></div>
+    <div class="card"><ul>
+      <li><b>Die Figur ist ein flaches Porträt.</b> Was Brenna trägt, sieht man an ihr nicht. Das Porträt zeigt eine Axt, auch wenn sie ein Schwert führt.</li>
+      <li><b>Zwölf gleiche Kästen</b> für Haupthand, Nebenhand, Kopf, Körper, zwei Accessoires, drei Beutelplätze und den Schlüssel. Leere Plätze sehen aus wie Lücken.</li>
+      <li><b>Zehn Werte in Kürzeln</b> (TP, STÄ, MAG, GES, TEM, GLÜ, VER, RES, BEW, TRAG) stehen gleichrangig nebeneinander, auch MAG 0 bei einer Axtkämpferin.</li>
+      <li><b>Runen sind unsichtbar.</b> Kein Platz zeigt, ob eine Rune darin steckt.</li>
+      <li><b>Keine Waffenansicht.</b> Wer seine Waffe sehen will, findet nur das (i)-Blatt mit Text.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Drei Varianten · drehen, Platz antippen, Waffe ansehen</span>
+  <h2>So könnte das Figurenblatt aussehen</h2>
+  <p>Beispiel: Brenna, Vorkämpferin Stufe 3, mit Stahlaxt (Feuer II), Eisenschild (Wasser I, Schild-Rune aus Thema 7), Lederkappe, Lederweste und Kraftring. Die Figur steht mit gedämpftem Stand (Thema 6). Nur Brenna hat hier ein Modell; die Pfeile zu den anderen zeigen nur die Bedienung.</p>
+  <div class="mocks">
+    <div class="mock">
+      <h3>A · Puppe am Körper, Fassung 2 <span class="tag">gewählt · neu</span></h3>
+      <div class="phone" id="pA" style="background:radial-gradient(90% 65% at 50% 38%,#7a634e,#241a13)">
+        <div class="stage" style="position:absolute;inset:0;border:0;border-radius:0;background:none"><canvas aria-label="Brenna in 3D, ziehen dreht"></canvas></div>
+        <div class="pill" style="position:absolute;left:10px;right:10px;top:12px"><button class="rb" type="button" data-nav="-1" aria-label="vorige Figur">{back}</button><span style="flex:1;min-width:0"><span class="nm" style="display:block;line-height:1.1">Brenna</span><span class="mut" style="font-family:var(--f-label);font-weight:700;font-size:11.5px">Vorkämpferin · St. 3 · {star} 40/100</span></span><button class="rb" type="button" data-nav="1" aria-label="nächste Figur">{forward}</button></div>
+        <div style="position:absolute;left:12px;top:84px;display:flex;flex-direction:column;gap:26px" data-left></div>
+        <div style="position:absolute;right:12px;top:84px;display:flex;flex-direction:column;gap:26px" data-right></div>
+        <span class="hint" data-hint style="position:absolute;left:50%;transform:translateX(-50%);bottom:27%;color:#f3e6d2;background:rgba(0,0,0,.45);border-radius:99px;padding:1px 8px;font-size:11px;font-family:var(--f-label)">lädt …</span>
+        <div class="sheetA" data-sheet>
+          <button type="button" class="grab" data-grow aria-label="Bereich vergrößern"><i></i></button>
+          <div class="perf" data-perf></div>
+          <div style="display:flex;gap:6px;align-items:center"><span class="caps">Beutel</span><span data-bag style="display:flex;gap:6px"></span><span style="flex:1"></span><span class="caps">Last</span><span class="load"><i style="width:62%"></i></span><b style="font-family:var(--f-label);font-size:13px">10/16</b></div>
+          <div data-more></div>
+          <div data-card></div>
+        </div>
+      <div class="overlay" data-ov></div><div class="toast" data-toast></div></div>
+      <div class="pro"><div class="card"><b class="up">Neu</b>Die Figur füllt das ganze Handy und steht leicht breitbeinig in Kampfhaltung. Die Plätze hängen über dem Bild, das untere Viertel ist ein heller Bereich.</div><div class="card"><b class="dn">Hinweis</b>Die Pose ist für das Mockup per Hand an den Knochen gesetzt. Fürs Spiel bräuchte jede Figur eine eigene Stand-Animation (Thema 6).</div></div>
+      <p class="note">Haupthand, Kopf, Körper links, Nebenhand und zwei Accessoires rechts, direkt über dem Bild. Ein Farbpunkt zeigt die Rune. Tippen auf einen Platz markiert ihn ohne Zoom; die Karte mit „Wechseln“ und „Waffe ansehen“ erscheint im hellen Bereich unten. Fassung 3: Der helle Bereich zeigt als Tabelle, was die Figur leistet (TP, Angriff, Treffer, Krit, Ausweichen, Verteidigung, Bewegung, Reichweite; Beispielwerte), dazu Beutel und Last. Der Griff oben zieht ihn hoch: Grundwerte mit Namen (die stärksten grün umrandet), Können, Elemente. Ein leerer Beutelplatz füllt sich direkt aus dem Konvoi, ein voller gibt sein Item zurück.</p>
+    </div>
+
+    <div class="mock">
+      <h3>B · Bühne oben, Reiter unten <span class="tag">viel Raum fürs Modell</span></h3>
+      <div class="phone" id="pB"><div class="scr">
+        <div class="pill"><button class="rb" type="button" data-nav="-1" aria-label="vorige Figur">{back}</button><span class="nm">Brenna</span><span class="cls" style="background:var(--g-tone)">Vorkämpferin · St. 3</span><button class="rb" type="button" data-nav="1" aria-label="nächste Figur">{forward}</button></div>
+        <div class="stage" style="flex:0 0 300px"><canvas aria-label="Brenna in 3D, ziehen dreht"></canvas><span class="hint" data-hint>lädt …</span></div>
+        <div class="panel" style="flex:1;gap:5px">
+          <div class="segm" data-tabs><button type="button" aria-pressed="true" data-tab="gear">Ausrüstung</button><button type="button" aria-pressed="false" data-tab="stats">Werte</button><button type="button" aria-pressed="false" data-tab="skills">Können</button></div>
+          <div class="scrollable" data-body style="flex:1"></div>
+          <div data-card></div>
+        </div>
+      </div>
+      <div class="overlay" data-ov></div><div class="toast" data-toast></div></div>
+      <div class="pro"><div class="card"><b class="up">Stärken</b>Die Figur ist groß und frei drehbar. Ausrüstung als Liste mit Namen und Runen liest sich leicht; Werte und Fähigkeiten haben eigene Reiter.</div><div class="card"><b class="dn">Schwächen</b>Ausrüstung und Figur liegen getrennt: welche Zeile welche Hand ist, verbindet erst das Antippen.</div></div>
+      <p class="note">Die Bühne nimmt die obere Hälfte ein. Darunter drei Reiter: Ausrüstung (eine Zeile je Platz, Beutel darunter), Werte (alle zehn mit Namen), Können (Fähigkeiten, Meisterung). Eine Zeile antippen zoomt zur Hand und öffnet die Karte.</p>
+    </div>
+
+    <div class="mock">
+      <h3>C · Blatt wie heute, 3D auf Abruf <span class="tag">wenig Aufwand</span></h3>
+      <div class="phone" id="pC"><div class="scr">
+        <div class="pill"><button class="rb" type="button" data-nav="-1" aria-label="vorige Figur">{back}</button><span class="nm">Brenna</span><span class="mut" style="font-family:var(--f-label);font-weight:700">3/4</span><button class="rb" type="button" data-nav="1" aria-label="nächste Figur">{forward}</button></div>
+        <div class="panel" style="flex:1;gap:6px">
+          <div class="head"><div style="width:64px;height:64px;border-radius:50%;border:2px solid var(--g-line);background:#e8cfb5;display:grid;place-items:center;font-family:var(--f-name);font-weight:800;font-size:26px">B</div><div class="t"><b>Brenna</b><span class="cls">{attack} Vorkämpferin · St. 3</span><div class="exp"><i></i></div></div></div>
+          <div class="stats" data-stats></div>
+          <div class="caps">Ausrüstung</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px 6px;justify-items:center;padding-bottom:10px" data-grid></div>
+          <button class="btn2" type="button" data-show3d style="flex:0 0 auto">In 3D ansehen</button>
+          <div data-card></div>
+        </div>
+      </div>
+      <div class="overlay" data-ov></div><div class="overlay" data-ov3d style="z-index:5"><div class="pill"><span class="nm">Brenna</span><button class="rb" type="button" data-close3d aria-label="schließen">{close}</button></div><div class="stage"><canvas aria-label="Brenna in 3D"></canvas><span class="hint" data-hint>lädt …</span></div><div style="display:flex;gap:6px"><button class="btn2" type="button" data-w="main">Axt ansehen</button><button class="btn2" type="button" data-w="off">Schild ansehen</button></div></div><div class="toast" data-toast></div></div>
+      <div class="pro"><div class="card"><b class="up">Stärken</b>Kaum Umbau: das heutige Blatt bekommt Runenpunkte, Wertnamen und eine Taste zur 3D-Ansicht.</div><div class="card"><b class="dn">Schwächen</b>Säule 2 bleibt zweitrangig: die Figur in 3D sieht nur, wer extra danach fragt.</div></div>
+      <p class="note">Porträt, Werte (jetzt mit Namen), Plätze mit Runenpunkten wie heute. „In 3D ansehen“ öffnet die Figur bildschirmfüllend, von dort geht es in die Waffenansicht.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Gleich in allen Varianten</span>
+  <h2>Waffenansicht und Regeln</h2>
+  <div class="qs">
+    <div class="card"><b>Waffenansicht</b><span class="small">Bildschirmfüllend: die Waffe groß und drehbar mit eingesetzter Rune, darunter Werte als Symbol + Zahl und die Rune als Änderungsliste gegenüber „ohne Rune“. Tasten „Verzaubern“ (öffnet den Verzauberer für diese Waffe) und „Aufwerten“ (Schmied).</span></div>
+    <div class="card"><b>Waffen-Chronik</b><span class="small">In der Waffenansicht steht eine Zeile „7 Feinde · Beiname ab 10“ mit Waffen-Symbol. Die Regel (letzter Schlag zählt, Beiname ab 10) ist beschlossen; Form und Zahl klärt Thema 7.</span></div>
+    <div class="card"><b>Brett-Modell, kein neues</b><span class="small">Die Puppe nutzt das Brettmodell der Figur samt Sockeln für Hand, Rücken und Kopf. Was sie trägt, trägt sie auch auf dem Brett.</span></div>
+    <div class="card"><b>Rüstung und Accessoires</b><span class="small">Haben noch kein eigenes Modell. Bis dahin zeigt die Puppe nur Waffe und Schild; Rüstung bleibt Bild und Platz.</span></div>
+  </div>
+</section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/meshopt_decoder.js"></script>
+<script>
+(function(){
+const EL={fire:{n:'Feuer',c:'#F2603A'},wind:{n:'Wind',c:'#7BD389'},earth:{n:'Erde',c:'#B9874B'},water:{n:'Wasser',c:'#4AA8E8'},light:{n:'Licht',c:'#F7D96B'}};
+/* Linien-Icons im Stil von src/ui/icons.tsx (24er Raster, Strich 1.9, runde Enden). Die ersten Einträge sind aus dem Spiel übernommen, ab „neu“ im selben Stil ergänzt */
+const IP={attack:'M4 20l6-6M7 13l4 4M10 14L20 4v-.5h-.5L9.5 13.5',shield:'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',avoid:'M4 18c5 0 6-11 11-11h5M17 4l3 3-3 3',
+  aim:'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zM12 2v4M12 18v4M2 12h4M18 12h4',star:'M12 3l2.5 5.5L20 9l-4 4 1 6-5-3-5 3 1-6-4-4 5.5-.5z',bag:'M5 8h14l-1 12H6zM9 8V6a3 3 0 0 1 6 0v2',
+  book:'M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1zM12 6v14',plus:'M12 5v14M5 12h14',close:'M6 6l12 12M18 6L6 18',back:'M15 5l-7 7 7 7',forward:'M9 5l7 7-7 7',
+  enchanter:'M12 3l3 6-3 12-3-12zM6 9h12',smith:'M3 10h12l3-3h3v4l-3 1v2H8l-2 3H3z',gold:'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z',
+  fire:'M12 3c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1.5 4 3 4 0-3-1.5-6 0-9z',wind:'M3 9h11a3 3 0 1 0-3-3M3 14h15a3 3 0 1 1-3 3M3 19h7',earth:'M3 19l6-10 4 6 3-4 5 8z',
+  water:'M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11z',
+  /* neu */
+  heart:'M12 20c-4-3-8-6-8-10.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 8 2.5C20 14 16 17 12 20z',boot:'M8 3h5v9l5 2.5a2 2 0 0 1 1.5 2V20H6V9z',weight:'M7 10h10l2 10H5zM9.5 10a2.5 2.5 0 1 1 5 0',
+  range:'M3 12h18M6.5 8.5L3 12l3.5 3.5M17.5 8.5L21 12l-3.5 3.5',crit:'M12 3l1.6 5 4.8-2.4-2.4 4.8L21 12l-5 1.6 2.4 4.8-4.8-2.4L12 21l-1.6-5-4.8 2.4 2.4-4.8L3 12l5-1.6L5.6 5.6l4.8 2.4z',
+  res:'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6zM12 8.5l1.2 2.3 2.5.4-1.8 1.7.4 2.5-2.3-1.2-2.3 1.2.4-2.5-1.8-1.7 2.5-.4z',strength:'M5 14c0-4 3-7 6-7h2l2 3h3l1 4-3 2H9c-2 0-4-1-4-2zM9 7V4'};
+const ic=(n,s=14)=>`<svg class="ic" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IP[n]||IP.star}"/></svg>`;
+const T=s=>String(s).replace(/\{(\w+)\}/g,(m,n)=>ic(n));
+const elI=(e,s=18)=>`<span class="eli" style="background:${EL[e].c};width:${s}px;height:${s}px">${ic(e,s*.7)}</span>`;
+const GEAR={
+  main:{lbl:'Haupthand',img:'steel_axe',n:'Stahlaxt',type:'Axt',rar:'Gewöhnlich',rune:['fire',2],model:'axe',sub:'{attack} 11 · {aim} 60 · {weight} 14',focus:'socket_r',weapon:true,
+    st:[['attack','Macht',11],['aim','Treffer',60],['crit','Krit',0],['range','Reichweite','1'],['weight','Gewicht',14]],
+    rl:[['fire','Element','Feuer'],['wind','Schaden gegen Wind','+2'],['water','Schaden gegen Wasser','−3'],['fire','Schaden gegen Feuer','−3'],['fire','Brennen bei Treffer','30 %']],
+    desc:'Eine Axt aus Stahl. Mehr Schaden als die Eisenaxt, aber schwerer und ungenauer.',skill:{n:'Wucht',d:'+3 Schaden beim eigenen Angriff.',fp:18,of:25},price:1000},
+  off:{lbl:'Nebenhand',img:'iron_shield',n:'Eisenschild',type:'Schild',rar:'Gewöhnlich',rune:['water',1],model:'shield',sub:'{shield} +4 · {weight} 7',focus:'socket_l',weapon:true,
+    st:[['shield','Verteidigung','+4'],['weight','Gewicht',7]],rl:[['water','Widerstand gegen Wasser','Zahl in Thema 7']],
+    desc:'Ein Schild aus Eisen. Guter Schutz; Teil des Sets der Aschenbanner-Wacht.',skill:{n:'Schildwall',d:'+3 VER/RES, wenn nicht bewegt.',fp:20,of:20},set:'Aschenbanner-Wacht · 1 von 2 Teilen',price:700},
+  head:{lbl:'Kopf',img:'leather_cap',n:'Lederkappe',type:'Helm',rar:'Gewöhnlich',sub:'{shield} +1',focus:'socket_head',st:[['shield','Verteidigung','+1'],['weight','Gewicht',1]],desc:'Eine Lederkappe. Etwas Schutz, kaum Gewicht.',price:200},
+  body:{lbl:'Körper',img:'leather_vest',n:'Lederweste',type:'Leichte Rüstung',rar:'Gewöhnlich',sub:'{shield} +2 · 1 Runenplatz frei',focus:'body',st:[['shield','Verteidigung','+2'],['weight','Gewicht',2]],desc:'Eine leichte Lederweste. Wenig Schutz, aber auch kaum Gewicht.',runeFree:true,price:300},
+  acc1:{lbl:'Accessoire',img:'power_ring',n:'Kraftring',type:'Ring',rar:'Selten',sub:'Stärke +2',focus:'body',st:[['strength','Stärke','+2']],desc:'Ein Ring aus dunklem Eisen. Erhöht die Stärke.',price:1500},
+  acc2:{lbl:'Accessoire',empty:true}};
+/* Item-Details wie beim Kauf: Kopf, Beschreibung, Werte mit Namen, Rune, gelehrte Fähigkeit, Set */
+function detailHTML(k){const g=GEAR[k];if(g.empty)return `<div style="display:flex;gap:6px;align-items:center"><span style="flex:1"><b>${g.lbl}</b> <span class="mut">ist leer</span></span><button class="btn" type="button" data-act="swap" style="flex:0 0 auto">Ausrüsten</button></div>`;
+  return `<div class="det"><div style="display:flex;gap:8px;align-items:center"><span class="slot" style="cursor:default"><img src="img/${g.img}.webp" alt=""></span><span style="flex:1;min-width:0"><b style="font-family:var(--f-name);font-size:16px">${g.n}</b><br><span class="mut" style="font-size:12px">${g.type} · ${g.lbl} · <span class="${g.rar==='Selten'?'rare':''}">${g.rar}</span></span></span><span class="chip">${ic('gold')} ${g.price.toLocaleString('de-DE')}</span></div>
+  <div class="mut" style="font-size:12px">${g.desc}</div>
+  <div class="vals">${g.st.map(s=>`<div>${ic(s[0])}<span>${s[1]}</span><b>${s[2]}</b></div>`).join('')}</div>
+  ${g.rune?`<div class="caps">Rune · ${EL[g.rune[0]].n} ${['I','II','III'][g.rune[1]-1]}</div>${g.rl.map(x=>`<div class="drow">${elI(x[0],16)}<span>${x[1]}</span><b class="${/−/.test(x[2])?'dn':/\+|%/.test(x[2])?'up':''}">${x[2]}</b></div>`).join('')}`:g.runeFree?`<div class="caps">Rune · Platz frei (setzt die Affinität)</div>`:''}
+  ${g.skill?`<div class="caps">Fähigkeit</div><div class="skl">${ic('book',16)}<span style="flex:1"><b>${g.skill.n}</b> <span class="mut">${g.skill.d}</span><span class="fp"><i style="width:${Math.min(100,g.skill.fp/g.skill.of*100)}%"></i></span><span class="mut" style="font-size:11px">${g.skill.fp>=g.skill.of?'gemeistert, bleibt auch ohne das Item':`${g.skill.fp} / ${g.skill.of} FP bis gemeistert`}</span></span></div>`:''}
+  ${g.set?`<div class="caps">Set</div><div style="font-size:12.5px">${g.set}</div>`:''}
+  <div style="display:flex;gap:6px"><button class="btn2" type="button" data-act="swap">Wechseln</button>${g.weapon?`<button class="btn" type="button" data-act="view" data-k="${k}">${k==='off'?'Schild':'Waffe'} ansehen</button>`:''}</div></div>`}
+const BAG=[{img:'hand_axe',n:'Handaxt'},{img:'vulnerary',n:'Heiltrank'},{empty:true},{img:'door_key',n:'Schlüssel'}];
+const STATS=[['TP','Trefferpunkte',27],['STÄ','Stärke',8],['MAG','Magie',0],['GES','Geschick',5],['TEM','Tempo',4],['GLÜ','Glück',3],['VER','Verteidigung',6],['RES','Resistenz',1],['BEW','Bewegung',4],['TRAG','Tragkraft',16]];
+const slotHTML=(k,sm)=>{const g=GEAR[k];if(g.empty)return `<button type="button" class="slot empty ${sm?'sm':''}" data-slot="${k}" aria-label="${g.lbl}: leer"><span class="lb">${g.lbl}</span></button>`;
+  return `<button type="button" class="slot ${sm?'sm':''}" data-slot="${k}" aria-label="${g.lbl}: ${g.n}"><img src="img/${g.img}.webp" alt="">${g.rune?`<span class="rn" style="background:${EL[g.rune[0]].c}"></span>`:''}<span class="lb">${g.lbl}</span></button>`};
+const bagHTML=()=>BAG.map(b=>b.empty?`<span class="slot sm empty" style="cursor:default"></span>`:`<span class="slot sm" title="${b.n}"><img src="img/${b.img}.webp" alt="${b.n}"></span>`).join('');
+function cardHTML(k){const g=GEAR[k];if(!k)return '';if(g.empty)return `<div style="display:flex;gap:6px;align-items:center;border-top:1px dashed #d9c9ad;padding-top:6px"><span style="flex:1"><b>${g.lbl}</b> <span class="mut">ist leer</span></span><button class="btn" type="button" data-act="swap" style="flex:0 0 auto">Ausrüsten</button></div>`;
+  return `<div style="display:flex;flex-direction:column;gap:5px;border-top:1px dashed #d9c9ad;padding-top:6px"><div style="display:flex;gap:8px;align-items:center"><span class="slot sm" style="cursor:default"><img src="img/${g.img}.webp" alt=""></span><span style="flex:1;min-width:0"><b>${g.n}</b>${g.rune?` <span class="gem" style="background:${EL[g.rune[0]].c}">${['I','II','III'][g.rune[1]-1]}</span>`:''}<br><span class="mut" style="font-size:12px">${T(g.sub)}</span></span></div><div style="display:flex;gap:6px"><button class="btn2" type="button" data-act="swap">Wechseln</button>${g.weapon?`<button class="btn" type="button" data-act="view" data-k="${k}">${k==='off'?'Schild':'Waffe'} ansehen</button>`:''}</div></div>`}
+function toast(root,t){const e=root.querySelector('[data-toast]');e.textContent=t;e.classList.add('on');clearTimeout(e._h);e._h=setTimeout(()=>e.classList.remove('on'),1600)}
+
+/* statische Platzhalter {name} in den Handys durch Icons ersetzen */
+document.querySelectorAll('.phone').forEach(ph=>{const w=document.createTreeWalker(ph,NodeFilter.SHOW_TEXT);const hits=[];while(w.nextNode())if(/\{\w+\}/.test(w.currentNode.nodeValue))hits.push(w.currentNode);
+  hits.forEach(t=>{const sp=document.createElement('span');sp.innerHTML=T(t.nodeValue.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])));t.replaceWith(...sp.childNodes)})});
+/* ---------- 3D ---------- */
+const loader=new THREE.GLTFLoader();if(window.MeshoptDecoder)loader.setMeshoptDecoder(MeshoptDecoder);const raw={};
+/* Artefakt: base64-Textdateien neben der Seite; im Repo (art/mockups/ausruestung-2026-11/) die .glb aus art/models/ */
+const repoPath=u=>u==='brenna'?'../../models/units/brenna.glb':'../../models/weapons-v2/'+u+'.glb';
+const bytes=u=>raw[u]||(raw[u]=fetch(u+'.glb.txt').then(r=>{if(!r.ok)throw new Error(u);return r.text()}).then(t=>{const s=atob(t.trim()),a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a.buffer}).catch(()=>fetch(repoPath(u)).then(r=>{if(!r.ok)throw new Error(u);return r.arrayBuffer()})));
+const fresh=u=>bytes(u).then(b=>new Promise((res,rej)=>loader.parse(b.slice(0),'',res,rej)));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function channelMat(){return new THREE.ShaderMaterial({uniforms:{col:{value:new THREE.Color()},fill:{value:0},t:{value:0}},
+  vertexShader:'attribute vec2 uv2;varying float f;void main(){f=uv2.x;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-4,fragmentShader:'uniform vec3 col;uniform float fill;uniform float t;varying float f;void main(){float lit=1.0-smoothstep(fill-0.03,fill+0.01,f);float pulse=fill>0.99?0.85+0.15*sin(t*3.0-f*8.0):1.0;vec3 dark=vec3(0.16,0.12,0.11);gl_FragColor=vec4(mix(dark,col*1.3*pulse,lit),1.0);}'})}
+function Stage(canvas,hint){
+  const r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});r.setPixelRatio(Math.min(2,devicePixelRatio||1));r.outputEncoding=THREE.sRGBEncoding;
+  const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(30,1,.05,20);
+  scene.add(new THREE.HemisphereLight(0xfff1dc,0x3a2c22,1.05));const key=new THREE.DirectionalLight(0xffe2c0,1.15);key.position.set(2,4,3);scene.add(key);const rim=new THREE.DirectionalLight(0x9fb6ff,.5);rim.position.set(-3,2,-3);scene.add(rim);
+  const pivot=new THREE.Group();scene.add(pivot);const st={scene,cam,pivot,tick:[],yaw:0,pitch:0,auto:false,target:new THREE.Vector3(),dist:2,want:null,chan:[]};
+  let drag=null;canvas.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];st.auto=false;canvas.setPointerCapture(e.pointerId)});
+  canvas.addEventListener('pointermove',e=>{if(drag){st.yaw+=(e.clientX-drag[0])*.012;st.pitch=Math.max(-1,Math.min(1,st.pitch+(e.clientY-drag[1])*.006));drag=[e.clientX,e.clientY]}});
+  canvas.addEventListener('pointerup',()=>drag=null);
+  const size=()=>{const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};new ResizeObserver(size).observe(canvas);size();
+  let vis=true;new IntersectionObserver(es=>es.forEach(e=>vis=e.isIntersecting)).observe(canvas);let last=performance.now(),t0=0;
+  (function loop(n){const dt=Math.min(.05,(n-last)/1000);last=n;t0+=dt;if(vis&&canvas.clientWidth){if(st.auto&&!reduce)st.yaw+=dt*.4;pivot.rotation.set(st.pitch,st.yaw,0);
+    if(st.want){st.target.lerp(st.want.t,reduce?1:.12);st.dist+=(st.want.d-st.dist)*(reduce?1:.12)}
+    cam.position.set(st.target.x,st.target.y,st.target.z+st.dist);cam.lookAt(st.target);st.tick.forEach(f=>f(dt,t0));st.chan.forEach(m=>m.uniforms.t.value=t0);r.render(scene,cam)}requestAnimationFrame(loop)})(last);
+  return st}
+function styleRuneWeapon(root,el,tier,st){root.traverse(o=>{if(!o.isMesh)return;const n=(o.name+'|'+(o.material&&o.material.name||'')).toLowerCase();
+  if(n.includes('rune_channel')){o.material=channelMat();o.material.uniforms.col.value=new THREE.Color(EL[el].c);o.material.uniforms.fill.value=[0,.34,.67,1.01][tier];st.chan.push(o.material)}
+  else if(n.includes('rune_stone')){o.material=new THREE.MeshStandardMaterial({color:new THREE.Color(EL[el].c),emissive:new THREE.Color(EL[el].c),emissiveIntensity:.6,roughness:.35,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-8})}})}
+/* leichte Kampfhaltung fürs Mockup: Zusatzdrehung je Knochen in Grad, Achsen der Figur (X nach ihrer Linken, Y hoch, Z nach vorn), nach der Stand-Animation angewandt */
+const POSE={'mixamorig:Hips':[0,-14,0],'mixamorig:LeftUpLeg':[0,0,12],'mixamorig:RightUpLeg':[0,0,-12],'mixamorig:LeftFoot':[0,0,-8],'mixamorig:RightFoot':[0,0,8],
+  'mixamorig:Spine':[6,6,0],'mixamorig:Head':[0,8,0],'mixamorig:LeftArm':[-10,0,26],'mixamorig:RightArm':[-14,0,-16],'mixamorig:RightForeArm':[-30,0,0],'mixamorig:LeftForeArm':[-20,0,0]};
+async function figure(canvas,hint,opt={}){
+  const st=Stage(canvas,hint);const g=await fresh('brenna');const root=g.scene;st.pivot.add(root);
+  const mixer=new THREE.AnimationMixer(root);const clip=g.animations.find(a=>a.name==='idle');
+  if(clip){/* Hände ruhig halten: die Stand-Animation dreht das Handgelenk und damit den Schild alle paar Sekunden */const calm=clip.clone();calm.tracks=calm.tracks.filter(t=>!/(Left|Right)Hand/.test(t.name));const idle=mixer.clipAction(calm);idle.play();const rest=mixer.clipAction(new THREE.AnimationClip('rest',-1,clip.tracks.map(tr=>{const n=tr.getValueSize();return new tr.constructor(tr.name,[0],Array.from(tr.values.slice(0,n)))})));rest.play();idle.setEffectiveWeight(.35);rest.setEffectiveWeight(.65);idle.setEffectiveTimeScale(.8)}
+  const bones=[];if(opt.pose){const P=window.__POSE||POSE;const PN={};Object.keys(P).forEach(k=>PN[k.replace(/[^A-Za-z]/g,'')]=P[k]);/* GLTFLoader entfernt den Doppelpunkt aus Knochennamen */
+    root.traverse(o=>{const v=PN[(o.name||'').replace(/[^A-Za-z]/g,'')];if(o.isBone&&v){const [x,y,z]=v.map(THREE.MathUtils.degToRad);bones.push([o,new THREE.Quaternion().setFromEuler(new THREE.Euler(x,y,z))])}})}
+  const RQ=new THREE.Quaternion(),PQ=new THREE.Quaternion(),T=new THREE.Quaternion();
+  st.tick.push(dt=>{mixer.update(dt);if(!bones.length)return;root.getWorldQuaternion(RQ);
+    bones.forEach(([b,q])=>{b.parent.getWorldQuaternion(PQ);/* Figur-Rahmen → Welt → Elternrahmen des Knochens */
+      T.copy(RQ).multiply(q).multiply(RQ.clone().invert());T.premultiply(PQ.clone().invert()).multiply(PQ);b.quaternion.premultiply(T);b.updateMatrixWorld(true)})});
+  const sock={};root.traverse(o=>{const m=(o.name||'').match(/socket_(r|l|head|back)/);if(m&&!sock['socket_'+m[1]])sock['socket_'+m[1]]=o});
+  const [axe,shield]=await Promise.all([fresh('axe'),fresh('shield')]);
+  /* wie im Spiel: Waffen v2 sind im Sockel-Rahmen gebaut (tools/art/blender_weapons_v2.py) und hängen ohne Zusatzdrehung */
+  if(sock.socket_r){const w=axe.scene;styleRuneWeapon(w,'fire',2,st);sock.socket_r.add(w)}
+  if(sock.socket_l){const s=shield.scene;styleRuneWeapon(s,'water',1,st);s.position.x+=0.045;/* Schildplatte vom Unterarm weg, damit sie nicht in den Oberarm greift */sock.socket_l.add(s)}
+  st.yaw=-.45;
+  st.pivot.rotation.set(0,st.yaw,0);st.tick.forEach(f=>f(0,0));/* Pose und Drehung vor dem Bildausschnitt anwenden */
+  root.updateMatrixWorld(true);const box=new THREE.Box3().setFromObject(st.pivot),c=box.getCenter(new THREE.Vector3()),sz=box.getSize(new THREE.Vector3());
+  const fit=Math.max(sz.y,sz.x/st.cam.aspect)*1.12/2/Math.tan(THREE.MathUtils.degToRad(15));
+  let home={t:c.clone(),d:fit};
+  if(opt.full){/* Figur im Bereich zwischen Kopfpille und hellem unteren Viertel (ca. 12 % bis 75 % der Höhe) */
+    const tan=Math.tan(THREE.MathUtils.degToRad(15));const d=Math.max(sz.y*1.08/0.62,sz.x*1.1/st.cam.aspect)/2/tan;const vh=2*d*tan;
+    home={t:new THREE.Vector3(c.x,c.y-0.065*vh,c.z),d}}
+  st.target.copy(home.t);st.dist=home.d;st.want=home;hint.textContent='ziehen dreht';
+  st.focus=k=>{if(!k){st.want=home;return}const o=sock[GEAR[k].focus];if(!o){st.want={t:c.clone().add(new THREE.Vector3(0,sz.y*.05,0)),d:fit*.6};return}
+    st.yaw=k==='off'?.6:k==='main'?-.6:0;st.pitch=0;st.pivot.rotation.set(0,st.yaw,0);st.scene.updateMatrixWorld(true);
+    const p=new THREE.Vector3();o.getWorldPosition(p);st.want={t:p.lerp(c,.35),d:fit*.75};};
+  return st}
+async function weaponView(canvas,hint,k){
+  const st=Stage(canvas,hint);st.auto=true;const g=await fresh(GEAR[k].model);const inner=g.scene;const gr=GEAR[k];styleRuneWeapon(inner,gr.rune[0],gr.rune[1],st);
+  const box=new THREE.Box3().setFromObject(inner),sz=box.getSize(new THREE.Vector3());inner.position.sub(box.getCenter(new THREE.Vector3()));st.pivot.add(inner);
+  const d=Math.max(sz.x,sz.y,sz.z)*1.15/2/Math.tan(THREE.MathUtils.degToRad(15));st.dist=d;st.want={t:new THREE.Vector3(),d};
+  const l=new THREE.PointLight(new THREE.Color(EL[gr.rune[0]].c),1.2,d*2);l.position.set(0,0,d*.3);st.scene.add(l);hint.textContent='ziehen dreht';return st}
+function openWeapon(root,k){
+  const ov=root.querySelector('[data-ov]');const g=GEAR[k];
+  ov.innerHTML=`<div class="pill"><span class="nm">${g.n}</span><span class="chip">${g.rar}</span><button class="rb" type="button" data-closeov aria-label="schließen">${ic('close')}</button></div>
+  <div class="stage"><canvas aria-label="${g.n} in 3D"></canvas><span class="hint">lädt …</span><span style="position:absolute;right:8px;bottom:6px;color:#f3e6d2;background:rgba(0,0,0,.45);border-radius:99px;padding:1px 8px;font-size:11px;font-family:var(--f-label)">${k==='main'?T('{attack} 7 Feinde · Beiname ab 10'):T('{shield} 12 Treffer abgewehrt')}</span></div>
+  <div class="panel" style="gap:5px"><div style="display:flex;gap:4px;flex-wrap:wrap">${g.st.map(s=>`<span class="chip" title="${s[1]}">${ic(s[0])} ${s[2]}</span>`).join('')}</div>
+  <div class="caps">Rune: ${EL[g.rune[0]].n} ${['I','II','III'][g.rune[1]-1]} · bewirkt</div>${g.rl.map(x=>`<div class="drow">${elI(x[0],16)}<span>${x[1]}</span><b class="${/−/.test(x[2])?'dn':/\+|%/.test(x[2])?'up':''}">${x[2]}</b></div>`).join('')}
+  <div style="display:flex;gap:6px;margin-top:4px"><button class="btn2" type="button" data-act="ench">Verzaubern</button><button class="btn" type="button" data-act="smith">Aufwerten</button></div></div>`;
+  ov.classList.add('on');weaponView(ov.querySelector('canvas'),ov.querySelector('.hint'),k).catch(e=>{ov.querySelector('.hint').textContent='Modell lädt nicht';console.error(e)})}
+function common(root,onSlot){root.addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;
+  if(b.dataset.nav){toast(root,'Wischen wechselt die Figur (im Mockup nur Brenna)');return}
+  if(b.dataset.closeov!==undefined){const ov=root.querySelector('[data-ov]');ov.classList.remove('on');setTimeout(()=>ov.innerHTML='',320);return}
+  if(b.dataset.act==='view'){openWeapon(root,b.dataset.k);return}
+  if(b.dataset.act==='swap'){toast(root,'öffnet die Ausrüsten-Liste mit Änderungsliste');return}
+  if(b.dataset.act==='ench'){toast(root,'öffnet den Verzauberer für diese Waffe');return}
+  if(b.dataset.act==='smith'){toast(root,'öffnet den Schmied für diese Waffe');return}
+  if(b.dataset.allstats!==undefined){toast(root,'klappt alle zehn Werte mit Namen auf');return}
+  if(b.dataset.slot){onSlot(b.dataset.slot)}})}
+
+/* A */
+(function(){const root=document.getElementById('pA');let sel=null,fig=null,big=false,bagSel=null;
+  const bag=BAG.slice(0,3).map(b=>b.empty?null:{...b});const CONVOY=[{img:'vulnerary',n:'Heiltrank',d:'{heart} +10 · 3 Ladungen'},{img:'hand_axe',n:'Handaxt',d:'{attack} 7 · {range} 1–2'}];
+  const PERF=[['heart','TP','27'],['attack','Angriff','19'],['aim','Treffer','70'],['crit','Krit','2'],['avoid','Ausweichen','11'],['shield','Verteid.','12'],['boot','Bewegung','4'],['range','Reichweite','1']];
+  const bagBtns=()=>bag.map((b,i)=>`<button type="button" class="slot sm ${b?'':'empty'} ${bagSel===i?'sel':''}" data-bagi="${i}" aria-label="Beutel ${i+1}: ${b?b.n:'leer'}">${b?`<img src="img/${b.img}.webp" alt="">`:`<span style="color:#b8a88c">${ic('plus',18)}</span>`}</button>`).join('')+`<span class="slot sm" title="Schlüssel" style="cursor:default"><img src="img/door_key.webp" alt="Schlüssel"></span>`;
+  function bagCard(i){const b=bag[i];if(b)return `<div style="display:flex;gap:8px;align-items:center"><span class="slot sm" style="cursor:default"><img src="img/${b.img}.webp" alt=""></span><span style="flex:1"><b>${b.n}</b><br><span class="mut" style="font-size:12px">${T(b.d||'{heart} +10 · 3 Ladungen')}</span></span><button class="btn2" type="button" data-bagout="${i}" style="flex:0 0 auto">In den Konvoi</button></div>`;
+    return `<div class="caps">Beutel ${i+1} füllen · aus dem Konvoi</div>`+CONVOY.map((c,j)=>`<button type="button" class="irow" data-bagin="${j}"><span class="slot sm" style="cursor:inherit"><img src="img/${c.img}.webp" alt=""></span><span class="tx"><b>${c.n}</b><span class="mut" style="font-size:11.5px">${T(c.d)}</span></span><span class="chip">${ic('plus')}</span></button>`).join('')}
+  const draw=()=>{root.querySelector('[data-left]').innerHTML=['main','head','body'].map(k=>slotHTML(k)).join('');root.querySelector('[data-right]').innerHTML=['off','acc1','acc2'].map(k=>slotHTML(k)).join('');
+    root.querySelectorAll('[data-slot]').forEach(s=>s.classList.toggle('sel',s.dataset.slot===sel));
+    const sh=root.querySelector('[data-sheet]');const focus=sel||bagSel!==null;sh.classList.toggle('big',big||bagSel!==null&&!bag[bagSel]);
+    root.querySelector('[data-perf]').innerHTML=PERF.map(p=>`<div title="${p[1]}"><b>${ic(p[0],15)} ${p[2]}</b><small>${p[1]}</small></div>`).join('');
+    root.querySelector('[data-bag]').innerHTML=bagBtns();
+    root.querySelector('[data-perf]').hidden=!!sel;sh.children[2].hidden=!!sel;
+    const top=[...STATS].sort((a,b)=>b[2]/(a[0]==='TP'?3:1)-a[2]/(b[0]==='TP'?3:1));
+    root.querySelector('[data-more]').innerHTML=big&&!focus?`<div class="caps">Grundwerte</div><div class="base">${STATS.map(s=>`<div class="${['STÄ','VER','TRAG'].includes(s[0])?'hi':''}"><small>${s[1]}</small><b>${s[2]}</b></div>`).join('')}</div>
+      <div class="caps">Können</div><div style="display:flex;gap:4px;flex-wrap:wrap"><span class="chip">${ic('star')} Veteranenmut</span><span class="chip">${ic('shield')} Schildwall</span><span class="chip">${ic('attack')} Wucht 18/25</span></div>
+      <div class="caps">Element</div><div style="display:flex;gap:4px;flex-wrap:wrap"><span class="chip"><span class="gem" style="background:#F2603A;width:14px;height:14px"></span> Axt: Feuer II</span><span class="chip"><span class="gem" style="background:#4AA8E8;width:14px;height:14px"></span> Schild: Wasser I</span><span class="chip">Affinität: keine</span></div>`:'';
+    sh.classList.toggle('det-on',!!sel);root.querySelector('[data-card]').innerHTML=sel?detailHTML(sel):bagSel!==null?bagCard(bagSel):''};
+  root.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.grow!==undefined){big=!big;sel=null;bagSel=null}
+    else if(b.dataset.bagi!==undefined){const i=+b.dataset.bagi;bagSel=bagSel===i?null:i;sel=null}
+    else if(b.dataset.bagin!==undefined){bag[bagSel]={...CONVOY[+b.dataset.bagin]};toast(root,`${CONVOY[+b.dataset.bagin].n} in den Beutel`);bagSel=null}
+    else if(b.dataset.bagout!==undefined){toast(root,`${bag[+b.dataset.bagout].n} zurück im Konvoi`);bag[+b.dataset.bagout]=null;bagSel=null}
+    else return;draw()});
+  common(root,k=>{sel=sel===k?null:k;bagSel=null;draw()});draw();
+  figure(root.querySelector('canvas'),root.querySelector('[data-hint]'),{pose:true,full:true}).then(f=>fig=f).catch(e=>{root.querySelector('[data-hint]').textContent='Modell lädt nicht';console.error(e)})})();
+/* B */
+(function(){const root=document.getElementById('pB');let sel=null,fig=null,tab='gear';
+  const draw=()=>{root.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));const body=root.querySelector('[data-body]');
+    if(tab==='gear')body.innerHTML=Object.keys(GEAR).map(k=>{const g=GEAR[k];return `<button type="button" class="irow" data-slot="${k}" aria-pressed="${sel===k}"><span class="slot sm ${g.empty?'empty':''}" style="cursor:inherit">${g.empty?'':`<img src="img/${g.img}.webp" alt="">`}${g.rune?`<span class="rn" style="background:${EL[g.rune[0]].c}"></span>`:''}</span><span class="tx"><b>${g.empty?'<span class="mut">leer</span>':g.n}</b><span class="mut" style="font-size:11.5px">${g.lbl}${g.sub?' · '+T(g.sub):''}</span></span></button>`}).join('')+`<div style="display:flex;gap:6px;align-items:center;padding:4px"><span class="caps">Beutel</span>${bagHTML()}</div>`;
+    else if(tab==='stats')body.innerHTML=STATS.map(s=>`<div class="drow"><span class="mut" style="font-family:var(--f-label);font-weight:700;font-size:11px">${s[0]}</span><span>${s[1]}</span><b>${s[2]}</b></div>`).join('');
+    else body.innerHTML=`<div class="drow">${ic('star')}<span>Veteranenmut</span><b class="up">gemeistert</b></div><div class="drow">${ic('shield')}<span>Schildwall (vom Eisenschild)</span><b class="up">gemeistert</b></div><div class="drow">${ic('attack')}<span>Wucht (von der Stahlaxt)</span><b>18 / 25 FP</b></div>`;
+    root.querySelector('[data-card]').innerHTML=tab==='gear'?cardHTML(sel):''};
+  common(root,k=>{sel=sel===k?null:k;draw();fig&&fig.focus(sel)});
+  root.querySelector('[data-tabs]').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=b.dataset.tab;sel=null;fig&&fig.focus(null);draw()});draw();
+  figure(root.querySelector('canvas'),root.querySelector('[data-hint]')).then(f=>fig=f).catch(e=>{root.querySelector('[data-hint]').textContent='Modell lädt nicht';console.error(e)})})();
+/* C */
+(function(){const root=document.getElementById('pC');let sel=null,fig=null;
+  root.querySelector('[data-stats]').innerHTML=STATS.map(s=>`<div title="${s[1]}"><small>${s[1]}</small><b>${s[2]}</b></div>`).join('');
+  const draw=()=>{root.querySelector('[data-grid]').innerHTML=Object.keys(GEAR).map(k=>slotHTML(k)).join('').replace(/color:#f3e6d2/g,'');root.querySelectorAll('[data-grid] .lb').forEach(l=>l.style.color='var(--g-soft)');
+    root.querySelectorAll('[data-slot]').forEach(s=>s.classList.toggle('sel',s.dataset.slot===sel));root.querySelector('[data-card]').innerHTML=cardHTML(sel)};
+  common(root,k=>{sel=sel===k?null:k;draw()});draw();
+  root.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const ov=root.querySelector('[data-ov3d]');
+    if(b.dataset.show3d!==undefined){ov.classList.add('on');if(!fig)figure(ov.querySelector('canvas'),ov.querySelector('[data-hint]')).then(f=>fig=f).catch(console.error)}
+    if(b.dataset.close3d!==undefined)ov.classList.remove('on');
+    if(b.dataset.w)openWeapon(root,b.dataset.w)})})();
+})();
+</script>

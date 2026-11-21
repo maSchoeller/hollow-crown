@@ -1,0 +1,647 @@
+<title>Verzauberer Varianten</title>
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Layout: ein Lesestrang (max 1100px); oben Ist-Zustand und Elementrad, dann drei Handy-Rahmen nebeneinander (auf dem Handy untereinander), darunter offene Fragen */
+:root{
+  --bg:#F6EEDF; --panel:#FFF8EC; --tone:#F4E9D6; --line:#3B2A20; --soft:#7A6553; --ember:#E8743B; --ember-d:#B44C18;
+  --pos:#2F8A4C; --neg:#B83A2E; --rule:#E3D5BE;
+  --fire:#F2603A; --wind:#7BD389; --earth:#B9874B; --water:#4AA8E8; --light:#F7D96B; --dark:#8E5BD9; --util:#E2DCCF;
+  --f-name:'Fraunces',Georgia,serif; --f-body:'Barlow',system-ui,sans-serif; --f-label:'Barlow Condensed','Arial Narrow',sans-serif;
+  --g-cream:#FFF8EC; --g-tone:#F4E9D6; --g-line:#3B2A20; --g-soft:#7A6553; --g-pos:#2F8A4C; --g-neg:#B83A2E;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1F1813;--panel:#2A211A;--tone:#352a21;--line:#F3E6D2;--soft:#C2AE98;--rule:#4a3b2e;--pos:#5cc27e;--neg:#e2766b;--ember-d:#F08a55;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1F1813;--panel:#2A211A;--tone:#352a21;--line:#F3E6D2;--soft:#C2AE98;--rule:#4a3b2e;--pos:#5cc27e;--neg:#e2766b;--ember-d:#F08a55;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--line);font-family:var(--f-body);font-size:16px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:26px 64px}
+.wrap{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:48px}
+h1,h2,h3{font-family:var(--f-name);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,4.6vw,42px);font-weight:800} h2{font-size:clamp(22px,3vw,29px);font-weight:800} h3{font-size:19px;font-weight:600}
+p{margin:0;max-width:68ch}
+.kicker{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.09em;font-size:13px;color:var(--ember-d);font-weight:700}
+.lead{font-size:18px;color:var(--soft)}
+.small{font-size:14px;color:var(--soft)}
+section{display:flex;flex-direction:column;gap:16px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.ist{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:700px){.ist{grid-template-columns:1fr}}
+.ist img{width:100%;border-radius:16px;border:2px solid var(--line);display:block}
+.wheelbox{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:22px;align-items:center}
+@media (max-width:640px){.wheelbox{grid-template-columns:1fr}}
+.wheelbox svg{width:100%;max-width:300px;height:auto;display:block;margin:0 auto}
+.wheelbox svg .node{cursor:pointer}
+.wheelbox svg .node:focus-visible circle{stroke:var(--ember);stroke-width:4}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font-family:var(--f-label);font-weight:700;font-size:14px;border:2px solid var(--line);background:var(--panel);color:var(--line);border-radius:99px;padding:5px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--line);color:var(--bg)}
+button:focus-visible{outline:3px solid var(--ember);outline-offset:2px}
+.facts{display:flex;flex-direction:column;gap:6px;font-size:15px}
+.facts .r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* Handy-Rahmen im Spiel-Look (Farben bleiben in beiden Themen gleich) */
+.mocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:30px;align-items:start}
+.mock{display:flex;flex-direction:column;gap:10px;min-width:0}
+.mock h3{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.tag{display:inline-block;font-family:var(--f-label);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:1px 8px;border-radius:99px;border:1.5px solid currentColor;color:var(--ember-d)}
+.phone{width:100%;max-width:340px;height:760px;border-radius:34px;border:6px solid #1c1410;background:radial-gradient(120% 80% at 50% 15%,#8b6f52,#3e2f24);position:relative;overflow:hidden;margin:0 auto;color:var(--g-line);font-family:var(--f-body);font-size:13px;line-height:1.3}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column;gap:7px;padding:12px 10px 12px}
+.pill{background:var(--g-cream);border:2px solid var(--g-line);border-radius:99px;box-shadow:0 3px 0 var(--g-line);padding:4px 6px 4px 12px;display:flex;align-items:center;gap:8px}
+.pill .nm{font-family:var(--f-name);font-weight:800;font-size:16px}
+.panel{background:var(--g-cream);border:2px solid var(--g-line);border-radius:16px;box-shadow:0 4px 0 var(--g-line);padding:8px;display:flex;flex-direction:column;gap:6px;min-height:0}
+.caps{font-family:var(--f-label);font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:11px;color:var(--g-soft)}
+.btn{background:var(--ember);color:#fff;border:2px solid var(--g-line);border-radius:99px;box-shadow:0 3px 0 var(--ember-d);font-family:var(--f-label);font-weight:700;font-size:15px;padding:8px 12px;text-align:center;cursor:pointer;width:100%}
+.btn[disabled]{background:#cdbfa8;box-shadow:0 3px 0 #9b8b72;cursor:default}
+.btn2{background:var(--g-cream);color:var(--g-line);border:2px solid var(--g-line);border-radius:99px;box-shadow:0 3px 0 var(--g-line);font-family:var(--f-label);font-weight:700;font-size:13px;padding:5px 10px;text-align:center;cursor:pointer}
+.chip{display:inline-flex;align-items:center;gap:3px;background:var(--g-tone);border-radius:99px;padding:2px 7px;font-family:var(--f-label);font-weight:700;font-size:12.5px;color:var(--g-line);font-variant-numeric:tabular-nums;white-space:nowrap}
+.up{color:var(--g-pos)} .dn{color:var(--g-neg)} .mut{color:var(--g-soft)}
+.people{display:flex;gap:8px;align-items:flex-end}
+.med{display:flex;flex-direction:column;align-items:center;gap:1px;background:none;border:0;padding:0;cursor:pointer;font:inherit;color:var(--g-line);font-size:10.5px}
+.med .face{width:38px;height:38px;border-radius:50%;border:2px solid var(--g-line);display:grid;place-items:center;font-family:var(--f-name);font-weight:800;font-size:16px}
+.med[aria-pressed="true"] .face{outline:3px solid var(--ember);outline-offset:1px}
+.items{display:flex;gap:6px;flex-wrap:wrap}
+.ichip{display:flex;align-items:center;gap:5px;border:2px solid var(--g-line);background:var(--g-tone);border-radius:12px;padding:3px 7px;cursor:pointer;font:inherit;color:var(--g-line);font-size:12px;font-weight:600}
+.ichip[aria-pressed="true"]{background:#fff;outline:3px solid var(--ember);outline-offset:1px}
+.dots{display:inline-flex;gap:2px}
+.dots i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--g-line);display:inline-block}
+.dots i.small{width:7px;height:7px}
+.stage{position:relative;border-radius:14px;overflow:hidden;background:radial-gradient(90% 70% at 50% 55%,#5a4a3c,#1d1611);border:2px solid var(--g-line);flex:0 0 165px}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage .hint{position:absolute;left:8px;bottom:6px;color:#f3e6d2;background:rgba(0,0,0,.45);border-radius:99px;padding:1px 8px;font-size:11px;font-family:var(--f-label);letter-spacing:.04em}
+.stage .over{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:6px}
+.stage .probe{position:absolute;left:8px;top:8px;color:#fff;background:var(--ember);border:2px solid var(--g-line);border-radius:99px;padding:0 8px;font-family:var(--f-label);font-weight:700;font-size:12px}
+.flat{position:absolute;inset:0;display:grid;place-items:center;color:#f3e6d2;font-size:13px;text-align:center;padding:16px}
+.gem{width:28px;height:28px;border-radius:50%;border:2px solid var(--g-line);display:grid;place-items:center;flex:0 0 auto;position:relative;background:var(--util);cursor:pointer;padding:0;font:inherit}
+.gem svg{width:62%;height:62%}
+.gem .tl{position:absolute;right:-6px;bottom:-6px;background:var(--g-cream);border:1.5px solid var(--g-line);border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:9.5px;line-height:1;padding:1px 3px;color:var(--g-line)}
+.gem .ct{position:absolute;left:-6px;top:-6px;background:var(--g-line);color:var(--g-cream);border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:10px;line-height:1;padding:2px 4px}
+.gem.empty{background:repeating-linear-gradient(45deg,#efe3cf 0 4px,#e2d2b6 4px 8px);border-style:dashed}
+.gem.big{width:38px;height:38px}
+.gem.sel{outline:3px solid var(--ember);outline-offset:2px}
+.gem.off{opacity:.35;cursor:default}
+.gem.glow{box-shadow:0 0 10px 2px var(--c)}
+.tray{display:grid;grid-template-columns:repeat(6,1fr);gap:9px 4px;justify-items:center;padding:4px 2px}
+.tray .cell{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--g-soft);text-align:center;line-height:1.1}
+.cmp{display:grid;grid-template-columns:minmax(0,1fr) 14px minmax(0,1fr);gap:4px;align-items:stretch}
+.cmp .side{background:var(--g-tone);border-radius:10px;padding:5px 6px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.cmp .side.new{background:#fff;border:1.5px solid var(--ember)}
+.cmp .arr{display:grid;place-items:center;font-weight:700;color:var(--g-soft)}
+.mrow{display:flex;gap:3px;flex-wrap:wrap}
+.vs{display:inline-flex;align-items:center;gap:2px;font-family:var(--f-label);font-weight:700;font-size:12.5px;font-variant-numeric:tabular-nums;background:var(--g-tone);border-radius:7px;padding:1px 4px}
+.side.new .vs{background:#f6efe2}
+.vs .e{width:14px;height:14px;border-radius:50%;border:1.2px solid var(--g-line);display:grid;place-items:center}
+.vs .e svg{width:70%;height:70%}
+.line{font-size:12px;display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.segm{display:flex;background:var(--g-tone);border-radius:99px;padding:2px;gap:2px}
+.segm button{flex:1;border:0;background:none;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:13px;padding:4px 6px;color:var(--g-line);cursor:pointer}
+.segm button[aria-pressed="true"]{background:var(--g-line);color:var(--g-cream)}
+.toast{position:absolute;left:50%;top:52px;transform:translateX(-50%);background:var(--g-line);color:var(--g-cream);border-radius:99px;padding:4px 12px;font-family:var(--f-label);font-weight:700;font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap;z-index:5}
+.toast.on{opacity:1}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--g-cream);border-top:2px solid var(--g-line);border-radius:18px 18px 0 0;padding:10px;display:flex;flex-direction:column;gap:6px;transform:translateY(105%);transition:transform .28s ease;max-height:72%;z-index:4}
+.sheet.on{transform:none}
+.sheet .list{overflow:auto;display:flex;flex-direction:column;gap:4px;min-height:0}
+.rrow{display:flex;gap:8px;align-items:center;border:1.5px solid transparent;border-radius:10px;padding:4px;cursor:pointer;background:none;font:inherit;color:var(--g-line);text-align:left;width:100%}
+.rrow[aria-pressed="true"]{border-color:var(--ember);background:#fff}
+.rrow[disabled]{opacity:.45;cursor:default}
+.rrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.irow{display:flex;gap:8px;align-items:center;padding:5px 4px;border-bottom:1px solid #eadcc4}
+.irow .ic{width:34px;height:34px;border-radius:9px;border:2px solid var(--g-line);background:var(--g-tone);display:grid;place-items:center;font-size:17px}
+.mergebox{display:grid;grid-template-columns:repeat(3,auto) auto auto;gap:6px;align-items:center;justify-content:center}
+.scrollable{overflow:auto;min-height:0}
+@keyframes pop{0%{transform:scale(.2);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:scale(1)}}
+@keyframes fuse{to{transform:translate(var(--dx),var(--dy)) scale(.3);opacity:0}}
+.mock .note{font-size:14.5px;color:var(--soft)}
+.drow{display:grid;grid-template-columns:20px minmax(0,1fr) auto 52px;gap:6px;align-items:center;font-size:12.5px;padding:2px 0;border-bottom:1px dashed #eadcc4}
+.drow:last-child{border-bottom:0}
+.drow .ico{display:grid;place-items:center;font-size:13px}
+.drow b{font-family:var(--f-label);font-size:14px;font-variant-numeric:tabular-nums}
+.drow .dl{font-family:var(--f-label);font-weight:700;font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.split .col{border-radius:10px;padding:5px;display:flex;flex-direction:column;gap:4px}
+.split .g{background:#e6f3e8} .split .b{background:#f8e3df}
+.cmpseg{max-width:340px;margin:0 auto;width:100%}
+.cmpseg .seg{justify-content:center}
+.pro{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.pro{grid-template-columns:1fr}}
+.pro .card{padding:10px 12px;gap:4px;font-size:14px}
+.pro b{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.06em;font-size:12px}
+.qs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.qs .card b{font-family:var(--f-name);font-weight:600;font-size:16px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="wrap">
+
+<header style="display:flex;flex-direction:column;gap:10px">
+  <span class="kicker">Ausrüstung zum Anfassen · Thema 2 von 8 · zur Abnahme</span>
+  <h1>Verzauberer</h1>
+  <p class="lead">Runen einsetzen, ausbauen und verschmelzen, ohne Rätselraten. Drei Varianten zum Anklicken, alle mit denselben Regeln und Beispieldaten. Variante A nutzt die neuen Blender-Modelle aus Thema 1.</p>
+  <div class="card" style="border-color:var(--pos)"><b style="font-family:var(--f-label);text-transform:uppercase;letter-spacing:.06em;font-size:13px;color:var(--pos)">Abgenommen am 21.11.2026</b><span>Variante A (Werkbank in 3D) mit Vergleich 1 (Änderungsliste: nur was sich ändert). Einsetzen als Probe + Haupttaste, Tauschen in einem Schritt. Platzregel wie heute. Verschmolzen wird nur aus dem Konvoi.</span></div>
+</header>
+
+<section>
+  <span class="kicker">Ist-Zustand · Dev-Build heute, Akt 2</span>
+  <h2>Wo es heute hakt</h2>
+  <div class="ist">
+    <div style="display:flex;gap:10px"><img src="ist-liste.jpg" alt="Verzauberer heute: lange Liste aller Gegenstände der Truppe" style="width:50%"><img src="ist-auswahl.jpg" alt="Nach Antippen: sieben gleich aussehende Runen-Knöpfe, darunter Verschmelzen-Liste" style="width:50%"></div>
+    <div class="card">
+      <ul>
+        <li><b>Eine Liste aller Gegenstände</b> der ganzen Truppe, ohne Person vorab. Wer Brennas Axt sucht, scrollt.</li>
+        <li><b>Welche Rune wo sitzt, sieht man nicht.</b> Die Zeile zeigt kein Zeichen für belegte oder freie Runenplätze.</li>
+        <li><b>Einsetzen ist ein blinder Klick:</b> Item antippen, dann erscheinen Runen als Textknöpfe, drei Feuerrunen I als drei gleiche Knöpfe. Ein Tipp setzt sofort ein, ohne Vorschau. Tauschen geht nur über Ausbauen und neu Einsetzen.</li>
+        <li><b>Verschmelzen wirkt verfügbar, wo es nicht geht:</b> „Verschmelzen · 3 ×“ steht auch bei einer einzelnen Wasserrune II, nur blasser.</li>
+        <li><b>Die Wirkung steckt hinter (i).</b> Dass Feuer I nur ein Element gibt, Feuer II 30 % Brennen und Feuer III Gras entzündet, steht nirgends im Raum.</li>
+        <li><b>Das Elementrad fehlt ganz.</b> Dass Feuer gegen Wind ×1,2 macht und gegen Wasser und Feuer ×0,8, erfährt man nur im Handbuch.</li>
+        <li><b>Verschmelzen und Kaufen</b> stehen unten als weitere Listen. Zusammen sind es drei Listen in einem Panel.</li>
+      </ul>
+      <p class="small">Regelgrundlage: <code>runes.yaml</code>, <code>balance.yaml</code> (<code>element</code>, <code>status</code>, <code>runeMerge</code>), <code>items.ts</code> (<code>weaponProfile</code>), <code>combat.ts</code> (<code>elementMultiplier</code>).</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Baustein für alle Varianten</span>
+  <h2>Das Elementrad</h2>
+  <div class="wheelbox">
+    <svg id="wheel" viewBox="0 0 300 300" role="group" aria-label="Elementrad: Element antippen"></svg>
+    <div class="facts" id="wheelfacts" aria-live="polite"></div>
+  </div>
+  <p class="small">Die Faktoren kommen aus <code>balance.yaml</code>: Vorteil ×1,2, Nachteil ×0,8, gleiches Element ×0,8, höchstens +40 % gegenüber dem Grundschaden. Das Ziel bringt sein Element über die Rune in der Körperrüstung mit (Affinität). Dunkel bekommt zusätzlich ×1,2 gegen „heilige“ Gegner, Licht III trifft Monster und Untote effektiv.</p>
+</section>
+
+<section>
+  <span class="kicker">Drei Varianten · anklicken, einsetzen, ausbauen, verschmelzen</span>
+  <h2>So könnte der Raum aussehen</h2>
+  <p>In allen dreien öffnet der Verzauberer für eine Person: oben Brenna, Lucan oder Tobin, darunter ihre Ausrüstung mit Runenplätzen als Punkten. Brennas Stahlaxt ist hier „selten“ und hat darum zwei Plätze: die große Fassung mit Rinne und eine kleine daneben (Art Direction §4.7). Die Zahlen sind ein Beispiel: Grundschaden gegen einen Gegner mit 🛡 6.</p>
+  <div class="mocks">
+
+    <div class="mock">
+      <h3>A · Werkbank in 3D <span class="tag">gewählt</span></h3>
+      <div class="cmpseg"><div class="caps" style="color:var(--soft);text-align:center;margin-bottom:4px">Vergleich zur Wahl · Rune antippen, dann umschalten</div><div class="seg" id="cmpseg"><button type="button" aria-pressed="true" data-c="list">1 Änderungsliste</button><button type="button" aria-pressed="false" data-c="split">2 Besser/Schlechter</button><button type="button" aria-pressed="false" data-c="wheel">3 Mini-Rad</button></div></div>
+      <div class="phone" id="pA"><div class="scr">
+        <div class="pill"><span class="nm">Verzauberer</span><span class="chip" style="margin-left:auto" data-gold>🪙 12.000</span></div>
+        <div class="panel" style="gap:6px"><div class="people" data-people></div><div class="items" data-items></div></div>
+        <div class="stage" data-stage><canvas aria-label="Waffe in 3D, ziehen dreht"></canvas><span class="hint" data-hint>lädt …</span><span class="probe" data-probe hidden>Probe</span><div class="over" data-sockets></div><div class="flat" data-flat hidden></div></div>
+        <div class="panel scrollable" data-effect style="gap:5px;flex:0 1 auto"></div>
+        <div class="panel" style="flex:1 0 150px;gap:4px">
+          <div class="segm" data-mode><button type="button" aria-pressed="true" data-m="set">Einsetzen</button><button type="button" aria-pressed="false" data-m="merge">Verschmelzen</button></div>
+          <div class="tray scrollable" data-tray style="flex:1"></div>
+          <button class="btn" type="button" data-main style="margin-top:auto">…</button>
+        </div>
+      </div><div class="toast" data-toast></div></div>
+      <div class="pro"><div class="card"><b class="up">Stärken</b>Man sieht den Stein in der Fassung und die Rinne leuchten, bevor man bestätigt. Thema 1 wird hier spürbar.</div><div class="card"><b class="dn">Schwächen</b>Größter Bauaufwand: eine 3D-Bühne im Raum-Panel, Modelle je Waffengruppe. Rüstung hat noch kein Modell.</div></div>
+      <p class="note">Tippen auf einen Stein legt ihn zur Probe in die Fassung. Das Vorher/Nachher darunter zeigt, was sich ändert. Erst die Haupttaste setzt ihn ein. Tippen auf die belegte Fassung oben rechts baut aus. Im Modus „Verschmelzen“ fliegen drei Steine zusammen und ergeben die nächste Stufe.</p>
+    </div>
+
+    <div class="mock">
+      <h3>B · Runentisch mit Elementrad <span class="tag">lehrt das Rad</span></h3>
+      <div class="phone" id="pB"><div class="scr">
+        <div class="pill"><span class="nm">Verzauberer</span><span class="chip" style="margin-left:auto" data-gold>🪙 12.000</span></div>
+        <div class="panel" style="gap:6px"><div class="people" data-people></div><div class="items" data-items></div></div>
+        <div class="panel" data-head style="gap:4px"></div>
+        <div class="panel" style="flex:1;gap:4px;align-items:stretch">
+          <div class="caps" data-wcap>Schaden gegen jedes Element</div>
+          <svg data-rad viewBox="0 0 300 250" style="width:100%;height:auto;display:block" role="group" aria-label="Runentisch"></svg>
+          <div data-tiers class="seg" style="justify-content:center;gap:5px"></div>
+          <div data-util style="display:flex;gap:10px;justify-content:center;padding-top:2px"></div>
+          <button class="btn" type="button" data-main style="margin-top:auto">…</button>
+        </div>
+      </div><div class="toast" data-toast></div></div>
+      <div class="pro"><div class="card"><b class="up">Stärken</b>Das Rad ist der Vorher/Nachher-Vergleich: an jedem Element steht der Schaden mit der gewählten Rune. Man lernt die Regel nebenbei.</div><div class="card"><b class="dn">Schwächen</b>Die Waffe ist nur ein Bild. Hilfsrunen und Rüstungs-Runen passen schlechter ins Rad.</div></div>
+      <p class="note">Die eigenen Steine liegen auf ihrem Element im Rad, die Zahl zeigt den Vorrat. Tippen auf ein Element wählt es, die Stufe darunter. Rund ums Rad stehen dann die Schadenszahlen. Die Mitte ist der Schmelztiegel: drei gleiche Steine hinein, ein stärkerer heraus.</p>
+    </div>
+
+    <div class="mock">
+      <h3>C · Kompakte Liste <span class="tag">wenig Aufwand</span></h3>
+      <div class="phone" id="pC"><div class="scr">
+        <div class="pill"><span class="nm">Verzauberer</span><span class="chip" style="margin-left:auto" data-gold>🪙 12.000</span></div>
+        <div class="panel" style="gap:6px"><div class="people" data-people></div></div>
+        <div class="panel" style="flex:1;gap:4px">
+          <div class="segm" data-mode><button type="button" aria-pressed="true" data-m="set">Ausrüstung</button><button type="button" aria-pressed="false" data-m="merge">Verschmelzen</button></div>
+          <div class="scrollable" data-list style="flex:1"></div>
+        </div>
+      </div>
+      <div class="sheet" data-sheet><div style="display:flex;align-items:center;gap:8px"><b data-stitle style="font-family:var(--f-name);font-size:15px;flex:1"></b><button class="btn2" type="button" data-close>Zurück</button></div><div class="list" data-slist></div><button class="btn" type="button" data-main>…</button></div>
+      <div class="toast" data-toast></div></div>
+      <div class="pro"><div class="card"><b class="up">Stärken</b>Schnell gebaut, nah am heutigen Listen-Muster. Jede Rune zeigt ihre Wirkung direkt in der Zeile.</div><div class="card"><b class="dn">Schwächen</b>Kein 3D im Raum, die neuen Modelle erscheinen erst in der Waffenansicht (Thema 3). Wirkt am ehesten wie heute.</div></div>
+      <p class="note">Jede Zeile zeigt Item und Runenplätze. Tippen auf einen Platz öffnet unten eine Liste der passenden Runen, jede mit ihrer Wirkung als Symbol und Zahl. Belegt ist oben „Ausbauen“. Verschmelzen ist ein eigener Reiter mit Fortschritt je Rune.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Was in allen Varianten gleich wäre</span>
+  <h2>Ablauf und Regeln im Raum</h2>
+  <div class="qs">
+    <div class="card"><b>Probe vor dem Einsetzen</b><span class="small">Der erste Tipp auf eine Rune zeigt die Folge, der zweite Tipp auf die Haupttaste setzt ein (Muster „Auswahl + Haupttaste“ aus EXPERIENCE.md). Sitzt schon eine Rune, heißt die Taste „Tauschen“: die alte geht in den Konvoi zurück.</span></div>
+    <div class="card"><b>Ausbauen kostenlos</b><span class="small">Wie heute: kein Gold, keine Zerstörung. Die Rune liegt danach wieder im Vorrat.</span></div>
+    <div class="card"><b>Platz erklärt sich</b><span class="small">Regel wie heute: jeder Platz nimmt jede Rune, aber höchstens ein Element je Waffe; Rüstung und Schild nur Element-Runen. Was nicht passt, ist ausgegraut, mit Grund in einem Satz.</span></div>
+    <div class="card"><b>Rüstung und Schild</b><span class="small">Körperrüstung: Rune setzt die Affinität, der Vergleich zeigt „Treffer gegen dich“. Schild: Element gibt Widerstand (beschlossen), die Zahl folgt in Thema 7.</span></div>
+    <div class="card"><b>Kaufen bleibt im Raum</b><span class="small">Runen I zum Kauf stehen am Ende des Vorrats als gestrichelte Steine mit Preis (🪙 400, Licht 🪙 600). Kein eigener Abschnitt mehr.</span></div>
+    <div class="card"><b>Verschmelzen</b><span class="small">3 × Stufe N + 🪙 200 × N ergibt Stufe N+1. Der Raum zeigt, bis zu welcher Stufe er verschmilzt (Raumstufe 2: bis II, 3: bis III).</span></div>
+  </div>
+</section>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+(function(){
+/* ---------- Regeln (Werte aus balance.yaml / runes.yaml) ---------- */
+const B={cycle:{fire:'wind',wind:'earth',earth:'water',water:'fire'},opposed:[['light','dark']],adv:1.2,dis:.8,same:.8,cap:40,
+  status:{fire:'Brennen',water:'Nass',earth:'Verlangsamt',wind:'Rückstoß'},
+  statusTxt:{fire:'10 % TP je Runde, 2 Runden',water:'Tempo −3, 2 Runden',earth:'Bewegung −1, 2 Runden',wind:'1 Feld zurück, 2 Schaden bei Hindernis'},
+  chance:{2:30,3:50},merge:{count:3,gold:200}};
+const EL={fire:{n:'Feuer',c:'#F2603A'},wind:{n:'Wind',c:'#7BD389'},earth:{n:'Erde',c:'#B9874B'},water:{n:'Wasser',c:'#4AA8E8'},light:{n:'Licht',c:'#F7D96B'},dark:{n:'Dunkel',c:'#8E5BD9'}};
+const ORDER=['fire','wind','earth','water','light','dark'];
+const GLYPH={
+  fire:'<path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-3-1-6 1-9z" fill="#3B2A20"/>',
+  wind:'<path d="M4 9h11a3 3 0 1 0-3-3M4 14h14a3 3 0 1 1-3 3M4 19h6" fill="none" stroke="#3B2A20" stroke-width="2.4" stroke-linecap="round"/>',
+  earth:'<path d="M2 20 9 7l4 6 3-4 6 11z" fill="#3B2A20"/>',
+  water:'<path d="M2 13c3-4 5-4 8 0s5 4 8 0 3-3 4-2M2 19c3-4 5-4 8 0s5 4 8 0" fill="none" stroke="#3B2A20" stroke-width="2.4" stroke-linecap="round"/>',
+  light:'<path d="M12 2l2.6 6.6L21 9.3l-5 4.4 1.6 6.8L12 17l-5.6 3.5L8 13.7 3 9.3l6.4-.7z" fill="#3B2A20"/>',
+  dark:'<path d="M15 3a9 9 0 1 0 6 15A8 8 0 0 1 15 3z" fill="#3B2A20"/>',
+  precision:'<circle cx="12" cy="12" r="7" fill="none" stroke="#3B2A20" stroke-width="2.2"/><path d="M12 2v6M12 16v6M2 12h6M16 12h6" stroke="#3B2A20" stroke-width="2.2"/>',
+  force:'<path d="M4 6h10v6H4zM13 9h8M9 12v9" stroke="#3B2A20" stroke-width="2.4" fill="#3B2A20"/>',
+  edge:'<path d="M5 19 19 5l1 4L9 20z" fill="#3B2A20"/>',
+  feather:'<path d="M5 20c2-8 7-14 15-16-1 8-6 13-13 14M5 20l8-8" fill="none" stroke="#3B2A20" stroke-width="2.2" stroke-linecap="round"/>'};
+const svgI=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${GLYPH[k]}</svg>`;
+const R={};
+ORDER.forEach(e=>[1,2,3].forEach(t=>{if(e==='dark'&&t>1)return;R[`${e}_rune_${t}`]={id:`${e}_rune_${t}`,el:e,t,n:`${EL[e].n} ${['I','II','III'][t-1]}`,price:t===1&&e!=='dark'?(e==='light'?600:400):0}}));
+[['precision_rune','Präzision','precision',{hit:10},500],['force_rune','Wucht','force',{mt:2,wt:2},600],['edge_rune','Schärfe','edge',{crit:5},600],['feather_rune','Leichtigkeit','feather',{wt:-2},500]]
+  .forEach(([id,n,g,m,p])=>R[id]={id,n,g,util:true,mods:m,price:p});
+function mult(el,aff){if(!el||!aff)return 1;if(el===aff)return B.same;if(B.cycle[el]===aff)return B.adv;if(B.cycle[aff]===el)return B.dis;if(B.opposed.some(([x,y])=>(x===el&&y===aff)||(y===el&&x===aff)))return B.adv;return 1}
+function dmg(base,m){const d=Math.floor(base*m);return Math.min(d,Math.floor(base*(1+B.cap/100)))}
+const fmt=n=>n.toLocaleString('de-DE');
+const fx=m=>'×'+String(m).replace('.',',');
+
+/* ---------- Beispieldaten ---------- */
+function seed(){return{gold:12000,room:3,
+  people:[
+    {id:'brenna',n:'Brenna',bg:'#e8cfb5',items:[
+      {uid:'a',n:'Stahlaxt',ic:'🪓',kind:'weapon',model:'axe',base:14,st:{mt:11,hit:60,crit:0,wt:14},slots:2,rarity:'Selten',runes:['fire_rune_1',null]},
+      {uid:'s',n:'Eisenschild',ic:'🛡️',kind:'shield',model:'shield',slots:1,runes:[null]},
+      {uid:'v',n:'Lederweste',ic:'🦺',kind:'armor',slots:1,runes:[null]}]},
+    {id:'lucan',n:'Lucan',bg:'#cfd8e8',items:[
+      {uid:'l1',n:'Stahlschwert',ic:'🗡️',kind:'weapon',model:'sword',base:11,st:{mt:8,hit:75,crit:0,wt:10},slots:1,runes:[null]},
+      {uid:'l2',n:'Lederweste',ic:'🦺',kind:'armor',slots:1,runes:['water_rune_1']}]},
+    {id:'tobin',n:'Tobin',bg:'#d8e8cf',items:[
+      {uid:'t1',n:'Eisenlanze',ic:'🔱',kind:'weapon',model:'lance',base:9,st:{mt:6,hit:80,crit:0,wt:7},slots:1,runes:[null]}]}],
+  stock:{fire_rune_1:3,wind_rune_1:1,earth_rune_1:2,water_rune_2:1,light_rune_1:1,precision_rune:1,edge_rune:1}}}
+/* heutige Regel (apply.ts insertRune): jeder Platz nimmt jede Rune, höchstens ein Element je Item, Rüstung (und Schild) nur Element */
+function slotKind(item,i){return i===0?'big':'small'}
+function slotLabel(item,i){return i===0?'Fassung':'kleine Fassung'}
+function otherEl(item,i){return item.runes.some((x,j)=>j!==i&&x&&!R[x].util)}
+function fits(item,i,id){const r=R[id];if(!r)return false;if(r.util)return item.kind==='weapon';return !otherEl(item,i)}
+function whyNot(item,i,id){const r=R[id];if(r.util&&item.kind!=='weapon')return 'Rüstung und Schild nehmen nur Element-Runen';if(!r.util&&otherEl(item,i))return 'Nur ein Element je Item';return ''}
+function targetSlot(item,id){const r=R[id];if(!r.util){const j=item.runes.findIndex(x=>x&&!R[x].util);if(j>=0)return j}const e=item.runes.indexOf(null);return e>=0?e:(r.util&&item.runes.length>1?1:0)}
+function stockList(S){return Object.keys(R).filter(id=>(S.stock[id]||0)>0)}
+function buyList(S){return Object.keys(R).filter(id=>R[id].price&&!(S.stock[id]>0))}
+function nextTier(id){const r=R[id];if(!r||r.util||r.t>=3||r.el==='dark')return null;return `${r.el}_rune_${r.t+1}`}
+function mergeErr(S,id){const nx=nextTier(id);if(!nx)return 'höchste Stufe';if(R[nx].t>S.room)return `erst ab Raumstufe ${R[nx].t}`;if((S.stock[id]||0)<B.merge.count)return `${S.stock[id]||0}/${B.merge.count} Steine`;if(S.gold<B.merge.gold*R[id].t)return 'zu wenig Gold';return null}
+
+/* Profil eines Items mit gegebenen Runen */
+function profile(item,runes){
+  const p={el:null,t:0,st:item.st?{...item.st}:null,status:null,terrain:null,eff:null};
+  runes.forEach(id=>{if(!id)return;const r=R[id];if(r.util){if(p.st)Object.entries(r.mods).forEach(([k,v])=>p.st[k]=(p.st[k]||0)+v);return}
+    if(p.el)return;p.el=r.el;p.t=r.t;
+    if(item.kind==='weapon'){if(r.t>=2&&B.status[r.el])p.status={n:B.status[r.el],c:B.chance[r.t],tx:B.statusTxt[r.el]};
+      if(r.t>=3){if(r.el==='fire')p.terrain='entzündet Gras und Wald';if(r.el==='water')p.terrain='löscht brennende Felder';if(r.el==='light')p.eff='effektiv gegen Monster und Untote';if(r.el==='wind')p.status={...p.status,c:B.chance[3]};}}});
+  return p}
+function elBadge(el,size){return `<span class="e" style="background:${EL[el].c};${size?`width:${size}px;height:${size}px`:''}">${svgI(el)}</span>`}
+function gemHTML(id,opts={}){
+  if(!id)return `<button type="button" class="gem empty ${opts.big?'big':''} ${opts.sel?'sel':''}" ${opts.attr||''} aria-label="${opts.label||'leerer Platz'}"></button>`;
+  const r=R[id];const c=r.util?'var(--util)':EL[r.el].c;
+  return `<button type="button" class="gem ${opts.big?'big':''} ${opts.sel?'sel':''} ${opts.off?'off':''} ${!r.util&&r.t>=2?'glow':''}" style="background:${c};--c:${c};${opts.dashed?'border-style:dashed;opacity:.8':''}" ${opts.attr||''} aria-label="${r.n}${opts.count?`, ${opts.count} Stück`:''}">${svgI(r.util?r.g:r.el)}${!r.util?`<span class="tl">${['I','II','III'][r.t-1]}</span>`:''}${opts.count>1?`<span class="ct">${opts.count}</span>`:''}</button>`}
+function dotsHTML(item){return `<span class="dots">${item.runes.map((id,i)=>{const r=id&&R[id];const c=r?(r.util?'var(--util)':EL[r.el].c):'transparent';return `<i class="${i?'small':''}" style="background:${c}"></i>`}).join('')}</span>`}
+
+/* Vorher/Nachher-Inhalt für eine Seite */
+function sideHTML(item,runes,base){
+  const p=profile(item,runes);const out=[];
+  if(item.kind==='weapon'){
+    const s=p.st,b0=item.st;const d=(k,inv)=>{const v=s[k]-b0[k];if(!v)return '';const good=inv?v<0:v>0;return ` <b class="${good?'up':'dn'}">${v>0?'+':''}${v}</b>`};
+    out.push(`<div class="mrow"><span class="vs">⚔ ${s.mt}${d('mt')}</span><span class="vs">🎯 ${s.hit}${d('hit')}</span><span class="vs">✶ ${s.crit}${d('crit')}</span><span class="vs">⚖ ${s.wt}${d('wt',true)}</span></div>`);
+    out.push(`<div class="line">${p.el?elBadge(p.el,16)+` <b>${EL[p.el].n}</b>`:'<span class="mut">kein Element</span>'}</div>`);
+    if(p.el){const bs=base+((s.mt-b0.mt)||0);out.push(`<div class="mrow">${ORDER.map(e=>{const v=dmg(bs,mult(p.el,e));return v===bs?'':`<span class="vs">${elBadge(e)} ${v} <b class="${v>bs?'up':'dn'}">${v>bs?'▲':'▼'}</b></span>`}).join('')}<span class="vs mut">sonst ${bs}</span></div>`)}
+    else out.push(`<div class="mrow"><span class="vs">gegen alle ⚔ ${base+((s.mt-b0.mt)||0)}</span></div>`);
+    if(p.status)out.push(`<div class="line">${elBadge(p.el,16)} <b>${p.status.c} % ${p.status.n}</b></div>`);
+    if(p.terrain)out.push(`<div class="line">🌿 ${p.terrain}</div>`);
+    if(p.eff)out.push(`<div class="line">✦ ${p.eff}</div>`);
+  } else if(item.kind==='armor'){
+    out.push(`<div class="line">${p.el?elBadge(p.el,16)+` Affinität <b>${EL[p.el].n}</b>`:'<span class="mut">keine Affinität</span>'}</div>`);
+    if(p.el)out.push(`<div class="caps" style="font-size:10px">Treffer gegen dich</div><div class="mrow">${ORDER.map(e=>{const m=mult(e,p.el);return m===1?'':`<span class="vs">${elBadge(e)} <b class="${m<1?'up':'dn'}">${fx(m)}</b></span>`}).join('')}</div>`);
+    else out.push(`<div class="mrow"><span class="vs">alle ×1</span></div>`);
+  } else {
+    out.push(`<div class="line">${p.el?elBadge(p.el,16)+` Widerstand <b>${EL[p.el].n}</b>`:'<span class="mut">kein Widerstand</span>'}</div>`);
+    out.push(`<div class="mrow">${p.el?`<span class="vs">${elBadge(p.el)} <b class="up">−? %</b></span><span class="vs mut">Zahl in Thema 7</span>`:'<span class="vs">alle ×1</span>'}</div>`);
+  }
+  return out.join('')}
+/* Nur Unterschiede: Liste der Änderungen zwischen zwei Runen-Belegungen */
+const STI={mt:'⚔',hit:'🎯',crit:'✶',wt:'⚖'},STN={mt:'Macht',hit:'Treffer',crit:'Krit',wt:'Gewicht'};
+function diffs(item,before,after){
+  const a=profile(item,before),b=profile(item,after),out=[];
+  if(item.kind==='weapon'){
+    Object.keys(STI).forEach(k=>{const d=b.st[k]-a.st[k];if(d)out.push({k:'stat',ico:STI[k],lbl:STN[k],o:a.st[k],n:b.st[k],d,good:k==='wt'?d<0:d>0})});
+    if(a.el!==b.el)out.push({k:'el',o:a.el,n:b.el});
+    const ba=item.base+(a.st.mt-item.st.mt),bb=item.base+(b.st.mt-item.st.mt);
+    ORDER.forEach(e=>{const o=dmg(ba,mult(a.el,e)),n=dmg(bb,mult(b.el,e));if(o!==n)out.push({k:'vs',e,o,n,d:n-o,good:n>o})});
+    const sa=a.status&&`${a.status.c} % ${a.status.n}`,sb=b.status&&`${b.status.c} % ${b.status.n}`;
+    if(sa!==sb){if(sa)out.push({k:'lose',el:a.el,txt:sa});if(sb)out.push({k:'gain',el:b.el,txt:sb,sub:b.status.tx})}
+    if(a.terrain!==b.terrain){if(a.terrain)out.push({k:'lose',txt:a.terrain,ico:'🌿'});if(b.terrain)out.push({k:'gain',txt:b.terrain,ico:'🌿'})}
+    if(a.eff!==b.eff){if(a.eff)out.push({k:'lose',txt:a.eff,ico:'✦'});if(b.eff)out.push({k:'gain',txt:b.eff,ico:'✦'})}
+  } else {
+    if(a.el!==b.el)out.push({k:'el',o:a.el,n:b.el,lab:item.kind==='armor'?'Affinität':'Widerstand'});
+    if(item.kind==='armor')ORDER.forEach(e=>{const o=mult(e,a.el),n=mult(e,b.el);if(o!==n)out.push({k:'in',e,o,n,good:n<o})});
+    else if(b.el)out.push({k:'gain',el:b.el,txt:`Widerstand gegen ${EL[b.el].n}`,sub:'Zahl folgt in Thema 7'});
+  }
+  return out}
+let CMP='list';
+function elName(e){return e?`${elBadge(e,16)} ${EL[e].n}`:'<span class="mut">kein Element</span>'}
+function cmpList(item,ds){
+  return ds.map(x=>{
+    if(x.k==='stat')return `<div class="drow"><span class="ico">${x.ico}</span><span class="lb">${x.lbl}</span><b>${x.n}</b><span class="dl ${x.good?'up':'dn'}">${x.d>0?'+':''}${x.d}</span></div>`;
+    if(x.k==='el')return `<div class="drow"><span class="ico">${x.n?elBadge(x.n,18):''}</span><span class="lb">${x.lab||'Element'}</span><b>${x.n?EL[x.n].n:'keins'}</b><span class="dl mut">${x.o?`statt ${EL[x.o].n}`:'neu'}</span></div>`;
+    if(x.k==='vs')return `<div class="drow"><span class="ico">${elBadge(x.e,18)}</span><span class="lb">Schaden gegen ${EL[x.e].n}</span><b>⚔ ${x.n}</b><span class="dl ${x.good?'up':'dn'}">${x.d>0?'+':''}${x.d}</span></div>`;
+    if(x.k==='in')return `<div class="drow"><span class="ico">${elBadge(x.e,18)}</span><span class="lb">${EL[x.e].n}-Treffer gegen dich</span><b>${fx(x.n)}</b><span class="dl ${x.good?'up':'dn'}">${x.good?'weniger':'mehr'}</span></div>`;
+    if(x.k==='gain')return `<div class="drow"><span class="ico">${x.el?elBadge(x.el,18):x.ico}</span><span class="lb"><b>${x.txt}</b>${x.sub?`<br><span class="mut" style="font-size:11px">${x.sub}</span>`:''}</span><span class="dl up">neu</span></div>`;
+    if(x.k==='lose')return `<div class="drow"><span class="ico">${x.el?elBadge(x.el,18):x.ico}</span><span class="lb" style="text-decoration:line-through">${x.txt}</span><span class="dl dn">fällt weg</span></div>`;
+  }).join('')}
+function cmpSplit(item,ds){
+  const good=[],bad=[];
+  ds.forEach(x=>{
+    if(x.k==='stat')(x.good?good:bad).push(`<span class="vs">${x.ico} ${x.d>0?'+':''}${x.d}</span>`);
+    if(x.k==='vs')(x.good?good:bad).push(`<span class="vs">${elBadge(x.e)} ⚔ ${x.d>0?'+':''}${x.d}</span>`);
+    if(x.k==='in')(x.good?good:bad).push(`<span class="vs">${elBadge(x.e)} ${fx(x.n)}</span>`);
+    if(x.k==='gain')good.push(`<span class="vs">${x.el?elBadge(x.el):x.ico} ${x.txt}</span>`);
+    if(x.k==='lose')bad.push(`<span class="vs" style="text-decoration:line-through">${x.el?elBadge(x.el):x.ico} ${x.txt}</span>`);
+  });
+  const el=ds.find(x=>x.k==='el');
+  return (el?`<div class="line" style="justify-content:center;font-size:13px">${el.lab||'Element'}: ${el.o?`<s class="mut">${EL[el.o].n}</s> `:''}${elName(el.n)}</div>`:'')+
+    `<div class="split"><div class="col g"><div class="caps up">Besser</div><div class="mrow">${good.join('')||'<span class="mut">–</span>'}</div></div><div class="col b"><div class="caps dn">Schlechter</div><div class="mrow">${bad.join('')||'<span class="mut">–</span>'}</div></div></div>`}
+function cmpWheel(item,ds){
+  const P={fire:[60,16],wind:[104,52],earth:[60,88],water:[16,52],light:[150,22],dark:[150,82]};
+  const by={};ds.forEach(x=>{if(x.k==='vs'||x.k==='in')by[x.e]=x});
+  const nodes=ORDER.map(e=>{const [x,y]=P[e];const d=by[e];const lab=d?(d.k==='vs'?`${d.d>0?'+':''}${d.d}`:fx(d.n)):'';return `<circle cx="${x}" cy="${y}" r="${d?12:9}" fill="${EL[e].c}" stroke="#3B2A20" stroke-width="${d?2.5:1.5}" ${d?'':'opacity=".4"'}/><svg x="${x-6}" y="${y-6}" width="12" height="12" viewBox="0 0 24 24">${GLYPH[e]}</svg>${d?`<rect x="${x+8}" y="${y-19}" width="${lab.length*6+8}" height="14" rx="7" fill="${d.good?'#2F8A4C':'#B83A2E'}"/><text x="${x+12}" y="${y-8.5}" font-family="Barlow Condensed" font-weight="700" font-size="11" fill="#fff">${lab}</text>`:''}`}).join('');
+  const rest=ds.filter(x=>x.k!=='vs'&&x.k!=='in');
+  return `<div style="display:flex;flex-direction:column;gap:2px"><svg viewBox="0 -8 190 110" style="width:100%;max-width:200px;height:auto;margin:0 auto;display:block">${Object.entries(B.cycle).map(([a,b])=>`<line x1="${P[a][0]}" y1="${P[a][1]}" x2="${P[b][0]}" y2="${P[b][1]}" stroke="#d9c9ad" stroke-width="2"/>`).join('')}<line x1="150" y1="22" x2="150" y2="82" stroke="#d9c9ad" stroke-width="2"/>${nodes}</svg><div style="display:flex;flex-direction:column;gap:3px">${cmpList(item,rest)}</div></div>`}
+function diffHTML(item,before,after,label){
+  const ds=diffs(item,before,after);
+  const body=!ds.length?'<div class="line mut">Keine Änderung.</div>':CMP==='list'?cmpList(item,ds):CMP==='split'?cmpSplit(item,ds):cmpWheel(item,ds);
+  return `<div class="caps">${label} · was sich ändert</div><div style="display:flex;flex-direction:column;gap:3px">${body}</div>`}
+function compareHTML(item,before,after,label){
+  return `<div class="caps">${label}</div><div class="cmp"><div class="side"><div class="caps" style="font-size:10px">Jetzt</div>${sideHTML(item,before,item.base)}</div><div class="arr">→</div><div class="side new"><div class="caps" style="font-size:10px;color:var(--ember-d)">Danach</div>${sideHTML(item,after,item.base)}</div></div>`}
+
+function toast(root,txt){const t=root.querySelector('[data-toast]');t.textContent=txt;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),1600)}
+function peopleHTML(S,sel){return S.people.map(p=>`<button type="button" class="med" data-person="${p.id}" aria-pressed="${p.id===sel}"><span class="face" style="background:${p.bg}">${p.n[0]}</span>${p.n}</button>`).join('')}
+function itemsHTML(person,sel){return person.items.map(it=>`<button type="button" class="ichip" data-item="${it.uid}" aria-pressed="${it.uid===sel}"><span>${it.ic}</span>${it.n}${dotsHTML(it)}</button>`).join('')}
+
+/* ---------- Elementrad ---------- */
+(function(){
+  const svg=document.getElementById('wheel');const P={fire:[110,46],wind:[178,114],earth:[110,182],water:[42,114],light:[250,60],dark:[250,190]};
+  let sel='fire';
+  function draw(){
+    const lines=[];const arrow=(a,b,col,w)=>{const [x1,y1]=P[a],[x2,y2]=P[b];const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L;
+      return `<line x1="${x1+ux*30}" y1="${y1+uy*30}" x2="${x2-ux*34}" y2="${y2-uy*34}" stroke="${col}" stroke-width="${w}" marker-end="url(#ah${col==='var(--line)'?'':'c'})" ${col!=='var(--line)'?`style="color:${col}"`:''}/>`};
+    Object.entries(B.cycle).forEach(([a,b])=>{const hot=a===sel||b===sel;lines.push(arrow(a,b,hot?(a===sel?'var(--pos)':'var(--neg)'):'var(--line)',hot?4:2))});
+    const lhot=sel==='light'||sel==='dark';
+    lines.push(`<line x1="250" y1="92" x2="250" y2="158" stroke="${lhot?'var(--pos)':'var(--line)'}" stroke-width="${lhot?4:2}" marker-end="url(#ah${lhot?'c':''})" marker-start="url(#as${lhot?'c':''})" style="color:var(--pos)"/>`);
+    const nodes=ORDER.map(e=>{const [x,y]=P[e];return `<g class="node" tabindex="0" role="button" aria-pressed="${e===sel}" aria-label="${EL[e].n}" data-e="${e}"><circle cx="${x}" cy="${y}" r="${e===sel?27:23}" fill="${EL[e].c}" stroke="var(--line)" stroke-width="${e===sel?3.5:2}"/><svg x="${x-11}" y="${y-11}" width="22" height="22" viewBox="0 0 24 24">${GLYPH[e]}</svg><text x="${x}" y="${y+(e==='light'?-33:40)}" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="14" fill="var(--line)">${EL[e].n}</text></g>`}).join('');
+    svg.innerHTML=`<defs>${['','c'].map(s=>`<marker id="ah${s}" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L8 4L0 8z" fill="${s?'currentColor':'var(--line)'}"/></marker><marker id="as${s}" viewBox="0 0 8 8" refX="2" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M8 0L0 4L8 8z" fill="${s?'currentColor':'var(--line)'}"/></marker>`).join('')}</defs>${lines.join('')}${nodes}`;
+    svg.querySelectorAll('.node').forEach(n=>{const go=()=>{sel=n.dataset.e;draw()};n.onclick=go;n.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();go()}}});
+    const f=document.getElementById('wheelfacts');const rows=[];
+    ORDER.forEach(t=>{const m=mult(sel,t);if(m!==1)rows.push(`<div class="r"><span class="vs" style="background:var(--tone)">${elBadge(sel,18)} gegen ${elBadge(t,18)}</span><b style="color:${m>1?'var(--pos)':'var(--neg)'}">${fx(m)}</b><span class="small">${t===sel?'gleiches Element':m>1?`${EL[sel].n} schlägt ${EL[t].n}`:`${EL[t].n} hält ${EL[sel].n} stand`}</span></div>`)});
+    const st=B.status[sel];
+    rows.push(`<div class="small" style="margin-top:4px">Gegen alle anderen ×1. ${st?`Ab Stufe II: ${B.chance[2]} % ${st} (III: ${B.chance[3]} %).`:''} ${sel==='fire'?'Stufe III entzündet Gras und Wald.':sel==='water'?'Stufe III löscht Brand.':sel==='light'?'Stufe III effektiv gegen Monster und Untote.':sel==='dark'?'Dunkel gibt es nur als Beute, Stufe I.':sel==='earth'?'Stufe III hat heute kein Extra.':''}</div>`);
+    f.innerHTML=`<h3>${EL[sel].n}</h3>`+rows.join('');
+  }
+  draw();
+})();
+
+/* ---------- 3D (Thema-1-Modelle) ---------- */
+const loader=new THREE.GLTFLoader();const raw={};
+/* Artefakt: base64-Textdateien neben der Seite; im Repo (art/mockups/ausruestung-2026-11/) die echten .glb aus art/models/ */
+const repoPath=u=>u.startsWith('runes/')?'../../models/runes-v2/'+u.slice(6)+'.glb':'../../models/weapons-v2/'+u+'.glb';
+const bytes=u=>raw[u]||(raw[u]=fetch(u+'.glb.txt').then(r=>{if(!r.ok)throw new Error(u);return r.text()}).then(t=>{const s=atob(t.trim()),a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a.buffer}).catch(()=>fetch(repoPath(u)).then(r=>{if(!r.ok)throw new Error(u);return r.arrayBuffer()})));
+const fresh=u=>bytes(u).then(b=>new Promise((res,rej)=>loader.parse(b.slice(0),'',res,rej)));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function channelMat(){return new THREE.ShaderMaterial({uniforms:{col:{value:new THREE.Color()},fill:{value:0},t:{value:0}},
+  vertexShader:'attribute vec2 uv2;varying float f;void main(){f=uv2.x;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  fragmentShader:'uniform vec3 col;uniform float fill;uniform float t;varying float f;void main(){float lit=1.0-smoothstep(fill-0.03,fill+0.01,f);float pulse=fill>0.99?0.85+0.15*sin(t*3.0-f*8.0):1.0;vec3 dark=vec3(0.16,0.12,0.11);gl_FragColor=vec4(mix(dark,col*1.3*pulse,lit),1.0);}'})}
+function styleStone(g,rd){g.traverse(o=>{if(!o.isMesh)return;const mn=(o.material.name||'').toLowerCase();const col=new THREE.Color(rd.util?'#E9E4D8':EL[rd.el].c);
+  if(mn.includes('symbol'))o.material=new THREE.MeshBasicMaterial({color:col.clone().lerp(new THREE.Color('#fff'),.55)});
+  else if(mn.includes('stone')){o.material=o.material.clone();o.material.emissive=col.clone();o.material.emissiveIntensity=rd.util?.15:[.35,.5,.7][rd.t-1]}
+  else if(mn.includes('core'))o.material=new THREE.MeshBasicMaterial({color:col.clone().lerp(new THREE.Color('#fff'),.6)})})}
+function Stage(canvas,hintEl){
+  const r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});r.setPixelRatio(Math.min(2,devicePixelRatio||1));r.outputEncoding=THREE.sRGBEncoding;
+  const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(30,1,.002,50);
+  scene.add(new THREE.HemisphereLight(0xfff1dc,0x3a2c22,1.05));const key=new THREE.DirectionalLight(0xffe2c0,1.15);key.position.set(2,4,3);scene.add(key);const rim=new THREE.DirectionalLight(0x9fb6ff,.5);rim.position.set(-3,2,-3);scene.add(rim);
+  const pivot=new THREE.Group();scene.add(pivot);let yaw=.5,pitch=0,auto=true,drag=null,fitD=1,t0=0;
+  canvas.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];auto=false;canvas.setPointerCapture(e.pointerId)});
+  canvas.addEventListener('pointermove',e=>{if(drag){yaw+=(e.clientX-drag[0])*.012;pitch=Math.max(-1.2,Math.min(1.2,pitch+(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY]}});
+  canvas.addEventListener('pointerup',()=>drag=null);
+  const size=()=>{const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};new ResizeObserver(size).observe(canvas);size();
+  const st={chan:[],sockets:[],stones:[],inner:null,cur:null,model:null,tip:new THREE.Vector3(0,1,0),light:new THREE.PointLight(0xffffff,0,.6),fx:[]};scene.add(st.light);
+  let visible=true;new IntersectionObserver(es=>es.forEach(e=>visible=e.isIntersecting)).observe(canvas);
+  let last=performance.now();(function loop(n){const dt=Math.min(.05,(n-last)/1000);last=n;t0+=dt;
+    if(visible){if(auto&&!reduce)yaw+=dt*.45;pivot.rotation.set(pitch,yaw,0);cam.position.set(0,0,fitD);cam.lookAt(0,0,0);
+      if(st.stones[0]){const p=new THREE.Vector3();st.stones[0].getWorldPosition(p);st.light.position.copy(p).multiplyScalar(1.05)}
+      st.chan.forEach(m=>m.uniforms.t.value=t0);st.fx=st.fx.filter(f=>f(dt));r.render(scene,cam)}
+    requestAnimationFrame(loop)})(last);
+  st.show=async function(model){
+    if(st.model===model)return;st.model=model;hintEl.textContent='lädt …';
+    const g=await fresh(model);if(st.model!==model)return;if(st.cur)pivot.remove(st.cur);
+    const inner=new THREE.Group();g.scene.children.slice().forEach(c=>inner.add(c));st.chan=[];const slots=[];inner.updateMatrixWorld(true);
+    inner.traverse(o=>{if(!o.isMesh)return;const n=(o.name+'|'+(o.material&&o.material.name||'')).toLowerCase();if(n.includes('rune_channel')){o.material=channelMat();st.chan.push(o.material)}else if(n.includes('rune_stone'))slots.push(o)});
+    const box=new THREE.Box3().setFromObject(inner),sz=box.getSize(new THREE.Vector3());const ax=sz.x>sz.y?(sz.x>sz.z?'x':'z'):(sz.y>sz.z?'y':'z');st.tip=new THREE.Vector3();st.tip[ax]=1;
+    inner.position.sub(box.getCenter(new THREE.Vector3()));const wrap=new THREE.Group();wrap.add(inner);pivot.add(wrap);st.cur=wrap;st.inner=inner;
+    fitD=Math.max(sz.x,sz.y,sz.z)*1.08/2/Math.tan(THREE.MathUtils.degToRad(15));
+    st.sockets=[];
+    slots.forEach(m=>{m.visible=false;const pos=m.geometry.attributes.position;const v=new THREE.Vector3();const pts=[];for(let i=0;i<pos.count;i++){v.fromBufferAttribute(pos,i);m.localToWorld(v);inner.worldToLocal(v);pts.push(v.clone())}
+      const c=new THREE.Vector3();pts.forEach(p=>c.add(p));c.divideScalar(pts.length);
+      const cov=[[0,0,0],[0,0,0],[0,0,0]];pts.forEach(p=>{const d=[p.x-c.x,p.y-c.y,p.z-c.z];for(let i=0;i<3;i++)for(let j=0;j<3;j++)cov[i][j]+=d[i]*d[j]});
+      const mul=v=>new THREE.Vector3(cov[0][0]*v.x+cov[0][1]*v.y+cov[0][2]*v.z,cov[1][0]*v.x+cov[1][1]*v.y+cov[1][2]*v.z,cov[2][0]*v.x+cov[2][1]*v.y+cov[2][2]*v.z);
+      let e1=new THREE.Vector3(1,.3,.2).normalize();for(let k=0;k<60;k++)e1=mul(e1).normalize();
+      let e2=new THREE.Vector3(.2,1,.3);for(let k=0;k<60;k++){e2=mul(e2);e2.sub(e1.clone().multiplyScalar(e2.dot(e1))).normalize()}
+      let nrm=new THREE.Vector3().crossVectors(e1,e2).normalize();
+      const p1=pts.map(p=>p.clone().sub(c).dot(e1)),sp1=Math.max(...p1)-Math.min(...p1);if(!p1.some(v=>Math.abs(v)<sp1*.15))nrm=e1.clone();
+      const proj=p=>p.clone().sub(c).dot(nrm);const sides=[1,-1].map(sg=>pts.filter(p=>proj(p)*sg>1e-4));const span=Math.max(...pts.map(proj))-Math.min(...pts.map(proj));
+      const two=sides[0].length>8&&sides[1].length>8&&span>0.02;
+      (two?[1,-1]:[null]).forEach((sg,i)=>{const set=two?sides[i]:pts;const cc=new THREE.Vector3();set.forEach(p=>cc.add(p));cc.divideScalar(set.length);
+        let sign=sg;if(sign===null)sign=cc.clone().dot(nrm)>=0?1:-1;const n=nrm.clone().multiplyScalar(sign);const ps=set.map(p=>p.clone().sub(c).dot(n));const in0=Math.max(...ps)-0.0117;
+        st.sockets.push({base:cc.clone().sub(n.clone().multiplyScalar(cc.clone().sub(c).dot(n)-in0)),n})})});
+    hintEl.textContent='ziehen dreht';
+  };
+  st.setRune=async function(id){
+    st.stones.forEach(s=>s.parent&&s.parent.remove(s));st.stones=[];const rd=id&&R[id];
+    if(rd&&st.inner){for(const sk of st.sockets){const g=await fresh('runes/'+rd.id);if(st.stones.length>=st.sockets.length)break;const s=new THREE.Group();g.scene.children.slice().forEach(c=>s.add(c));styleStone(s,rd);
+      const q1=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(1,0,0),sk.n);const up=new THREE.Vector3(0,1,0).applyQuaternion(q1);const want=st.tip.clone().sub(sk.n.clone().multiplyScalar(st.tip.dot(sk.n))).normalize();
+      let ang=0;if(want.lengthSq()>.5)ang=Math.atan2(sk.n.dot(up.clone().cross(want)),up.dot(want));if(st.model==='shield')ang-=Math.PI/2;
+      s.quaternion.copy(new THREE.Quaternion().setFromAxisAngle(sk.n,ang).multiply(q1));s.position.copy(sk.base);
+      if(!reduce){s.scale.setScalar(.01);let k=0;st.fx.push(dt=>{k=Math.min(1,k+dt*4);const e=1+Math.sin(k*Math.PI)*.35;s.scale.setScalar(Math.max(.01,k*e));return k<1})}
+      st.inner.add(s);st.stones.push(s)}}
+    const col=new THREE.Color(rd&&!rd.util?EL[rd.el].c:'#000');st.chan.forEach(m=>{m.uniforms.col.value=col;m.uniforms.fill.value=!rd||rd.util?0:[0,.34,.67,1.01][rd.t]});
+    st.light.color=col;st.light.intensity=rd&&!rd.util?[0,.5,.9,1.4][rd.t]:0;
+  };
+  /* Verschmelzen: drei Steine fliegen zusammen, der nächste wächst heraus */
+  st.merge=async function(id,nx){
+    if(st.cur)st.cur.visible=false;st.light.intensity=0;const grp=new THREE.Group();scene.add(grp);
+    const parts=[];for(let i=0;i<3;i++){const g=await fresh('runes/'+id);const s=new THREE.Group();g.scene.children.slice().forEach(c=>s.add(c));styleStone(s,R[id]);const box=new THREE.Box3().setFromObject(s);const L=box.getSize(new THREE.Vector3()).length();s.userData.L=L;parts.push(s);grp.add(s)}
+    const L=parts[0].userData.L;fitD=L*3.2/2/Math.tan(THREE.MathUtils.degToRad(15));
+    const g2=await fresh('runes/'+nx);const out=new THREE.Group();g2.scene.children.slice().forEach(c=>out.add(c));styleStone(out,R[nx]);out.scale.setScalar(.01);grp.add(out);
+    const fl=new THREE.PointLight(new THREE.Color(EL[R[nx].el].c),0,L*6);grp.add(fl);
+    parts.forEach((s,i)=>{const a=i*2.094;s.position.set(Math.cos(a)*L*.9,Math.sin(a)*L*.9,0);s.rotation.y=Math.PI/2});out.rotation.y=Math.PI/2;
+    return new Promise(res=>{let k=0;st.fx.push(dt=>{k+=dt*(reduce?3:.55);
+      parts.forEach((s,i)=>{const a=i*2.094+k*4;const rr=L*.9*Math.max(0,1-k*1.4);s.position.set(Math.cos(a)*rr,Math.sin(a)*rr,0);s.scale.setScalar(Math.max(.01,1-Math.max(0,k-.55)*2.5))});
+      fl.intensity=k>.55?Math.max(0,3*(1-(k-.55)*2.2)):k*2;if(k>.6)out.scale.setScalar(Math.min(1.25,(k-.6)*3));
+      if(k>=1.4){setTimeout(()=>{scene.remove(grp);if(st.cur)st.cur.visible=true;const m=st.model;st.model=null;st.show(m).then(()=>res())},500);return false}return true})})};
+  return st}
+
+/* ---------- Variante A: Werkbank ---------- */
+(function(){
+  const root=document.getElementById('pA');const S=seed();let person='brenna',item='a',slot=0,pick=null,mode='set',busy=false;
+  const stage=Stage(root.querySelector('canvas'),root.querySelector('[data-hint]'));
+  const P=()=>S.people.find(p=>p.id===person),I=()=>P().items.find(i=>i.uid===item);
+  pick='water_rune_2';
+  document.getElementById('cmpseg').addEventListener('click',ev=>{const b=ev.target.closest('button');if(!b)return;CMP=b.dataset.c;document.querySelectorAll('#cmpseg button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(!pick&&mode==='set'){const it=I();pick=stockList(S).find(id=>fits(it,slot,id)&&id!==it.runes[slot])||null}render()});
+  async function sync3d(){const it=I();const flat=root.querySelector('[data-flat]');
+    if(mode==='merge'){flat.hidden=true;root.querySelector('canvas').style.visibility='visible';return}
+    if(!it.model){flat.hidden=false;flat.innerHTML=`<div><div style="font-size:42px">${it.ic}</div>Für Rüstung gibt es noch kein 3D-Modell.<br>Die Rune erscheint hier als Stein am Brustteil.</div>`;root.querySelector('canvas').style.visibility='hidden';return}
+    flat.hidden=true;root.querySelector('canvas').style.visibility='visible';await stage.show(it.model);const id=pick&&slot===0?pick:it.runes[0];await stage.setRune(id)}
+  function render(){
+    const it=I();root.querySelector('[data-gold]').textContent='🪙 '+fmt(S.gold);
+    root.querySelector('[data-people]').innerHTML=peopleHTML(S,person);root.querySelector('[data-items]').innerHTML=itemsHTML(P(),item);
+    root.querySelector('[data-probe]').hidden=!(pick&&mode==='set');
+    root.querySelector('[data-sockets]').innerHTML=mode==='set'?it.runes.map((id,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:1px">${gemHTML(pick&&slot===i?pick:id,{sel:slot===i,attr:`data-slot="${i}"`,label:`Platz ${i+1}`})}<span style="font-size:9px;color:#f3e6d2;font-family:var(--f-label)">${i?'klein':'groß'}</span></div>`).join(''):'';
+    root.querySelectorAll('[data-mode] button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===mode)));
+    const eff=root.querySelector('[data-effect]');const tray=root.querySelector('[data-tray]');const main=root.querySelector('[data-main]');
+    if(mode==='set'){
+      const cur=it.runes.slice();const nxt=cur.slice();if(pick)nxt[slot]=pick;
+      eff.innerHTML=pick?diffHTML(it,cur,nxt,`${R[pick].n} in ${it.n}`):`<div class="caps">${it.n} · ${it.rarity?it.rarity+' · ':''}${it.runes.length} Platz${it.runes.length>1?'e':''}</div><div class="side" style="background:none;padding:0;display:flex;flex-direction:column;gap:3px">${sideHTML(it,cur,it.base)}</div>`;
+      const ids=stockList(S),buy=buyList(S);
+      tray.innerHTML=ids.map(id=>{const ok=fits(it,slot,id);return `<div class="cell">${gemHTML(id,{count:S.stock[id],sel:pick===id,off:!ok,attr:`data-rune="${id}" ${ok?'':`title="${whyNot(it,slot,id)}"`}`})}${R[id].n.replace(' ','&nbsp;')}</div>`}).join('')+
+        buy.filter(id=>fits(it,slot,id)).slice(0,3).map(id=>`<div class="cell">${gemHTML(id,{dashed:true,sel:pick===id,attr:`data-rune="${id}" data-buy="1"`})}🪙&nbsp;${R[id].price}</div>`).join('');
+      const occ=it.runes[slot];const buying=pick&&!(S.stock[pick]>0);
+      if(pick){main.disabled=false;main.textContent=buying?`Kaufen und einsetzen · 🪙 ${R[pick].price}`:occ?`Tauschen · ${R[occ].n} zurück in den Konvoi`:'Einsetzen · kostenlos'}
+      else if(occ){main.disabled=false;main.textContent=`${R[occ].n} ausbauen · kostenlos`}
+      else{main.disabled=true;main.textContent='Rune wählen'}
+      const bad=pick?null:null;void bad;
+    } else {
+      const ids=stockList(S).filter(id=>!R[id].util);
+      eff.innerHTML=pick?`<div class="caps">Verschmelzen</div><div class="mergebox">${[0,1,2].map(()=>gemHTML(pick)).join('')}<span style="font-weight:700">+ 🪙 ${B.merge.gold*R[pick].t}</span><span style="font-weight:700">→ ${nextTier(pick)?gemHTML(nextTier(pick),{big:true}):''}</span></div><div class="line mut" style="justify-content:center">${nextTier(pick)?`${R[nextTier(pick)].n}: ${profile({kind:'weapon',st:{mt:0,hit:0,crit:0,wt:0}},[nextTier(pick)]).status?`${B.chance[R[nextTier(pick)].t]} % ${B.status[R[pick].el]}`:''}${R[nextTier(pick)].t===3&&(R[pick].el==='fire'||R[pick].el==='water'||R[pick].el==='light')?' · Gelände/Extra':''}`:''}</div>`
+        :`<div class="caps">Verschmelzen · Raumstufe ${S.room}: bis Stufe ${['','I','II','III'][S.room]}</div><div class="line">Drei gleiche Steine und Gold ergeben die nächste Stufe. Tippe einen Stein.</div>`;
+      tray.innerHTML=ids.map(id=>{const e=mergeErr(S,id);return `<div class="cell">${gemHTML(id,{count:S.stock[id],sel:pick===id,off:!!e,attr:`data-rune="${id}"`})}${e?e:'bereit'}</div>`}).join('');
+      const e=pick&&mergeErr(S,pick);main.disabled=!pick||!!e||busy;main.textContent=pick?(e?e:`Verschmelzen · 🪙 ${B.merge.gold*R[pick].t}`):'Stein wählen';
+    }
+    sync3d().catch(console.error);
+  }
+  root.addEventListener('click',async ev=>{const t=ev.target.closest('button');if(!t||busy)return;
+    if(t.dataset.person){person=t.dataset.person;item=P().items[0].uid;slot=0;pick=null}
+    else if(t.dataset.item){item=t.dataset.item;slot=0;pick=null}
+    else if(t.dataset.slot!==undefined){slot=+t.dataset.slot;pick=null}
+    else if(t.dataset.m){mode=t.dataset.m;pick=null}
+    else if(t.dataset.rune){if(t.classList.contains('off')&&mode==='set'){toast(root,t.title||'passt hier nicht');return}pick=pick===t.dataset.rune?null:t.dataset.rune}
+    else if(t.dataset.main!==undefined){const it=I();
+      if(mode==='set'){const occ=it.runes[slot];
+        if(pick){if(!(S.stock[pick]>0)){S.gold-=R[pick].price;S.stock[pick]=(S.stock[pick]||0)+1}S.stock[pick]--;if(occ)S.stock[occ]=(S.stock[occ]||0)+1;it.runes[slot]=pick;toast(root,occ?`${R[occ].n} zurück im Konvoi`:`${R[pick].n} eingesetzt`);pick=null}
+        else if(occ){S.stock[occ]=(S.stock[occ]||0)+1;it.runes[slot]=null;toast(root,`${R[occ].n} ausgebaut`)}}
+      else if(pick&&!mergeErr(S,pick)){busy=true;const nx=nextTier(pick);const id=pick;render();
+        await stage.merge(id,nx).catch(console.error);S.stock[id]-=3;S.gold-=B.merge.gold*R[id].t;S.stock[nx]=(S.stock[nx]||0)+1;busy=false;pick=nx;toast(root,`${R[nx].n} entstanden`)}}
+    else return;render()});
+  render();
+})();
+
+/* ---------- Variante B: Runentisch mit Rad ---------- */
+(function(){
+  const root=document.getElementById('pB');const S=seed();let person='brenna',item='a',el=null,tier=null,util=null,merge=false;
+  const P=()=>S.people.find(p=>p.id===person),I=()=>P().items.find(i=>i.uid===item);
+  const POS={fire:[118,40],wind:[198,110],earth:[118,182],water:[38,110],light:[262,50],dark:[262,175]};
+  function tiersOf(e){return [1,2,3].map(t=>`${e}_rune_${t}`).filter(id=>R[id])}
+  function chosen(){return util||(el&&tier?`${el}_rune_${tier}`:null)}
+  function render(){
+    const it=I();root.querySelector('[data-gold]').textContent='🪙 '+fmt(S.gold);
+    root.querySelector('[data-people]').innerHTML=peopleHTML(S,person);root.querySelector('[data-items]').innerHTML=itemsHTML(P(),item);
+    const ch=chosen();const isUtil=ch&&R[ch].util;const slot=ch?targetSlot(it,ch):0;const cur=it.runes.slice();const nxt=cur.slice();if(ch&&slot<nxt.length)nxt[slot]=ch;
+    const head=root.querySelector('[data-head]');
+    head.innerHTML=`<div style="display:flex;gap:8px;align-items:center"><div class="irow" style="border:0;padding:0"><div class="ic">${it.ic}</div></div><div style="flex:1;min-width:0"><b>${it.n}</b>${it.rarity?` <span class="mut">· ${it.rarity}</span>`:''}<div style="display:flex;gap:10px;margin-top:3px">${it.runes.map((id,i)=>`<span style="display:flex;align-items:center;gap:4px">${gemHTML(ch&&slot===i?ch:id,{attr:`data-take="${i}"`,label:`Platz ${i+1}`})}<span class="mut" style="font-size:10px">${i?'klein':'groß'}</span></span>`).join('')}</div></div></div>`+
+      (it.kind==='weapon'?`<div class="mrow">${ch?(()=>{const a=profile(it,cur),b=profile(it,nxt);const s=b.st,o=a.st;const d=(k,inv)=>{const v=s[k]-o[k];return v?` <b class="${(inv?v<0:v>0)?'up':'dn'}">${v>0?'+':''}${v}</b>`:''};return `<span class="vs">⚔ ${s.mt}${d('mt')}</span><span class="vs">🎯 ${s.hit}${d('hit')}</span><span class="vs">✶ ${s.crit}${d('crit')}</span><span class="vs">⚖ ${s.wt}${d('wt',true)}</span>${b.status?`<span class="vs">${elBadge(b.el)} ${b.status.c} % ${b.status.n}</span>`:''}${b.terrain?`<span class="vs">🌿 ${b.terrain}</span>`:''}`})():`<span class="mut" style="font-size:12px">Element im Rad tippen</span>`}</div>`:'');
+    root.querySelector('[data-wcap]').textContent=merge?'Schmelztiegel · Element wählen':it.kind==='weapon'?'Schaden gegen jedes Element':it.kind==='armor'?'Treffer gegen dich':'Widerstand (Zahl in Thema 7)';
+    // Rad
+    const pNow=profile(it,cur),pNew=profile(it,nxt);const base=it.base||0;const svg=root.querySelector('[data-rad]');
+    const arrows=Object.entries(B.cycle).map(([a,b])=>{const [x1,y1]=POS[a],[x2,y2]=POS[b];const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy),ux=dx/L,uy=dy/L;const hot=pNew.el&&(a===pNew.el||b===pNew.el);
+      return `<line x1="${x1+ux*28}" y1="${y1+uy*28}" x2="${x2-ux*30}" y2="${y2-uy*30}" stroke="${hot?(a===pNew.el?'#2F8A4C':'#B83A2E'):'#c7b597'}" stroke-width="${hot?3.5:2}" marker-end="url(#bm${hot?(a===pNew.el?'g':'r'):''})"/>`}).join('')+
+      `<line x1="262" y1="78" x2="262" y2="147" stroke="#c7b597" stroke-width="2" marker-end="url(#bm)" marker-start="url(#bs)"/>`;
+    const nodes=ORDER.map(e=>{const [x,y]=POS[e];const n=tiersOf(e).reduce((t,id)=>t+(S.stock[id]||0),0);const on=el===e&&!util;
+      let lab='';
+      if(!merge&&pNew.el&&it.kind==='weapon'){const v0=dmg(base,mult(pNow.el,e)),v=dmg(base,mult(pNew.el,e));lab=`<text x="${x}" y="${y+(e==='light'?-31:38)}" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="14" fill="${v>v0?'#2F8A4C':v<v0?'#B83A2E':'#3B2A20'}">⚔ ${v}${v!==v0?(v>v0?' ▲':' ▼'):''}</text>`}
+      else if(!merge&&pNew.el&&it.kind==='armor'){const m=mult(e,pNew.el);lab=`<text x="${x}" y="${y+(e==='light'?-31:38)}" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="14" fill="${m<1?'#2F8A4C':m>1?'#B83A2E':'#3B2A20'}">${fx(m)}</text>`}
+      else lab=`<text x="${x}" y="${y+(e==='light'?-31:38)}" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="13" fill="#7A6553">${EL[e].n}</text>`;
+      return `<g data-el="${e}" style="cursor:pointer" role="button" aria-label="${EL[e].n}, ${n} Steine"><circle cx="${x}" cy="${y}" r="${on?25:21}" fill="${EL[e].c}" stroke="#3B2A20" stroke-width="${on?3.5:2}" ${n?'':'opacity=".45"'}/><svg x="${x-10}" y="${y-10}" width="20" height="20" viewBox="0 0 24 24">${GLYPH[e]}</svg>${n?`<circle cx="${x+18}" cy="${y-17}" r="9" fill="#3B2A20"/><text x="${x+18}" y="${y-13}" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="12" fill="#FFF8EC">${n}</text>`:''}${lab}</g>`}).join('');
+    const center=merge?`<g data-pot style="cursor:pointer"><circle cx="118" cy="110" r="30" fill="#3B2A20"/><text x="118" y="106" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="12" fill="#FFF8EC">Tiegel</text><text x="118" y="121" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="11" fill="#F7D96B">zurück</text></g>`
+      :`<g data-pot style="cursor:pointer"><circle cx="118" cy="110" r="24" fill="#F4E9D6" stroke="#3B2A20" stroke-width="2" stroke-dasharray="4 3"/><text x="118" y="107" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="11" fill="#3B2A20">Ver-</text><text x="118" y="119" text-anchor="middle" font-family="Barlow Condensed" font-weight="700" font-size="11" fill="#3B2A20">schmelzen</text></g>`;
+    svg.innerHTML=`<defs>${[['','#c7b597'],['g','#2F8A4C'],['r','#B83A2E']].map(([k,c])=>`<marker id="bm${k}" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L8 4L0 8z" fill="${c}"/></marker>`).join('')}<marker id="bs" viewBox="0 0 8 8" refX="2" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M8 0L0 4L8 8z" fill="#c7b597"/></marker></defs>${arrows}${center}${nodes}`;
+    // Stufen
+    const tiers=root.querySelector('[data-tiers]');
+    tiers.innerHTML=el&&!util?tiersOf(el).map(id=>{const r=R[id];const n=S.stock[id]||0;const e=merge?mergeErr(S,id):null;const can=merge?!e:(n>0||r.price);return `<button type="button" data-tier="${r.t}" aria-pressed="${tier===r.t}" ${can?'':'disabled style="opacity:.4"'}>${['I','II','III'][r.t-1]} · ${merge?(e||'bereit'):n?`${n}×`:r.price?`🪙 ${r.price}`:'0'}</button>`}).join(''):`<span class="mut" style="font-size:12px">${merge?'Element mit mindestens 3 gleichen Steinen tippen':''}</span>`;
+    root.querySelector('[data-util]').innerHTML=merge?'':Object.keys(R).filter(id=>R[id].util).map(id=>{const n=S.stock[id]||0;const ok=it.kind==='weapon';return `<div style="display:flex;flex-direction:column;align-items:center;font-size:9.5px;color:var(--g-soft)">${gemHTML(id,{count:n,sel:util===id,off:!ok,attr:`data-util="${id}" ${ok?'':'title="Rüstung und Schild nehmen nur Element-Runen"'}`,dashed:!n})}${n?R[id].n:'🪙 '+R[id].price}</div>`}).join('');
+    const main=root.querySelector('[data-main]');
+    if(merge){const id=el&&tier?`${el}_rune_${tier}`:null;const e=id&&mergeErr(S,id);main.disabled=!id||!!e;main.textContent=id?(e||`3 × ${R[id].n} → ${R[nextTier(id)].n} · 🪙 ${B.merge.gold*R[id].t}`):'Stein wählen'}
+    else if(ch){if(isUtil&&it.kind!=='weapon'){main.disabled=true;main.textContent='Nur Element-Runen'}else{const occ=cur[slot];const buy=!(S.stock[ch]>0);main.disabled=false;main.textContent=buy?`Kaufen und einsetzen · 🪙 ${R[ch].price}`:occ?`Tauschen · ${R[occ].n} zurück`:'Einsetzen · kostenlos'}}
+    else{const occ=cur.findIndex(Boolean);main.disabled=occ<0;main.textContent=occ<0?'Element im Rad wählen':`${R[cur[occ]].n} ausbauen · kostenlos`;main.dataset.out=occ}
+  }
+  root.addEventListener('click',ev=>{const g=ev.target.closest('[data-el],[data-pot]');const t=ev.target.closest('button');
+    if(g&&g.dataset.pot!==undefined){merge=!merge;el=null;tier=null;util=null}
+    else if(g){const e=g.dataset.el;if(el===e&&!util){el=null;tier=null}else{el=e;util=null;const own=tiersOf(e).filter(id=>S.stock[id]>0);tier=own.length?R[own[own.length-1]].t:(R[`${e}_rune_1`].price?1:null);if(merge){const ok=tiersOf(e).find(id=>!mergeErr(S,id));tier=ok?R[ok].t:null}}}
+    else if(t&&t.dataset.person){person=t.dataset.person;item=P().items[0].uid;el=tier=util=null}
+    else if(t&&t.dataset.item){item=t.dataset.item;el=tier=util=null}
+    else if(t&&t.dataset.tier){tier=+t.dataset.tier}
+    else if(t&&t.dataset.util){if(t.classList.contains('off')){toast(root,t.title);return}util=util===t.dataset.util?null:t.dataset.util;el=tier=null}
+    else if(t&&t.dataset.take!==undefined){const i=+t.dataset.take;const it=I();if(it.runes[i]){S.stock[it.runes[i]]=(S.stock[it.runes[i]]||0)+1;toast(root,`${R[it.runes[i]].n} ausgebaut`);it.runes[i]=null}}
+    else if(t&&t.dataset.main!==undefined){const it=I();
+      if(merge){const id=`${el}_rune_${tier}`;if(!mergeErr(S,id)){const nx=nextTier(id);S.stock[id]-=3;S.gold-=B.merge.gold*R[id].t;S.stock[nx]=(S.stock[nx]||0)+1;tier=R[nx].t;toast(root,`${R[nx].n} entstanden`)}}
+      else{const ch=chosen();if(ch){const slot=targetSlot(it,ch);const occ=it.runes[slot];if(!(S.stock[ch]>0)){S.gold-=R[ch].price;S.stock[ch]=(S.stock[ch]||0)+1}S.stock[ch]--;if(occ)S.stock[occ]=(S.stock[occ]||0)+1;it.runes[slot]=ch;toast(root,`${R[ch].n} eingesetzt`);el=tier=util=null}
+        else{const i=it.runes.findIndex(Boolean);if(i>=0){S.stock[it.runes[i]]=(S.stock[it.runes[i]]||0)+1;toast(root,`${R[it.runes[i]].n} ausgebaut`);it.runes[i]=null}}}}
+    else return;render()});
+  render();
+})();
+
+/* ---------- Variante C: Liste ---------- */
+(function(){
+  const root=document.getElementById('pC');const S=seed();let person='brenna',mode='set',open=null,pick=null;
+  const P=()=>S.people.find(p=>p.id===person);
+  function effShort(it,id){const r=R[id];if(r.util)return Object.entries(r.mods).map(([k,v])=>`<span class="vs">${{mt:'⚔',hit:'🎯',crit:'✶',wt:'⚖'}[k]} <b class="${(k==='wt'?v<0:v>0)?'up':'dn'}">${v>0?'+':''}${v}</b></span>`).join('');
+    if(it.kind==='weapon'){const best=ORDER.filter(e=>mult(r.el,e)>1),worst=ORDER.filter(e=>mult(r.el,e)<1);const bs=it.base;
+      return best.map(e=>`<span class="vs">${elBadge(e)} ⚔ ${dmg(bs,mult(r.el,e))} <b class="up">▲</b></span>`).join('')+worst.map(e=>`<span class="vs">${elBadge(e)} ⚔ ${dmg(bs,mult(r.el,e))} <b class="dn">▼</b></span>`).join('')+(r.t>=2&&B.status[r.el]?`<span class="vs">${B.chance[r.t]} % ${B.status[r.el]}</span>`:'')+(r.t===3&&(r.el==='fire'||r.el==='water')?`<span class="vs">🌿 ${r.el==='fire'?'entzündet':'löscht'}</span>`:'')+(r.t===3&&r.el==='light'?'<span class="vs">✦ Monster, Untote</span>':'')}
+    if(it.kind==='armor')return ORDER.map(e=>{const m=mult(e,r.el);return m===1?'':`<span class="vs">${elBadge(e)} <b class="${m<1?'up':'dn'}">${fx(m)}</b></span>`}).join('');
+    return `<span class="vs">${elBadge(r.el)} Widerstand</span>`}
+  function render(){
+    root.querySelector('[data-gold]').textContent='🪙 '+fmt(S.gold);root.querySelector('[data-people]').innerHTML=peopleHTML(S,person);
+    root.querySelectorAll('[data-mode] button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.m===mode)));
+    const list=root.querySelector('[data-list]');
+    if(mode==='set'){list.innerHTML=P().items.map(it=>{const p=profile(it,it.runes);return `<div class="irow"><div class="ic">${it.ic}</div><div style="flex:1;min-width:0"><b>${it.n}</b>${it.rarity?` <span class="mut">· ${it.rarity}</span>`:''}<div class="line mut">${p.el?`${elBadge(p.el,14)} ${EL[p.el].n}${p.status?` · ${p.status.c} % ${p.status.n}`:''}`:'ohne Element'}</div></div><div style="display:flex;gap:8px">${it.runes.map((id,i)=>gemHTML(id,{attr:`data-open="${it.uid}:${i}"`,label:`Platz ${i+1}`})).join('')}</div></div>`}).join('')+
+      `<p class="mut" style="font-size:11.5px;padding:8px 4px">Waffe in 3D ansehen: Truppe → Waffe (Thema 3).</p>`}
+    else{const ids=Object.keys(R).filter(id=>!R[id].util&&nextTier(id));list.innerHTML=`<div class="caps" style="padding:4px">Raumstufe ${S.room} · bis Stufe ${['','I','II','III'][S.room]}</div>`+ids.filter(id=>(S.stock[id]||0)>0).map(id=>{const e=mergeErr(S,id);const n=S.stock[id]||0;return `<div class="irow">${gemHTML(id)}<div style="flex:1"><b>${R[id].n}</b> <span class="mut">→ ${R[nextTier(id)].n}</span><div style="height:6px;background:#eadcc4;border-radius:9px;margin-top:4px;overflow:hidden"><div style="height:100%;width:${Math.min(100,n/3*100)}%;background:${EL[R[id].el].c}"></div></div></div><button type="button" class="btn2" data-merge="${id}" ${e?'disabled style="opacity:.45"':''}>${e||`🪙 ${B.merge.gold*R[id].t}`}</button></div>`}).join('')}
+    const sh=root.querySelector('[data-sheet]');sh.classList.toggle('on',!!open);
+    if(open){const [uid,i]=open.split(':');const it=P().items.find(x=>x.uid===uid);const idx=+i;const occ=it.runes[idx];
+      root.querySelector('[data-stitle]').textContent=`${it.n} · ${slotLabel(it,idx)}`;
+      const ids=[...new Set([...stockList(S),...buyList(S)])].sort((a,b)=>fits(it,idx,b)-fits(it,idx,a));
+      root.querySelector('[data-slist]').innerHTML=(occ?`<div class="rrow" style="background:var(--g-tone);cursor:default">${gemHTML(occ)}<div class="tx"><b>${R[occ].n} sitzt hier</b><div class="mrow">${effShort(it,occ)}</div></div></div>`:'')+
+        ids.map(id=>{const ok=fits(it,idx,id);const n=S.stock[id]||0;return `<button type="button" class="rrow" data-pick="${id}" aria-pressed="${pick===id}" ${ok?'':'disabled'}>${gemHTML(id,{count:n,dashed:!n})}<div class="tx"><b>${R[id].n} <span class="mut" style="font-weight:500">${n?`· ${n} im Konvoi`:`· 🪙 ${R[id].price}`}</span></b><div class="mrow">${ok?effShort(it,id):`<span class="mut" style="font-size:11.5px">${whyNot(it,idx,id)}</span>`}</div></div></button>`}).join('');
+      const main=sh.querySelector('[data-main]');main.disabled=!pick&&!occ;main.textContent=pick?(!(S.stock[pick]>0)?`Kaufen und einsetzen · 🪙 ${R[pick].price}`:occ?'Tauschen':'Einsetzen · kostenlos'):occ?`${R[occ].n} ausbauen · kostenlos`:'Rune wählen'}
+  }
+  root.addEventListener('click',ev=>{const t=ev.target.closest('button');if(!t)return;
+    if(t.dataset.person){person=t.dataset.person;open=pick=null}
+    else if(t.dataset.m){mode=t.dataset.m;open=pick=null}
+    else if(t.dataset.open){open=t.dataset.open;pick=null}
+    else if(t.dataset.close!==undefined){open=pick=null}
+    else if(t.dataset.pick){pick=pick===t.dataset.pick?null:t.dataset.pick}
+    else if(t.dataset.merge){const id=t.dataset.merge;if(!mergeErr(S,id)){const nx=nextTier(id);S.stock[id]-=3;S.gold-=B.merge.gold*R[id].t;S.stock[nx]=(S.stock[nx]||0)+1;toast(root,`${R[nx].n} entstanden`)}}
+    else if(t.dataset.main!==undefined&&open){const [uid,i]=open.split(':');const it=P().items.find(x=>x.uid===uid);const idx=+i;const occ=it.runes[idx];
+      if(pick){if(!(S.stock[pick]>0)){S.gold-=R[pick].price;S.stock[pick]=(S.stock[pick]||0)+1}S.stock[pick]--;if(occ)S.stock[occ]=(S.stock[occ]||0)+1;it.runes[idx]=pick;toast(root,`${R[pick].n} eingesetzt`)}
+      else if(occ){S.stock[occ]=(S.stock[occ]||0)+1;it.runes[idx]=null;toast(root,`${R[occ].n} ausgebaut`)}open=pick=null}
+    else return;render()});
+  render();
+})();
+})();
+</script>

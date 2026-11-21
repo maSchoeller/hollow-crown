@@ -254,3 +254,49 @@ Die Abnahmebilder von Story 10.13 zeigten im Spielblick (375 × 812, Kamera 35°
 Abnahmebilder neu erzeugt mit `node tools/art/part-shots.mjs` nach `art/models/parts/shots/`. Die Namen der Teile bleiben unverändert (Produktinhaber 2026-11-14).
 
 **Abnahme:** Der Produktinhaber hat die sieben nachgearbeiteten Teile am 2026-11-14 an den neuen Abnahmebildern abgenommen. Damit sind alle 16 Teile von Story 10.13 abgenommen.
+
+## 2026-11-21: Runenwaffen (Konzept „Ausrüstung zum Anfassen“, Thema 1)
+
+Ausgangspunkt: Der Produktinhaber fand Runen undurchsichtig und die Waffenmodelle zu einfach. Drei Leucht-Varianten am alten Modell (ganze Waffe färbt sich, aufgesetzter Stein, schwebende Gravur) hat er verworfen: Die Rune muss sich ins Metall schmiegen, alles aus einem Guss. Daraus §4.7: eingelassene Fassung plus Gravurrinne, deren Füllstand die Stufe zeigt.
+
+- Tripo ist für Waffen zu teuer. Stattdessen ChatGPT-Baupläne aus allen Ansichten und Nachbau in Blender durch Subagenten.
+- Abgenommen (Produktinhaber 2026-11-21): Konzeptblatt, Axt, dann Schwert, Schild, Lanze und 20 Runensteine in der Waffenkammer-Ansicht („Sehr, sehr gut“).
+- Entschieden: Brett-Leuchten immer gedämpft, voll bei Auswahl und in der Vorschau; zweite Rune in kleiner zweiter Fassung; Material per Tönung; Gegnerwaffen leuchten auch.
+- Offen für eine spätere Runde: Schild wirkt einheitlich beige, Steinstufen I und II von vorn zu ähnlich, Krallen klein, Axt-Tülle kastig. Noch nicht im Spiel eingebaut.
+
+## 2026-11-21: Runen im Verzauberer (Konzept „Ausrüstung zum Anfassen“, Thema 2)
+
+- Abgenommen (Produktinhaber 2026-11-21): Der Verzauberer zeigt das gewählte Item als 3D-Modell aus `art/models/weapons-v2/`. Eine Rune zur Probe sitzt als Stein aus `art/models/runes-v2/` in der Fassung, die Rinne füllt sich nach Stufe wie in §4.7; der Stein wächst beim Einlegen kurz auf.
+- Verschmelzen in derselben Bühne: drei Steine kreisen zusammen, ein Lichtblitz in Elementfarbe, der Stein der nächsten Stufe wächst heraus.
+- Offen: Rüstung und Schild-Runen im Raum, solange Rüstung kein Modell hat (vorerst Bild mit Stein am Brustteil); die zweite, kleine Fassung ist im Modell noch nicht gebaut und erscheint vorerst nur als Stein über der Bühne.
+
+## 2026-11-21: Figur im Figurenblatt (Konzept „Ausrüstung zum Anfassen“, Thema 3)
+
+- Abgenommen (Produktinhaber 2026-11-21): Figur als Brettmodell über das ganze Handy, leichte Kampfhaltung (Beine breiter, Arme vom Körper weg, „nicht zu krass“); soll später jede Figur bekommen. Im Mockup per Hand an den Mixamo-Knochen gesetzt (`art/mockups/ausruestung-2026-11/truppe.html`, `POSE`), fürs Spiel als eigene Stand-Pose bzw. Animation (Thema 6).
+- Befunde aus der Abnahme: Der Stand dreht das Handgelenk und damit den Schild alle paar Sekunden weg – Hände im Stand ruhig halten. Der Schild greift in den Oberarm – weiter nach außen setzen. Rinne und Stein flimmerten gegen die Platte – Tiefenversatz bzw. Abstand im Modell.
+
+## 2026-11-21: Runen und Gelände auf dem Brett (Konzept „Ausrüstung zum Anfassen“, Thema 5)
+
+- Abgenommen (Produktinhaber 2026-11-21): In der Kampfvorschau leuchten die Runenwaffen von Angreifer und Ziel voll, alle anderen glimmen gedämpft weiter. Die Rune erscheint als Kreis in Elementfarbe mit römischer Stufe am Waffen-Chip; das Element-Band über der Tabelle zeigt beide Elemente in denselben Farben.
+- Gelände-Linse in Wirkungsfarben (grün Schutz, gold langsam, rot Schaden, Creme-Streifen schnell, Schraffur gesperrt), über dem Boden und unter den Figuren. Werte und Ablauf in `concept/25-ux/DESIGN.md` und `EXPERIENCE.md`, Mockup `art/mockups/ausruestung-2026-11/brett.html`.
+
+## 2026-11-21: Ruhe, Haltung und Griff-Rig (Konzept „Ausrüstung zum Anfassen“, Thema 6)
+
+Ausgangspunkt: Der Produktinhaber fand das Taumeln der Stand-Animation unnatürlich. Ist im Dev-Build: eine Stand-Animation für alle mit vollem Ausschlag, die Hand dreht Waffe und Schild weg, Haltung je Waffe nur als ein Winkel am Griff (Lanze −125°).
+
+- Ruhe: von „gedämpft“, „nur Atmen“ und „Atmen + Gesten“ gewählt **Atmen + Gesten**.
+- Haltung: von „alle gesenkt“, „je Waffengruppe“ und „alle in Wache“ gewählt **je Waffengruppe**, mit dem Auftrag, jede Waffe sauber an die Figur zu riggen (Schwert normal mit Spitze nach oben, Lanze und Stab sauber austariert), aufgeteilt nach Waffenarten, weil dieselben Griffe später die Kampfanimationen tragen. Daraus das Griff-Rig in §4.5. Zwei Abnahmerunden: Schwert mit Schneide nach vorn statt quer, Axt zweimal gedreht bis die Schneide nach unten zeigt, Buch nicht mehr an die Brust gepappt, sondern zugeklappt an der Hüfte und in der Kampfhaltung aufgeschlagen.
+- Brett: von „immer kampfbereit“ und „bei Auswahl“ gewählt **bei Auswahl** (passt zum vollen Runenleuchten aus Thema 5).
+- Hände: von „Faust im Turnaround“, „offene Hände reichen“ und „Fingerknochen riggen“ gewählt **Fingerknochen riggen**.
+- Befund Mockup: Der Animations-Mixer von three.js schreibt einen Knochen nur, wenn sich sein Wert ändert; Zusatzdrehungen müssen je Bild zurückgenommen werden, sonst laufen sie auf. Im Spiel betrifft das nichts, dort wird gebacken.
+
+## 2026-11-21: Waffenkammer im Bergfried (Konzept „Ausrüstung zum Anfassen“, Thema 8)
+
+Ausgangspunkt: Die Vitrine für besondere Waffen war beschlossen, offen waren Ort, Inhalt und Bild in der 3D-Burg. Ist im Dev-Build: Burg mit elf Räumen, keine Stelle zeigt besondere Waffen.
+
+- Ort: von „Flügel der Gedächtnishalle“, „Waffenwand beim Schmied“ und „eigener Ort im Bergfried“ gewählt **Bergfried**: eigener Stein, Gewölbe-Szene, Ständer auf einer Drehscheibe.
+- Inhalt: **Relikte und Signaturwaffen**, keine Beinamen-Waffen, keine Andenken Gefallener.
+- Getragene Stücke als **heller Umriss** mit dem Kopf der Trägerin; leere Ständer grau mit Fortschritt.
+- Außen am Bergfried **je Stück ein Banner** in Runenfarbe (ohne Rune gold).
+- Folge: Relikte und Signaturen ohne Waffenmodell (Drachenglut, Letzter Vorhang) brauchen ein Modell; bis dahin Item-Bild auf dem Ständer.
+- Mockup `art/mockups/ausruestung-2026-11/vitrine.html` (echte Modelle aus `art/models/weapons-v2/` und `runes-v2/`).

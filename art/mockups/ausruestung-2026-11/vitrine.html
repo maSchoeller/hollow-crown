@@ -1,0 +1,525 @@
+<title>Waffenkammer-Vitrine</title>
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+/* Thema 8 der Reihe „Ausrüstung zum Anfassen“: Ist-Zustand, Inhalt der Vitrine, drei Handy-Rahmen (Burg → Vitrine → Waffe), Fragen */
+:root{
+  --bg:#F6EEDF; --panel:#FFF8EC; --tone:#F4E9D6; --line:#3B2A20; --soft:#7A6553; --ember:#E8743B; --ember-d:#B44C18; --rule:#E3D5BE;
+  --pos:#2F8A4C; --neg:#B83A2E;
+  --f-name:'Fraunces',Georgia,serif; --f-body:'Barlow',system-ui,sans-serif; --f-label:'Barlow Condensed','Arial Narrow',sans-serif;
+  --g-cream:#FFF8EC; --g-tone:#F4E9D6; --g-line:#3B2A20; --g-soft:#7A6553;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#1F1813;--panel:#2A211A;--tone:#352a21;--line:#F3E6D2;--soft:#C2AE98;--rule:#4a3b2e;--ember-d:#F08a55;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1F1813;--panel:#2A211A;--tone:#352a21;--line:#F3E6D2;--soft:#C2AE98;--rule:#4a3b2e;--ember-d:#F08a55;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--line);font-family:var(--f-body);font-size:16px;line-height:1.5;margin:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 60px}
+.wrap{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:44px}
+h1,h2,h3{font-family:var(--f-name);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,4.6vw,42px);font-weight:800} h2{font-size:clamp(22px,3vw,29px);font-weight:800} h3{font-size:19px;font-weight:600}
+p{margin:0;max-width:68ch}
+.kicker{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.09em;font-size:13px;color:var(--ember-d);font-weight:700}
+.lead{font-size:18px;color:var(--soft)}
+.small{font-size:14px;color:var(--soft)}
+section{display:flex;flex-direction:column;gap:16px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;min-width:0}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.ist{display:grid;grid-template-columns:repeat(2,minmax(0,250px)) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.ist{grid-template-columns:1fr 1fr}.ist .card{grid-column:1/-1}}
+.ist img{width:100%;border-radius:14px;border:2px solid var(--line);display:block}
+.ist figcaption{font-size:13px;color:var(--soft);margin-top:4px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{font-family:var(--f-label);font-weight:700;font-size:14px;border:2px solid var(--line);background:var(--panel);color:var(--line);border-radius:99px;padding:5px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.seg button svg{width:16px;height:16px}
+.seg button[aria-pressed="true"]{background:var(--line);color:var(--bg)}
+button:focus-visible{outline:3px solid var(--ember);outline-offset:2px}
+.ctrl{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;align-items:center}
+@media (max-width:560px){.ctrl{grid-template-columns:1fr}}
+.ctrl .lb{font-family:var(--f-label);font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:13px;color:var(--soft)}
+
+/* Handy-Rahmen im Spiel-Look (Farben in beiden Themen gleich) */
+.mocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:30px;align-items:start}
+.mock{display:flex;flex-direction:column;gap:10px;min-width:0}
+.tag{display:inline-block;font-family:var(--f-label);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;padding:1px 8px;border-radius:99px;border:1.5px solid currentColor;color:var(--ember-d)}
+.phone{width:100%;max-width:340px;height:740px;border-radius:34px;border:6px solid #1c1410;background:#2b211a;position:relative;overflow:hidden;margin:0 auto;color:var(--g-line);font-family:var(--f-body);font-size:13px;line-height:1.3}
+.scr{position:absolute;inset:0;display:none}
+.scr.on{display:block}
+.steps{display:flex;gap:6px;justify-content:center}
+.steps button{font-family:var(--f-label);font-weight:700;font-size:13px;border:2px solid var(--line);background:var(--panel);color:var(--line);border-radius:99px;padding:3px 10px;cursor:pointer}
+.steps button[aria-pressed="true"]{background:var(--line);color:var(--bg)}
+.mock .note{font-size:14.5px;color:var(--soft)}
+.pro{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.pro{grid-template-columns:1fr}}
+.pro .card{padding:10px 12px;gap:4px;font-size:14px}
+.pro b{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.06em;font-size:12px}
+
+/* Bildschirm 1: Burg (Ist-Bild mit Einblendung) */
+.castle{position:absolute;left:0;right:0;top:0;aspect-ratio:390/844}
+.castle img{width:100%;height:100%;display:block}
+.hot{position:absolute;transform:translate(-50%,-50%);border:0;background:none;padding:0;cursor:pointer}
+.hot .ring{position:absolute;inset:-8px;border-radius:14px;border:2.5px dashed #fff;animation:pul 1.6s ease-in-out infinite}
+@keyframes pul{50%{opacity:.35}}
+.stands{display:flex;gap:5px;align-items:flex-end;padding:4px 6px;border-radius:8px;background:rgba(30,20,14,.55)}
+.stands i{width:4px;border-radius:2px;display:block;box-shadow:0 0 8px 2px var(--c);background:var(--c)}
+.stands i.off{box-shadow:none;background:#8d7b68}
+.callout{position:absolute;left:8px;right:8px;bottom:8px;background:var(--g-cream);border:2px solid var(--g-line);border-radius:14px;box-shadow:0 3px 0 var(--g-line);padding:8px 10px;font-size:12.5px;display:flex;gap:8px;align-items:center}
+.callout svg{flex:0 0 22px;height:22px}
+.rstone{width:42px;height:42px;border-radius:50%;background:var(--g-cream);border:2px solid var(--g-line);box-shadow:0 3px 0 var(--g-line);display:grid;place-items:center}
+.rstone svg{width:22px;height:22px}
+
+/* Bildschirm 2: Raum-Panel bzw. Vollbild-Gewölbe */
+.dim{position:absolute;inset:0;background:url(ist-burg.jpg) center top/100% auto;filter:blur(3px) brightness(.75)}
+.rpanel{position:absolute;left:8px;right:8px;top:62px;bottom:8px;background:var(--g-cream);border:2px solid var(--g-line);border-radius:20px;box-shadow:0 4px 0 var(--g-line);padding:10px;display:flex;flex-direction:column;gap:8px}
+.rhead{display:flex;gap:10px;align-items:center}
+.rhead .ic{width:40px;height:40px;border-radius:12px;border:2px solid var(--g-line);display:grid;place-items:center;flex:0 0 auto}
+.rhead .ic svg{width:22px;height:22px}
+.rhead .t{flex:1;min-width:0}
+.rhead .t b{font-family:var(--f-name);font-weight:800;font-size:19px;display:block;line-height:1.1}
+.rhead .t span{font-size:12px;color:var(--g-soft)}
+.xbtn{width:34px;height:34px;border-radius:50%;border:2px solid var(--g-line);background:var(--g-tone);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;padding:0}
+.xbtn svg{width:16px;height:16px}
+.toppill{position:absolute;left:8px;right:8px;top:8px;height:46px;background:var(--g-cream);border:2px solid var(--g-line);border-radius:99px;box-shadow:0 3px 0 var(--g-line);display:flex;align-items:center;gap:8px;padding:0 6px 0 6px;z-index:3}
+.toppill .ic{width:34px;height:34px;border-radius:50%;background:var(--ember);display:grid;place-items:center}
+.toppill .ic svg{width:18px;height:18px}
+.toppill .t{flex:1;min-width:0;line-height:1.05}
+.toppill .t small{display:block;font-family:var(--f-label);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:10px;color:var(--g-soft)}
+.toppill .t b{font-family:var(--f-name);font-weight:800;font-size:16px}
+.segm{display:flex;background:var(--g-tone);border-radius:99px;padding:2px;gap:2px}
+.segm button{flex:1;border:0;background:none;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:13.5px;padding:5px 6px;color:var(--g-line);cursor:pointer}
+.segm button[aria-pressed="true"]{background:var(--g-line);color:var(--g-cream)}
+.stage{position:relative;border-radius:14px;overflow:hidden;border:2px solid var(--g-line);background:#1d1611;flex:1 1 auto;min-height:0}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.stage .hint{position:absolute;left:8px;bottom:6px;color:#f3e6d2;background:rgba(0,0,0,.45);border-radius:99px;padding:1px 8px;font-size:11px;font-family:var(--f-label);letter-spacing:.04em;pointer-events:none}
+.plates{position:absolute;inset:0;pointer-events:none}
+.plate{position:absolute;transform:translate(-50%,0);pointer-events:auto;background:rgba(255,248,236,.94);border:1.5px solid var(--g-line);border-radius:9px;padding:2px 6px 3px;display:flex;flex-direction:column;align-items:center;gap:0;cursor:pointer;font:inherit;color:var(--g-line);max-width:92px;line-height:1.05}
+.plate b{font-family:var(--f-label);font-weight:700;font-size:12px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:84px}
+.plate span{display:flex;gap:3px;align-items:center;font-family:var(--f-label);font-weight:700;font-size:11px;color:var(--g-soft);font-variant-numeric:tabular-nums}
+.plate svg{width:11px;height:11px}
+.plate.ghost{background:rgba(255,248,236,.7);border-style:dashed}
+.plate.lock{background:rgba(255,248,236,.55);border-style:dashed;cursor:default}
+.plate .av{width:16px;height:16px;border-radius:50%;border:1.2px solid var(--g-line);object-fit:cover;background:#e8cfb5}
+.legend{display:flex;gap:4px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:4px;background:var(--g-tone);border-radius:99px;padding:2px 8px;font-family:var(--f-label);font-weight:700;font-size:12px;color:var(--g-line);font-variant-numeric:tabular-nums}
+.chip svg{width:13px;height:13px}
+.memo{display:flex;gap:10px;align-items:center;background:#ece4d6;border-radius:12px;padding:8px}
+.memo img{width:54px;height:54px;border-radius:50%;border:2px solid var(--g-line);filter:grayscale(1);object-fit:cover}
+.backstone{position:absolute;left:8px;top:8px;width:42px;height:42px;border-radius:50%;background:var(--g-cream);border:2px solid var(--g-line);box-shadow:0 3px 0 var(--g-line);display:grid;place-items:center;cursor:pointer;z-index:4;padding:0}
+.backstone svg{width:20px;height:20px}
+.vault{position:absolute;inset:0;display:flex;flex-direction:column}
+.vault .stage{border:0;border-radius:0;flex:1}
+.titlebar{position:absolute;left:58px;right:8px;top:8px;height:42px;background:var(--g-cream);border:2px solid var(--g-line);border-radius:99px;box-shadow:0 3px 0 var(--g-line);display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:3}
+.titlebar b{font-family:var(--f-name);font-weight:800;font-size:16px}
+.foot{position:absolute;left:8px;right:8px;bottom:8px;z-index:3;display:flex;justify-content:center}
+
+/* Bildschirm 3: Waffenansicht (Vollbild) */
+.wview{position:absolute;inset:0;background:radial-gradient(90% 60% at 50% 32%,#5a4a3c,#1d1611);display:flex;flex-direction:column;z-index:6}
+.wview .head{margin:8px;background:var(--g-cream);border:2px solid var(--g-line);border-radius:16px;box-shadow:0 3px 0 var(--g-line);padding:6px 6px 6px 12px;display:flex;gap:8px;align-items:center}
+.wview .head .t{flex:1;min-width:0}
+.wview .head b{font-family:var(--f-name);font-weight:800;font-size:18px;display:block;line-height:1.1}
+.wview .head span{font-size:12px;color:var(--g-soft)}
+.wview .mid{flex:1;position:relative;min-height:0}
+.wview .mid canvas{width:100%;height:100%;display:block;touch-action:none;cursor:grab}
+.wview .bottom{background:var(--g-cream);border-top:2px solid var(--g-line);border-radius:18px 18px 0 0;padding:10px;display:flex;flex-direction:column;gap:7px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.stat{display:flex;align-items:center;justify-content:center;gap:4px;background:var(--g-tone);border-radius:10px;padding:5px 2px;font-family:var(--f-label);font-weight:700;font-size:15px;font-variant-numeric:tabular-nums}
+.stat svg{width:15px;height:15px}
+.rline{display:flex;gap:7px;align-items:center;font-size:12.5px}
+.gem{width:22px;height:22px;border-radius:50%;border:2px solid var(--g-line);display:grid;place-items:center;flex:0 0 auto}
+.gem svg{width:62%;height:62%}
+.chron{display:flex;gap:7px;align-items:center;font-size:12.5px;background:#f1e7d6;border-radius:10px;padding:5px 8px}
+.chron svg{width:16px;height:16px;flex:0 0 auto}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.btn{background:var(--ember);color:#fff;border:2px solid var(--g-line);border-radius:99px;box-shadow:0 3px 0 var(--ember-d);font-family:var(--f-label);font-weight:700;font-size:15px;padding:7px 10px;text-align:center;cursor:pointer}
+.btn2{background:var(--g-cream);color:var(--g-line);border:2px solid var(--g-line);border-radius:99px;box-shadow:0 3px 0 var(--g-line);font-family:var(--f-label);font-weight:700;font-size:14px;padding:6px 10px;text-align:center;cursor:pointer}
+.qs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.qs .card b{font-family:var(--f-name);font-weight:600;font-size:16px}
+</style>
+
+<div class="wrap">
+<header style="display:flex;flex-direction:column;gap:8px">
+  <div class="kicker">Ausrüstung zum Anfassen · Thema 8 von 8</div>
+  <h1>Paktwacht: die Waffenkammer-Vitrine</h1>
+  <p class="lead">Besondere Waffen leuchten auf Ständern, Tippen öffnet die Waffenansicht. Offen sind drei Dinge: wo die Vitrine steht, was hineinkommt und wie man sie von außen an der Burg sieht. Die Modelle unten sind die echten Waffen v2 mit Runen.</p>
+</header>
+
+<section aria-labelledby="h-ist">
+  <h2 id="h-ist">So ist es heute</h2>
+  <div class="ist">
+    <figure style="margin:0"><img src="ist-burg.jpg" alt="Heimat-Burg im Dev-Build, Akt 2, alle elf Räume auf Stufe 3"><figcaption>Burg, Akt 2, alle Räume Stufe 3</figcaption></figure>
+    <figure style="margin:0"><img src="ist-gedaechtnishalle.jpg" alt="Panel der Gedächtnishalle mit Gerrits Gedenkstein und Lektionen"><figcaption>Gedächtnishalle: Gedenkstein, Lektion</figcaption></figure>
+    <div class="card">
+      <h3>Was es schon gibt</h3>
+      <ul>
+        <li>Elf Räume, jeder mit genau einer Funktion und drei Stufen. Panels öffnen über der Burg, ≤ 2 Taps.</li>
+        <li>Keine Stelle zeigt bisher besondere Waffen. Die Ausrüstung Gefallener geht still in den Konvoi.</li>
+        <li>Waffen-Chronik (Thema 7): Kills je Waffe, Beiname ab 10 oder sofort nach einem Leutnant, ungefähr 6 Beinamen je Durchgang in Akt 1.</li>
+        <li>Relikte: drei, eins je Akt (Schild der Paktwächter, Drachenglut, Akt 3 offen), sie erwachen mit der Story.</li>
+        <li>Gefährten-Gegenstände stehen schon fest an ihren Plätzen in der Burg.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-inhalt">
+  <h2 id="h-inhalt">Was in die Vitrine kommt</h2>
+  <p class="small">Gilt für alle drei Varianten. Schalte um und sieh dir an, wie voll oder leer es wird.</p>
+  <div class="card ctrl">
+    <span class="lb">Inhalt</span>
+    <div class="seg" id="catseg">
+      <button data-c="name" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2"/></svg>Beinamen-Waffen</button>
+      <button data-c="fallen" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21V10a4 4 0 0 1 8 0v11M5 21h14M12 13v4M10 15h4"/></svg>Andenken Gefallener</button>
+      <button data-c="relic" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 3 6 6 1-4.5 4 1 6-5.5-3-5.5 3 1-6L3 10l6-1z"/></svg>Relikte</button>
+      <button data-c="sig" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8l4 4 4-7 4 7 4-4-2 11H6z"/></svg>Signaturwaffen</button>
+    </div>
+    <span class="lb">Getragene</span>
+    <div class="seg" id="mirrorseg">
+      <button data-m="ghost" aria-pressed="true">als Umriss mit Träger</button>
+      <button data-m="hide" aria-pressed="false">gar nicht zeigen</button>
+    </div>
+    <span class="lb">Noch leer</span>
+    <div class="seg" id="emptyseg">
+      <button data-e="1" aria-pressed="true">leere Ständer mit Fortschritt</button>
+      <button data-e="0" aria-pressed="false">nur Gefülltes</button>
+    </div>
+  </div>
+  <p class="small">Vorschlag: Die Vitrine ist ein Spiegel, keine Ablage. Sie zeigt jede besondere Waffe, auch die, die gerade jemand trägt (als Umriss mit seinem Kopf). Nichts muss hineingelegt oder herausgeholt werden, keine Waffe fehlt dadurch im Kampf.</p>
+</section>
+
+<section aria-labelledby="h-var">
+  <h2 id="h-var">Drei Orte für die Vitrine</h2>
+  <p class="small">Jeder Rahmen hat drei Schritte: Burg, Vitrine, Waffe. Tippe auf die markierte Stelle in der Burg und dann auf ein Namensschild.</p>
+  <div class="mocks">
+    <div class="mock" id="mA">
+      <h3>A · Flügel der Gedächtnishalle <span class="tag">Gedenken und Ruhm</span></h3>
+      <div class="steps" data-steps></div>
+      <div class="phone" data-phone></div>
+      <p class="note">Die Gedächtnishalle bekommt einen zweiten Reiter „Waffenkammer“. Vor der Halle auf dem Felsabsatz steht eine Reihe Waffenständer; jeder gefüllte glimmt in der Farbe seiner Rune.</p>
+      <div class="pro"><div class="card"><b>Dafür</b>Gefallene und ihre Waffen am selben Ort, passt zur Paktwacht-Geschichte. Kein neuer Raum, keine neue Taste.</div><div class="card"><b>Dagegen</b>Die Halle bekommt eine zweite Aufgabe; „ein Raum, eine Funktion“ wird weicher. Die Ständer sind von unten klein.</div></div>
+    </div>
+    <div class="mock" id="mB">
+      <h3>B · Waffenwand beim Schmied <span class="tag">nah am Werkzeug</span></h3>
+      <div class="steps" data-steps></div>
+      <div class="phone" data-phone></div>
+      <p class="note">Der Schmied hängt die besonderen Waffen an eine Wand neben der Esse. Im Panel liegt die Wand als zweiter Reiter neben „Schmieden“; in der Burg glimmt die Wand an der Schmiede.</p>
+      <div class="pro"><div class="card"><b>Dafür</b>Von der Waffe direkt zu „Aufwerten“. Wand liegt im Hof, gut sichtbar.</div><div class="card"><b>Dagegen</b>Relikte und Andenken passen nicht in eine Werkstatt. Wirkt wie Lager, nicht wie Ehre.</div></div>
+    </div>
+    <div class="mock" id="mC">
+      <h3>C · Eigene Waffenkammer im Bergfried <span class="tag">eigener Ort, kein Raum</span></h3>
+      <div class="steps" data-steps></div>
+      <div class="phone" data-phone></div>
+      <p class="note">Ein eigener Stein mit Schwert über dem Bergfried, ohne Stufen und Ausbau. Er erscheint mit dem ersten Relikt oder der ersten Signaturwaffe. Tippen öffnet ein Gewölbe als 3D-Vollbild, die Ständer stehen im Halbkreis, Wischen dreht den Blick. Außen hängt je Stück ein Banner am Bergfried.</p>
+      <div class="pro"><div class="card"><b>Dafür</b>Das stärkste Bild, ein Ort zum Herzeigen. Wächst sichtbar mit: Banner am Turm.</div><div class="card"><b>Dagegen</b>Ein zwölfter Stein in der Burg und eine neue Szene (Gewölbe-Modell). Am meisten Arbeit.</div></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-q">
+  <h2 id="h-q">Entschieden am 21.11.2026</h2>
+  <div class="qs">
+    <div class="card"><b>Ort: C, Waffenkammer im Bergfried</b><span class="small">Eigener Stein über dem Bergfried, kein Raum: keine Stufen, kein Ausbau, kein Dock-Knopf. Tippen öffnet das Gewölbe als 3D-Vollbild, die Ständer stehen auf einer Drehscheibe.</span></div>
+    <div class="card"><b>Inhalt: Relikte und Signaturwaffen</b><span class="small">Beinamen-Waffen und Andenken Gefallener kommen nicht hinein; ihr Beiname steht weiter in der Chronik-Zeile der Waffenansicht.</span></div>
+    <div class="card"><b>Spiegel mit Umriss</b><span class="small">Getragene Stücke stehen als heller Umriss mit dem Kopf der Trägerin auf ihrem Ständer. Nichts wird abgelegt oder blockiert.</span></div>
+    <div class="card"><b>Leere Ständer mit Fortschritt</b><span class="small">Verborgene Relikte mit Schloss, Signaturen in Reichweite mit Stand („Ulvric 2 von 4“). Außen hängt je Stück ein Banner am Turm.</span></div>
+  </div>
+</section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script>
+/* ---------- Grunddaten ---------- */
+const EL={fire:{n:'Feuer',c:'#F2603A'},wind:{n:'Wind',c:'#7BD389'},earth:{n:'Erde',c:'#B9874B'},water:{n:'Wasser',c:'#4AA8E8'},light:{n:'Licht',c:'#F7D96B'},dark:{n:'Dunkel',c:'#8E5BD9'}};
+const GLYPH={
+  fire:'<path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-3-1-6 1-9z" fill="#3B2A20"/>',
+  wind:'<path d="M4 9h11a3 3 0 1 0-3-3M4 14h14a3 3 0 1 1-3 3M4 19h6" fill="none" stroke="#3B2A20" stroke-width="2.4" stroke-linecap="round"/>',
+  earth:'<path d="M2 20 9 7l4 6 3-4 6 11z" fill="#3B2A20"/>',
+  light:'<path d="M12 2l2.6 6.6L21 9.3l-5 4.4 1.6 6.8L12 17l-5.6 3.5L8 13.7 3 9.3l6.4-.7z" fill="#3B2A20"/>'};
+const IC={ /* Linien-Icons */
+  kill:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2M9.5 17.5 21 6V3h-3L6.5 14.5M11 19l-6-6M8 16l-4 4M5 21l-2-2"/>',
+  hall:'<path d="M8 21V10a4 4 0 0 1 8 0v11M5 21h14M12 13v4M10 15h4"/>',
+  anvil:'<path d="M3 8h11l2 3h5M6 8v2a4 4 0 0 0 4 4h0v3H7v3h10v-3h-3v-3"/>',
+  sword:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4M19 21l2-2"/>',
+  x:'<path d="M6 6l12 12M18 6 6 18"/>',
+  back:'<path d="M15 5l-7 7 7 7"/>',
+  atk:'<path d="M14.5 17.5 3 6V3h3l11.5 11.5M13 19l6-6"/>',
+  hit:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>',
+  crit:'<path d="m12 3 2.5 6 6.5.5-5 4 1.5 6.5L12 17l-5.5 3 1.5-6.5-5-4L9.5 9z"/>',
+  wt:'<path d="M6 20h12l-2-11H8zM9 9a3 3 0 0 1 6 0"/>',
+  lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  book:'<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 19V5"/>',
+  candle:'<path d="M12 3c1.5 2 1.5 3.5 0 5-1.5-1.5-1.5-3 0-5zM9 11h6v10H9z"/>',
+  star:'<path d="m12 3 3 6 6 1-4.5 4 1 6-5.5-3-5.5 3 1-6L3 10l6-1z"/>',
+  crown:'<path d="M4 8l4 4 4-7 4 7 4-4-2 11H6z"/>',
+  keep:'<path d="M5 21V8h3V5h2v3h4V5h2v3h3v13zM10 21v-5h4v5"/>',
+  tap:'<path d="M9 11V5a2 2 0 0 1 4 0v6M13 10a2 2 0 0 1 4 0v2M17 11a2 2 0 0 1 4 0v4a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-3l-3-5a2 2 0 0 1 3-2l2 2"/>'};
+const ic=(k,w=2)=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IC[k]}</svg>`;
+const gem=(el,t)=>el?`<span class="gem" style="background:${EL[el].c}"><svg viewBox="0 0 24 24" aria-hidden="true">${GLYPH[el]||''}</svg></span>`:'';
+const AV={brenna:'img/av_brenna.webp',rhen:'img/av_rhen_a.webp',tobin:'img/av_tobin.webp',lucan:'img/av_lucan.webp'};
+const NAME={brenna:'Brenna',rhen:'Rhen',tobin:'Tobin',lucan:'Lucan'};
+/* Beispiel: Akt 2, Mitte. Werte aus content/core/items.yaml (gerundet) */
+const W=[
+  {id:'kerbe',cat:'name',nm:'Brennas Kerbe',base:'Stahlaxt · Selten',model:'axe',el:'fire',t:2,kills:14,who:'brenna',st:[11,65,0,13],
+    rune:'Feuer II: ×1,2 gegen Wind, 30 % Brand',chron:'14 Siege · Beiname in 1-5 (10. Sieg)'},
+  {id:'hask',cat:'name',nm:'Haskbrecher',base:'Stahlschwert · Selten',model:'sword',el:'wind',t:1,kills:12,who:null,st:[8,80,0,10],
+    rune:'Wind I: ×1,2 gegen Erde',chron:'12 Siege · Hask vertrieben in 1-4 · liegt im Konvoi'},
+  {id:'gerrit',cat:'fallen',nm:'Gerrits Lanze',base:'Eisenlanze · Andenken',model:'lance',el:'earth',t:1,kills:6,who:null,st:[7,70,0,8],
+    rune:'Erde I: ×1,2 gegen Wasser',chron:'6 Siege · Gerrit fiel in der Paktnacht'},
+  {id:'warden',cat:'relic',nm:'Schild der Paktwächter',base:'Relikt Akt 1 · erwacht',model:'shield',el:'light',t:2,kills:0,who:'brenna',st:null,
+    rune:'Licht II: ×0,8 gegen Dunkel, immun gegen Blind',chron:'Gefunden im Wachturm (N2) · erwacht nach 1-6'},
+  {id:'ember',cat:'relic',nm:'Drachenglut',base:'Relikt Akt 2 · schläft',model:null,stone:'fire_rune_3',el:'fire',t:3,kills:0,who:null,st:null,
+    rune:'Amulett, MAG +2 (schlafend)',chron:'Aus der Kupfermine (N5) · erwacht nach 2-8'},
+  {id:'heir',cat:'sig',nm:'Erbstück',base:'Signatur · Tobin',model:'lance',el:null,t:0,kills:7,who:'tobin',st:[6,80,0,7],
+    rune:'Junge Helden: Angriff +, neben Niedergestreckten',chron:'7 Siege · Tobins Familienlanze'},
+  {id:'tinder',cat:'sig',nm:'Zunder',base:'Signatur · Leutnant Hask',model:'axe',el:'fire',t:1,kills:0,who:null,st:[8,70,0,10],
+    rune:'Feuer I: ×1,2 gegen Wind',chron:'Hask viermal vertrieben · liegt im Konvoi'},
+  {id:'wolf',cat:'sig',empty:true,nm:'Wolfszahn',prog:'Ulvric 2 von 4',model:null},
+  {id:'next',cat:'name',empty:true,nm:'Ysoldes Stab',prog:'8 von 10',model:null},
+  {id:'a3',cat:'relic',locked:true,nm:'Relikt Akt 3',model:null}
+];
+const CAT={name:false,fallen:false,relic:true,sig:true};let MIRROR='ghost',EMPTY=true;
+function visibleItems(){return W.filter(w=>CAT[w.cat]&&!(w.empty&&!EMPTY)&&!(MIRROR==='hide'&&w.who&&!w.empty&&!w.locked))}
+
+/* ---------- 3D ---------- */
+const loader=new THREE.GLTFLoader();const raw={};
+/* Artefakt: base64-Textdateien neben der Seite; im Repo die echten .glb aus art/models/ */
+const repoPath=u=>u.startsWith('runes/')?'../../models/runes-v2/'+u.slice(6)+'.glb':'../../models/weapons-v2/'+u+'.glb';
+const bytes=u=>raw[u]||(raw[u]=fetch(u+'.glb.txt').then(r=>{if(!r.ok)throw new Error(u);return r.text()}).then(t=>{const s=atob(t.trim()),a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a.buffer}).catch(()=>fetch(repoPath(u)).then(r=>{if(!r.ok)throw new Error(u);return r.arrayBuffer()})));
+const fresh=u=>bytes(u).then(b=>new Promise((res,rej)=>loader.parse(b.slice(0),'',res,rej)));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function channelMat(){return new THREE.ShaderMaterial({uniforms:{col:{value:new THREE.Color()},fill:{value:0},t:{value:0}},
+  vertexShader:'attribute vec2 uv2;varying float f;void main(){f=uv2.x;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
+  fragmentShader:'uniform vec3 col;uniform float fill;uniform float t;varying float f;void main(){float lit=1.0-smoothstep(fill-0.03,fill+0.01,f);float pulse=fill>0.99?0.85+0.15*sin(t*3.0-f*8.0):1.0;vec3 dark=vec3(0.16,0.12,0.11);gl_FragColor=vec4(mix(dark,col*1.3*pulse,lit),1.0);}'})}
+/* Höhe der Waffe auf dem Ständer (Welteinheiten) und Kippung, damit die Klinge nach oben zeigt */
+const FIT={axe:{h:1.0,flip:false},sword:{h:1.15,flip:false},lance:{h:1.5,flip:false},shield:{h:.78,flip:false}};
+const cache={};
+async function buildWeapon(w,ghost){
+  const g=await fresh(w.model);const inner=new THREE.Group();g.scene.children.slice().forEach(c=>inner.add(c));const chans=[];
+  const col=new THREE.Color(w.el?EL[w.el].c:'#d8b46a');
+  inner.traverse(o=>{if(!o.isMesh)return;const n=(o.name+'|'+(o.material&&o.material.name||'')).toLowerCase();
+    if(n.includes('rune_channel')){if(ghost){o.material=new THREE.MeshBasicMaterial({color:0xfff4e0,transparent:true,opacity:.18,depthWrite:false})}else{const m=channelMat();m.uniforms.col.value=col;m.uniforms.fill.value=w.el?[0,.34,.67,1.01][w.t]:0;o.material=m;chans.push(m)}}
+    else if(n.includes('rune_stone')){o.material=ghost?new THREE.MeshBasicMaterial({color:0xfff4e0,transparent:true,opacity:.18,depthWrite:false}):(w.el?new THREE.MeshStandardMaterial({color:col,emissive:col,emissiveIntensity:.3,roughness:.35}):new THREE.MeshStandardMaterial({color:0x2a201a,roughness:.6}))}
+    else if(ghost){o.material=new THREE.MeshBasicMaterial({color:0xfff4e0,transparent:true,opacity:.16,depthWrite:false});}});
+  inner.updateMatrixWorld(true);let box=new THREE.Box3().setFromObject(inner);let sz=box.getSize(new THREE.Vector3());
+  /* längste Achse nach oben; beim Schild die dünnste Achse nach vorn */
+  const rot=new THREE.Group();rot.add(inner);
+  const axes=['x','y','z'].sort((a,b)=>sz[b]-sz[a]);
+  if(w.model==='shield'){const thin=axes[2];if(thin==='x')inner.rotation.y=Math.PI/2;else if(thin==='y')inner.rotation.x=Math.PI/2}
+  else{const lng=axes[0];if(lng==='x')inner.rotation.z=Math.PI/2;else if(lng==='z')inner.rotation.x=Math.PI/2}
+  if(FIT[w.model].flip)rot.rotation.z=Math.PI;
+  rot.updateMatrixWorld(true);box=new THREE.Box3().setFromObject(rot);sz=box.getSize(new THREE.Vector3());
+  const s=FIT[w.model].h/sz.y;const holder=new THREE.Group();rot.scale.setScalar(s);holder.add(rot);holder.updateMatrixWorld(true);
+  box=new THREE.Box3().setFromObject(holder);const c=box.getCenter(new THREE.Vector3());rot.position.set(-c.x,-box.min.y,-c.z);
+  holder.userData={chans,h:FIT[w.model].h};return holder}
+async function buildStone(w){const g=await fresh('runes/'+w.stone);const s=new THREE.Group();g.scene.children.slice().forEach(c=>s.add(c));const col=new THREE.Color(EL[w.el].c);
+  s.traverse(o=>{if(!o.isMesh)return;const mn=(o.material.name||'').toLowerCase();if(mn.includes('symbol')||mn.includes('core'))o.material=new THREE.MeshBasicMaterial({color:col.clone().lerp(new THREE.Color('#fff'),.55)});else{o.material=o.material.clone();o.material.emissive=col.clone();o.material.emissiveIntensity=.55}});
+  s.updateMatrixWorld(true);const b=new THREE.Box3().setFromObject(s),sz=b.getSize(new THREE.Vector3());const k=.32/Math.max(sz.x,sz.y,sz.z);s.scale.setScalar(k);
+  const h=new THREE.Group();h.add(s);const c=new THREE.Box3().setFromObject(h).getCenter(new THREE.Vector3());s.position.sub(c);s.position.y+=.35;h.userData={chans:[],h:.7};return h}
+
+const stoneMat=new THREE.MeshStandardMaterial({color:0x4a3f35,roughness:.9});
+const woodMat=new THREE.MeshStandardMaterial({color:0x1a0f08,roughness:.9});
+function pedestal(w){const g=new THREE.Group();
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(.24,.28,.22,24),stoneMat);base.position.y=.11;g.add(base);
+  const top=new THREE.Mesh(new THREE.CylinderGeometry(.27,.27,.04,24),stoneMat);top.position.y=.24;g.add(top);
+  const glowCol=w.locked||w.empty?0x6d6052:(w.cat==='fallen'?0xcfc6b8:(w.el?new THREE.Color(EL[w.el].c).getHex():0xd8b46a));
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(.27,.012,8,40),new THREE.MeshBasicMaterial({color:glowCol}));ring.rotation.x=Math.PI/2;ring.position.y=.26;g.add(ring);
+  if(w.cat==='fallen'){const cl=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.12,10),new THREE.MeshStandardMaterial({color:0xf2ead8}));cl.position.set(.2,.32,.12);g.add(cl);
+    const fl=new THREE.Mesh(new THREE.SphereGeometry(.022,8,8),new THREE.MeshBasicMaterial({color:0xffc46b}));fl.position.set(.2,.4,.12);g.add(fl);g.userData.flame=fl}
+  return g}
+
+function Vitrine(canvas,platesEl,hintEl,layout,onPick){
+  const r=new THREE.WebGLRenderer({canvas,antialias:true});r.setPixelRatio(Math.min(2,devicePixelRatio||1));r.outputEncoding=THREE.sRGBEncoding;
+  const scene=new THREE.Scene();scene.background=new THREE.Color(layout==='wall'?0x2a1d14:0x1f1813);scene.fog=new THREE.Fog(scene.background,6,14);
+  const cam=new THREE.PerspectiveCamera(34,1,.05,40);
+  scene.add(new THREE.HemisphereLight(0xffe9cc,0x2a1f18,.75));const key=new THREE.DirectionalLight(0xffd9b0,.9);key.position.set(1.5,4,3);scene.add(key);
+  /* Boden bzw. Wand */
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(30,30),new THREE.MeshStandardMaterial({color:layout==='wall'?0x1c130c:0x211811,roughness:1}));floor.rotation.x=-Math.PI/2;scene.add(floor);
+  if(layout==='wall'){const wall=new THREE.Mesh(new THREE.PlaneGeometry(30,6),woodMat);wall.position.set(0,3,-.45);scene.add(wall);
+    for(let i=-14;i<15;i+=1.1){const b=new THREE.Mesh(new THREE.BoxGeometry(.04,6,.02),new THREE.MeshStandardMaterial({color:0x160e08}));b.position.set(i,3,-.44);scene.add(b)}
+    const forge=new THREE.PointLight(0xff8a3c,.7,5);forge.position.set(-2.2,.6,1);scene.add(forge)}
+  if(layout==='arc'){const back=new THREE.Mesh(new THREE.CylinderGeometry(4.6,4.6,5,48,1,true,Math.PI*.15,Math.PI*1.7),new THREE.MeshStandardMaterial({color:0x2a2119,roughness:1,side:THREE.BackSide}));back.position.y=2.5;scene.add(back);
+    for(let i=0;i<9;i++){const a=Math.PI*.2+i*Math.PI*1.6/8;const col=new THREE.Mesh(new THREE.BoxGeometry(.35,5,.35),stoneMat);col.position.set(Math.sin(a)*4.4,2.5,Math.cos(a)*4.4);scene.add(col)}}
+  if(layout==='arc'){const fl=new THREE.SpotLight(0xffd7a8,1.4,9,.5,.6);fl.position.set(0,3.2,3.4);fl.target.position.set(0,.5,1.3);scene.add(fl);scene.add(fl.target)}
+  const root=new THREE.Group();scene.add(root);
+  let items=[],pan=0,panMax=0,yaw=0,drag=null,moved=0,visible=true,t0=0,last=performance.now(),focus=null;
+  new IntersectionObserver(es=>es.forEach(e=>visible=e.isIntersecting)).observe(canvas);
+  const size=()=>{const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;r.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()};new ResizeObserver(size).observe(canvas);
+  canvas.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];moved=0;canvas.setPointerCapture(e.pointerId)});
+  canvas.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag[0];moved+=Math.abs(dx);drag=[e.clientX,e.clientY];
+    if(layout==='arc')yaw+=dx*.008;else pan=Math.max(-panMax,Math.min(panMax,pan-dx*.008))});
+  canvas.addEventListener('pointerup',e=>{drag=null;if(moved<6)pickAt(e)});
+  const ray=new THREE.Raycaster();
+  function pickAt(e){const b=canvas.getBoundingClientRect();ray.setFromCamera({x:(e.clientX-b.left)/b.width*2-1,y:-(e.clientY-b.top)/b.height*2+1},cam);
+    const hits=ray.intersectObjects(items.map(i=>i.g),true);if(!hits.length)return;let o=hits[0].object;while(o&&!o.userData.item)o=o.parent;if(o&&!o.userData.item.locked&&!o.userData.item.empty)onPick(o.userData.item)}
+  function place(i,n){
+    if(layout==='arc'){const a=i*Math.PI*2/n;return {p:new THREE.Vector3(Math.sin(a)*1.3,0,Math.cos(a)*1.3),rotY:a}}
+    if(layout==='wall'){const col=Math.floor(i/2),row=i%2;return {p:new THREE.Vector3(col*.95+row*.47,0,-.3),row}}
+    return {p:new THREE.Vector3((i-(n-1)/2)*.95,0,0)}}
+  async function setItems(list){
+    root.clear();items=[];const n=list.length;
+    for(let i=0;i<n;i++){const w=list[i];const g=new THREE.Group();g.userData.item=w;const pl=place(i,n);g.position.copy(pl.p);if(pl.rotY)g.rotation.y=pl.rotY;
+      let ped=null;if(layout!=='wall'){ped=pedestal(w);g.add(ped)}
+      const spin=new THREE.Group();spin.position.y=layout==='wall'?(pl.row?.95:2.1):.27;g.add(spin);
+      root.add(g);const it={w,g,spin,ped,light:null,model:null};items.push(it);
+      if(w.locked||w.empty){if(layout==='wall'){const hook=new THREE.Mesh(new THREE.BoxGeometry(.5,.04,.06),new THREE.MeshStandardMaterial({color:0x2b2b2b}));hook.position.y=.5;spin.add(hook)}continue}
+      const ghost=!!w.who&&MIRROR==='ghost';
+      (w.model?buildWeapon(w,ghost):buildStone(w)).then(m=>{if(!items.includes(it))return;
+        if(layout==='wall'){m.scale.setScalar(.72);m.rotation.z=w.model==='shield'?0:-.3;m.position.y=-m.userData.h*.36;}
+        spin.add(m);it.model=m;
+        if(!ghost&&w.el){const L=new THREE.PointLight(new THREE.Color(EL[w.el].c),[0,.7,1.1,1.6][w.t],1.6);L.position.set(0,.5,.35);spin.add(L);it.light=L}
+        if(!ghost&&w.cat==='relic'&&!w.el){const L=new THREE.PointLight(0xd8b46a,.9,1.6);L.position.set(0,.5,.35);spin.add(L)}});
+    }
+    if(layout==='wall'){root.position.x=-((Math.ceil(n/2)-1)*.95+.47)/2;panMax=Math.max(0,((Math.ceil(n/2)-1)*.95+.47)/2-.8)}else panMax=Math.max(0,(n-1)*.475-.75);pan=-panMax;
+    drawPlates()}
+  const v=new THREE.Vector3();
+  function drawPlates(){platesEl.innerHTML=items.map((it,k)=>{const w=it.w;
+      const sub=w.locked?`${ic('lock')}noch verborgen`:w.empty?`${ic(w.cat==='sig'?'crown':'kill')}${w.prog}`:w.who&&MIRROR==='ghost'?`<img class="av" src="${AV[w.who]}" alt="">trägt ${NAME[w.who]}`:w.cat==='name'&&w.kills?`${ic('kill')}${w.kills}`:(w.cat==='relic'?`${ic('star')}Relikt`:w.cat==='sig'?`${ic('crown')}Signatur`:'');
+      const cls=w.locked||w.empty?'lock':(w.who&&MIRROR==='ghost'?'ghost':'');
+      return `<button class="plate ${cls}" data-k="${k}" ${w.locked||w.empty?'aria-disabled="true"':''}><b>${w.nm}</b><span>${sub}</span></button>`}).join('');
+    platesEl.querySelectorAll('.plate').forEach(b=>b.onclick=()=>{const it=items[+b.dataset.k];if(!it.w.locked&&!it.w.empty)onPick(it.w)})}
+  function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;t0+=dt;
+    if(visible&&canvas.clientWidth){
+      const fitW=wd=>wd/2/(Math.tan(THREE.MathUtils.degToRad(cam.fov/2))*cam.aspect);
+      if(layout==='arc'){root.rotation.y=yaw;const d=fitW(2.5);cam.position.set(0,.4+d*.3,d);cam.lookAt(0,.6,.6)}
+      else if(layout==='wall'){const d=fitW(2.0);cam.position.set(pan,1.55,d);cam.lookAt(pan,1.5,0)}
+      else{const d=fitW(2.4);cam.position.set(pan,.5+d*.22,d);cam.lookAt(pan,.55,0)}
+      items.forEach((it,i)=>{if(it.model&&layout!=='wall'&&!reduce)it.spin.rotation.y=t0*.45+i*.9;
+        it.model&&it.model.userData.chans.forEach(m=>m.uniforms.t.value=t0);
+        if(it.ped&&it.ped.userData.flame)it.ped.userData.flame.scale.setScalar(.85+.25*Math.sin(t0*9+i));});
+      r.render(scene,cam);
+      const W2=canvas.clientWidth,H2=canvas.clientHeight;
+      platesEl.querySelectorAll('.plate').forEach((el,k)=>{const it=items[k];if(!it)return;it.g.getWorldPosition(v);v.y+=layout==='wall'?(it.spin.position.y-.55):-.02;const p=v.clone().project(cam);
+        const off=p.z>1||p.x<-1.2||p.x>1.2||(layout==='arc'&&v.z<-.3);el.style.display=off?'none':'';el.style.left=((p.x+1)/2*W2)+'px';el.style.top=((1-p.y)/2*H2)+'px'});
+    }
+    requestAnimationFrame(loop)}
+  size();requestAnimationFrame(loop);
+  hintEl.textContent=layout==='arc'?'wischen dreht den Blick · Schild tippen':'wischen schiebt · Schild tippen';
+  return {setItems}}
+
+
+/* Runenstein in die Fassung setzen (Fassungs-Erkennung wie im Verzauberer-Mockup) */
+async function seatRune(holder,w){
+  if(!w.el)return;holder.updateMatrixWorld(true);const slots=[];holder.traverse(o=>{if(o.isMesh&&(o.name+'|'+(o.material&&o.material.name||'')).toLowerCase().includes('rune_stone'))slots.push(o)});
+  const bb=new THREE.Box3().setFromObject(holder),bs=bb.getSize(new THREE.Vector3());const tip=new THREE.Vector3(0,1,0);
+  for(const m of slots){m.visible=false;const pos=m.geometry.attributes.position;const v=new THREE.Vector3();const pts=[];for(let i=0;i<pos.count;i++){v.fromBufferAttribute(pos,i);m.localToWorld(v);holder.worldToLocal(v);pts.push(v.clone())}
+    const c=new THREE.Vector3();pts.forEach(p=>c.add(p));c.divideScalar(pts.length);
+    const cov=[[0,0,0],[0,0,0],[0,0,0]];pts.forEach(p=>{const d=[p.x-c.x,p.y-c.y,p.z-c.z];for(let i=0;i<3;i++)for(let j=0;j<3;j++)cov[i][j]+=d[i]*d[j]});
+    const mul=v=>new THREE.Vector3(cov[0][0]*v.x+cov[0][1]*v.y+cov[0][2]*v.z,cov[1][0]*v.x+cov[1][1]*v.y+cov[1][2]*v.z,cov[2][0]*v.x+cov[2][1]*v.y+cov[2][2]*v.z);
+    let e1=new THREE.Vector3(1,.3,.2).normalize();for(let k=0;k<60;k++)e1=mul(e1).normalize();
+    let e2=new THREE.Vector3(.2,1,.3);for(let k=0;k<60;k++){e2=mul(e2);e2.sub(e1.clone().multiplyScalar(e2.dot(e1))).normalize()}
+    let nrm=new THREE.Vector3().crossVectors(e1,e2).normalize();
+    const p1=pts.map(p=>p.clone().sub(c).dot(e1)),sp1=Math.max(...p1)-Math.min(...p1);if(!p1.some(v=>Math.abs(v)<sp1*.15))nrm=e1.clone();
+    const proj=p=>p.clone().sub(c).dot(nrm);const sides=[1,-1].map(sg=>pts.filter(p=>proj(p)*sg>1e-4));const span=Math.max(...pts.map(proj))-Math.min(...pts.map(proj));
+    const two=sides[0].length>8&&sides[1].length>8&&span>0.02*bs.y;
+    for(const [i,sg] of (two?[1,-1]:[null]).entries()){const set=two?sides[i]:pts;const cc=new THREE.Vector3();set.forEach(p=>cc.add(p));cc.divideScalar(set.length);
+      let sign=sg;if(sign===null)sign=cc.clone().dot(nrm)>=0?1:-1;const n=nrm.clone().multiplyScalar(sign);const ps=set.map(p=>p.clone().sub(c).dot(n));
+      const sc=holder.children[0].scale.x;const in0=Math.max(...ps)-0.0117*sc;const base=cc.clone().sub(n.clone().multiplyScalar(cc.clone().sub(c).dot(n)-in0));
+      const g=await fresh('runes/'+w.el+'_rune_'+w.t);const st=new THREE.Group();g.scene.children.slice().forEach(ch=>st.add(ch));const col=new THREE.Color(EL[w.el].c);
+      st.traverse(o=>{if(!o.isMesh)return;const mn=(o.material.name||'').toLowerCase();if(mn.includes('symbol')||mn.includes('core'))o.material=new THREE.MeshBasicMaterial({color:col.clone().lerp(new THREE.Color('#fff'),.55)});else if(mn.includes('stone')){o.material=o.material.clone();o.material.emissive=col.clone();o.material.emissiveIntensity=[.35,.5,.7][w.t-1]}});
+      const q1=new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(1,0,0),n);const up=new THREE.Vector3(0,1,0).applyQuaternion(q1);const want=tip.clone().sub(n.clone().multiplyScalar(tip.dot(n))).normalize();
+      let ang=0;if(want.lengthSq()>.5)ang=Math.atan2(n.dot(up.clone().cross(want)),up.dot(want));if(w.model==='shield')ang-=Math.PI/2;
+      st.quaternion.copy(new THREE.Quaternion().setFromAxisAngle(n,ang).multiply(q1));st.position.copy(base);st.scale.setScalar(sc);holder.add(st)}}}
+/* Waffenansicht: eine Waffe groß und drehbar */
+function Viewer(canvas){
+  const r=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});r.setPixelRatio(Math.min(2,devicePixelRatio||1));r.outputEncoding=THREE.sRGBEncoding;
+  const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(30,1,.02,30);
+  scene.add(new THREE.HemisphereLight(0xfff1dc,0x3a2c22,1.0));const key=new THREE.DirectionalLight(0xffe2c0,1.1);key.position.set(2,4,3);scene.add(key);const rim=new THREE.DirectionalLight(0x9fb6ff,.45);rim.position.set(-3,2,-3);scene.add(rim);
+  const piv=new THREE.Group();scene.add(piv);let yaw=.4,drag=null,auto=true,cur=null,light=null,t0=0,last=performance.now(),h=1;
+  canvas.addEventListener('pointerdown',e=>{drag=e.clientX;auto=false;canvas.setPointerCapture(e.pointerId)});
+  canvas.addEventListener('pointermove',e=>{if(drag!==null){yaw+=(e.clientX-drag)*.012;drag=e.clientX}});canvas.addEventListener('pointerup',()=>drag=null);
+  const size=()=>{const w=canvas.clientWidth,hh=canvas.clientHeight;if(!w||!hh)return;r.setSize(w,hh,false);cam.aspect=w/hh;cam.updateProjectionMatrix()};new ResizeObserver(size).observe(canvas);
+  (function loop(n){const dt=Math.min(.05,(n-last)/1000);last=n;t0+=dt;if(canvas.clientWidth){if(auto&&!reduce)yaw+=dt*.5;piv.rotation.y=yaw;
+    const d=h*1.0/Math.tan(THREE.MathUtils.degToRad(15))/Math.max(.6,Math.min(1,cam.aspect*1.6));cam.position.set(0,h*.5,d);cam.lookAt(0,h*.5,0);
+    cur&&cur.userData.chans.forEach(m=>m.uniforms.t.value=t0);r.render(scene,cam)}requestAnimationFrame(loop)})(last);
+  return {async show(w){if(cur)piv.remove(cur);if(light)piv.remove(light);auto=true;yaw=.4;const m=w.model?await buildWeapon(w,false):await buildStone(w);if(w.model)await seatRune(m,w);cur=m;h=m.userData.h*.75;piv.add(m);
+    if(w.el){light=new THREE.PointLight(new THREE.Color(EL[w.el].c),[0,.6,1,1.5][w.t],2);light.position.set(0,h,.5);piv.add(light)}size()}}}
+
+/* ---------- Bausteine der Handy-Rahmen ---------- */
+function weaponView(){return `<div class="wview" data-wv hidden>
+  <div class="head"><div class="t"><b data-wn></b><span data-wb></span></div><button class="xbtn" data-wx aria-label="Schließen">${ic('x',2.4)}</button></div>
+  <div class="mid"><canvas data-wc></canvas></div>
+  <div class="bottom"><div class="stats" data-ws></div><div class="rline" data-wr></div><div class="chron">${ic('book')}<span data-wh></span></div>
+  <div class="btns"><button class="btn2">Verzaubern</button><button class="btn2">Aufwerten</button></div></div></div>`}
+function wireWeaponView(root){const wv=root.querySelector('[data-wv]');let viewer=null;
+  root.querySelector('[data-wx]').onclick=()=>{wv.hidden=true;setStep(root,2)};
+  return w=>{wv.hidden=false;setStep(root,3);if(!viewer)viewer=Viewer(root.querySelector('[data-wc]'));
+    root.querySelector('[data-wn]').textContent=w.nm;root.querySelector('[data-wb]').textContent=w.base+(w.who?` · trägt ${NAME[w.who]}`:'');
+    root.querySelector('[data-ws]').innerHTML=w.st?[['atk','Angriff'],['hit','Treffer'],['crit','Krit'],['wt','Gewicht']].map(([k,n],i)=>`<span class="stat" title="${n}" aria-label="${n} ${w.st[i]}">${ic(k)}${w.st[i]}</span>`).join(''):`<span class="stat" style="grid-column:1/-1;font-size:13px">${w.model==='shield'?ic('hit')+' Verteidigung 5':ic('star')+' Magie 2'}</span>`;
+    root.querySelector('[data-wr]').innerHTML=(w.el?gem(w.el,w.t):`<span class="gem" style="background:#d8b46a">${'<svg viewBox="0 0 24 24" fill="none" stroke="#3B2A20" stroke-width="2.4">'+IC.crown+'</svg>'}</span>`)+`<span>${w.rune}</span>`;
+    root.querySelector('[data-wh]').textContent=w.chron;viewer.show(w)}}
+function setStep(root,n){root.dataset.step=n;root.querySelectorAll('.scr').forEach(s=>s.classList.toggle('on',+s.dataset.s===Math.min(n,2)||(n===3&&+s.dataset.s===2)));
+  const m=root.closest('.mock');m.querySelectorAll('[data-steps] button').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.n===n)));
+  if(n<3){const wv=root.querySelector('[data-wv]');if(wv)wv.hidden=true}
+  root.dispatchEvent(new CustomEvent('step',{detail:n}))}
+function stepsBar(mock,root,pick){const bar=mock.querySelector('[data-steps]');bar.innerHTML=['Burg','Vitrine','Waffe'].map((t,i)=>`<button data-n="${i+1}" aria-pressed="${i===0}">${i+1} ${t}</button>`).join('');
+  bar.onclick=e=>{const b=e.target.closest('button');if(!b)return;const n=+b.dataset.n;if(n===3){setStep(root,2);pick(visibleItems().find(w=>!w.empty&&!w.locked)||W[0])}else setStep(root,n)}}
+const standsHTML=()=>`<span class="stands">${visibleItems().map(w=>`<i style="--c:${w.locked||w.empty?'#8d7b68':w.cat==='fallen'?'#e9e1d3':w.el?EL[w.el].c:'#d8b46a'};height:${w.model==='lance'?16:w.model==='shield'?9:12}px" class="${w.locked||w.empty||(w.who&&MIRROR==='ghost')?'off':''}"></i>`).join('')}</span>`;
+
+/* ---------- Variante A: Gedächtnishalle ---------- */
+function makeA(){const mock=document.getElementById('mA'),root=mock.querySelector('[data-phone]');
+  root.innerHTML=`<div class="scr on" data-s="1"><div class="castle"><img src="ist-burg.jpg" alt="Burg mit Waffenständern vor der Gedächtnishalle">
+     <button class="hot" style="left:57%;top:24.5%" aria-label="Waffenständer vor der Gedächtnishalle öffnen"><span class="ring"></span><span data-st></span></button></div>
+     <div class="callout">${ic('tap')}<span>Vor der Gedächtnishalle stehen Ständer; jede besondere Waffe glimmt dort. Tippen öffnet die Halle beim Reiter „Waffenkammer“.</span></div></div>
+   <div class="scr" data-s="2"><div class="dim"></div>
+     <div class="toppill"><span class="ic" style="background:#8c8378;color:#fff">${ic('hall')}</span><span class="t"><small>Akt 2 · Herbst</small><b>Gedächtnishalle</b></span></div>
+     <div class="rpanel"><div class="rhead"><span class="ic">${ic('hall')}</span><span class="t"><b>Gedächtnishalle</b><span>Gedenksteine und Waffenkammer</span></span><button class="xbtn" data-close aria-label="Schließen">${ic('x',2.4)}</button></div>
+       <div class="segm" data-tab><button data-t="mem" aria-pressed="false">Gedenken</button><button data-t="arm" aria-pressed="true">Waffenkammer</button></div>
+       <div data-arm style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0">
+         <div class="stage"><canvas></canvas><div class="plates"></div><span class="hint"></span></div>
+         <div class="legend" data-leg></div></div>
+       <div data-mem hidden style="display:flex;flex-direction:column;gap:8px">
+         <div class="memo"><span class="rstone" style="width:54px;height:54px;color:#6d6052">${ic('hall')}</span><div><b style="font-family:var(--f-name)">Gerrit</b><div style="font-size:12px;color:var(--g-soft)">Paktnacht · Bannerträger</div></div></div>
+         <div style="font-size:12px;color:var(--g-soft)">Gedenksteine und Lektion wie heute. Hat ein Gefallener eine Waffe hinterlassen, steht sie als Andenken im Reiter „Waffenkammer“.</div></div>
+     </div>${weaponView()}</div>`;
+  const pick=wireWeaponView(root);const vit=Vitrine(root.querySelector('[data-arm] canvas'),root.querySelector('[data-arm] .plates'),root.querySelector('[data-arm] .hint'),'row',pick);
+  root.querySelector('.hot').onclick=()=>setStep(root,2);root.querySelector('[data-close]').onclick=()=>setStep(root,1);
+  root.querySelector('[data-tab]').onclick=e=>{const b=e.target.closest('button');if(!b)return;root.querySelectorAll('[data-tab] button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+    root.querySelector('[data-arm]').hidden=b.dataset.t!=='arm';root.querySelector('[data-arm]').style.display=b.dataset.t==='arm'?'flex':'none';root.querySelector('[data-mem]').hidden=b.dataset.t!=='mem'};
+  stepsBar(mock,root,pick);return {refresh(){root.querySelector('[data-st]').innerHTML=standsHTML();vit.setItems(visibleItems());legend(root)}}}
+
+/* ---------- Variante B: Schmied ---------- */
+function makeB(){const mock=document.getElementById('mB'),root=mock.querySelector('[data-phone]');
+  root.innerHTML=`<div class="scr on" data-s="1"><div class="castle"><img src="ist-burg.jpg" alt="Burg mit Waffenwand an der Schmiede">
+     <button class="hot" style="left:11%;top:40.5%" aria-label="Waffenwand an der Schmiede öffnen"><span class="ring"></span><span data-st></span></button></div>
+     <div class="callout">${ic('tap')}<span>An der Schmiede hängt eine Waffenwand. Tippen öffnet den Schmied beim Reiter „Waffenwand“.</span></div></div>
+   <div class="scr" data-s="2"><div class="dim"></div>
+     <div class="toppill"><span class="ic" style="color:#fff">${ic('anvil')}</span><span class="t"><small>Akt 2 · Herbst</small><b>Schmied</b></span></div>
+     <div class="rpanel"><div class="rhead"><span class="ic">${ic('anvil')}</span><span class="t"><b>Schmied</b><span>Aufwerten und Waffenwand</span></span><button class="xbtn" data-close aria-label="Schließen">${ic('x',2.4)}</button></div>
+       <div class="segm"><button aria-pressed="false">Schmieden</button><button aria-pressed="true">Waffenwand</button></div>
+       <div class="stage"><canvas></canvas><div class="plates"></div><span class="hint"></span></div>
+       <div class="legend" data-leg></div>
+     </div>${weaponView()}</div>`;
+  const pick=wireWeaponView(root);const vit=Vitrine(root.querySelector('.stage canvas'),root.querySelector('.stage .plates'),root.querySelector('.stage .hint'),'wall',pick);
+  root.querySelector('.hot').onclick=()=>setStep(root,2);root.querySelector('[data-close]').onclick=()=>setStep(root,1);
+  stepsBar(mock,root,pick);return {refresh(){root.querySelector('[data-st]').innerHTML=standsHTML();vit.setItems(visibleItems());legend(root)}}}
+
+/* ---------- Variante C: Bergfried ---------- */
+function makeC(){const mock=document.getElementById('mC'),root=mock.querySelector('[data-phone]');
+  root.innerHTML=`<div class="scr on" data-s="1"><div class="castle"><img src="ist-burg.jpg" alt="Burg mit neuem Stein über dem Bergfried und Bannern">
+     <span data-ban style="position:absolute;left:28.5%;top:17%;display:flex;gap:3px"></span>
+     <button class="hot" style="left:34.6%;top:9.6%" aria-label="Waffenkammer im Bergfried öffnen"><span class="ring" style="border-radius:50%"></span><span class="rstone" style="color:var(--g-line)">${ic('sword')}</span></button></div>
+     <div class="callout">${ic('tap')}<span>Neuer Stein über dem Bergfried, ohne Stufen. Je Relikt und Signaturwaffe hängt ein Banner am Turm. Tippen öffnet das Gewölbe.</span></div></div>
+   <div class="scr" data-s="2"><div class="vault"><div class="stage"><canvas></canvas><div class="plates"></div><span class="hint" style="bottom:66px"></span></div></div>
+     <button class="backstone" data-close aria-label="Zurück zur Burg">${ic('back',2.6)}</button>
+     <div class="titlebar"><b>Waffenkammer</b><span class="chip" data-cnt></span></div>
+     <div class="foot"><div class="legend" data-leg style="background:var(--g-cream);border:2px solid var(--g-line);border-radius:14px;padding:5px;justify-content:center"></div></div>
+     ${weaponView()}</div>`;
+  const pick=wireWeaponView(root);const vit=Vitrine(root.querySelector('.vault .stage canvas'),root.querySelector('.vault .plates'),root.querySelector('.vault .hint'),'arc',pick);
+  root.querySelector('.hot').onclick=()=>setStep(root,2);root.querySelector('[data-close]').onclick=()=>setStep(root,1);
+  stepsBar(mock,root,pick);return {refresh(){const v=visibleItems();root.querySelector('[data-cnt]').innerHTML=`${ic('kill')}${v.filter(w=>!w.locked&&!w.empty).length}`;
+    root.querySelector('[data-ban]').innerHTML=v.filter(w=>!w.empty&&!w.locked).map(w=>{const c=w.el?EL[w.el].c:'#d8b46a';return `<i style="display:block;width:10px;height:22px;background:${c};clip-path:polygon(0 0,100% 0,100% 100%,50% 75%,0 100%);box-shadow:0 0 6px ${c}"></i>`}).join('');
+    vit.setItems(v);legend(root)}}}
+
+function legend(root){const v=visibleItems();const n=c=>v.filter(w=>w.cat===c&&!w.locked&&!w.empty).length;
+  root.querySelector('[data-leg]').innerHTML=[CAT.name&&`<span class="chip">${ic('kill')}${n('name')} Beinamen</span>`,CAT.fallen&&`<span class="chip">${ic('candle')}${n('fallen')} Andenken</span>`,CAT.relic&&`<span class="chip">${ic('star')}${n('relic')} Relikte</span>`,CAT.sig&&`<span class="chip">${ic('crown')}${n('sig')} Signatur</span>`].filter(Boolean).join('')}
+
+const V=[makeA(),makeB(),makeC()];
+const refresh=()=>V.forEach(x=>x.refresh());
+document.getElementById('catseg').onclick=e=>{const b=e.target.closest('button');if(!b)return;CAT[b.dataset.c]=!CAT[b.dataset.c];b.setAttribute('aria-pressed',String(CAT[b.dataset.c]));refresh()};
+document.getElementById('mirrorseg').onclick=e=>{const b=e.target.closest('button');if(!b)return;MIRROR=b.dataset.m;document.querySelectorAll('#mirrorseg button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));refresh()};
+document.getElementById('emptyseg').onclick=e=>{const b=e.target.closest('button');if(!b)return;EMPTY=b.dataset.e==='1';document.querySelectorAll('#emptyseg button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));refresh()};
+refresh();
+/* Für Abnahmebilder: ?step=2 öffnet in allen Rahmen die Vitrine, ?step=3 die Waffenansicht */
+const qs=new URLSearchParams(location.search).get('step');
+if(qs&&qs!=='1')document.querySelectorAll('[data-phone]').forEach(root=>{setStep(root,2);if(qs==='3')root.closest('.mock').querySelector('[data-steps] button[data-n="3"]').click()});
+</script>

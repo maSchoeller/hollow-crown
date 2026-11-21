@@ -164,12 +164,14 @@ Tippen zum Wählen mit Geistervorschau, Aktionsleiste unten; Bewegung bis zur Ak
 
 - Quadratisches Raster, 4 Richtungen, keine Diagonalen. Reichweiten werden in Feldschritten gezählt (Manhattan).
 - **Höhe (Entscheidung 2026-11-04):** 3 Stufen (Feld; Wehrgang, Dach, Terrasse; Turm, Felsnase). Stufenwechsel nur über Rampe (alle), Treppe (ohne Reiter), Leiter (nur zu Fuß). Die Leiter lehnt an der Wand zwischen zwei Feldern (Entscheidung 2026-11-08): Das Feld davor bleibt gewöhnlicher Boden für alle, nur das Klettern über diese Kante ist auf Fuß beschränkt und kostet 1 Bewegung extra. Fernkampf von oben +1 Reichweite; Nahkampf nur auf gleicher Stufe oder bei 1 Stufe Unterschied an Rampe und Treppe. Flieger wechseln die Stufe frei; die Nahkampfregel gilt für keinen Kampf, an dem ein Flieger beteiligt ist, als Angreifer, Ziel oder beim Konter.
+- **Straßen und Brücken (Produktinhaber 2026-11-21, Thema 7):** kosten für alle Bewegungsarten und beide Seiten ½, eine Figur mit Bewegung 4 kommt auf der Straße 8 Felder weit. Tor, Rampe und Treppe bleiben bei 1. Übrige Bewegung kann halb sein („noch 1½“); ein Feld mit Kosten 1 braucht dann eine ganze Bewegung. Gegner nutzen die Straßen genauso; Karten, die dadurch aus dem Siegkorridor fallen (Sim 2026-11-21: Prolog, 1-2, 2-1, 2-8), werden über Weckrunden und Startpositionen nachgezogen.
 - Durch Verbündete darf man hindurchziehen, aber nicht auf ihnen stehen bleiben. Gegner blockieren, auch niedergestreckte.
 - Angriffe brauchen keine Sichtlinie. Im Nebel blockieren Mauern und geschlossene Türen die Sicht `[ASSUMPTION]`.
 
 | Gelände | Fuß | Gepanzert | Beritten | Flieger | Monster |
 |---|---|---|---|---|---|
-| Ebene, Straße, Brücke, Asche, Gras | 1 | 1 | 1 | 1 | 1 |
+| Straße, Brücke | ½ | ½ | ½ | ½ | ½ |
+| Ebene, Asche, Gras | 1 | 1 | 1 | 1 | 1 |
 | Wald, Sand | 2 | 3 | 3 | 1 | 2 |
 | Seichtes Wasser | 3 | – | 4 | 1 | 2 |
 | Berg | – (Kletterer 3) | – | – | 1 | 3 |
@@ -266,7 +268,9 @@ Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übe
 - Paperdoll: Haupthand, Nebenhand, Kopf, Körper, 2 Accessoires, Beutel 3 (ohne Gewicht); kein Verschleiß. Die Waffengruppen der Rolle begrenzen, was eine Figur führen darf.
 - Gewicht: Tragkraft = STR + Bewegungstyp-Bonus (Fuß 4, Gepanzert 8, Beritten 6, Flieger 2, Monster 10); Überlast senkt AS 1:1, ab 5 −1 MOV, ab 10 −2 MOV.
 - Seltenheit Gewöhnlich/Selten/Episch/Legendär/Relikt mit 0/1/2/fest/fest Affixen und 1/2/2/2/1 Rune-Slots; Sets mit Bonus ab 2 bzw. 4 Teilen. Signaturen sind legendäre Unikate mit Besitzer-Effekt; drei Relikte (eins je Akt) erwachen mit der Story. Katalog, Waffengruppen und Unikate in `items.md`.
-- Runen I–III (Element, Status 30 %/50 %, Geländeeffekt); 1 Element-Rune je Waffe, zweiter Slot für Hilfs-Runen; Körperrüstung setzt die Affinität.
+- Runen I–III (Element, Status 30 %/50 %, Geländeeffekt); höchstens 1 Element-Rune je Item, sonst nimmt jeder Runenplatz jede Rune (auch die einzige Fassung einer gewöhnlichen Waffe darf eine Hilfs-Rune tragen); Körperrüstung nimmt nur Element-Runen und setzt damit die Affinität (Produktinhaber 2026-11-21).
+- **Schild-Runen (Produktinhaber 2026-11-21, Thema 7):** Jeder Schild hat 1 Runenplatz, nur für Element-Runen (Feuer, Wasser, Erde, Wind). Die Rune schützt gegen ihr Element und bringt keine Schwäche (anders als die Affinität der Körperrüstung). Stufe I: Schaden dieses Elements ×0,8. Stufe II: dazu immun gegen dessen Zustand (Brennen, Nass, Verlangsamt, Rückstoß). Stufe III: dazu immun gegen dessen Geländewirkung (Feuer: Brandfeld kostet keinen Schaden; bei den übrigen Elementen heute wie II). Tragen Schild und Körper dasselbe Element, gilt der bessere Faktor, nicht beide.
+- **Waffen-Chronik (Produktinhaber 2026-11-21, Thema 7):** Jede Waffe zählt ihre Kills, der letzte Schlag zählt (auch beim Konter); ein vertriebener Leutnant zählt als Kill. Die Chronik hängt an der einzelnen Waffe und wandert mit ihr. Beim 10. Kill bekommt die Waffe einen Beinamen aus dem Namen der führenden Figur und einem Wort je Waffengruppe („Brennas Kerbe“, Wortliste in den Locales). Vertreibt oder fällt sie einen Leutnant, bekommt sie sofort einen Beinamen nach ihm („Haskbrecher“), wenn sie noch keinen hat. Ein Beiname bleibt, auch wenn die Waffe weitergegeben wird. Keine Spielwerte. Sim 2026-11-21: rund 6 Beinamen je Durchgang in Akt 1, der erste meist in 1-4 bis 1-6.
 - Aufwerten +1…+5 (Waffe je +1 Mt/+3 Treffer, Rüstung je +1 DEF oder RES).
 - Ausrüstungs-Tier pro Akt: Akt 1 Eisen, Akt 2 Stahl, Akt 3 Silber und Mondstahl.
 - Verbrauchsgüter: Heiltrank (3 Ladungen) und Gegengift (2) füllen sich nach jeder Mission auf; Schlüssel, Feuerbombe, Hast und Glutfunke werden verbraucht.
@@ -301,7 +305,7 @@ Die Kurve verteilt sich auf 9 / 8 / 8 Story-Missionen; die Feinkalibrierung übe
 
 ### Kampfsystem
 
-Rundenbasiert-taktisch auf dem Raster, Kampfauflösung direkt auf der Karte mit Kurzanimation (Tempo 1×/2×/Überspringen). Klassen-Aktionen und Item-Skills sind das Fähigkeitensystem; Magie läuft über Zauberwaffen mit Element.
+Rundenbasiert-taktisch auf dem Raster, Kampfauflösung direkt auf der Karte mit Kurzanimation (Tempo 1×/2×/Überspringen). Die Gegnerphase läuft standardmäßig mit 2× (Produktinhaber 2026-11-21, Thema 7); Gegner, die nur laufen, ziehen gleichzeitig. Klassen-Aktionen und Item-Skills sind das Fähigkeitensystem; Magie läuft über Zauberwaffen mit Element.
 
 ## Progression and Balance
 
@@ -319,9 +323,9 @@ Zu Beginn von Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, T
 | Raum | Raum-Gefährten (für Stufe 3) | Funktion | Stufe 1 → 2 → 3 |
 |---|---|---|---|
 | Konvoi | Tobin, Nell | Items lagern (200 Plätze) | Sortieren → Ausrüstungs-Vorlagen (gespeicherte Belegung je Figur) → „Bestes anlegen“ |
-| Händler | Fenn, Nell | Kaufen, Verkaufen (50 %) | Sortiment des Akts → größeres Sortiment → Angebot des Tages, Rabatt 10 %, Glutfunke rotierend (siehe Fortschritt) |
+| Händler | Fenn, Nell | Kaufen für eine gewählte Person direkt in ihren Platz (das Getragene geht in den Konvoi) oder in den Konvoi, Verkaufen (50 %) | Sortiment des Akts → größeres Sortiment → Angebot des Tages, Rabatt 10 %, Glutfunke rotierend (siehe Fortschritt) |
 | Schmied | Brenna, Grosk | Aufwerten, Affix neu würfeln, Trank verstärken (ab Akt 2) | max. +3 → +4 → +5 und Neu würfeln |
-| Verzauberer (ab Akt 2) | Ysolde, Brann | Runen ein-/ausbauen, verschmelzen | Verschmelzen bis Rune I → II → III; Einsetzen und Ausbauen jeder Rune auf jeder Stufe |
+| Verzauberer (ab Akt 2) | Ysolde, Brann | Runen ein-/ausbauen und tauschen (kostenlos), verschmelzen (nur Runen im Konvoi), Rune I kaufen | Verschmelzen bis Rune I → II → III; Einsetzen und Ausbauen jeder Rune auf jeder Stufe |
 | Heiler | Liora, Amos | Narben entfernen | 2 500 → 1 800 → 1 200 Gold, Trauer 2 statt 3 Missionen |
 | Taverne | Varek, Jory | Söldner anheuern | 3 Angebote → 4 Angebote + bessere Traits → Wunschrolle (die nächste Angebotsrunde enthält sicher ein Angebot dieser Rolle) |
 | Lagerfeuer | Jory, Brenna | Support-Gespräche | Ränge C und B → A → S (Kernpaare) |
@@ -335,6 +339,7 @@ Zu Beginn von Akt 1 hat das wandernde Lager Konvoi, Händler, Schmied, Heiler, T
 - **Runen in Akt 1:** Der Verzauberer kommt erst mit Akt 2; in Akt 1 gibt es Runen nur als Beute.
 - **Söldner-Traits** (Taverne Stufe 2; Liste in `extract-01-decisions.md`) werden als eigener Baustein gebaut.
 - **Lebende Burg:** Jeder Gefährte bringt einen Gegenstand an einen festen Platz in der Burg; dort steht nur der Gegenstand. Wer die Truppe verlässt, nimmt ihn mit; wer fällt, lässt ihn liegen (Narrative). Die Liste der 20 Gegenstände wird aus Narrative und Art Direction abgeleitet.
+- **Waffenkammer (Produktinhaber 2026-11-21):** Ab der Burg zeigt der Bergfried eine Waffenkammer mit allen **Relikten und Signaturwaffen** der Truppe, auch getragenen. Sie ist kein Raum: keine Funktion, keine Stufen, kein Ausbau, keine Spielwerte. Waffen mit Beinamen und die Ausrüstung Gefallener kommen nicht hinein. Leere Ständer zeigen verborgene Relikte und Signaturen in Reichweite (Leutnant: Vertreibungen bis zur garantierten Signatur). Darstellung in Art Direction §7, Verhalten in `concept/25-ux/EXPERIENCE.md` („Waffenkammer (Bergfried)“).
 - **Darstellung:** Die Burg ist eine 3D-Szene (Art Direction §7). Jeder Raum zeigt seine Stufe als Modellteile, Mauern und Land die Burgstufe aus der Summe aller Raum-Ausbauten (Ruine, Gesichert, Wehrhaft, Festung; Schwellen 1/6/14 `[ASSUMPTION]`). Die Stufe steht zusätzlich als Punkte am Raumstein.
 
 Jede Interaktion braucht höchstens 2 Taps; kein Raum ist Pflicht.
