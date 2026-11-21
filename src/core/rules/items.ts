@@ -98,8 +98,35 @@ export function runeSlotCount(data: GameData, inst: ItemInstance): number {
   if (d.runeSlots !== undefined) return d.runeSlots;
   const cat = itemCategory(d);
   if (cat === 'weapon') return data.balance.economy.rarityRuneSlots[d.rarity];
-  if (d.slot === 'body') return 1;
+  if (d.slot === 'body' || d.kind === 'shield') return 1;
   return 0;
+}
+
+/** Whether a rune fits an item: body armor and shields take element runes only, a shield no light or dark (story 16.4). */
+export function runeFits(data: GameData, d: ItemDef, r: RuneDef): boolean {
+  if (d.kind === 'shield') return !!r.element && r.element in data.balance.element.statusOf;
+  if (d.slot === 'body') return !!r.element;
+  return true;
+}
+
+export interface ShieldGuard {
+  element: Element;
+  tier: number;
+}
+
+/** Element rune in the off hand shield: protects against that element and never makes weaker (story 16.4). */
+export function shieldGuard(data: GameData, unit: UnitRecord, s?: RuleCtx): ShieldGuard | undefined {
+  const sh = unit.equip.offHand;
+  if (!sh || itemDef(data, sh).kind !== 'shield') return undefined;
+  const r = runes(data, sh, s).find((x) => x.element && x.element in data.balance.element.statusOf);
+  return r?.element ? { element: r.element, tier: r.tier ?? 1 } : undefined;
+}
+
+/** Shield immunity against the status (tier II) or the terrain effect (tier III) of `element`. */
+export function shieldImmune(data: GameData, guard: ShieldGuard | undefined, element: Element | undefined, kind: 'status' | 'terrain'): boolean {
+  if (!guard || !element || guard.element !== element) return false;
+  const sr = data.balance.element.shieldRune;
+  return guard.tier >= (kind === 'status' ? sr.statusImmuneTier : sr.terrainImmuneTier);
 }
 
 /** Element of the weapon: built-in element or element rune. */

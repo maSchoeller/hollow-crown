@@ -6,7 +6,7 @@ import { roll1, roll2 } from '../rng';
 import type { BattleState, BattleUnit, ItemInstance } from '../state';
 import { active, clamp, dist, getUnit, inBounds, isAlly, neighbors, pairKey, ruleOn, terrainAt, unitAt } from '../util';
 import { applyStatus, extinguishTile, fleesAtZero, igniteTile, knockOut, setTerrain } from './effects';
-import { itemDef, weaponProfile, type WeaponProfile } from './items';
+import { itemDef, shieldImmune, weaponProfile, type ShieldGuard, type WeaponProfile } from './items';
 import { canStrike, stepCost, weaponRange } from './movement';
 import { combatExp, expPercent, grantExp, grantSp } from './progression';
 import { computeStats, type EffectiveStats } from './stats';
@@ -73,7 +73,7 @@ export function triangleOf(data: GameData, a?: WeaponProfile, d?: WeaponProfile)
 }
 
 /** Element multiplier of an attack element against the defender's affinity (concept/03 §6). */
-export function elementMultiplier(data: GameData, el: Element | undefined, aff: Element | undefined, defTags: string[]): number {
+export function elementMultiplier(data: GameData, el: Element | undefined, aff: Element | undefined, defTags: string[], guard?: ShieldGuard): number {
   const e = data.balance.element;
   let m = 1;
   if (el) {
@@ -84,6 +84,8 @@ export function elementMultiplier(data: GameData, el: Element | undefined, aff: 
       else if (e.opposed.some(([x, y]) => (x === el && y === aff) || (y === el && x === aff))) m = e.advantage;
     }
     if (el === 'dark' && defTags.some((t) => e.darkBonusVs.includes(t))) m = Math.max(m, e.advantage);
+    // shield rune (story 16.4): never weaker; with the body of the same element only the better factor counts
+    if (guard && guard.element === el) m = Math.min(m, e.shieldRune.factor);
   }
   return m;
 }
@@ -154,7 +156,7 @@ function calcSide(
     const might = effective ? wp.might * b.combat.effectiveMightMultiplier : wp.might;
     const tagBonus = wp.damageVsTag.filter((x) => oppTags.includes(x.tag)).reduce((t, x) => t + x.bonus, 0);
     atk = (magic ? stats.stats.mag : stats.stats.str) + might + stats.skills.damage + buffDamage + tagBonus;
-    elementMult = elements ? elementMultiplier(data, wp.element, oppStats.affinity, oppTags) : 1;
+    elementMult = elements ? elementMultiplier(data, wp.element, oppStats.affinity, oppTags, oppStats.shield) : 1;
     const base = atk - def;
     const triDmg = tri * b.triangle.damage;
     let dmg = Math.floor((base + triDmg) * elementMult);
@@ -182,7 +184,7 @@ function calcSide(
   const status = (elements && ruleOn(s, 'status') ? (wp?.statusOnHit ?? []) : []).map((x) => {
     const el = Object.entries(b.element.statusOf).find(([, st]) => st === x.status)?.[0];
     const setB = setStatus.filter((sb) => sb.element === el).reduce((t, sb) => t + sb.value, 0);
-    const immune = oppStats.affinity && el === oppStats.affinity;
+    const immune = (oppStats.affinity && el === oppStats.affinity) || shieldImmune(data, oppStats.shield, el as Element | undefined, 'status');
     return { status: x.status, chance: immune ? 0 : clamp(x.chance + statusChanceBonus + setB, 0, 100) };
   });
   // statuses of on_hit skills (Sturmbrecher, story 10.4): no element, so no immunity; the higher chance counts
