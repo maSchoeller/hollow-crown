@@ -5,9 +5,10 @@
 import { timerLook } from './aiPacing';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { BattleState, BattleUnit, FigurePiece, GearPiece, PartPiece, Pos, StatusId } from '../../core';
-import { bleedsOut, itemDef, maxHpOf, modelId, shadowHidden, unitFigureId, unitVatPath } from '../../core';
+import { bleedsOut, itemDef, maxHpOf, modelId, runeSlotCount, shadowHidden, unitFigureId, unitVatPath } from '../../core';
 import { loadManifest, loadUnitSheet } from '../shared/assets';
 import { loadUnitModel } from '../shared/models';
+import { gearRunesOf, glowState, runeKey } from '../shared/runeLook';
 import { ModelFigure, SpriteFigure, type Figure, type FigureAnim } from '../shared/figures';
 import { buildGridMesh, buildOverlayMeshes, type Overlays } from './overlays';
 import type { HpBarMode, KillKind } from './badges';
@@ -45,18 +46,31 @@ export abstract class BoardUnits extends BoardProps {
     const { offHand } = this.data.render.gear;
     const out: GearPiece[] = [];
     const w = this.weaponOf(u);
-    if (w) out.push(w);
+    if (w) out.push(this.withRunes(w, u.equip.mainHand));
     const group = u.equip.offHand && itemDef(this.data, u.equip.offHand).group;
     const off = group && offHand[group];
-    if (off && !out.some((p) => p.hand === off.hand)) out.push(off);
+    if (off && !out.some((p) => p.hand === off.hand)) out.push(this.withRunes(off, u.equip.offHand));
     const part = this.proPartOf(u);
     return part ? [...out, part] : out;
   }
 
+  /** Story 16.6: a rune weapon piece (folder `weapons-v2`) carries the metal and runes of the item in that hand; others stay as they are. */
+  private withRunes(piece: GearPiece, item: BattleUnit['equip'][keyof BattleUnit['equip']]): GearPiece {
+    if (piece.folder !== 'weapons-v2' || !item) return piece;
+    const def = itemDef(this.data, item);
+    return { ...piece, rune: gearRunesOf(this.data.runes, item.runes, runeSlotCount(this.data, item), def.metal) };
+  }
+
+  /** The figure's rebuild key: models, hands, and the metal and runes of rune weapons (a changed rune builds the figure anew, story 16.6). */
   protected gearKey(u: BattleUnit): string {
     return this.gearOf(u)
-      .map((p) => ('socket' in p ? `${p.model}@${p.socket}` : `${p.model}@${p.hand}`))
+      .map((p) => ('socket' in p ? `${p.model}@${p.socket}` : `${p.model}@${p.hand}${runeKey(p.rune)}`))
       .join();
+  }
+
+  /** Story 16.6: every figure's rune glow from the overlays: full for the uids of `Overlays.glow`, else dimmed. */
+  protected applyGlow(): void {
+    for (const [uid, v] of this.units) v.figure.setRuneGlow?.(glowState(this.overlays.glow, uid));
   }
 
   protected async makeFigure(u: BattleUnit, name: string): Promise<Figure> {
@@ -158,6 +172,7 @@ export abstract class BoardUnits extends BoardProps {
       };
       this.units.set(u.uid, v);
       this.rings.add(u.uid, u.team);
+      figure.setRuneGlow?.(glowState(this.overlays.glow, u.uid));
     }
     v.x = pos[0];
     v.y = pos[1];
@@ -418,6 +433,7 @@ export abstract class BoardUnits extends BoardProps {
 
   setOverlays(o: Overlays): void {
     this.overlays = o;
+    this.applyGlow();
     this.wake();
     this.buildOverlays();
     void this.updateGhost();

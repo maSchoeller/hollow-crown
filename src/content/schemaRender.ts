@@ -5,12 +5,25 @@ import { HANDBOOK_FORMATS, HANDBOOK_GRAPHICS } from '../core/renderDefs';
 import { slugId, weaponGroup, weaponType } from './schemaBase';
 
 const qualityLevel = z.object({ maxDpr: z.number().positive(), shadowMap: z.number().int().min(0) });
-const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
+const gearPiece = z.object({ folder: z.enum(['weapons', 'weapons-v2']).optional(), model: z.string().regex(/^[a-z0-9_]+$/), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
 const partPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), socket: z.enum(['back', 'head']) });
 const decorSchema = z.object({ model: z.string(), map: z.number().min(0).max(1), scenery: z.number().min(0).max(1), scale: z.tuple([z.number().positive(), z.number().positive()]) });
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 const unit = z.number().min(0).max(1);
+const metalTint = z.object({ tint: hex, sheen: z.number().min(0).max(1) });
+const runeGlowSchema = z.object({
+  colors: z.object({ fire: hex, wind: hex, earth: hex, water: hex, light: hex, dark: hex, utility: hex }),
+  gold: hex,
+  empty: hex,
+  fillThresholds: z.tuple([unit, unit, unit]).refine((t) => t[0] < t[1] && t[1] <= t[2], 'thresholds must rise'),
+  edge: z.number().min(0).max(0.5),
+  floor: unit,
+  state: z.object({ dim: unit, full: unit }).refine((s) => s.dim <= s.full, 'dim above full'),
+  pulse: z.object({ periodMs: z.number().int().min(100), amplitude: unit }),
+  stone: z.object({ body: unit, symbolLift: unit, coreLift: unit, selfLit: unit }),
+  metals: z.object({ satLimit: z.number().positive().max(1), iron: metalTint, steel: metalTint, silver: metalTint }),
+});
 const teamLook = z.object({ ui: hex, ramp: z.tuple([hex, hex, hex, hex]) });
 const timeOfDayDef = z.object({
   ambient: z.object({ color: hex, intensity: z.number().min(0) }),
@@ -140,6 +153,8 @@ export const renderSchema = z.object({
     offHand: z.partialRecord(weaponGroup, gearPiece),
     /** story 10.13: attached part per pro path, keyed by the `proPart` of the class */
     proParts: z.record(z.string().regex(/^[a-z0-9_]+$/), partPiece),
+    /** story 16.6: glow of the rune weapons (channel and stones), metal tints */
+    rune: runeGlowSchema,
   }),
   legibility: legibilitySchema,
   quality: z.object({ high: qualityLevel, mid: qualityLevel, low: qualityLevel }),

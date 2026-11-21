@@ -254,22 +254,42 @@ legibility:
 # Sockel; die Blender-Figuren tragen ihre Waffe fest im Modell.
 gear:
   weapons:
-    sword: { model: sword, hand: right }
+    sword: { folder: weapons-v2, model: sword, hand: right }        # Story 16.6: Runenwaffe v2 (art/models/weapons-v2), Rinne + Steine
     dagger: { model: dagger, hand: right }   # ohne eigene Bewegung: der Schwerthieb (ein Dolchstich ist noch nicht animiert)
-    lance: { model: lance, hand: right, motion: thrust, hold: -125 }
-    axe: { model: axe, hand: right, motion: chop }
+    lance: { folder: weapons-v2, model: lance, hand: right, motion: thrust, hold: -125 }
+    axe: { folder: weapons-v2, model: axe, hand: right, motion: chop }
     bow: { model: bow, hand: left, motion: shoot }
     anima: { model: book, hand: left, motion: cast }
     light: { model: book, hand: left, motion: cast }
     dark: { model: book, hand: left, motion: cast }
     staff: { model: staff, hand: right, motion: cast }
   offHand:
-    shield: { model: shield, hand: left }
+    shield: { folder: weapons-v2, model: shield, hand: left }
     lute: { model: lute, hand: left }   # nach Waffengruppe des Gegenstands (Nebenhand), nicht nach kind: Laute und Fokus sind beide Zubehör
   # Story 10.13 (§4.2): sichtbares Anhängeteil je Profi-Weg, `proPart` der Klasse in content/core/classes.yaml.
   # model = art/models/parts/<model>.glb (tools/art/blender_proparts.py), socket = Körper-Sockel der Figur
   # (`socket_back` am oberen Brustwirbel, `socket_head` am Scheitel; tools/art/prepare_tripo_unit.py). Nur
   # Bild-zu-3D-Figuren haben Sockel; Blender-Figuren zeigen kein Teil.
+  # Story 16.6 (Art Direction §2.3, §4.7): Glühen der Runenwaffen. Steine liegen als art/models/runes-v2/<runeId>.glb;
+  # die Rinne der Waffe (`rune_channel`, UV1 `fill`) leuchtet bis zur Schwelle der Stufe (I ein Drittel, II zwei Drittel, III ganz mit Puls).
+  # Zustand: gedämpft (`dim`, auf dem Brett immer) oder voll (`full`, gewählte Figur, Angreifer und Ziel der Kampfvorschau, Gegner genauso).
+  rune:
+    colors: { fire: "#F2603A", wind: "#7BD389", earth: "#B9874B", water: "#4AA8E8", light: "#F7D96B", dark: "#8E5BD9", utility: "#E9E4D8" }
+    gold: "#E0A93C"                       # Goldrand und Goldteile des Steins (Stufe III), gleich hell in beiden Zuständen
+    empty: "#2A2724"                      # Rinne ohne Rune (und der unbeleuchtete Rest) – dunkler Rinnenboden
+    fillThresholds: [0.3333, 0.6667, 1]   # Füllwert `fill` der Rinne, bis zu dem sie leuchtet, je Stufe I/II/III
+    edge: 0.06                            # Weichheit des Übergangs (Anteil von `fill`)
+    floor: 0.1                            # unbeleuchtete Rinne eines Runenträgers: Anteil der Elementfarbe
+    state: { dim: 0.3, full: 1 }          # Leuchtstärke gedämpft / voll (Sichtprüfung 2026-11-22: 0.45 war zu nah an voll)
+    pulse: { periodMs: 1600, amplitude: 0.3 }  # nur Stufe III: Leuchtstärke schwankt um bis zu `amplitude` nach unten
+    stone: { body: 0.55, symbolLift: 0.5, coreLift: 0.85, selfLit: 0.8 }  # Stein: Körper = Elementfarbe * body (beleuchtet, Eigenleuchten selfLit), Symbol/Kern heller (Anteil Weiß)
+    # Metall: Vertexfarben des Modells (nur die grauen, kaum gesättigten Flächen; Holz und Leder bleiben) werden mit `tint`
+    # multipliziert und zu `sheen` Richtung Weiß aufgehellt – gleiche Form, anderes Material
+    metals:
+      satLimit: 0.35
+      iron: { tint: "#D8D2CC", sheen: 0 }      # warmes, dunkleres Grau
+      steel: { tint: "#E8EEF4", sheen: 0.08 }  # kühler und heller
+      silver: { tint: "#FFFFFF", sheen: 0.4 }  # fast weiß mit Glanz
   proParts:
     tower_shield: { model: tower_shield, socket: back }      # Bollwerk
     ram_axe: { model: ram_axe, socket: back }                # Brecher

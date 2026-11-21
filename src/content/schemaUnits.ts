@@ -1,6 +1,6 @@
 /** Schemas of items, affixes, runes, sets, classes, characters and skills. */
 import { z } from 'zod';
-import { element, itemRefSchema, moveType, partialStats, range, rarity, statMods, statsSchema, statusId, weaponGroup, weaponType } from './schemaBase';
+import { element, itemRefSchema, metalId, moveType, partialStats, range, rarity, statMods, statsSchema, statusId, weaponGroup, weaponType } from './schemaBase';
 import { conditionsListSchema } from './schemaConditions';
 
 export const itemSchema = z.object({
@@ -9,6 +9,7 @@ export const itemSchema = z.object({
   slot: z.enum(['mainHand', 'offHand', 'head', 'body', 'accessory', 'bag']),
   weaponType: weaponType.optional(),
   group: weaponGroup.optional(),
+  metal: metalId.optional(),
   damageType: z.enum(['physical', 'magical']).optional(),
   element: element.optional(),
   mt: z.number().optional(),

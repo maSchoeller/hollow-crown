@@ -1,7 +1,7 @@
 /** Board overlays of the battle screen (Battle.tsx). */
 import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, forecast, healTiles, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, terrainWarnings, visibleTiles, trapsOf, trapTeam, isHostile } from '../../core';
 import { data } from '../state/session';
-import { tileModeTiles } from './battleMode';
+import { glowUids, tileModeTiles } from './battleMode';
 import { goalMarkTiles, markedGoal } from '../state/goalMarks';
 import { activeVictory } from '../../core/battle/activeVictory';
 import { mapOf } from '../../core/battle/objectives';
@@ -81,6 +81,8 @@ export function useBoardOverlays(b: BattleScreen) {
     // hold zones of hostile vanguards in danger mode (hatched)
     const hold = danger || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];
     const base = {
+      // story 16.6: the rune weapons of the chosen figure and of the forecast's attacker and target glow in full
+      glow: glowUids(mode),
       threat,
       watch: watchTiles,
       goal,

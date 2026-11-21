@@ -16,6 +16,7 @@
  * units:                       # changes to units already on the board, by id or uid
  *   liora: { at: [10, 3], hp: 9, items: [shine], status: [burning] }
  *   osric: { hp: 12, stats: { spd: 9 }, level: 7 }
+ *   tobin: { items: [iron_axe], runes: { mainHand: [fire_rune_3] } }   # runes set into the equipped items by slot
  * add:                         # new units in the map's own unit format
  *   - { id: lab_wolf, team: enemy, class: wolf, level: 3, at: [5, 5] }
  * remove: [enemy:wolf*, m12]   # ids/uids with `*`, optionally with team prefix; `enemy:*` clears the foes
@@ -70,6 +71,8 @@ const unitPatchSchema = z
     status: z.array(z.union([z.enum(STATUS_IDS), z.object({ id: z.enum(STATUS_IDS), turns: z.number().int().min(1) })])).optional(),
     /** replaces everything the unit carries; the game puts each item in its best slot */
     items: z.array(z.string()).optional(),
+    /** runes set into the equipped items by slot (story 16.6): `{ mainHand: [fire_rune_3, edge_rune], offHand: [water_rune_1] }` */
+    runes: z.partialRecord(z.enum(['mainHand', 'offHand']), z.array(z.string())).optional(),
     acted: z.boolean().optional(),
     moved: z.boolean().optional(),
   })
@@ -210,6 +213,12 @@ function patchUnit(data: GameData, s: BattleState, u: BattleUnit, p: z.infer<typ
     u.equip = {};
     u.bag = [];
     autoEquip(data, u, p.items.map((id) => newItem(s, id, data)));
+  }
+  for (const [slot, ids] of Object.entries(p.runes ?? {}) as Array<['mainHand' | 'offHand', string[]]>) {
+    const item = u.equip[slot];
+    if (!item) fail(`units.${ref}.runes.${slot}: nothing equipped there`);
+    for (const id of ids) if (!data.runes[id]) fail(`units.${ref}.runes.${slot}: no rune "${id}"`, Object.keys(data.runes));
+    item.runes = [...ids];
   }
   if (p.at !== undefined) {
     if (p.at) checkTile(s, p.at, `units.${ref}.at`);

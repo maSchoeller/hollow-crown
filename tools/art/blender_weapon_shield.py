@@ -10,13 +10,18 @@ conversion; hangs on the LEFT hand socket): origin in the fist, +X outward (the 
 x = 0 .. 0.08), +Y up the forearm, +Z the grip axis (grip bar along Z). The shield is centred at y = 0.03 with the point
 down (y -0.128 .. 0.178), about 0.25 wide (|z| <= 0.125). Units: 1 = one board tile before figureScale.
 
-Rune parts (same contract as the axe):
-  rune_stone   one dome, identical to the axe's stone (diameter 2*(SOCKET_R-0.0006), socket depth FACE-FLOOR), flush in the
-               setting in the centre of the boss.
-  rune_channel V strip inside a ring groove around the boss. UV map 1 (`fill`, TEXCOORD_1): U = 0 at the bottom of the
-               ring, rising clockwise seen from the front (from +X) to 1 back at the bottom. Light U < 1/3, 2/3, 1 for the
-               tiers I, II, III. UV map 0 is a dummy.
-Everything else is the object `shield` with the material `HC_Vertex` (vertex colours).
+Look: painted board face split per pale (ochre left / dark umber right; blue, red and green are team colours and stay off the shield) over visible planks, dark-iron rim with gold rivets, a
+bright cold-steel boss with the setting (palette art/palette/hollow-64.hex), wooden planks on the back.
+
+Parts (same contract as the axe, see blender_weapons_v2.py for the STONE NODE CONVENTION):
+  shield       metal + boards + boss + main setting, material HC_Vertex.
+  rune_channel V strip inside a ring groove around the boss, lifted CH_LIFT above the groove floor. UV map 1 (`fill`,
+               TEXCOORD_1): U = 0 at the bottom of the ring, rising clockwise seen from the front (from +X) to 1 back at the
+               bottom. Light U < 1/3, 2/3, 1 for the tiers I, II, III. UV map 0 is a dummy.
+  rune_socket2 small setting (rim + four small claws, 0.55 x) on the plate below the boss ring, HC_Vertex.
+Nodes (empty): socket_rune_a (main setting, centre of the boss) and socket_rune_b (small setting). Stone frame: dome along
++X (out of the shield front), symbol up along +Y (up the forearm) = node rotated by -90 degrees about X (Blender); the small
+node is also tilted by the plate slope and carries scale 0.55. Triangles: shield 7 404 + rune_channel 256 + rune_socket2 464 = 8 124.
 """
 import math
 import os
@@ -40,9 +45,22 @@ RG, GHW, GDEPTH = 0.084, GROOVE_HW, GROOVE_DEPTH   # ring groove radius, half wi
 NA = 64                        # angular steps of the plate / ring (divisible by 4: the seam is at the bottom)
 RIM_A, RIM_B = 0.0092, 0.0105  # rim tube half sizes (in plane, along x)
 
-RIM_D = 0.5 * pal(51) + 0.5 * pal(13)
-RIM_L = 0.8 * pal(52) + 0.1 * pal(24)
-RIM_D[3] = RIM_L[3] = 1.0
+RIM_D = 0.6 * pal(2) + 0.4 * pal(3)         # dark iron rim
+RIM_L = 0.5 * pal(3) + 0.5 * pal(4)
+BOSS_D, BOSS_L = pal(26), pal(28)           # bright cold steel boss and setting
+BLUE_D, BLUE_L = pal(41), pal(42)           # painted field, left half: ochre (never a team colour, art direction §2.1)
+RED_D, RED_L = pal(21), pal(22)             # painted field, right half: dark umber
+GOLD_L = 0.4 * pal(19) + 0.6 * pal(44)      # rivets
+for _c in (RIM_D, RIM_L, BOSS_D, BOSS_L, BLUE_D, BLUE_L, RED_D, RED_L, GOLD_L):
+    _c[3] = 1.0
+PLANK_W = 0.0417                            # board width (six boards over the 0.25 width)
+SOCKET2_C = (0.0, -0.080)                   # small setting (z, y) on the plate below the boss ring
+
+
+def plank_seam(z):
+    """0 on a seam between two boards, 1 in the middle of a board."""
+    u = ((z + W) / PLANK_W) % 1.0
+    return smooth(min(u, 1.0 - u) / 0.07)
 
 
 def bend(z, y):
@@ -169,14 +187,21 @@ def build_plate(P1):
         z, y, x = co.z, co.y, co.x
         h = vnoise(y, z, 0.0105, 11) * 0.6 + vnoise(y, z + 0.4 * x / 0.01, 0.0055, 12) * 0.4
         r = math.hypot(z, y - CY)
-        if x < back_x(z, y) + THICK * 0.5:
-            return lerp_c(STEEL_D, STEEL_M, 0.35 + 0.35 * h)
-        c = lerp_c(STEEL_D, STEEL_M, 0.30 + 0.50 * h)
-        c = lerp_c(c, STEEL_L, (0.16 if z > 0.0 else 0.0) * (0.6 + 0.4 * h))        # two facets: light / dark half
+        seam = plank_seam(z)
+        if x < back_x(z, y) + THICK * 0.5:                      # back: bare boards
+            c = lerp_c(WOOD_M, WOOD_L, 0.2 + 0.5 * h)
+            return lerp_c(WOOD_D, c, 0.35 + 0.65 * seam)
+        d_, l_ = (BLUE_D, BLUE_L) if z > 0.0 else (RED_D, RED_L)    # per pale: z > 0 ochre, z < 0 umber
+        c = lerp_c(d_, l_, 0.25 + 0.55 * h)
+        c = lerp_c(c, l_, 0.18 * smooth((abs(z) - 0.02) / 0.06))
+        c = lerp_c(0.45 * d_ + 0.1 * pal(1), c, 0.45 + 0.55 * seam)  # board seams
+        c[3] = 1.0
+        if abs(z) < 0.0035:                                          # thin gold line on the pale
+            return lerp_c(c, GOLD_L, 0.85)
         if abs(r - RG) < GHW * 1.2:
-            c = lerp_c(c, STEEL_D, 0.55)
+            c = lerp_c(c, pal(1), 0.6)
         elif r < RG - 0.003:
-            c = lerp_c(c, STEEL_D, 0.28)                                              # darker dish around the boss
+            c = lerp_c(c, pal(1), 0.3)                               # darker dish around the boss
         return c
     set_colours(ob, col)
     return ob
@@ -225,14 +250,14 @@ def build_rivets(path):
     n = 13
     start = int(np.argmin(path[:, 1]))              # the tip
     for j in range(n):
-        p = path[(start + round(j * m / n)) % m]
+        p = path[(start + round((j + 0.5) * m / n)) % m]
         bm = lathe([(0.0, 0.0), (0.0063, 0.0), (0.0078, 0.0014), (0.0072, 0.0034), (0.0048, 0.0052), (0.0, 0.0058)], 8,
                    axis="X", close_ends=False)
         xt = back_x(p[0], p[1]) + THICK / 2 + RIM_B - 0.0016
         bmesh.ops.translate(bm, vec=(xt, p[1], p[0]), verts=bm.verts)
         obs.append(new_obj("rivet", mesh_from_bm(bm, "rivet")))
     for ob in obs:
-        set_colours(ob, lambda co, n: lerp_c(RIM_L, pal(10), 0.25))
+        set_colours(ob, lambda co, n: lerp_c(GOLD_L, pal(20), 0.15 + 0.25 * vnoise(co.y, co.z, 0.004, 44)))
     return obs
 
 
@@ -243,51 +268,35 @@ def build_boss_and_setting():
     bb = lathe(prof, 36, axis="X", close_ends=False)
     bmesh.ops.translate(bb, vec=(0, CY, 0), verts=bb.verts)
     boss = new_obj("boss", mesh_from_bm(bb, "boss"))
-    sy, sz = CY, 0.0
 
     def bcol(co, n):
         rad = math.hypot(co.y - CY, co.z)
         h = vnoise(co.y, co.z, 0.01, 41)
         if rad < SOCKET_R + 0.001 and co.x < X_S - 0.001:
-            return lerp_c(STEEL_D, STEEL_M, 0.15 + 0.3 * h)
-        return lerp_c(lerp_c(STEEL_D, STEEL_M, 0.35 + 0.55 * smooth((co.x - 0.045) / 0.015)), STEEL_L, 0.18 * h)
+            c = lerp_c(BOSS_D, BOSS_L, 0.05 + 0.2 * h) * 0.75
+            c[3] = 1.0
+            return c
+        return lerp_c(lerp_c(BOSS_D, BOSS_L, 0.35 + 0.55 * smooth((co.x - 0.045) / 0.015)), pal(6), 0.12 * h)
     set_colours(boss, bcol)
-    parts = [boss]
-    arc_pts = [(SOCKET_R + 0.0050 - 0.0055 * math.cos(math.radians(a)), X_S + 0.0010 + 0.0042 * math.sin(math.radians(a)))
-               for a in (0, 30, 60, 90, 120, 150, 180)]
-    rim = lathe([(SOCKET_R - 0.0005, X_S - 0.0015)] + arc_pts + [(SOCKET_R + 0.0105, X_S - 0.0015)], 24, axis="X",
-                close_ends=False, loop=True)
-    bmesh.ops.recalc_face_normals(rim, faces=rim.faces)
-    bmesh.ops.translate(rim, vec=(0, sy, sz), verts=rim.verts)
-    parts.append(new_obj("srim", mesh_from_bm(rim, "srim")))
-    for k in range(4):
-        a = math.radians(90 * k)
-        bm = box_bm((0, 0, 0), (0.0150, 0.0105, 0.0090), bevel=0.0036, segs=2)
-        bmesh.ops.translate(bm, vec=(X_S + 0.0018, SOCKET_R + 0.0004, 0), verts=bm.verts)
-        bmesh.ops.rotate(bm, cent=(0, 0, 0), matrix=Matrix.Rotation(a, 3, "X"), verts=bm.verts)
-        bmesh.ops.translate(bm, vec=(0, sy, sz), verts=bm.verts)
-        parts.append(new_obj("prong", mesh_from_bm(bm, "prong")))
-    for ob in parts[1:]:
-        set_colours(ob, lambda co, n: lerp_c(RIM_D, RIM_L, 0.55 + 0.35 * smooth((co.x - X_S) / 0.005) + 0.1 * (vnoise(co.y, co.z, 0.006, 43) - 0.5)))
-    return parts
+    M = Matrix.Translation((FLOOR_S - STONE_SINK, CY, 0.0)) @ Matrix.Rotation(-math.pi / 2, 4, "X")
+    rim_o, claws = setting_parts(M, X_S - FLOOR_S + STONE_SINK)
+    add_node("socket_rune_a", M)
+    for ob in [rim_o] + claws:
+        set_colours(ob, lambda co, n: lerp_c(BOSS_D, BOSS_L, 0.5 + 0.35 * smooth((co.x - X_S) / 0.006) + 0.1 * (vnoise(co.y, co.z, 0.006, 43) - 0.5)))
+    return [boss, rim_o] + claws
 
 
-def build_stone():
-    h0, h1 = FLOOR_S, FLOOR_S + 0.0042
-    cap_h = 0.0075
-    rr = SOCKET_R - 0.0006
-    prof = [(0.0, h0), (rr, h0), (rr, h1)]
-    Rs = (rr ** 2 + cap_h ** 2) / (2 * cap_h)
-    for i in range(1, 7):
-        prof.append((Rs * math.sin(math.asin(rr / Rs) * (1 - i / 6)),
-                     h1 + Rs * math.cos(math.asin(rr / Rs) * (1 - i / 6)) - (Rs - cap_h)))
-    prof[-1] = (0.0, h1 + cap_h)
-    sb = lathe(prof, 20, axis="X")
-    bmesh.ops.translate(sb, vec=(0, CY, 0), verts=sb.verts)
-    ob = new_obj("stone", mesh_from_bm(sb, "stone"))
-    shade(ob, 60)
-    set_colours(ob, lambda co, n: lerp_c(STONE_D, STONE_L, smooth((co.x - (X_S - FACE) - 0.0075) / 0.005)))
-    return ob
+def build_socket2():
+    """Small second setting on the plate below the ring groove (own mesh rune_socket2)."""
+    z, y = SOCKET2_C
+    h0 = front_x(z, y)
+    eps = 0.01                                            # follow the plate slope along y
+    tilt = math.atan2(front_x(z, y + eps) - front_x(z, y - eps), 2 * eps)
+    M0 = Matrix.Translation((h0 - STONE_SINK, y, z)) @ Matrix.Rotation(tilt, 4, "Z") @ Matrix.Rotation(-math.pi / 2, 4, "X")
+    rim_o, claws = setting_parts(M0, STONE_SINK, SOCKET2_F, 16, 1)
+    add_node("socket_rune_b", M0 @ Matrix.Diagonal((SOCKET2_F, SOCKET2_F, SOCKET2_F, 1.0)))
+    return make_socket2([rim_o] + claws, lambda co, n: lerp_c(BOSS_D, BOSS_L, 0.55 + 0.3 * smooth((co.x - h0) / 0.003)
+                                                              + 0.1 * (vnoise(co.y, co.z, 0.006, 43) - 0.5)))
 
 
 def build_channel():
@@ -302,7 +311,7 @@ def build_channel():
             r = RG + off
             z, y = r * math.cos(phi), CY + r * math.sin(phi)
             s = front_x(z, y)
-            x = s - GDEPTH + GDEPTH * (hw / GHW) + 0.0003 if kind == "e" else s - GDEPTH + 0.0006
+            x = s - GDEPTH + GDEPTH * (hw / GHW) + CH_LIFT * 0.7 if kind == "e" else s - GDEPTH + CH_LIFT
             row.append(bm.verts.new((x, y, z)))
         cols.append(row)
     for a, b in zip(cols, cols[1:]):
@@ -395,12 +404,12 @@ def shield():
     parts = [plate, rim] + build_rivets(path) + build_boss_and_setting() + build_back()
     metal = join(parts, "shield")
     shade(metal, 32)
-    stone = build_stone()
     chan = build_channel()
-    return metal, stone, chan
+    sock2 = build_socket2()
+    return metal, chan, sock2
 
 
-def make_materials(metal, stone, chan):
+def make_materials(metal, chan, sock2):
     m = bpy.data.materials.new("HC_Vertex")
     m.use_nodes = True
     nt = m.node_tree
@@ -412,7 +421,8 @@ def make_materials(metal, stone, chan):
     metal.data.name = "shield"
     metal.data.materials.clear()
     metal.data.materials.append(m)
-    for ob, name in ((stone, "rune_stone"), (chan, "rune_channel")):
+    finish_socket2(sock2)
+    for ob, name in ((chan, "rune_channel"),):
         ob.data.name = ob.name = name
         mm = bpy.data.materials.new(name)
         mm.use_nodes = True
@@ -427,10 +437,10 @@ def make_materials(metal, stone, chan):
 for o in list(bpy.data.objects):
     bpy.data.objects.remove(o, do_unlink=True)
 os.makedirs(OUT, exist_ok=True)
-metal, stone, chan = shield()
-make_materials(metal, stone, chan)
+metal, chan, sock2 = shield()
+make_materials(metal, chan, sock2)
 path = os.path.join(OUT, "shield.glb")
 bpy.ops.export_scene.gltf(filepath=path, export_format="GLB", use_selection=False, export_vertex_color="ACTIVE",
                           export_animations=False, export_materials="EXPORT")
-tris = {o.name: sum(len(p.vertices) - 2 for p in o.data.polygons) for o in (metal, stone, chan)}
+tris = {o.name: sum(len(p.vertices) - 2 for p in o.data.polygons) for o in (metal, chan, sock2)}
 print(f"[hc] {path}: {sum(tris.values())} triangles {tris}", flush=True)

@@ -13,6 +13,7 @@ import type { BaseTexture } from '@babylonjs/core/Materials/Textures/baseTexture
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import type { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import type { GameData } from '../core';
+import type { RuneGlowDef } from '../core/renderDefs';
 import { assetUrl } from './shared/assets';
 import { RefCache } from './shared/cache';
 import { loadContainer, type VatEntry } from './shared/models';
@@ -55,6 +56,8 @@ export interface AssetStore {
   tintPool: Map<string, StandardMaterial[]>;
   /** story 8.6: team ramps and the plug-in values of the scene's figures; the board sets the floor and rim light from its look */
   figureLook: FigureLook;
+  /** story 16.6: glow and metal values of the rune weapons (`render.yaml` `gear.rune`); without, rune weapons show no runes */
+  runeGlow?: RuneGlowDef;
 }
 
 export class RenderHost {
@@ -131,6 +134,7 @@ export class RenderHost {
       tintPool: new Map(),
       vatModels: new Map(),
       figureLook: newFigureLook(this.data.render.look),
+      runeGlow: this.data.render.gear.rune,
       container: (path, materials = false) => this.models.use(`${materials ? 'm' : '-'}:${path}`, holder),
       vat: (path) => this.vats.use(path, holder),
       texture: (path) => this.textures.use(path, holder),

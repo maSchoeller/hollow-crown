@@ -103,9 +103,10 @@ def unshipped_props():
 def build_models():
     """art/models/units/<id>.glb (+ <id>.vat) → public/assets/<pack>/models/units/ (the pack of the figure's first appearance,
     tools/art/model_packs.py; manifest `models.vat` lists the ids that have a baked animation); art/models/props/<id>_<state>.glb,
-    art/models/weapons/<id>.glb and art/models/parts/<id>.glb (story 10.13) → public/assets/models/
+    art/models/weapons/<id>.glb, art/models/weapons-v2/<id>.glb, art/models/runes-v2/<id>.glb (story 16.6) and
+    art/models/parts/<id>.glb (story 10.13) → public/assets/models/
     (props: the pack of a prop is only a matter of the first download, content/packs.yaml `props`, manifest `models.propPacks`)."""
-    result = {'units': [], 'unitPacks': {}, 'vat': [], 'props': {}, 'propPacks': {}, 'weapons': [], 'parts': []}
+    result = {'units': [], 'unitPacks': {}, 'vat': [], 'props': {}, 'propPacks': {}, 'weapons': [], 'weapons2': [], 'runes': [], 'parts': []}
     base = os.path.join(ART, 'models')
     src = os.path.join(base, 'units')
     ids = sorted(f[:-4] for f in os.listdir(src) if f.endswith('.glb') and 'preview' not in f) if os.path.isdir(src) else []
@@ -120,7 +121,8 @@ def build_models():
                 result['vat'].append(mid)
     result['units'] = ids
     result['unitPacks'] = packs
-    for kind in ('props', 'weapons', 'parts'):
+    # story 16.6: the rune weapons (art/models/weapons-v2, manifest `weapons2`) and the rune stones (art/models/runes-v2, manifest `runes`)
+    for kind in ('props', 'weapons', 'weapons-v2', 'runes-v2', 'parts'):
         files = copy_tree_files(os.path.join(base, kind), os.path.join(OUT, 'models', kind), {'.glb'})
         for f in files:
             name = f[:-4]
@@ -129,6 +131,8 @@ def build_models():
                 continue
             if kind in ('weapons', 'parts'):
                 result[kind].append(name)
+            elif kind in ('weapons-v2', 'runes-v2'):
+                result['weapons2' if kind == 'weapons-v2' else 'runes'].append(name)
             else:
                 pid, _, state = name.partition('_')
                 result['props'].setdefault(pid, []).append(state)
