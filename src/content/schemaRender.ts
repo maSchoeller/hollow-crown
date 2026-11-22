@@ -6,6 +6,7 @@ import { slugId, weaponGroup, weaponType } from './schemaBase';
 
 const qualityLevel = z.object({ maxDpr: z.number().positive(), shadowMap: z.number().int().min(0) });
 const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), modelOpen: z.string().regex(/^[a-z0-9_]+$/).optional(), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
+const itemPiece = z.object({ model: z.string().regex(/^sig\/[a-z0-9_]+$/), hand: z.enum(['left', 'right']).optional(), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
 const partPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), socket: z.enum(['back', 'head']) });
 const decorSchema = z.object({ model: z.string(), map: z.number().min(0).max(1), scenery: z.number().min(0).max(1), scale: z.tuple([z.number().positive(), z.number().positive()]) });
 
@@ -151,6 +152,8 @@ export const renderSchema = z.object({
   gear: z.object({
     weapons: z.partialRecord(weaponType, gearPiece),
     offHand: z.partialRecord(weaponGroup, gearPiece),
+    /** story 16.8: single items (signature weapons, relics) with their own model, keyed by item id */
+    items: z.record(z.string().regex(/^[a-z0-9_]+$/), itemPiece),
     /** story 10.13: attached part per pro path, keyed by the `proPart` of the class */
     proParts: z.record(z.string().regex(/^[a-z0-9_]+$/), partPiece),
     /** story 16.6: glow of the rune weapons (channel and stones), metal tints */

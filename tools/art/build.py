@@ -136,6 +136,9 @@ def build_models():
             else:
                 pid, _, state = name.partition('_')
                 result['props'].setdefault(pid, []).append(state)
+    # story 16.8: the signature weapons and relics (art/models/weapons-v2/sig/<id>.glb, listed in `weapons` as `sig/<id>`)
+    sig = copy_tree_files(os.path.join(base, 'weapons-v2', 'sig'), os.path.join(OUT, 'models', 'weapons-v2', 'sig'), {'.glb'})
+    result['weapons'] += ['sig/' + f[:-4] for f in sig]
     # props that ship with a later pack than core (`props` of the pack in content/packs.yaml); they stay in models/props/,
     # only the first download (tools/build/first-mission.mjs) leaves them out. Manifest: models.propPacks {<prop>_<state>: pack}
     stems = sorted(f"{pid}_{st}" for pid, states in result['props'].items() for st in states)

@@ -8,7 +8,8 @@ import type { BattleState, BattleUnit, FigurePiece, GearPiece, PartPiece, Pos, S
 import { bleedsOut, itemDef, maxHpOf, modelId, runeSlotCount, shadowHidden, unitFigureId, unitVatPath } from '../../core';
 import { loadManifest, loadUnitSheet } from '../shared/assets';
 import { loadUnitModel } from '../shared/models';
-import { gearRunesOf, glowState, runeKey } from '../shared/runeLook';
+import { fixedRuneOf, modelFor } from '../shared/gearModel';
+import { gearRunesOf, glowState, runeKey, runeLookOf } from '../shared/runeLook';
 import { ModelFigure, SpriteFigure, type Figure, type FigureAnim } from '../shared/figures';
 import { buildGridMesh, buildOverlayMeshes, type Overlays } from './overlays';
 import type { HpBarMode, KillKind } from './badges';
@@ -28,8 +29,8 @@ export abstract class BoardUnits extends BoardProps {
 
   /** Weapon model of the equipped weapon group (GA9); its motion picks the figure's attack animation. */
   protected weaponOf(u: BattleUnit): GearPiece | undefined {
-    const main = u.equip.mainHand && itemDef(this.data, u.equip.mainHand).weaponType;
-    return main ? this.data.render.gear.weapons[main] : undefined;
+    const def = u.equip.mainHand && itemDef(this.data, u.equip.mainHand);
+    return def && def.weaponType ? modelFor(def, this.data.render.gear) : undefined;
   }
 
   /** Attached part of the unit's pro path (story 10.13); undefined for a class without one or an unknown part. */
@@ -43,12 +44,11 @@ export abstract class BoardUnits extends BoardProps {
    * the weapon first) and the attached part of the pro path (story 10.13).
    */
   protected gearOf(u: BattleUnit): FigurePiece[] {
-    const { offHand } = this.data.render.gear;
     const out: GearPiece[] = [];
     const w = this.weaponOf(u);
     if (w) out.push(this.withRunes(w, u.equip.mainHand));
-    const group = u.equip.offHand && itemDef(this.data, u.equip.offHand).group;
-    const off = group && offHand[group];
+    const offDef = u.equip.offHand && itemDef(this.data, u.equip.offHand);
+    const off = offDef && offDef.group ? modelFor(offDef, this.data.render.gear) : undefined;
     if (off && !out.some((p) => p.hand === off.hand)) out.push(this.withRunes(off, u.equip.offHand));
     const part = this.proPartOf(u);
     return part ? [...out, part] : out;
@@ -58,13 +58,16 @@ export abstract class BoardUnits extends BoardProps {
   private withRunes(piece: GearPiece, item: BattleUnit['equip'][keyof BattleUnit['equip']]): GearPiece {
     if (!item) return piece;
     const def = itemDef(this.data, item);
-    return { ...piece, rune: gearRunesOf(this.data.runes, item.runes, runeSlotCount(this.data, item), def.metal) };
+    const rune = gearRunesOf(this.data.runes, item.runes, runeSlotCount(this.data, item), def.metal);
+    // story 16.8: a signature piece shows its fixed rune in the main setting while slot 0 holds none (display only; the relic stage comes from the battle)
+    const fixed = item.runes[0] ? null : runeLookOf(this.data.runes, fixedRuneOf(def, this.state?.relicStages?.[def.id] ?? 1));
+    return { ...piece, rune: fixed ? { ...rune, main: fixed } : rune };
   }
 
   /** The figure's rebuild key: models, hands, and the metal and runes of rune weapons (a changed rune builds the figure anew, story 16.6). */
   protected gearKey(u: BattleUnit): string {
-    return this.gearOf(u)
-      .map((p) => ('socket' in p ? `${p.model}@${p.socket}` : `${p.model}@${p.hand}${runeKey(p.rune)}`))
+    return [u.equip.mainHand?.def ?? '-', u.equip.offHand?.def ?? '-', ...this.gearOf(u)
+      .map((p) => ('socket' in p ? `${p.model}@${p.socket}` : `${p.model}@${p.hand}${runeKey(p.rune)}`))]
       .join();
   }
 

@@ -1,5 +1,5 @@
 /** Render, legibility, handbook, look and world-map definitions (content/core/render.yaml and friends) as the core sees them. */
-import type { Element, GearPiece, MetalId, PartPiece, HomeKind, Season, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
+import type { Element, GearItemPiece, GearPiece, MetalId, PartPiece, HomeKind, Season, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
 import type { Condition } from './storyDefs';
 
 export interface PropVariant {
@@ -206,6 +206,8 @@ export interface RenderDef {
   gear: {
     weapons: Partial<Record<WeaponType, GearPiece>>;
     offHand: Partial<Record<WeaponGroup, GearPiece>>;
+    /** story 16.8: model of single items (signature weapons, relics) by item id, `sig/<id>`; resolved by `modelFor` (src/render/shared/gearModel.ts) */
+    items: Record<string, GearItemPiece>;
     proParts: Record<string, PartPiece>;
     /** story 16.6: glow of the rune weapons (channel and stones) and the tint of their metals */
     rune: RuneGlowDef;

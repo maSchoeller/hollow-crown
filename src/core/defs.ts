@@ -87,6 +87,11 @@ export interface ItemDef {
   group?: WeaponGroup;
   /** story 16.6: the metal a weapon or shield is made of; the board tints the model (`render.yaml` `gear.rune.metals`), the form stays. Without: steel */
   metal?: MetalId;
+  /**
+   * story 16.8: the rune a signature weapon or relic shows in its main setting when no rune sits there; a list gives one rune per relic
+   * stage (stage 1 first). Display only: no rule effect, `ItemInstance.runes` stays as it is [ASSUMPTION].
+   */
+  fixedRune?: string | string[];
   damageType?: 'physical' | 'magical';
   element?: Element;
   mt?: number;
@@ -413,6 +418,14 @@ export interface GearPiece {
   hold?: number;
   /** runtime only (`gearOf` of the board): metal and runes of the item in this hand, for rune weapons */
   rune?: GearRunes;
+}
+
+/** Story 16.8: the model of one item (`render.yaml` `gear.items`); what it leaves out (hand, motion, hold) the group's piece gives. */
+export interface GearItemPiece {
+  model: string;
+  hand?: 'left' | 'right';
+  motion?: string;
+  hold?: number;
 }
 
 /** Story 10.13: the visible part of a pro path, hung on a body socket of the figure (`render.yaml` `gear.proParts`). */
