@@ -93,3 +93,7 @@ Weitere Karten (m1_1, m1_3–m1_8, m2_2, m2_4–m2_7): nicht geändert, siehe `a
 - content/acts/act2/maps/m2_8_kronfeld.yaml
 - tests/unit/m2-1-windscharte.test.ts
 - _bmad-output/implementation-artifacts/16-2-balancing-nachzug-fuer-prolog-1-2-2-1-und-2-8.md
+
+### Review (2026-11-22)
+
+`gds-code-review` (Sonnet): keine kritischen Befunde. Behoben: Kommentar in `m2_1_windscharte.yaml` (m7 fehlt nur auf Normal). `pnpm check` grün (2628 Tests). Status review: Spielgefühl-Abnahme durch den PO steht aus.
