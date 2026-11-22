@@ -3,7 +3,7 @@
  * against "no rune", the chronicle line, the keys to the rooms, the cache hold of the stage and the texts.
  */
 import { beforeAll, describe, expect, it } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { loadContentFromDisk } from '../../src/content/node';
 import { newCampaign, newItem, weaponProfile, type CampaignState, type GameData, type ItemInstance } from '../../src/core';
 import { lang, setLocales, t } from '../../src/i18n';
@@ -100,7 +100,8 @@ describe('model of a piece', () => {
   it('every model the view names exists in the art folder', () => {
     for (const id of ['iron_axe', 'steel_sword', 'iron_shield']) {
       const path = weaponStageModel(data, item(id))!;
-      expect(readFileSync(`art/${path}`).byteLength).toBeGreaterThan(1000);
+      // CI checks out LFS pointers only: the file must exist, its size is not telling
+      expect(existsSync(`art/${path}`)).toBe(true);
     }
   });
 
