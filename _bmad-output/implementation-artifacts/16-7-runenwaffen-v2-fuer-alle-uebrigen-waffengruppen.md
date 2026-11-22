@@ -1,6 +1,6 @@
 # Story 16.7: Runenwaffen v2 für alle übrigen Waffengruppen
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -100,3 +100,12 @@ Quelle: `concept/26-epics/epics/epic-16.md` Story 16.7 (Zeilen 112-124), Art Dir
 ### Completion Notes List
 
 ### File List
+
+### Completion Notes (Nachtlauf 2026-11-22)
+
+- Sieben Modelle (Bogen, Dolch, Stab, Buch zu und auf, Laute, Fokus) unter `art/models/weapons-v2/`, Skripte `tools/art/blender_weapon_<gruppe>.py` mit gemeinsamem `blender_weapons_v2_kit.py`; alte Modelle `art/models/weapons/` und `tools/art/blender_weapons.py` entfernt.
+- Ohne ChatGPT-Baupläne gebaut (ChatGPT nachts nicht erreichbar), Vorlage die gemalten Item-Icons [ASSUMPTION]; Protokoll `art/prompts/weapon_rune_concept.md` Iteration 5.
+- `render.yaml`: alle Gruppen auf v2, `offHand.focus` neu, `modelOpen: book_open` für Bücher (Umschalten in 16.10).
+- Prüfung: lint, content:check, build grün; Vitest unter Last mit 8 Zeitüberschreitungen, die Dateien allein grün. Erstdownload 14,45 MB (Ziel 12, Budget 30).
+- Abnahme durch den Produktinhaber offen: Bild `s4-16-7-modelle.png`, Brett `s4-16-7-brett.jpg`.
+- Folgepunkte aus dem Review: `gearPiece` im Schema nicht `.strict()`; kein Test für den Metall-Standard und für Bücher/Stäbe ohne kleine Fassung; `book_open` wird erst mit 16.10 geladen.
