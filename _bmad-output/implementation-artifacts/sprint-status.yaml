@@ -304,7 +304,7 @@ development_status:
   16-14-waffenansicht: backlog  # Waffenansicht
   16-15-figurenblatt-als-3d-ankleidepuppe: backlog  # Figurenblatt als 3D-Ankleidepuppe
   16-16-verzauberer-als-werkbank: backlog  # Verzauberer als Werkbank
-  16-17-haendler-zuerst-die-person: backlog  # Händler „zuerst die Person“
+  16-17-haendler-zuerst-die-person: ready-for-dev  # Händler „zuerst die Person“
   16-18-waffenkammer-im-bergfried: backlog  # Waffenkammer im Bergfried
   16-19-handbuch-leistung-und-abnahme: backlog  # Handbuch, Leistung und Abnahme
   epic-16-retrospective: optional
