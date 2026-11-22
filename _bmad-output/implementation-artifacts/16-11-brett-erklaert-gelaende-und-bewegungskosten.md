@@ -1,6 +1,6 @@
 # Story 16.11: Brett erklärt Gelände und Bewegungskosten
 
-Status: review
+Status: done
 
 ## Story
 
@@ -103,3 +103,9 @@ Claude Opus 5.5 (Sub-Session)
 - `src/app/screens/Battle.tsx`, `BattleHud.tsx`, `useBattleScreen.ts`, `useBoardOverlays.ts`, `useBattleInput.ts`, `src/ui/icons.tsx`, `src/ui/hud.css`
 - `tests/unit/terrain-lens.test.ts`, `tests/unit/tile-card.test.ts`, `tests/unit/lens-shapes.test.ts`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
+
+### Review (gds-code-review, 2026-11-22)
+
+- Behoben: Linse ging nach dem Halten beim Loslassen wieder aus (`onHold` jetzt immer gebunden); Einmal-Hinweis gilt erst nach voller Standzeit als gesehen und wartet auf Dialog, Banner, Cut-in; mit gewählter Figur bleibt die Gefahrenzone sichtbar, auch wenn die Linse an ist; Feld der Feldkarte trägt den Cursor.
+- Offen (defer): Kosten-Punkte und Feldkarte zeigen den Betretenspreis (`moveCost`), ohne Höhen-/Leiter-Aufschlag; „noch n“ nutzt den Pfadpreis aus `reachable`. Heil-Prozent wird im Code mit „%“ zusammengesetzt.
+- Sichtprüfung (375 × 812, Lab `feuer-weg`): Linse mit Legende, Feldkarte Wald („Vorkämpfer: 3 Bewegung“, übrige Arten), Kosten-Punkte und „noch 2“ beim Schützen.
