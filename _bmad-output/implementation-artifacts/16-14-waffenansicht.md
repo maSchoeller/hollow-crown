@@ -1,6 +1,6 @@
 # Story 16.14: Waffenansicht
 
-Status: review
+Status: done
 
 ## Story
 
