@@ -23,6 +23,8 @@ const mission = (over: Partial<MissionSim> = {}): MissionSim => ({
   rooms: 0,
   materials: 0,
   deaths: 0,
+  kills: 0,
+  epithets: 0,
   reserve: 0,
   reserveLevel: 0,
   reserveExp: 0,
@@ -49,6 +51,9 @@ describe('chained act simulation (story 6.8)', () => {
     expect(a.missions.map((m) => m.node)).toEqual(data.acts[1]!.nodes.filter((n) => n.kind !== 'side').slice(0, a.missions.length).map((n) => n.id));
     expect(a.missions[0]!.node).toBe(firstNode(data).id);
     expect(simulateCampaign(data, o)).toEqual(a);
+    // story 16.5: the weapon chronicle is measured, per mission and for the run
+    expect(a.missions.reduce((n, m) => n + m.kills, 0)).toBeGreaterThan(0);
+    expect(a.chronicle.kills).toBeGreaterThan(0);
   });
 
   it('army level is the average of the strongest armySize units', () => {

@@ -1,0 +1,23 @@
+# Story 16.12, Frage: „Zeigt die Kampfvorschau, was die Runen bewirken?“
+#   Dev-Server, dann im Browser bei 375×812: http://localhost:5173/hollow-crown/?lab=kampfvorschau-element
+#   oder in der Konsole: await __hc.lab('kampfvorschau-element')
+#   CLI: pnpm lab kampfvorschau-element --forecast lab_axe lab_windlaeufer
+# Die Axt-Kämpferin (lab_axe, Feuer-Rune II) steht inmitten von vier Zielen; jedes zeigt einen anderen Fall des Element-Bands:
+#   lab_windlaeufer  Wind-Rune in der Rüstung        Feuer schlägt Wind · ×1,2, 30 % Brennen
+#   lab_kahl         ohne Schutzrune                 Feuer · kein Vorteil, kein Nachteil
+#   lab_schild       Feuer-Schild I                  Feuer · ×0,8 mit Schild-Chip
+#   lab_wasser       Wasser-Rune II in der Rüstung   Wasser hält Feuer ab · ×0,8
+# Die zweite Kämpferin (lab_blank, Axt ohne Rune) greift lab_kahl an: ohne Rune fallen Band und Zeile weg.
+question: Zeigt die Kampfvorschau, was die Runen bewirken?
+map: dev_terrain_warn
+seed: 3
+company: none
+locked: []   # Runen, Elemente und Zustände sind eingeführt
+remove: ['player:*', 'enemy:*', 'other:*']
+add:
+  - { id: lab_axe, team: player, class: brigand, level: 5, at: [5, 8], items: [{ def: iron_axe, runes: [fire_rune_2] }] }
+  - { id: lab_blank, team: player, class: brigand, level: 5, at: [3, 8], items: [{ def: iron_axe }] }
+  - { id: lab_windlaeufer, team: enemy, class: brigand, level: 3, at: [5, 7], ai: { profile: hold }, items: [{ def: iron_axe }, { def: chainmail, runes: [wind_rune_1] }] }
+  - { id: lab_kahl, team: enemy, class: brigand, level: 3, at: [4, 8], ai: { profile: hold }, items: [{ def: iron_axe }] }
+  - { id: lab_schild, team: enemy, class: breaker, level: 3, at: [6, 8], ai: { profile: hold }, items: [{ def: iron_axe }, { def: wooden_shield, runes: [fire_rune_1] }] }
+  - { id: lab_wasser, team: enemy, class: brigand, level: 3, at: [5, 9], ai: { profile: hold }, items: [{ def: iron_axe }, { def: chainmail, runes: [water_rune_2] }] }

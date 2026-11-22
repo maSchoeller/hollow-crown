@@ -62,6 +62,10 @@ const P: Record<string, string> = {
   // roles (class-action slot of the battle dock)
   avoid: 'M4 18c5 0 6-11 11-11h5M17 4l3 3-3 3',
   shield: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',
+  // story 16.12: armor (breastplate), hit points (heart), rounds (hourglass) of the forecast
+  armored: 'M8 4l-4 3 2 4 2-1v10h8V10l2 1 2-4-4-3c-.5 1.5-2 2.5-4 2.5S8.5 5.5 8 4z',
+  hp: 'M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z',
+  turns: 'M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9',
   blade: 'M12 2.5l2.5 3.5v8h-5V6zM6.5 14h11M12 14v5.5M10 21h4',
   bow: 'M6 3c8 3 8 15 0 18M6 3v18M4 12h16M17 9l3 3-3 3',
   ballista: 'M4 9c5-4 11-4 16 0M12 7v9M3 13h15M15 10l3 3-3 3M8 20l4-4 4 4',
