@@ -18,6 +18,7 @@ import type { Team } from '../../core';
 import { TILE, type Sheet } from './assets';
 import { giveTint, NO_GLOW, sharedFigureMaterial, takeTint, tintMaterial, type Glow, type UnitModel } from './models';
 import { clipRow, type VatClip } from './vat';
+import { hashName, readyInRow, resolveStance, RestTimeline, startOffset, type ResolvedStance } from './stance';
 import type { GlowState } from './runeLook';
 
 export type FigureAnim = 'idle' | 'walk' | 'attack' | 'hit' | 'downed';
@@ -31,6 +32,8 @@ export interface Figure {
   tint(desat: number, flash: number, alpha: number, glow?: Glow): void;
   /** story 16.6: the rune glow of the figure's weapons, dim on the board or full (chosen figure, forecast); sprites have none */
   setRuneGlow?(state: GlowState): void;
+  /** story 16.10: the chosen figure takes its ready stance (true), the others rest; sprites and Blender figures do nothing */
+  setStance?(ready: boolean): void;
   /**
    * `now`: the animation clock in ms (it stops while the board freezes a critical hit); `onScreen`: false while the figure is
    * outside the view and switched off, so nothing about its skeleton or its baked row is worked out
@@ -52,6 +55,13 @@ const YAW: Record<Facing, number> = { s: Math.PI, n: 0, e: Math.PI / 2, w: -Math
  * full frame rate then. Figures without a baked file (the Blender figures) keep the throttled skeleton path above.
  */
 const DOWNED_HOLD_FRAMES = 3;
+
+/** Story 16.10: how a figure stands (the key of its clips, `blade_shield` ...) and the timing of switch and gestures (render.yaml `board.stance`) */
+export interface StanceSetup {
+  key: string;
+  switchS: number;
+  gestureEveryS: readonly [number, number];
+}
 
 export class ModelFigure implements Figure {
   readonly node: TransformNode;
@@ -79,6 +89,20 @@ export class ModelFigure implements Figure {
   private clipSpeed = 1;
   private row = -1;
   private clock = 0;
+  /** story 16.10: the clips of the figure's stance, if the baked file has a rest clip for it; idle then plays through `tickStance` */
+  private resolved: ResolvedStance | null = null;
+  private seed = 0;
+  /** the figure is in (or on its way to) the ready stance */
+  private ready = false;
+  /** idle in stance mode: progress 0 (rest) .. 1 (ready) of the switch clip, its direction and start; `swTo` equal `swFrom`: no switch running */
+  private idleStance = false;
+  private swFrom = 0;
+  private swTo = 0;
+  private swStart = 0;
+  private timeline: RestTimeline | null = null;
+  private timeStart = 0;
+  private readyStart = 0;
+  private firstRest = true;
 
   /** `motion`: the weapon group's own animations (`attack_<motion>` …) win over the defaults, if the figure has them */
   constructor(
@@ -87,6 +111,8 @@ export class ModelFigure implements Figure {
     idleHz = 10,
     /** tint materials kept per texture and case for the next hit (render.yaml board.tintPool) */
     private poolMax = 24,
+    /** story 16.10: the stance of the figure; without it a baked figure plays `idle` as before */
+    private stanceSetup?: StanceSetup,
   ) {
     this.node = new TransformNode(`${model.root.name}:place`, model.root.getScene());
     model.root.parent = this.node;
@@ -95,6 +121,8 @@ export class ModelFigure implements Figure {
     let h = 0;
     for (const ch of model.root.name) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
     this.nextDue = (h % 1000) / 1000 * this.period;
+    this.seed = hashName(model.root.name);
+    if (stanceSetup && model.vat) this.resolved = resolveStance(model.vat.entry.data.clips, stanceSetup.key);
     for (const sk of model.skeletons) {
       const prepare = sk.prepare.bind(sk);
       // the scene prepares every active skeleton each frame; a throttled figure skips the frames in between and keeps its bone texture
@@ -148,6 +176,14 @@ export class ModelFigure implements Figure {
     if (!clip) return;
     if (this.current === anim && anim !== 'attack' && anim !== 'hit') return;
     this.current = anim;
+    this.idleStance = anim === 'idle' && !!this.resolved?.rest && this.resolved.key !== '';
+    if (this.idleStance) {
+      // story 16.10: back at rest after walking, striking or a hit: straight into the current stance state
+      this.clip = null;
+      this.clipStart = NaN;
+      this.swFrom = this.swTo = this.ready && this.resolved!.ready && this.resolved!.readyIn ? 1 : 0;
+      return;
+    }
     this.clip = clip;
     // the clip starts at the next frame's time, as the engine's animations do (they begin with the next animation step), not at the last one's
     this.clipStart = NaN;
@@ -173,6 +209,68 @@ export class ModelFigure implements Figure {
 
   private expect(): void {
     for (const sk of this.model.skeletons) this.needs.add(sk);
+  }
+
+  /**
+   * Story 16.10: the chosen figure takes its ready stance, the others rest. The switch plays `ready_in_<s>` forwards or
+   * backwards in `board.stance.switchS` (a change in between turns it round from where it is); a book swaps to its open model.
+   */
+  setStance(ready: boolean): void {
+    if (ready === this.ready) return;
+    this.ready = ready;
+    const book = this.model.book;
+    if (book) {
+      for (const n of book.closed) n.setEnabled(!ready);
+      for (const n of book.open) n.setEnabled(ready);
+    }
+    const r = this.resolved;
+    if (!this.idleStance || !r?.ready || !r.readyIn) return;
+    this.swFrom = this.progress(this.clock);
+    this.swTo = ready ? 1 : 0;
+    this.swStart = this.clock;
+    if (this.swFrom === this.swTo && this.timeline) this.enterStance(this.clock);
+  }
+
+  /** the progress of the switch clip at `now` (ms) */
+  private progress(now: number): number {
+    if (this.swFrom === this.swTo) return this.swTo;
+    const dur = this.stanceSetup!.switchS * Math.abs(this.swTo - this.swFrom) * 1000;
+    const k = dur > 0 ? Math.min(Math.max((now - this.swStart) / dur, 0), 1) : 1;
+    return this.swFrom + (this.swTo - this.swFrom) * k;
+  }
+
+  /** a rest or ready period begins at `now` (ms): the rest timeline starts over (the first time at the figure's own offset), the ready loop at its first row */
+  private enterStance(now: number): void {
+    const r = this.resolved!;
+    this.readyStart = now;
+    this.timeStart = now;
+    if (!r.rest) return;
+    const restS = r.rest.rows / r.rest.fps;
+    const offset = this.firstRest ? startOffset(this.seed, restS) : 0;
+    this.firstRest = false;
+    this.timeline = new RestTimeline(this.seed, restS, r.gestures.map((g) => g.rows / g.fps), this.stanceSetup!.gestureEveryS, offset);
+  }
+
+  /** the row of the figure's idle in stance mode at `now` (ms): rest loop with gestures, ready loop or the switch between */
+  private tickStance(now: number): void {
+    const r = this.resolved!;
+    const canReady = !!r.ready && !!r.readyIn;
+    if (canReady && this.swFrom !== this.swTo) {
+      const p = this.progress(now);
+      if (p !== this.swTo) {
+        this.show(readyInRow(r.readyIn!, p));
+        return;
+      }
+      this.swFrom = this.swTo;
+      this.enterStance(now);
+    }
+    if (canReady && this.swTo === 1) {
+      this.show(clipRow(r.ready!, (now - this.readyStart) / 1000));
+      return;
+    }
+    const f = this.timeline!.at((now - this.timeStart) / 1000);
+    const clip = f.gesture >= 0 ? r.gestures[f.gesture]! : r.rest!;
+    this.show(clipRow(clip, f.local));
   }
 
   /** the rune glow state of the figure's weapons (story 16.6) */
@@ -248,8 +346,13 @@ export class ModelFigure implements Figure {
   tick(now: number, _speed = 1, onScreen = true): void {
     this.clock = now;
     if (this.model.vat) {
-      if (Number.isNaN(this.clipStart)) this.clipStart = now;
-      if (onScreen && this.clip) this.show(clipRow(this.clip, (now - this.clipStart) / 1000, this.clipSpeed));
+      if (Number.isNaN(this.clipStart)) {
+        this.clipStart = now;
+        if (this.idleStance) this.enterStance(now);
+      }
+      if (!onScreen) return;
+      if (this.idleStance) this.tickStance(now);
+      else if (this.clip) this.show(clipRow(this.clip, (now - this.clipStart) / 1000, this.clipSpeed));
       return;
     }
     if (!this.slow) return;

@@ -140,6 +140,7 @@ export const renderSchema = z.object({
     vat: z.boolean(),
     warm: z.union([z.literal(0), z.literal(1), z.literal(2)]),
     tintPool: z.number().int().nonnegative(),
+    stance: z.object({ switchS: z.number().positive(), gestureEveryS: z.tuple([z.number().positive(), z.number().positive()]).refine((g) => g[0] <= g[1], 'min above max') }),
     precompileMs: z.number().int().min(0),
     sceneryPropsLow: z.number().int().min(0),
     sceneryVariants: z.number().int().min(1),

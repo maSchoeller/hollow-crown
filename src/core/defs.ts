@@ -414,7 +414,7 @@ export type StanceKind = 'lance' | 'staff' | 'blade' | 'axe' | 'bow' | 'book' | 
 /** A weapon library model (art/models/weapons-v2/<model>.glb, the rune weapons), the hand it is held in and its attack animation. */
 export interface GearPiece {
   model: string;
-  /** story 16.10: the open state of a book (`models/weapons-v2/<modelOpen>.glb`); only data until the stance switch exists */
+  /** story 16.10: the open state of a book (`models/weapons-v2/<modelOpen>.glb`); loads with the closed model (hidden) and replaces it while the figure is in its ready stance */
   modelOpen?: string;
   hand: 'left' | 'right';
   /** the figure plays attack_<motion> instead of attack, if it has it (art-direction §4.5) */

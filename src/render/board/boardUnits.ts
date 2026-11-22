@@ -10,6 +10,7 @@ import { loadManifest, loadUnitSheet } from '../shared/assets';
 import { loadUnitModel } from '../shared/models';
 import { fixedRuneOf, modelFor } from '../shared/gearModel';
 import { gearRunesOf, glowState, runeKey, runeLookOf } from '../shared/runeLook';
+import { stanceKeyOf } from '../shared/stance';
 import { ModelFigure, SpriteFigure, type Figure, type FigureAnim } from '../shared/figures';
 import { buildGridMesh, buildOverlayMeshes, type Overlays } from './overlays';
 import type { HpBarMode, KillKind } from './badges';
@@ -54,6 +55,13 @@ export abstract class BoardUnits extends BoardProps {
     return part ? [...out, part] : out;
   }
 
+  /** Story 16.10: the stance key of the unit's clips: main weapon, off-hand piece (a shield adds, a lute or focus replaces), `none` unarmed. */
+  protected stanceKeyOf(u: BattleUnit): string {
+    const offDef = u.equip.offHand && itemDef(this.data, u.equip.offHand);
+    const off = offDef && offDef.group ? modelFor(offDef, this.data.render.gear) : undefined;
+    return stanceKeyOf(this.weaponOf(u), off);
+  }
+
   /** Story 16.6: a weapon piece carries the metal and runes of the item in that hand. */
   private withRunes(piece: GearPiece, item: BattleUnit['equip'][keyof BattleUnit['equip']]): GearPiece {
     if (!item) return piece;
@@ -73,7 +81,13 @@ export abstract class BoardUnits extends BoardProps {
 
   /** Story 16.6: every figure's rune glow from the overlays: full for the uids of `Overlays.glow`, else dimmed. */
   protected applyGlow(): void {
-    for (const [uid, v] of this.units) v.figure.setRuneGlow?.(glowState(this.overlays.glow, uid));
+    for (const [uid, v] of this.units) {
+      if (!v.figure.setRuneGlow && !v.figure.setStance) continue;
+      const state = glowState(this.overlays.glow, uid);
+      v.figure.setRuneGlow?.(state);
+      // story 16.10: the figure the glow marks as full (chosen, forecast) takes its ready stance
+      v.figure.setStance?.(state === 'full');
+    }
   }
 
   protected async makeFigure(u: BattleUnit, name: string): Promise<Figure> {
@@ -87,7 +101,8 @@ export abstract class BoardUnits extends BoardProps {
       const model = await loadUnitModel(this.store, mid, u.team, name, this.gearOf(u), manifestModels?.unitPacks, vatPath);
       if (model) {
         model.root.scaling.setAll(this.data.render.board.figureScale);
-        return new ModelFigure(model, this.weaponOf(u)?.motion, this.data.render.board.idleHz, this.data.render.board.tintPool);
+        const { switchS, gestureEveryS } = this.data.render.board.stance;
+        return new ModelFigure(model, this.weaponOf(u)?.motion, this.data.render.board.idleHz, this.data.render.board.tintPool, { key: this.stanceKeyOf(u), switchS, gestureEveryS });
       }
     }
     const weapon = u.equip.mainHand ? itemDef(this.data, u.equip.mainHand).weaponType : undefined;
@@ -175,7 +190,12 @@ export abstract class BoardUnits extends BoardProps {
       };
       this.units.set(u.uid, v);
       this.rings.add(u.uid, u.team);
-      figure.setRuneGlow?.(glowState(this.overlays.glow, u.uid));
+      // only 3D figures take these (a sprite figure has neither, so nothing is looked up for it)
+      if (figure.setRuneGlow || figure.setStance) {
+        const glow = glowState(this.overlays.glow, u.uid);
+        figure.setRuneGlow?.(glow);
+        figure.setStance?.(glow === 'full');
+      }
     }
     v.x = pos[0];
     v.y = pos[1];
