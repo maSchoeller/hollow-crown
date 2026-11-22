@@ -124,8 +124,8 @@ describe('signature piece files', () => {
 
   it('resolve to the same piece for the board and the screens (one source), with the hand of the group', () => {
     const gear = data.render.gear;
-    expect(modelFor(data.items.bounty!, gear)).toEqual({ ...gear.weapons.bow, model: 'sig/bounty' });
-    expect(modelFor(data.items.final_curtain!, gear)).toEqual({ ...gear.offHand.lute, model: 'sig/final_curtain' });
+    expect(modelFor(data.items.bounty!, gear)).toEqual({ ...gear.weapons.bow, model: 'sig/bounty', fallback: gear.weapons.bow!.model });
+    expect(modelFor(data.items.final_curtain!, gear)).toEqual({ ...gear.offHand.lute, model: 'sig/final_curtain', fallback: gear.offHand.lute!.model });
     expect(modelFor(data.items.iron_sword!, gear)).toBe(gear.weapons.sword);
     expect(modelFor(data.items.dragon_ember!, gear)?.model).toBe('sig/dragon_ember');
     expect(fixedRuneOf(data.items.pact_warden_shield!, 1)).toBe('earth_rune_1');

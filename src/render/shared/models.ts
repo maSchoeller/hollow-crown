@@ -239,7 +239,11 @@ async function attachGear(
   let kit: RuneKit | undefined;
   for (const piece of gear) {
     const socket = socketOf(socketName(piece));
-    const c = socket && (await store.container(`models/${pieceFolder(piece)}/${piece.model}.glb`));
+    // story 16.8: a signature model loads on demand; until it is there (or offline) the figure holds the group model
+    const c =
+      socket &&
+      ((await store.container(`models/${pieceFolder(piece)}/${piece.model}.glb`)) ??
+        ('fallback' in piece && piece.fallback ? await store.container(`models/${pieceFolder(piece)}/${piece.fallback}.glb`) : undefined));
     if (!socket || !c || root.isDisposed()) continue;
     const grip = new TransformNode(`${name}:${piece.model}:grip`, store.scene);
     grip.parent = socket;

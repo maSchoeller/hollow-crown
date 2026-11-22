@@ -164,7 +164,7 @@ describe('weapon models', () => {
   });
   it('a signature piece shows its own model and fixed rune stone; an accessory model is never planned for the board', () => {
     expect(gearModels(['wolf_fang', 'iron_bow', 'dragon_ember'], items, gear).sort()).toEqual(['bow', 'sig/wolf_fang']);
-    expect(gearPieces(['wolf_fang'], items, gear)).toEqual([{ model: 'sig/wolf_fang', hand: 'left' }]);
+    expect(gearPieces(['wolf_fang'], items, gear)).toMatchObject([{ model: 'sig/wolf_fang', hand: 'left' }]);
     const list = missionAssets({ units: [{ classId: 'brigand', gearItems: ['wolf_fang'] }], ...base, items, gear, weaponModels: ['bow', 'sig/wolf_fang'], runeModels: ['wind_rune_2'] }).filter(noImages);
     expect(list).toEqual([`locations/${defaultPlace}.webp`, 'models/runes-v2/wind_rune_2.glb', 'models/units/brigand.glb', 'models/weapons-v2/sig/wolf_fang.glb']);
   });

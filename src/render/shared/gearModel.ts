@@ -13,7 +13,7 @@ export function modelFor(item: ItemDef, gear: Gear): GearPiece | undefined {
   const own = gear.items[item.id];
   if (!own) return base;
   // an accessory (dragon_ember) has no group piece: no hand of its own, `left` is only a placeholder, the board never hangs it
-  return { ...base, ...own, hand: own.hand ?? base?.hand ?? 'left' };
+  return { ...base, ...own, hand: own.hand ?? base?.hand ?? 'left', ...(base ? { fallback: base.model } : {}) };
 }
 
 /** The rune a signature piece shows in its main setting: the single `fixedRune`, or the one of the relic `stage` (1-based, clamped to the list). */

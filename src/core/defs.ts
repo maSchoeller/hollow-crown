@@ -418,6 +418,8 @@ export interface GearPiece {
   hold?: number;
   /** runtime only (`gearOf` of the board): metal and runes of the item in this hand, for rune weapons */
   rune?: GearRunes;
+  /** runtime only (`modelFor`, story 16.8): the group model to show when the item's own model is not loaded (on demand, offline) */
+  fallback?: string;
 }
 
 /** Story 16.8: the model of one item (`render.yaml` `gear.items`); what it leaves out (hand, motion, hold) the group's piece gives. */
