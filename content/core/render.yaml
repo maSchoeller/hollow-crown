@@ -355,6 +355,7 @@ itemStage:
   tapSlopPx: 10
   resetMs: 380               # Rückfahrt der Ansicht
   growMs: 450                # ein neuer Stein wächst von 0 auf 1
+  fuseMs: 1100               # Verschmelzen (Story 16.16): drei Lichter fliegen zusammen, dann der Blitz in Elementfarbe
   # Lage der Modelle (Grad Gier um die Hochachse); upright = die Längsachse wird aufgerichtet (die Lanze ist im Griff schräg gebaut)
   models:
     sword: { yaw: 0 }

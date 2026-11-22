@@ -39,6 +39,7 @@ const itemStageSchema = z.object({
   tapSlopPx: z.number().min(0),
   resetMs: z.number().int().min(0),
   growMs: z.number().int().min(0),
+  fuseMs: z.number().int().min(0),
   models: z.record(z.string().regex(/^[a-z0-9_]+$/), z.object({ yaw: z.number().min(-360).max(360), upright: z.boolean().optional() })),
   lights: z.object({ ambient: z.object({ color: hex, intensity: z.number().min(0) }), key: stageLight, rim: stageLight }),
 });

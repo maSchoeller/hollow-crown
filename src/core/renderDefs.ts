@@ -274,6 +274,8 @@ export interface ItemStageDef {
   tapSlopPx: number;
   resetMs: number;
   growMs: number;
+  /** story 16.16: the merge flight (three lights fly together, then the flash) */
+  fuseMs: number;
   /** pose per weapon model file name: yaw about the vertical axis, `upright` stands the long axis up */
   models: Record<string, { yaw: number; upright?: boolean }>;
   lights: { ambient: { color: string; intensity: number }; key: StageLightDef; rim: StageLightDef };
