@@ -38,11 +38,10 @@ function pickSlot(data: GameData, c: CampaignState, unitId: string, inst: ItemIn
   if (d.slot !== 'accessory') return d.slot as EquipSlot;
   const u = c.roster.find((r) => r.id === unitId)!;
   const [a, b] = [u.equip.accessory1, u.equip.accessory2];
-  // a free place first (unless the other one holds the same item), else the place whose neighbour is a different item
+  // a free place first (unless the other one holds the same item), else the place of the same item (it is replaced), else the first
   if (!a && b?.def !== inst.def) return 'accessory1';
   if (!b && a?.def !== inst.def) return 'accessory2';
-  if (a && b) return a.def === inst.def ? 'accessory2' : b.def === inst.def ? 'accessory1' : 'accessory1';
-  return 'accessory1';
+  return b?.def === inst.def ? 'accessory2' : 'accessory1';
 }
 
 /**
