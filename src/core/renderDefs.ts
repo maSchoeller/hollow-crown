@@ -32,6 +32,17 @@ export interface LegibilityDef {
   reach: { color: string; strength: number };
   /** story 11.10: warning before a map event changes the ground: amber stripes on the board and the edge of the HUD line */
   terrainWarn: { color: string; alpha: number; pulse: number };
+  /** story 16.11: the terrain lens: tint per effect, stripes (fast, blocked) with width and gap in tiles; `holdMs` the hold time on the Danger button, `hintMs` the one-time hint */
+  terrainLens: {
+    cover: { color: string; alpha: number };
+    slow: { color: string; alpha: number };
+    harm: { color: string; alpha: number };
+    fast: { color: string; alpha: number; stripe: number; gap: number };
+    blocked: { color: string; alpha: number; stripe: number; gap: number };
+    neutral: { color: string; alpha: number };
+    holdMs: number;
+    hintMs: number;
+  };
   /** story 10.5: an own trap on the board: dark outline ring, coloured ring and jaws (radius, ring width and jaw length in tiles) */
   trap: { color: string; outline: string; alpha: number; radius: number; width: number; jaw: number };
   /** story 13.3: HP bar over the head */
