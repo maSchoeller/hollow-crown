@@ -61,13 +61,13 @@ function withoutRuneAt(inst: ItemInstance, index: number): ItemInstance {
   return { ...inst, runes };
 }
 
-export function EnchanterRoom({ room, apply, onClose, item }: { room: RoomDef; apply: Apply; onClose: () => void; item?: string }) {
+export function EnchanterRoom({ room, apply, onClose, item, stone }: { room: RoomDef; apply: Apply; onClose: () => void; item?: string; stone?: string }) {
   const c = campaign.value!;
   const [person, setPerson] = useState<string>(() => (item ? personOf(c, item) : null) ?? c.roster[0]!.id);
   const [uid, setUid] = useState<string | null>(() => item ?? enchantables(data, c, person)[0]?.uid ?? null);
   const [gem, setGem] = useState<'main' | 'small'>('main');
   const [mode, setMode] = useState<'set' | 'merge'>('set');
-  const [choice, setChoice] = useState<StoneChoice | null>(null);
+  const [choice, setChoice] = useState<StoneChoice | null>(stone ? { kind: c.convoy.some((i) => i.def === stone) ? 'stone' : 'offer', id: stone } : null);
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState<string | null>(null);
   const stage = useRef<ItemStage | null>(null);

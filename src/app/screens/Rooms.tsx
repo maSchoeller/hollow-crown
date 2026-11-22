@@ -581,15 +581,15 @@ export function CampfireRoom({ room, apply, onClose }: { room: RoomDef; apply: A
 }
 
 /** Dispatch by room function. */
-export function Room({ room, apply, onClose, unit, item }: { room: RoomDef; apply: Apply; onClose: () => void; unit?: string; item?: string }) {
+export function Room({ room, apply, onClose, unit, item, stone }: { room: RoomDef; apply: Apply; onClose: () => void; unit?: string; item?: string; stone?: string }) {
   return (
     <RoomApply.Provider value={apply}>
-      <RoomBody room={room} apply={apply} onClose={onClose} unit={unit} item={item} />
+      <RoomBody room={room} apply={apply} onClose={onClose} unit={unit} item={item} stone={stone} />
     </RoomApply.Provider>
   );
 }
 
-function RoomBody({ room, apply, onClose, unit, item }: { room: RoomDef; apply: Apply; onClose: () => void; unit?: string; item?: string }) {
+function RoomBody({ room, apply, onClose, unit, item, stone }: { room: RoomDef; apply: Apply; onClose: () => void; unit?: string; item?: string; stone?: string }) {
   switch (room.function) {
     case 'convoy':
       return <ConvoyRoom room={room} apply={apply} onClose={onClose} />;
@@ -606,7 +606,7 @@ function RoomBody({ room, apply, onClose, unit, item }: { room: RoomDef; apply: 
     case 'memorial':
       return <MemorialRoom room={room} apply={apply} onClose={onClose} />;
     case 'enchanter':
-      return <EnchanterRoom room={room} apply={apply} onClose={onClose} item={item} />;
+      return <EnchanterRoom room={room} apply={apply} onClose={onClose} item={item} stone={stone} />;
     case 'academy':
       return <AcademyRoom room={room} apply={apply} onClose={onClose} unit={unit} />;
     case 'workshop':
