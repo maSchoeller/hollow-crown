@@ -35,3 +35,21 @@ Zwei Versuche mit Element-Symbolen („rune glyph“, Sonne, Mond, Faust …) ha
 > Create an image. Game asset reference sheet for a cute fantasy mobile game: round glowing orange-red (#F2603A) gemstones that sit in a round metal socket. Painted, chunky, toy-like style with soft hand-painted shading and slightly thick dark-brown outlines. Flat light-grey background #E6E6E6, no text, no labels. Three columns, left to right: quality level 1, level 2, level 3. Every gem has exactly the same round base diameter. In each column, from top to bottom: a top view, a side profile view (showing the flat round base and the dome height), and a three-quarter view with a soft warm glow. Level 1: a smooth, low, domed cabochon with a small simple carved flame shape in the middle. Level 2: a taller dome with a faceted bevel ring around the edge and a bolder carved flame shape. Level 3: a precious cut crystal dome with clear facets, the flame shape inlaid with a thin gold line, a little taller, with a bright glowing core.
 
 Datei: `rune_gem_tiers_v1_preview.png` (Ausschnitt 740 × 500; Original 1536 × 1024 im Chat).
+
+## Iteration 5: Übrige Gruppen ohne ChatGPT-Bauplan (2026-11-22)
+
+ChatGPT war im Nachtlauf nicht erreichbar. Bogen, Dolch, Stab, Buch (zu und offen), Laute und Fokus wurden deshalb direkt in Blender aus den gemalten Gegenstandsbildern gebaut: `art/items/iron_bow.png`, `longbow.png`, `iron_dagger.png`, `stiletto.png`, `heal_staff.png`, `star_staff.png`, `forbidden_compendium.png`, `travel_lute.png`, `silver_lute.png`, `crystal_focus.png`, `moonsteel_orb.png`, `ember_focus.png`. Stil wie die v2-Modelle Axt, Schwert, Lanze und Schild (klobig, gerundet, Vertexfarben aus Hollow-64, keine Teamfarben als Fläche). Skripte: `tools/art/blender_weapon_<gruppe>.py` mit gemeinsamem Werkzeugsatz `tools/art/blender_weapons_v2_kit.py`; Abnahmeblatt: `blender_weapons_v2_sheet.py --set=rest`.
+
+[ASSUMPTION] Baupläne per ChatGPT werden nachgeholt (Iterationen 6 ff. je Gruppe); die Lagen unten sind Augenmaß und können danach nachgezogen werden.
+
+| Gruppe | Hauptfassung | Rinne (UV 1 `fill` 0 → 1) | kleine Fassung |
+|---|---|---|---|
+| Bogen | Platte im Griffstück über der Faust, +X-Seite | Oberarm entlang, bis zur Wurfarmkappe (Perlen links und rechts) | Platte am Unterarm |
+| Dolch | Mitte der Parierstange, beide Seiten (`_r`/`_l`) | Hohlkehle wie beim Schwert, beide Seiten | Parierstangenarm +Y, beide Seiten |
+| Stab | Scheibenkopf, beide Seiten | zwei Spiralen (180° versetzt) vom Kragen den Schaft hinab | Kragenblock, beide Seiten |
+| Buch zu | Deckelmitte | Prägelinie von der Fassung zum Deckelrand und um drei Seiten | Deckelecke oben rechts |
+| Buch offen | rechte Seite, Kuppel nach oben (+Y) | Prägelinie um den Rand der rechten Seite | linke Seite |
+| Laute | Rosette im Korpus | am Hals entlang bis zum Wirbelkasten | Korpusende |
+| Fokus | Mitte der Halterscheibe | vom Zentrum einmal als Ring um den Kristallhalter | Ohr unten vorn an der Scheibe |
+
+Abnahme: offen (Produktinhaber). Blatt: `s4-16-7-modelle.png` (Vorderansicht, Seite, Fassung Stufe I/II/III, kleine Fassung).

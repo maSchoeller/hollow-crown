@@ -5,7 +5,7 @@ import { HANDBOOK_FORMATS, HANDBOOK_GRAPHICS } from '../core/renderDefs';
 import { slugId, weaponGroup, weaponType } from './schemaBase';
 
 const qualityLevel = z.object({ maxDpr: z.number().positive(), shadowMap: z.number().int().min(0) });
-const gearPiece = z.object({ folder: z.enum(['weapons', 'weapons-v2']).optional(), model: z.string().regex(/^[a-z0-9_]+$/), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
+const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), modelOpen: z.string().regex(/^[a-z0-9_]+$/).optional(), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
 const partPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), socket: z.enum(['back', 'head']) });
 const decorSchema = z.object({ model: z.string(), map: z.number().min(0).max(1), scenery: z.number().min(0).max(1), scale: z.tuple([z.number().positive(), z.number().positive()]) });
 

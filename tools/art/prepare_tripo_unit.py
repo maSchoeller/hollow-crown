@@ -382,7 +382,7 @@ def skin_top(bone_name):
 
 def sockets():
     """Empties in the fists and on the body, parented to their bone; the renderer hangs a small model there at runtime:
-    `socket_r` / `socket_l` the weapon library (tools/art/blender_weapons.py) by weapon group (GA9), `socket_back` and
+    `socket_r` / `socket_l` the weapon library (tools/art/blender_weapon_*.py) by weapon group (GA9), `socket_back` and
     `socket_head` the attached part of a pro path (tools/art/blender_proparts.py, story 10.13).
 
     Hand frame in the rest pose: +Y up along the hand towards the forearm, +Z forward across the fist (the grip axis),
