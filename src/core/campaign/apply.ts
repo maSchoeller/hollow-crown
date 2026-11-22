@@ -9,12 +9,13 @@ import { allItems, bagIsFull, canEquip, isKey, isRune, itemDef, runeFits, runeSl
 import { changeProPath, loadoutSlots, otherProPath, promote } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { relicCtx } from './relics';
-import type { BattleState, CampaignState } from '../state';
+import type { BattleState, CampaignState, ItemInstance } from '../state';
 import { recordHistory } from './history';
 import { clone } from '../util';
 import { changePathError, craftCost, dismissError, mergeError, hireCost, potionUpgradeCost, potionUpgradeError, promoteError, roomBuild, scarCost, secondPathError, sealOf, hireError, tavernWishError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { dailyOffersOpen, emberSparkOffered, emberSparkPrice, shopPrice, storiesDone } from './aid';
 import { equipBestOpen, equipInto, gearTemplateOf, gearTemplatesOpen, runEquipBest, runGearTemplate } from './gear';
+import { buyPlan, placeBought } from './buyFor';
 import { heritageError } from './heritage';
 import { finishBattle, normalizeCampaign, shopStock } from './campaign';
 import { replayBattle } from './restart';
@@ -23,6 +24,7 @@ import { actOf, findNode } from './acts';
 import { choiceKey, findChoice } from './scene';
 import { applyEffects, validateEffects } from './effects';
 import { conditionContext, evalConditions } from './conditions';
+import type { BuyTarget } from './buyFor';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
 
 function buyPrice(data: GameData, c: CampaignState, defId: string): number | null {
@@ -32,12 +34,27 @@ function buyPrice(data: GameData, c: CampaignState, defId: string): number | nul
   return shopPrice(data, c, itemDef(data, defId).price);
 }
 
+/** Check of "buy for a figure" (story 16.17): figure, place (the same plan the merchant shows), gold, then the convoy for what leaves. */
+function buyForError(data: GameData, c: CampaignState, target: BuyTarget, inst: ItemInstance, price: number): CampaignError | null {
+  const u = c.roster.find((r) => r.id === target.unit);
+  if (!u) return 'unknown_unit';
+  if (target.slot === 'bag') {
+    if (target.replace !== undefined && !u.bag.some((i) => i.uid === target.replace && !isKey(data, i))) return 'unknown_item';
+  } else if (target.replace !== undefined) return 'unknown_item';
+  const plan = buyPlan(data, c, target.unit, inst, target.slot, target.replace);
+  if (plan.error === 'bag_full') return 'bag_full';
+  if (plan.error && plan.error !== 'convoy_full') return 'cannot_equip';
+  if (c.gold < price) return 'not_enough_gold';
+  return plan.error === 'convoy_full' ? 'convoy_full' : null;
+}
+
 /** Checks a campaign command without changing anything (concept/24-architecture §8.1). */
 export function validateCampaign(data: GameData, c: CampaignState, cmd: CampaignCommand): CampaignError | null {
   switch (cmd.type) {
     case 'buy': {
       const price = buyPrice(data, c, cmd.item);
       if (price === null) return 'not_for_sale';
+      if (cmd.for) return buyForError(data, c, cmd.for, newItem(clone(c), cmd.item, data), price);
       if (c.gold < price) return 'not_enough_gold';
       if (c.convoy.length >= data.balance.economy.convoySize) return 'convoy_full';
       return null;
@@ -46,6 +63,7 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       const offer = c.offers.find((o) => o.uid === cmd.uid);
       // story 10.9: the deal of the day is on sale only from the merchant level `dailyOfferFromMerchantLevel`
       if (!offer || !dailyOffersOpen(data, c)) return 'not_for_sale';
+      if (cmd.for) return buyForError(data, c, cmd.for, offer, offerPrice(data, offer, c));
       return c.gold < offerPrice(data, offer, c) ? 'not_enough_gold' : null;
     }
     case 'buyEmberSpark': {
@@ -285,20 +303,32 @@ function applyBare(data: GameData, prev: CampaignState, cmd: CampaignCommand): C
   const events: CampaignEvent[] = [];
   const gained = (uid: string, def: string) => events.push({ t: 'itemGained', uid, def });
   const lost = (uid: string, def: string) => events.push({ t: 'itemLost', uid, def });
+  /** a purchase straight onto a figure (story 16.17): gained, then equipped */
+  const bought = (inst: ItemInstance, target: BuyTarget) => {
+    placeBought(data, c, inst, target);
+    gained(inst.uid, inst.def);
+    events.push({ t: 'equipped', unit: target.unit, uid: inst.uid, slot: target.slot });
+  };
   switch (cmd.type) {
     case 'buy': {
       c.gold -= buyPrice(data, c, cmd.item)!;
       const inst = newItem(c, cmd.item, data);
-      c.convoy.push(inst);
-      gained(inst.uid, inst.def);
+      if (cmd.for) bought(inst, cmd.for);
+      else {
+        c.convoy.push(inst);
+        gained(inst.uid, inst.def);
+      }
       break;
     }
     case 'buyOffer': {
       const offer = c.offers.find((o) => o.uid === cmd.uid)!;
       c.gold -= offerPrice(data, offer, c);
       c.offers = c.offers.filter((o) => o.uid !== cmd.uid);
-      c.convoy.push(offer);
-      gained(offer.uid, offer.def);
+      if (cmd.for) bought(offer, cmd.for);
+      else {
+        c.convoy.push(offer);
+        gained(offer.uid, offer.def);
+      }
       break;
     }
     case 'buyEmberSpark': {

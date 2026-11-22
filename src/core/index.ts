@@ -58,6 +58,7 @@ export * from './campaign/castleScene';
 export * from './campaign/homeScene';
 export * from './campaign/aid';
 export * from './campaign/gear';
+export * from './campaign/buyFor';
 export * from './campaign/commands';
 export * from './campaign/apply';
 export * from './campaign/history';
