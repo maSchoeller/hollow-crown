@@ -24,16 +24,10 @@ import {
   potionUpgradeCost,
   potionUpgradeError,
   potionUpgradeOpen,
-  shopPrice,
   roomBuild,
   scarCost,
   rerollAllowed,
   rerollCost,
-  mergeError,
-  mergeLevelFor,
-  runeMerge,
-  runeFits,
-  runeSlotCount,
   sellPrice,
   tavernWishOpen,
   tavernWishRoles,
@@ -51,13 +45,13 @@ import {
 import { t } from '../../i18n';
 import { Icon } from '../../ui/icons';
 import { ItemLine, TraitChips, itemName, unitName } from '../../ui/components';
-import { ItemInfoButton } from '../../ui/ItemSheet';
 import { Amount, ItemImage, Piece, PrimaryButton, SecondaryButton, Tabs } from '../../ui/pieces';
 import { nodeShort } from '../campaignInfo';
 import { Scene } from './Scene';
 import { AcademyRoom } from './Academy';
 import { WorkshopRoom } from './Workshop';
 import { MerchantRoom } from './Merchant';
+import { EnchanterRoom } from './Enchanter';
 import { MemorialRoom } from './Memorial';
 import { TrainingRoom } from './Training';
 import { campaign, data } from '../state/session';
@@ -582,78 +576,6 @@ export function CampfireRoom({ room, apply, onClose }: { room: RoomDef; apply: A
           />,
           document.getElementById('app') ?? document.body,
         )}
-    </RoomPanel>
-  );
-}
-
-// ---------------------------------------------------------------- enchanter
-
-/** Enchanter (runes): choose a piece of gear, then a rune; kept working although its story is Epic 10. */
-export function EnchanterRoom({ room, apply, onClose, item }: { room: RoomDef; apply: Apply; onClose: () => void; item?: string }) {
-  const c = campaign.value!;
-  const [sel, setSel] = useState<string | null>(item ?? null);
-  const runes = c.convoy.filter((i) => data.runes[i.def]);
-  const gear: ItemInstance[] = [...c.roster.flatMap((u) => [...Object.values(u.equip), ...u.bag]).filter((i): i is ItemInstance => !!i), ...c.convoy].filter((i) => runeSlotCount(data, i) > 0);
-  const selInst = sel ? locateItem(c, sel)?.inst : undefined;
-  const buyable = Object.values(data.runes).filter((r) => r.price && ((r.tier ?? 1) === 1 || r.utility));
-  return (
-    <RoomPanel room={room} onClose={onClose}>
-      <p class="hm-hint">{t('ui.camp.enchanter.hint')}</p>
-      {gear.map((inst) => (
-        <ItemLine key={inst.uid} data={data} inst={inst} selected={sel === inst.uid} sub={ownerOf(inst.uid) ? unitName(ownerOf(inst.uid)!) : t('ui.convoy')} onClick={() => setSel(sel === inst.uid ? null : inst.uid)} />
-      ))}
-      {selInst && (
-        <div class="hm-chips">
-          {selInst.runes.map((r, i) =>
-            r ? (
-              <SecondaryButton key={i} onClick={() => apply({ type: 'removeRune', item: selInst.uid, index: i })}>
-                <Icon name="close" size={14} /> <ItemImage data={data} item={r} size={24} /> {t(`item.${r}.name`)}
-              </SecondaryButton>
-            ) : null,
-          )}
-          {runes.filter((r) => runeFits(data, itemDef(data, selInst), data.runes[r.def]!)).map((r) => (
-            <SecondaryButton key={r.uid} onClick={() => apply({ type: 'insertRune', item: selInst.uid, rune: r.uid }, t('ui.camp.enchanted'))}>
-              <ItemImage data={data} item={r} size={24} /> {t(`item.${r.def}.name`)}
-            </SecondaryButton>
-          ))}
-        </div>
-      )}
-      <div class="hm-subhead">{t('ui.camp.runes')}</div>
-      {[...new Set(runes.map((r) => r.def))].map((id) => {
-        const n = runes.filter((r) => r.def === id).length;
-        // story 10.6: the enchanter's level caps the tier merged into; the button names the cost from runeMerge
-        const m = runeMerge(data, id);
-        const err = mergeError(data, c, id);
-        const from = m && err === 'room_locked' ? mergeLevelFor(data, m.next.tier ?? 0) : null;
-        return (
-          <div key={id} class="hm-offer hm-offer--merge">
-            <ItemImage data={data} item={id} />
-            <span class="hm-offer__name">
-              {t(`item.${id}.name`)} ×{n}
-              <ItemInfoButton data={data} item={id} />
-              {from !== null && <span class="hm-offer__note">{t('ui.room.enchanter.mergeFrom', { n: from })}</span>}
-            </span>
-            {m && (
-              <SecondaryButton disabled={err !== null} onClick={() => apply({ type: 'mergeRunes', rune: id }, t('ui.camp.merged'))}>
-                {t('ui.room.enchanter.merge')} · {m.count} × <ItemImage data={data} item={id} size={20} bare /> <Amount resource="gold" value={m.gold} short={c.gold < m.gold} />
-              </SecondaryButton>
-            )}
-          </div>
-        );
-      })}
-      <div class="hm-subhead">{t('ui.camp.buyRunes')}</div>
-      {buyable.map((r) => (
-        <div key={r.id} class="hm-offer">
-          <ItemImage data={data} item={r.id} />
-          <span class="hm-offer__name">
-            {t(`item.${r.id}.name`)}
-            <ItemInfoButton data={data} item={r.id} />
-          </span>
-          <SecondaryButton disabled={c.gold < shopPrice(data, c, r.price ?? 0)} onClick={() => apply({ type: 'buy', item: r.id }, t('ui.camp.bought'))}>
-            <Amount resource="gold" value={shopPrice(data, c, r.price ?? 0)} short={c.gold < shopPrice(data, c, r.price ?? 0)} />
-          </SecondaryButton>
-        </div>
-      ))}
     </RoomPanel>
   );
 }

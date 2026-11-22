@@ -1,0 +1,208 @@
+/* Enchanter workbench (story 16.16): the person bar (PersonBar.css) sticks on top, then the pieces, the stage, the change list, the
+   mode switch and the vault of stones. Stones are the gems of ItemStageFrame.css (`.is-gem`); dimmed ones name their reason. */
+.en {
+  display: grid;
+  gap: 8px;
+}
+.en-empty {
+  margin: 4px 2px;
+  font-family: var(--hc-font-label);
+  color: var(--hc-soft);
+}
+.en-pieces {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px;
+}
+.en-piece {
+  flex: none;
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 4px 6px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-chip);
+  background: var(--hc-cream);
+  cursor: pointer;
+}
+.en-piece[aria-pressed='true'] {
+  border-color: var(--hc-ember);
+  background: var(--hc-selection-soft);
+  box-shadow: 0 0 0 2px var(--hc-ember);
+}
+.en-dots {
+  display: flex;
+  gap: 4px;
+}
+.en-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--hc-line);
+  background: var(--hc-cream-2);
+}
+.en-dot.is-empty {
+  border-style: dashed;
+}
+.en-dot.is-el-fire {
+  background: var(--hc-element-fire);
+}
+.en-dot.is-el-wind {
+  background: var(--hc-element-wind);
+}
+.en-dot.is-el-earth {
+  background: var(--hc-element-earth);
+}
+.en-dot.is-el-water {
+  background: var(--hc-element-water);
+}
+.en-dot.is-el-light {
+  background: var(--hc-element-light);
+}
+.en-dot.is-el-dark {
+  background: var(--hc-element-dark);
+}
+.en-dot.is-el-utility {
+  background: #e9e4d8;
+}
+.en-stage {
+  display: flex;
+  height: 240px;
+}
+.en-probe {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 2px 10px;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-ember);
+  color: var(--hc-line);
+  border: var(--hc-outline-small) solid var(--hc-line);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* armour without a model: its picture, the stone at the chest */
+.en-chest {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+}
+.en-flash {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  animation: en-flash 700ms ease-out;
+}
+@keyframes en-flash {
+  0% {
+    opacity: 0;
+  }
+  45% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.en-change {
+  display: grid;
+  gap: 4px;
+}
+.en-h {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--hc-font-label);
+  font-size: 13px;
+}
+.en-h small {
+  color: var(--hc-soft);
+  font-weight: 400;
+}
+.en-note {
+  margin: 0;
+  font-family: var(--hc-font-label);
+  font-size: 12px;
+  color: var(--hc-soft);
+}
+.en-tray {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 6px;
+}
+.en-stone {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 2px;
+  min-height: 92px;
+  padding: 8px 4px 6px;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-chip);
+  background: var(--hc-cream);
+  color: var(--hc-line);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+.en-stone[aria-pressed='true'] {
+  border-color: var(--hc-ember);
+  background: var(--hc-selection-soft);
+  box-shadow: 0 0 0 2px var(--hc-ember);
+}
+.en-stone.is-dim {
+  opacity: 0.5;
+  cursor: default;
+}
+.en-stone.is-offer {
+  border-style: dashed;
+  background: transparent;
+}
+.en-stone__name {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.15;
+}
+.en-stone small {
+  font-family: var(--hc-font-label);
+  font-size: 11px;
+  line-height: 1.2;
+  color: var(--hc-soft);
+}
+.en-stone small.en-ready {
+  color: var(--hc-positive);
+  font-weight: 700;
+}
+.en-gem {
+  position: relative;
+}
+.en-gem__count {
+  position: absolute;
+  left: -6px;
+  top: -4px;
+  min-width: 18px;
+  padding: 0 4px;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-line);
+  color: var(--hc-cream);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+}
+.en-free {
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+}
