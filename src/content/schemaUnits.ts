@@ -10,6 +10,8 @@ export const itemSchema = z.object({
   weaponType: weaponType.optional(),
   group: weaponGroup.optional(),
   metal: metalId.optional(),
+  /** story 16.8: rune shown in the main setting (display only); a list per relic stage */
+  fixedRune: z.union([z.string(), z.array(z.string()).min(1).max(3)]).optional(),
   damageType: z.enum(['physical', 'magical']).optional(),
   element: element.optional(),
   mt: z.number().optional(),

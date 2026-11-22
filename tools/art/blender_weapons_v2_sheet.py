@@ -2,6 +2,10 @@
 
 blender -b --factory-startup --python tools/art/blender_weapons_v2_sheet.py -- [--set=rest] [--out=<png>] [--weapons=<dir>] [--runes=<dir>]
 
+--set=sig (story 16.8): collection sheet of the 14 signature weapons and relics (art/models/weapons-v2/sig/<id>.glb), front view
+of each with its proposed fixed rune in the main setting; --ids=a,b,.. picks pieces (any glb in --weapons also works), --side=1 adds a
+side row, --cols=N sets the columns.
+
 --set=rest (story 16.7): one sheet for bow, dagger, staff, book, book_open, lute, focus: row 1 front, row 2 side (fire tier II main,
 tier I small), rows 3-5 close-ups of the main setting with fire tier I / II / III, row 6 close-ups of the small setting.
 
@@ -29,11 +33,15 @@ ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 arg = lambda k, d: next((a.split("=", 1)[1] for a in argv if a.startswith(f"--{k}=")), d)
 SET = arg("set", "core")
-OUT = arg("out", os.path.join(ROOT, "art", "mockups", "weapons-v2-sheet-rest.png" if SET == "rest" else "weapons-v2-sheet.png"))
-WDIR = arg("weapons", os.path.join(ROOT, "art", "models", "weapons-v2"))
+OUT = arg("out", os.path.join(ROOT, "art", "mockups", "weapons-v2-sheet-rest.png" if SET == "rest" else "weapons-v2-sheet-sig.png" if SET == "sig" else "weapons-v2-sheet.png"))
+WDIR = arg("weapons", os.path.join(ROOT, "art", "models", "weapons-v2", "sig" if SET == "sig" else ""))
 RDIR = arg("runes", os.path.join(ROOT, "art", "models", "runes-v2"))
 TMP = os.path.join(os.path.dirname(OUT), "_tiles")
 WEAPONS = ["axe", "sword", "lance", "shield"]
+SIG_RUNES = {"tinder": "fire_rune_2", "bounty": "edge_rune", "wolf_fang": "wind_rune_2", "little_hands": "earth_rune_2",
+             "rowenas_lance": "wind_rune_3", "wasp_sting": "precision_rune", "gold_hook": "water_rune_1", "dravns_oath": "dark_rune_1",
+             "magpie": "feather_rune", "white_wolf": "water_rune_2", "heirloom": "light_rune_1", "final_curtain": "light_rune_1",
+             "pact_warden_shield": "earth_rune_2", "dragon_ember": "fire_rune_2"}
 STONES = [f"{e}_rune_{t}" for e in ("fire", "wind", "earth", "water", "light") for t in (1, 2, 3)] + ["dark_rune_1"] \
     + ["precision_rune", "force_rune", "edge_rune", "feather_rune"]
 
@@ -210,6 +218,35 @@ def main_rest():
     print(f"[hc] sheet {OUT} {W}x{rows}", flush=True)
 
 
+def main_sig():
+    ids = arg("ids", ",".join(SIG_RUNES)).split(",")
+    cols = int(arg("cols", "7"))
+    side = arg("side", "0") == "1"
+    nr = (len(ids) + cols - 1) // cols
+    tw, fh, sh = W // cols, 330, 230
+    rh = fh + (sh if side else 0)
+    canvas = np.zeros((nr * rh, W, 4), np.float32)
+    canvas[...] = (0.30, 0.30, 0.31, 1.0)
+    for i, wid in enumerate(ids):
+        r, c = divmod(i, cols)
+        objs, metal, stones, node = weapon_scene(wid, SIG_RUNES.get(wid, "fire_rune_2"), None)
+        n, ys, up = node_axes(node)
+        kinds = [("front", n, fh, 0)] + ([("side", n.cross(up), sh, fh)] if side else [])
+        for kind, vdir, row_h, y0 in kinds:
+            sc = setup_render(tw, row_h)
+            right = up.cross(vdir).normalized()
+            cr, cu, ortho = frame(metal, right, up, tw, row_h)
+            look(sc, right * cr + up * cu + vdir * 3.0, right, up, vdir, ortho)
+            paste(canvas, shot(f"{wid}_{kind}", tw, row_h), c * tw, r * rh + y0, tw, row_h)
+    img = bpy.data.images.new("sheet", W, nr * rh, alpha=False)
+    img.pixels.foreach_set(canvas.ravel())
+    img.filepath_raw = OUT
+    img.file_format = "PNG"
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    img.save()
+    print(f"[hc] sheet {OUT} {W}x{nr * rh}", flush=True)
+
+
 def main():
     rows = ROW_FRONT + ROW_SIDE + 2 * ROW_CLOSE + 2 * ROW_STONE
     canvas = np.zeros((rows, W, 4), np.float32)
@@ -265,4 +302,4 @@ def main():
     print(f"[hc] sheet {OUT} {W}x{rows}", flush=True)
 
 
-main_rest() if SET == "rest" else main()
+main_sig() if SET == "sig" else main_rest() if SET == "rest" else main()

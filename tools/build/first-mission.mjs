@@ -49,6 +49,8 @@ function laterPropStems(root = process.cwd()) {
 export function isFirstMissionFile(p, figures) {
   const prop = /^assets\/models\/props\/([^/]+)\.glb$/.exec(p);
   if (prop && laterPropStems().has(prop[1])) return false;
+  // story 16.8: signature and relic models (weapons-v2/sig) come with their owners later, on demand
+  if (/^assets\/models\/weapons-v2\/sig\//.test(p)) return false;
   if (/^assets\/models\/(props|weapons-v2|runes-v2)\//.test(p) || /^assets\/audio\/battle_(player|enemy)\.mp3$/.test(p)) return true;
   const m = /^assets\/(?:[^/]+\/)?models\/units\/([^/]+)\.(?:glb|vat)$/.exec(p);
   return m !== null && figures.has(m[1]);

@@ -316,3 +316,10 @@ Ausgangspunkt: Die Vitrine für besondere Waffen war beschlossen, offen waren Or
 - Ohne ChatGPT-Bauplan nach den gemalten Item-Icons gebaut, weil ChatGPT in der Nacht nicht erreichbar war [ASSUMPTION]; Baupläne können nachgereicht werden.
 - Aufgeschlagenes Buch: Fassung auf der rechten Seite, kleine Fassung auf der linken (der Deckelrand ist zu schmal). Fokus neu: Kristallscheibe an einem Stiel, linke Hand.
 - Buchdeckel tiefviolett, Kristalle hellgrau; keine Teamfarben als große Flächen.
+
+## 2026-11-22: Signaturwaffen und Relikte mit eigenem Modell (Story 16.8, Abnahme der Merkmale offen)
+
+- 14 Stücke als `art/models/weapons-v2/sig/<itemId>.glb` (Gruppenmodell plus Merkmal, eigene Tönung); `render.yaml` `gear.items` (Schlüssel = Item-Id) zeigt darauf, Hand, Bewegung und Haltung kommen von der Gruppe (Armbrüste: Bogen). Eine Auflösung `modelFor` (`src/render/shared/gearModel.ts`) für Brett und spätere Ansichten; `gearKey` enthält die Item-Id.
+- Neues Feld `fixedRune` am Item (Rune-Id oder Liste je Relikt-Stufe), Werte laut Tabelle der Story [ASSUMPTION: nur Darstellung, keine Regelwirkung, `ItemInstance.runes` und Speicherformat unberührt]. Das Brett zeigt sie in der Hauptfassung, solange Fassung 0 leer ist; die Relikt-Stufe kommt aus `BattleState.relicStages` (ohne Eintrag Stufe 1).
+- `dragon_ember` (Schmuckstück) ist für Waffenansicht, Figurenblatt und Waffenkammer auflösbar, wird am Brett nie angehängt [ASSUMPTION].
+- Ladeplan lädt das Sig-Modell der getragenen Stücke und alle Steine der `fixedRune`-Liste; `sig/` liegt im ersten Download (Regex von `first-mission.mjs`).

@@ -1,6 +1,6 @@
 # Story 16.8: Modelle für Signaturwaffen und Relikte
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -96,3 +96,10 @@ Hinweise: `heirloom` und `rowenas_lance` sind in der Epic-Zeile nicht einzeln ge
 ### Completion Notes List
 
 ### File List
+
+### Completion Notes (Nachtlauf 2026-11-22)
+
+- 14 Stücke unter `art/models/weapons-v2/sig/` (Skript `tools/art/blender_weapon_signatures.py`), Sammelbild `s4-16-8-sammelbild.png` im Notizordner des Nachtlaufs; ohne ChatGPT-Skizzen (nicht erreichbar) [ASSUMPTION].
+- `render.yaml` `gear.items`, Auflöser `src/render/shared/gearModel.ts` (`modelFor`, `fixedRuneOf`) für Brett und spätere Screens; `fixedRune` nur Darstellung [ASSUMPTION].
+- `sig/` lädt bei Bedarf, nicht im Erstdownload (14,46 MB statt 15,68 MB).
+- `pnpm check` grün. Abnahme der Merkmale durch den Produktinhaber offen.
