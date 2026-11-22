@@ -5,7 +5,7 @@ blender -b --factory-startup --python tools/art/blender_weapons_v2.py -- [<out_d
 Writes art/models/weapons-v2/<id>.glb (default). Only `axe` exists so far; add sword/shield/spear as functions in
 WEAPONS that fill the scene with `Builder` helpers and return the metal object + optional rune parts.
 
-Frame (identical to tools/art/blender_weapons.py / public/assets/models/weapons/axe.glb, built in Blender Z-up and
+Frame (the old axe model of the retired weapon library, built in Blender Z-up and
 exported with the default glTF Y-up conversion, so in the glb: Blender Z -> glTF +Y, Blender Y -> glTF -Z):
   origin in the fist, haft along Blender +Z (the grip axis), the blade on the -Y side (glTF +Z), the blade face
   normal along +/-X (blade thickness in X). Units: 1 = one board tile before figureScale. Old axe: z -0.10..0.325.

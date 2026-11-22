@@ -309,3 +309,10 @@ Ausgangspunkt: Die Vitrine für besondere Waffen war beschlossen, offen waren Or
 - Metall je Item im neuen Feld `metal` (iron, steel, silver; ohne Feld Stahl) [ASSUMPTION]; Tönung nur der grauen Flächen, Holz und Leder bleiben.
 - Leuchten in `content/core/render.yaml` `gear.rune`: gedämpft 0,3, voll 1, Stufe III pulsiert. Die Elementrune sitzt in der Hauptfassung und füllt die Rinne, Hilfsrunen in der kleinen Fassung.
 - Befund Sichtprüfung: Auf dem Brett ist die Rinne nur ein bis zwei Pixel breit und wirkt dunkelrot; der Stein trägt das Leuchten. Ob die Rinne breiter werden soll, entscheidet der Produktinhaber am Bild `s4-16-6-brett.png`.
+
+## 2026-11-22: Runenwaffen v2 für alle übrigen Gruppen (Story 16.7, Nachtlauf, Abnahme offen)
+
+- Bogen, Dolch, Stab, Buch (zugeklappt `book`, aufgeschlagen `book_open`), Laute und Fokus als v2-Modelle mit Fassung gleicher Größe, Rinne entlang der Form und kleiner Fassung; die alten Gruppenmodelle sind entfernt.
+- Ohne ChatGPT-Bauplan nach den gemalten Item-Icons gebaut, weil ChatGPT in der Nacht nicht erreichbar war [ASSUMPTION]; Baupläne können nachgereicht werden.
+- Aufgeschlagenes Buch: Fassung auf der rechten Seite, kleine Fassung auf der linken (der Deckelrand ist zu schmal). Fokus neu: Kristallscheibe an einem Stiel, linke Hand.
+- Buchdeckel tiefviolett, Kristalle hellgrau; keine Teamfarben als große Flächen.

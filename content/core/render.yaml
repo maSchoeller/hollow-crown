@@ -247,25 +247,27 @@ legibility:
   view: { wholeMapMargin: 1 }
   doubleTapMs: 300
 
-# GA9 (concept/23-art-direction §4.2): sichtbares Waffenteil je Waffengruppe der ausgerüsteten Waffe bzw. je Art des
-# Gegenstands in der Nebenhand. model = art/models/weapons/<model>.glb (tools/art/blender_weapons.py), hand = Hand-Sockel
+# GA9 (concept/23-art-direction §4.2, §4.7): sichtbares Waffenteil je Waffengruppe der ausgerüsteten Waffe bzw. je Art des
+# Gegenstands in der Nebenhand. model = art/models/weapons-v2/<model>.glb (tools/art/blender_weapon_<gruppe>.py, Runenwaffen mit
+# Fassung und Rinne, Stories 16.6/16.7), modelOpen = aufgeschlagenes Buch (Umschalten: Story 16.10), hand = Hand-Sockel
 # der Figur, motion = eigene Angriffsanimation attack_<motion> (§4.5; ohne: der Schwerthieb), hold = Drehung in Grad um die
 # X-Achse des Sockels außerhalb des Angriffs (das Modell ist im Angriffsgriff gebaut). Nur Bild-zu-3D-Figuren haben
 # Sockel; die Blender-Figuren tragen ihre Waffe fest im Modell.
 gear:
   weapons:
-    sword: { folder: weapons-v2, model: sword, hand: right }        # Story 16.6: Runenwaffe v2 (art/models/weapons-v2), Rinne + Steine
+    sword: { model: sword, hand: right }
     dagger: { model: dagger, hand: right }   # ohne eigene Bewegung: der Schwerthieb (ein Dolchstich ist noch nicht animiert)
-    lance: { folder: weapons-v2, model: lance, hand: right, motion: thrust, hold: -125 }
-    axe: { folder: weapons-v2, model: axe, hand: right, motion: chop }
+    lance: { model: lance, hand: right, motion: thrust, hold: -125 }
+    axe: { model: axe, hand: right, motion: chop }
     bow: { model: bow, hand: left, motion: shoot }
-    anima: { model: book, hand: left, motion: cast }
-    light: { model: book, hand: left, motion: cast }
-    dark: { model: book, hand: left, motion: cast }
+    anima: { model: book, modelOpen: book_open, hand: left, motion: cast }
+    light: { model: book, modelOpen: book_open, hand: left, motion: cast }
+    dark: { model: book, modelOpen: book_open, hand: left, motion: cast }
     staff: { model: staff, hand: right, motion: cast }
   offHand:
-    shield: { folder: weapons-v2, model: shield, hand: left }
+    shield: { model: shield, hand: left }
     lute: { model: lute, hand: left }   # nach Waffengruppe des Gegenstands (Nebenhand), nicht nach kind: Laute und Fokus sind beide Zubehör
+    focus: { model: focus, hand: left }
   # Story 10.13 (§4.2): sichtbares Anhängeteil je Profi-Weg, `proPart` der Klasse in content/core/classes.yaml.
   # model = art/models/parts/<model>.glb (tools/art/blender_proparts.py), socket = Körper-Sockel der Figur
   # (`socket_back` am oberen Brustwirbel, `socket_head` am Scheitel; tools/art/prepare_tripo_unit.py). Nur

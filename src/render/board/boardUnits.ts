@@ -54,9 +54,9 @@ export abstract class BoardUnits extends BoardProps {
     return part ? [...out, part] : out;
   }
 
-  /** Story 16.6: a rune weapon piece (folder `weapons-v2`) carries the metal and runes of the item in that hand; others stay as they are. */
+  /** Story 16.6: a weapon piece carries the metal and runes of the item in that hand. */
   private withRunes(piece: GearPiece, item: BattleUnit['equip'][keyof BattleUnit['equip']]): GearPiece {
-    if (piece.folder !== 'weapons-v2' || !item) return piece;
+    if (!item) return piece;
     const def = itemDef(this.data, item);
     return { ...piece, rune: gearRunesOf(this.data.runes, item.runes, runeSlotCount(this.data, item), def.metal) };
   }

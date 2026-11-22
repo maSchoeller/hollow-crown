@@ -20,11 +20,11 @@
 - { id: hammer,    kind: weapon, slot: mainHand, weaponType: axe, group: axe, damageType: physical, mt: 10, hit: 55, crit: 0, rng: [1,1], wt: 15, rarity: rare,   price: 1300, effectiveVs: [armored], twoHanded: true }
 
 # --- Dolche (außerhalb des Dreiecks, leicht, hoher Krit; Werte [C] aus Eisenschwert/Schmalschwert abgeleitet) ---
-- { id: iron_dagger, kind: weapon, slot: mainHand, weaponType: dagger, group: dagger, damageType: physical, mt: 4, hit: 85, crit: 10, rng: [1,1], wt: 3, rarity: common, price: 400 }
+- { id: iron_dagger, kind: weapon, slot: mainHand, weaponType: dagger, group: dagger, metal: iron, damageType: physical, mt: 4, hit: 85, crit: 10, rng: [1,1], wt: 3, rarity: common, price: 400 }
 
 # --- Bögen (immer effektiv gegen flier) ---
-- { id: iron_bow,  kind: weapon, slot: mainHand, weaponType: bow, group: bow, damageType: physical, mt: 6, hit: 85, crit: 0, rng: [2,2], wt: 5, rarity: common, price: 500, twoHanded: true, effectiveVs: [flier] }
-- { id: steel_bow, kind: weapon, slot: mainHand, weaponType: bow, group: bow, damageType: physical, mt: 9, hit: 70, crit: 0, rng: [2,2], wt: 8, rarity: common, price: 1000, twoHanded: true, effectiveVs: [flier] }
+- { id: iron_bow,  kind: weapon, slot: mainHand, weaponType: bow, group: bow, metal: iron, damageType: physical, mt: 6, hit: 85, crit: 0, rng: [2,2], wt: 5, rarity: common, price: 500, twoHanded: true, effectiveVs: [flier] }
+- { id: steel_bow, kind: weapon, slot: mainHand, weaponType: bow, group: bow, metal: steel, damageType: physical, mt: 9, hit: 70, crit: 0, rng: [2,2], wt: 8, rarity: common, price: 1000, twoHanded: true, effectiveVs: [flier] }
 - { id: hunting_bow, kind: weapon, slot: mainHand, weaponType: bow, group: light_bow, damageType: physical, mt: 4, hit: 90, crit: 0, rng: [2,2], wt: 3, rarity: common, price: 450, twoHanded: true, effectiveVs: [flier] }   # leichter Bogen (Späher), [C] aus iron_bow
 - { id: longbow,   kind: weapon, slot: mainHand, weaponType: bow, group: bow, damageType: physical, mt: 5, hit: 65, crit: 0, rng: [2,3], wt: 9, rarity: rare,   price: 1500, twoHanded: true, effectiveVs: [flier], grantsSkill: { skill: precision, masteryCost: 35 } }
 
@@ -161,7 +161,7 @@
 # --- Akt 2: Stahl-Tier (Story 11.5; items.md §6.1/§6.6, Ableitungsregel der Fassung 2026-10-31) [ASSUMPTION]: Waffen gegenüber dem
 # Eisen-Pendant Mt +3, Treffer −10 bis −15, Gewicht ×1,5–2, Preis 900–1 200; Zauber mit Element und Zustand des Eisen-Pendants;
 # Rüstung VER +1–2 über Eisen. shade ist der Dunkel-Zauber (nicht shadow, das ist eine Klasse; Bild shadow.png); nur Drop (items.md §4).
-- { id: steel_dagger,  kind: weapon, slot: mainHand, weaponType: dagger, group: dagger, damageType: physical, mt: 7, hit: 75, crit: 10, rng: [1,1], wt: 6, rarity: common, price: 900 }
+- { id: steel_dagger,  kind: weapon, slot: mainHand, weaponType: dagger, group: dagger, metal: steel, damageType: physical, mt: 7, hit: 75, crit: 10, rng: [1,1], wt: 6, rarity: common, price: 900 }
 - { id: stiletto,      kind: weapon, slot: mainHand, weaponType: dagger, group: dagger, damageType: physical, mt: 5, hit: 80, crit: 25, rng: [1,1], wt: 4, rarity: rare,   price: 1200 }
 - { id: armorpiercer,  kind: weapon, slot: mainHand, weaponType: sword,  group: sword,  damageType: physical, mt: 6, hit: 75, crit: 0,  rng: [1,1], wt: 8, rarity: rare,   price: 1100, effectiveVs: [armored] }
 - { id: blaze,       kind: tome, slot: mainHand, weaponType: anima, group: anima, damageType: magical, element: fire,  mt: 8,  hit: 80, crit: 0, rng: [1,2], wt: 7,  rarity: common, price: 1000, statusOnHit: { status: burning, chance: 50 }, terrainOnHit: ignite }

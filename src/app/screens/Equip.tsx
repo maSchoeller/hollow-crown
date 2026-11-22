@@ -30,7 +30,7 @@ export function Deltas({ list, max = 3 }: { list: ChangeLine[]; max?: number }) 
 }
 
 /** Why an item cannot go to this place; the text names the role or weapon so the player knows what to change. */
-function reason(unit: UnitRecord, inst: ItemInstance, error: string): string {
+export function reason(unit: UnitRecord, inst: ItemInstance, error: string): string {
   const d = itemDef(data, inst);
   switch (error) {
     case 'weapon_group':

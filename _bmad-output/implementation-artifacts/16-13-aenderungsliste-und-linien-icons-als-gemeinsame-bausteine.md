@@ -1,6 +1,6 @@
 # Story 16.13: Änderungsliste und Linien-Icons als gemeinsame Bausteine
 
-Status: review
+Status: done
 
 ## Story
 

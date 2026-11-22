@@ -42,11 +42,30 @@ const present = (list: string[]) => list.length > 0 && list.every(isGlb);
 describe('rune weapon files', () => {
   const maybe = present(weaponFiles) ? it : it.skip;
 
-  it('are the models render.yaml points the sword, lance, axe and shield at', () => {
+  it('are the models render.yaml points every group at (and nothing points at the old library)', () => {
     const { weapons, offHand } = data.render.gear;
-    const pieces = [weapons.sword!, weapons.lance!, weapons.axe!, offHand.shield!];
+    const pieces = [...Object.values(weapons), ...Object.values(offHand)];
+    expect(pieces.length).toBeGreaterThanOrEqual(11);
     for (const p of pieces) expect(pieceFolder(p)).toBe('weapons-v2');
-    if (present(weaponFiles)) for (const p of pieces) expect(weaponFiles).toContain(`${WEAPONS}/${p.model}.glb`);
+    if (present(weaponFiles)) {
+      for (const p of pieces) {
+        expect(weaponFiles, `${p.model}`).toContain(`${WEAPONS}/${p.model}.glb`);
+        if (p.modelOpen) expect(weaponFiles, `${p.modelOpen}`).toContain(`${WEAPONS}/${p.modelOpen}.glb`);
+      }
+      // every file is used
+      const used = new Set(pieces.flatMap((p) => [p.model, p.modelOpen ?? p.model]));
+      for (const f of weaponFiles) expect(used.has(f.slice(WEAPONS.length + 1, -4)), f).toBe(true);
+    }
+    expect(data.render.gear.offHand.focus?.hand).toBe('left');
+    expect(weapons.anima!.modelOpen).toBe('book_open');
+  });
+
+  it('nothing references the old library models/weapons/ (render.yaml, plan, build, first download)', () => {
+    for (const f of ['content/core/render.yaml', 'src/app/loading/plan.ts', 'tools/art/build.py', 'tools/build/first-mission.mjs', 'tools/art/silhouettes.py']) {
+      expect(readFileSync(f, 'utf8'), f).not.toMatch(/models\/weapons\//);
+    }
+    expect(existsSync('art/models/weapons')).toBe(false);
+    expect(existsSync('tools/art/blender_weapons.py')).toBe(false);
   });
 
   maybe('hold the metal, the channel with its fill on UV1 and stay within the triangle budget', () => {
@@ -100,6 +119,9 @@ describe('rune stone files', () => {
 });
 
 describe('metals of the items', () => {
+  it('name iron and steel on the prefixed items of the bow and dagger groups', () => {
+    expect(['iron_bow', 'steel_bow', 'iron_dagger', 'steel_dagger'].map((id) => data.items[id]!.metal)).toEqual(['iron', 'steel', 'iron', 'steel']);
+  });
   it('name iron and steel on the existing weapon and shield items of the four groups', () => {
     const metals = Object.fromEntries(['iron_sword', 'steel_sword', 'iron_lance', 'steel_lance', 'iron_axe', 'steel_axe', 'iron_shield'].map((id) => [id, data.items[id]!.metal]));
     expect(metals).toEqual({ iron_sword: 'iron', steel_sword: 'steel', iron_lance: 'iron', steel_lance: 'steel', iron_axe: 'iron', steel_axe: 'steel', iron_shield: 'iron' });

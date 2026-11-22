@@ -241,7 +241,7 @@ export function stoneLoader(store: AssetStore, prefix: string, gone: () => boole
 
 /**
  * Hangs the small models on the figure's sockets (tools/art/prepare_tripo_unit.py): the weapon library (GA9,
- * tools/art/blender_weapons.py) on the hand sockets `socket_r` / `socket_l`, the attached part of a pro path
+ * tools/art/blender_weapon_*.py) on the hand sockets `socket_r` / `socket_l`, the attached part of a pro path
  * (story 10.13, tools/art/blender_proparts.py) on the body sockets `socket_back` / `socket_head`. Figures without
  * sockets (the Blender figures) carry their weapon in the model and show no part.
  */

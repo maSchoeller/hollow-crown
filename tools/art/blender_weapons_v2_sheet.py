@@ -1,6 +1,9 @@
 """Hollow Crown - acceptance sheet for the runed weapons v2 and the 20 rune stones (story 16.6).
 
-blender -b --factory-startup --python tools/art/blender_weapons_v2_sheet.py -- [--out=<png>] [--weapons=<dir>] [--runes=<dir>]
+blender -b --factory-startup --python tools/art/blender_weapons_v2_sheet.py -- [--set=rest] [--out=<png>] [--weapons=<dir>] [--runes=<dir>]
+
+--set=rest (story 16.7): one sheet for bow, dagger, staff, book, book_open, lute, focus: row 1 front, row 2 side (fire tier II main,
+tier I small), rows 3-5 close-ups of the main setting with fire tier I / II / III, row 6 close-ups of the small setting.
 
 Imports art/models/weapons-v2/{axe,sword,lance,shield}.glb and art/models/runes-v2/*.glb, parents the stones to the
 `socket_rune_*` nodes exactly like the game does (stone root takes the node's world matrix, identity local transform) and
@@ -25,7 +28,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 arg = lambda k, d: next((a.split("=", 1)[1] for a in argv if a.startswith(f"--{k}=")), d)
-OUT = arg("out", os.path.join(ROOT, "art", "mockups", "weapons-v2-sheet.png"))
+SET = arg("set", "core")
+OUT = arg("out", os.path.join(ROOT, "art", "mockups", "weapons-v2-sheet-rest.png" if SET == "rest" else "weapons-v2-sheet.png"))
 WDIR = arg("weapons", os.path.join(ROOT, "art", "models", "weapons-v2"))
 RDIR = arg("runes", os.path.join(ROOT, "art", "models", "runes-v2"))
 TMP = os.path.join(os.path.dirname(OUT), "_tiles")
@@ -163,6 +167,49 @@ def weapon_scene(wid, main_stone, small_stone):
     return objs, metal, stones, node
 
 
+
+def main_rest():
+    names = ["bow", "dagger", "staff", "book", "book_open", "lute", "focus"]
+    nc = len(names)
+    tw = W // nc
+    row_c = 190
+    rows = ROW_FRONT + ROW_SIDE + 4 * row_c
+    canvas = np.zeros((rows, W, 4), np.float32)
+    canvas[...] = (0.30, 0.30, 0.31, 1.0)
+    for i, wid in enumerate(names):
+        objs, metal, stones, node = weapon_scene(wid, "fire_rune_2", "fire_rune_1")
+        n, ys, up = node_axes(node)
+        side = n.cross(up)
+        for kind, vdir, row_h, y0 in (("front", n, ROW_FRONT, 0), ("side", side, ROW_SIDE, ROW_FRONT)):
+            sc = setup_render(tw, row_h)
+            right = up.cross(vdir).normalized()
+            cr, cu, ortho = frame(metal, right, up, tw, row_h)
+            look(sc, right * cr + up * cu + vdir * 3.0, right, up, vdir, ortho)
+            paste(canvas, shot(f"{wid}_{kind}", tw, row_h), i * tw, y0, tw, row_h)
+        y = ROW_FRONT + ROW_SIDE
+        for t in (1, 2, 3):
+            objs, metal, stones, node = weapon_scene(wid, f"fire_rune_{t}", None)
+            n, ys, up = node_axes(node)
+            sc = setup_render(tw, row_c)
+            right = up.cross(n).normalized()
+            look(sc, node.matrix_world.translation + n * 3.0, right, up, n, 0.085)
+            paste(canvas, shot(f"{wid}_close{t}", tw, row_c), i * tw, y + (t - 1) * row_c, tw, row_c)
+        objs, metal, stones, node = weapon_scene(wid, None, "fire_rune_1")
+        nb = next(o for o in objs if o.type == "EMPTY" and o.name.startswith("socket_rune_b"))
+        n, ys, up = node_axes(nb)
+        sc = setup_render(tw, row_c)
+        right = up.cross(n).normalized()
+        look(sc, nb.matrix_world.translation + n * 3.0, right, up, n, 0.055)
+        paste(canvas, shot(f"{wid}_small", tw, row_c), i * tw, y + 3 * row_c, tw, row_c)
+    img = bpy.data.images.new("sheet", W, rows, alpha=False)
+    img.pixels.foreach_set(canvas.ravel())
+    img.filepath_raw = OUT
+    img.file_format = "PNG"
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    img.save()
+    print(f"[hc] sheet {OUT} {W}x{rows}", flush=True)
+
+
 def main():
     rows = ROW_FRONT + ROW_SIDE + 2 * ROW_CLOSE + 2 * ROW_STONE
     canvas = np.zeros((rows, W, 4), np.float32)
@@ -218,4 +265,4 @@ def main():
     print(f"[hc] sheet {OUT} {W}x{rows}", flush=True)
 
 
-main()
+main_rest() if SET == "rest" else main()
