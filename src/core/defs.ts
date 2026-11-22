@@ -401,11 +401,11 @@ export interface GearRunes {
   smallSlot: boolean;
 }
 
-/** A weapon library model (art/models/<folder>/<model>.glb), the hand it is held in and its attack animation. */
+/** A weapon library model (art/models/weapons-v2/<model>.glb, the rune weapons), the hand it is held in and its attack animation. */
 export interface GearPiece {
-  /** `weapons` (default) or `weapons-v2`, the rune weapons of story 16.6 with rune channel and stone sockets */
-  folder?: 'weapons' | 'weapons-v2';
   model: string;
+  /** story 16.10: the open state of a book (`models/weapons-v2/<modelOpen>.glb`); only data until the stance switch exists */
+  modelOpen?: string;
   hand: 'left' | 'right';
   /** the figure plays attack_<motion> instead of attack, if it has it (art-direction §4.5) */
   motion?: string;
@@ -431,6 +431,6 @@ export function socketName(piece: FigurePiece): string {
 }
 
 /** The folder of a piece's model below `public/assets/models/`. */
-export function pieceFolder(piece: FigurePiece): 'weapons' | 'weapons-v2' | 'parts' {
-  return 'socket' in piece ? 'parts' : (piece.folder ?? 'weapons');
+export function pieceFolder(piece: FigurePiece): 'weapons-v2' | 'parts' {
+  return 'socket' in piece ? 'parts' : 'weapons-v2';
 }

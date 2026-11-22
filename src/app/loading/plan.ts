@@ -25,10 +25,9 @@ type Gear = GameData['render']['gear'];
 export interface MissionAssetInput {
   /** units on the board at the start and those arriving later (reinforcements, spawns) */
   units: readonly MissionUnit[];
-  /** weapon model files the manifest lists (`manifest.models.weapons`); without them no weapon file is needed */
+  /** rune weapon files the manifest lists (`manifest.models.weapons`, art/models/weapons-v2); without them no weapon file is needed */
   weaponModels?: readonly string[];
-  /** rune weapon files (`manifest.models.weapons2`, story 16.6) and rune stone files (`manifest.models.runes`) */
-  weaponModels2?: readonly string[];
+  /** rune stone files (`manifest.models.runes`, story 16.6) */
   runeModels?: readonly string[];
   /** part model files the manifest lists (`manifest.models.parts`, story 10.13); without them no part file is needed */
   partModels?: readonly string[];
@@ -83,7 +82,7 @@ export function itemImages(itemIds: readonly string[], items: GearItems): string
   return [...out];
 }
 
-/** Weapon library models (`models/weapons/<model>.glb`) the items show on a figure: weapon group in the main hand, off-hand weapon group. */
+/** Weapon library models (`models/weapons-v2/<model>.glb`) the items show on a figure: weapon group in the main hand, off-hand weapon group. */
 export function gearModels(itemIds: readonly string[], items: GearItems, gear: Gear): string[] {
   const out = new Set<string>();
   for (const id of itemIds) {
@@ -97,7 +96,7 @@ export function gearModels(itemIds: readonly string[], items: GearItems, gear: G
   return [...out];
 }
 
-/** The weapon pieces (model and folder) the items show on a figure, each once. */
+/** The weapon pieces (model, hand, motion) the items show on a figure, each once. */
 export function gearPieces(itemIds: readonly string[], items: GearItems, gear: Gear): GearPiece[] {
   const out = new Map<string, GearPiece>();
   for (const id of itemIds) {
@@ -105,7 +104,7 @@ export function gearPieces(itemIds: readonly string[], items: GearItems, gear: G
     if (!d) continue;
     const weapon = d.weaponType && gear.weapons[d.weaponType];
     const off = d.group && gear.offHand[d.group];
-    for (const p of [weapon, off]) if (p) out.set(`${p.folder ?? 'weapons'}/${p.model}`, p);
+    for (const p of [weapon, off]) if (p) out.set(p.model, p);
   }
   return [...out.values()];
 }
@@ -115,7 +114,7 @@ export function gearPieces(itemIds: readonly string[], items: GearItems, gear: G
  * figures (3D models and their weapon models, or sprite sheets for the 2D setting and units without a model) and the
  * images of the gear they hold.
  */
-export function missionAssets({ units, models, unitPacks, vatModels, classes, place, defaultPlace, weaponModels, weaponModels2, runeModels, partModels, items, gear, figures = '3d', sprites, music }: MissionAssetInput): string[] {
+export function missionAssets({ units, models, unitPacks, vatModels, classes, place, defaultPlace, weaponModels, runeModels, partModels, items, gear, figures = '3d', sprites, music }: MissionAssetInput): string[] {
   const out = new Set<string>([placePath(place ?? defaultPlace)]);
   if (music) for (const id of BATTLE_MUSIC) if (music.includes(id)) out.add(musicPath(id));
   const use3d = figures !== '2d' && models !== undefined;
@@ -127,10 +126,9 @@ export function missionAssets({ units, models, unitPacks, vatModels, classes, pl
       if (items && gear && u.gearItems) {
         let runeWeapon = false;
         for (const p of gearPieces(u.gearItems, items, gear)) {
-          const v2 = p.folder === 'weapons-v2';
-          if ((v2 ? weaponModels2 : weaponModels)?.includes(p.model)) {
-            out.add(`models/${v2 ? 'weapons-v2' : 'weapons'}/${p.model}.glb`);
-            runeWeapon ||= v2;
+          if (weaponModels?.includes(p.model)) {
+            out.add(`models/weapons-v2/${p.model}.glb`);
+            runeWeapon = true;
           }
         }
         // the stones of the runes set into the unit's items hang on its rune weapons (story 16.6)
