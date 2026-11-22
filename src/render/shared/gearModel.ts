@@ -7,13 +7,13 @@ import type { GameData } from '../../core/gameData';
 
 type Gear = GameData['render']['gear'];
 
-/** The model piece of an item (model, hand, motion, hold of the group unless the item's entry overrides); undefined for an item without a model. */
+/** The model piece of an item (model, hand, motion, grip of the group unless the item's entry overrides); undefined for an item without a model. */
 export function modelFor(item: ItemDef, gear: Gear): GearPiece | undefined {
   const base = (item.weaponType && gear.weapons[item.weaponType]) || (item.group && gear.offHand[item.group]) || undefined;
   const own = gear.items[item.id];
   if (!own) return base;
   // an accessory (dragon_ember) has no group piece: no hand of its own, `left` is only a placeholder, the board never hangs it
-  return { ...base, ...own, hand: own.hand ?? base?.hand ?? 'left', ...(base ? { fallback: base.model } : {}) };
+  return { ...base, ...own, hand: own.hand ?? base?.hand ?? 'left', grip: own.grip ?? base?.grip ?? 'fist', ...(base ? { fallback: base.model } : {}) };
 }
 
 /** The rune a signature piece shows in its main setting: the single `fixedRune`, or the one of the relic `stage` (1-based, clamped to the list). */

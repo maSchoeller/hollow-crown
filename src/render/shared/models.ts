@@ -121,7 +121,6 @@ export interface UnitModel {
   /** story 16.6: the glow meshes of the figure's rune weapons (channel, stones), not part of `groups`; absent without rune weapons */
   rune?: RuneKit;
   /** one node per weapon between socket and model; turned by `hold` radians about the socket's X outside attacks */
-  grips: { node: TransformNode; hold: number }[];
   /**
    * Story 7.8: the figure plays a baked animation (`.vat`) instead of a skeleton: its body mesh draws the rows of the model's
    * texture the figure picks, the hand sockets (weapons) follow the table of the file. Set: `skeletons` and `anims` are empty.
@@ -220,7 +219,7 @@ export function sharedFigureMaterial(cache: Map<string, StandardMaterial>, scene
 
 /**
  * Hangs the small models on the figure's sockets (tools/art/prepare_tripo_unit.py): the weapon library (GA9,
- * tools/art/blender_weapon_*.py) on the hand sockets `socket_r` / `socket_l`, the attached part of a pro path
+ * tools/art/blender_weapon_*.py) on the palm sockets `grip_r` / `grip_l`, the attached part of a pro path
  * (story 10.13, tools/art/blender_proparts.py) on the body sockets `socket_back` / `socket_head`. Figures without
  * sockets (the Blender figures) carry their weapon in the model and show no part.
  */
@@ -233,9 +232,8 @@ async function attachGear(
   /** the node of a socket, if the figure has it (a figure on baked animation makes it when the first piece asks) */
   socketOf: (socket: string) => TransformNode | undefined = (socket) =>
     root.getDescendants(false).find((n) => n.name.endsWith(`:${socket}`)) as TransformNode | undefined,
-): Promise<{ meshes: Mesh[]; grips: UnitModel['grips']; kit?: RuneKit }> {
+): Promise<{ meshes: Mesh[]; kit?: RuneKit }> {
   const meshes: Mesh[] = [];
-  const grips: UnitModel['grips'] = [];
   let kit: RuneKit | undefined;
   for (const piece of gear) {
     const socket = socketOf(socketName(piece));
@@ -247,7 +245,6 @@ async function attachGear(
     if (!socket || !c || root.isDisposed()) continue;
     const grip = new TransformNode(`${name}:${piece.model}:grip`, store.scene);
     grip.parent = socket;
-    grips.push({ node: grip, hold: (('hold' in piece ? (piece.hold ?? 0) : 0) * Math.PI) / 180 });
     const inst = instantiate(c, store.scene, (n) => `${name}:${piece.model}:${n}`);
     const own: Mesh[] = [];
     for (const glRoot of inst.rootNodes) {
@@ -288,7 +285,7 @@ async function attachGear(
       meshes.push(...(await dressRuneWeapon(kit, store.runeGlow, runes, grip, own, stones)));
     } else meshes.push(...own);
   }
-  return { meshes, grips, kit };
+  return { meshes, kit };
 }
 
 /**
@@ -395,7 +392,6 @@ async function loadVatUnit(store: AssetStore, entry: VatEntry, team: Team, name:
     look,
     skeletons: [],
     anims: {},
-    grips: held.grips,
     rune: held.kit,
     vat: { entry, manager, sockets },
     dispose: () => {
@@ -477,7 +473,6 @@ export async function loadUnitModel(
     look,
     skeletons: inst.skeletons,
     anims,
-    grips: held.grips,
     rune: held.kit,
     dispose: () => {
       for (const g of inst.animationGroups) g.dispose();

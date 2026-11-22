@@ -1,6 +1,6 @@
 # Story 16.9: Griff-Rig und Fingerknochen für alle Brettfiguren
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -106,3 +106,12 @@ Reihenfolge einhalten; A baut die Daten, B die Laufzeit, C die Abnahme. Blender-
 ### Completion Notes List
 
 ### File List
+
+### Completion Notes (Nachtlauf 2026-11-22)
+
+- 42 Tripo-Figuren neu aufbereitet: Fingergelenke (Daumen bis kleiner Finger, je 1-3) bleiben, 22 auf 52 Gelenke; Griff-Sockel `grip_r`/`grip_l` in der Handfläche (`hand_frame()` in `tools/art/prepare_tripo_unit.py`) statt `socket_r`/`socket_l`.
+- Fingerposen je Griffart in `tools/art/grip_poses.py` (fist, flat, bow, lute), gebacken als Einzelbild-Clips `grip_*`; `render.yaml` `grip` je Waffengruppe und optional je Item. Die Auswahl des Clips zur Laufzeit gehört zu 16.10.
+- Jedes v2- und Signaturmodell hat einen Knoten `grip` (`tools/art/weapon_grip_nodes.py`, nach jedem Neubau einer Waffe erneut ausführen). `hold` ist entfernt.
+- Budget: höchstens 0,35 MB gz je Figur (ilka), Dreiecke unverändert; `.vat` im Mittel 110 auf 118 KB gz. Paket act1 bei 39,96 von 40 MB.
+- Nicht umgestellt: Blender-Figuren `avatar`, `fighter`, `mage` (kein Rig, `mage` nur Rückfall in classes.yaml) [ASSUMPTION].
+- Abnahmebild `s4-16-9-griffe.png` (Lucan und Hask, zehn Waffenarten, Ruhe und Angriff bei 0,25 s). Abnahme durch den Produktinhaber offen.

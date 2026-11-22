@@ -250,24 +250,25 @@ legibility:
 # GA9 (concept/23-art-direction §4.2, §4.7): sichtbares Waffenteil je Waffengruppe der ausgerüsteten Waffe bzw. je Art des
 # Gegenstands in der Nebenhand. model = art/models/weapons-v2/<model>.glb (tools/art/blender_weapon_<gruppe>.py, Runenwaffen mit
 # Fassung und Rinne, Stories 16.6/16.7), modelOpen = aufgeschlagenes Buch (Umschalten: Story 16.10), hand = Hand-Sockel
-# der Figur, motion = eigene Angriffsanimation attack_<motion> (§4.5; ohne: der Schwerthieb), hold = Drehung in Grad um die
-# X-Achse des Sockels außerhalb des Angriffs (das Modell ist im Angriffsgriff gebaut). Nur Bild-zu-3D-Figuren haben
-# Sockel; die Blender-Figuren tragen ihre Waffe fest im Modell.
+# der Figur (Griff-Sockel `grip_r`/`grip_l` in der Handfläche, Rahmen: tools/art/prepare_tripo_unit.py sockets(); das Modell trägt seinen
+# Griffpunkt als Node `grip`, tools/art/weapon_grip_nodes.py), motion = eigene Angriffsanimation attack_<motion> (§4.5; ohne: der
+# Schwerthieb), grip = Griffart (Story 16.9, Fingerposen `grip_<art>`, tools/art/grip_poses.py): fist | flat | bow | lute. Nur
+# Bild-zu-3D-Figuren haben Sockel; die Blender-Figuren tragen ihre Waffe fest im Modell.
 gear:
   weapons:
-    sword: { model: sword, hand: right }
-    dagger: { model: dagger, hand: right }   # ohne eigene Bewegung: der Schwerthieb (ein Dolchstich ist noch nicht animiert)
-    lance: { model: lance, hand: right, motion: thrust, hold: -125 }
-    axe: { model: axe, hand: right, motion: chop }
-    bow: { model: bow, hand: left, motion: shoot }
-    anima: { model: book, modelOpen: book_open, hand: left, motion: cast }
-    light: { model: book, modelOpen: book_open, hand: left, motion: cast }
-    dark: { model: book, modelOpen: book_open, hand: left, motion: cast }
-    staff: { model: staff, hand: right, motion: cast }
+    sword: { model: sword, hand: right, grip: fist }
+    dagger: { model: dagger, hand: right, grip: fist }   # ohne eigene Bewegung: der Schwerthieb (ein Dolchstich ist noch nicht animiert)
+    lance: { model: lance, hand: right, motion: thrust, grip: fist }
+    axe: { model: axe, hand: right, motion: chop, grip: fist }
+    bow: { model: bow, hand: left, motion: shoot, grip: bow }
+    anima: { model: book, modelOpen: book_open, hand: left, motion: cast, grip: flat }
+    light: { model: book, modelOpen: book_open, hand: left, motion: cast, grip: flat }
+    dark: { model: book, modelOpen: book_open, hand: left, motion: cast, grip: flat }
+    staff: { model: staff, hand: right, motion: cast, grip: fist }
   offHand:
-    shield: { model: shield, hand: left }
-    lute: { model: lute, hand: left }   # nach Waffengruppe des Gegenstands (Nebenhand), nicht nach kind: Laute und Fokus sind beide Zubehör
-    focus: { model: focus, hand: left }
+    shield: { model: shield, hand: left, grip: fist }
+    lute: { model: lute, hand: left, grip: lute }   # nach Waffengruppe des Gegenstands (Nebenhand), nicht nach kind: Laute und Fokus sind beide Zubehör
+    focus: { model: focus, hand: left, grip: flat }
   # Story 16.8: Signaturwaffen und Relikte mit eigenem Modell (art/models/weapons-v2/sig/<id>.glb, tools/art/blender_weapon_signatures.py), Schlüssel = Item-Id.
   # Hand, Bewegung und Haltung kommen von der Gruppe des Items (Armbrüste: Bogen); `modelFor` (src/render/shared/gearModel.ts) löst auf, Brett und
   # alle Ansichten lesen dieselbe Quelle. dragon_ember ist ein Schmuckstück: nur für Ansichten, nie am Brett.

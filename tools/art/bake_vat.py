@@ -2,9 +2,9 @@
 
     python tools/art/bake_vat.py <figure.raw.glb> <figure.vat>
 
-The raw glTF is what tools/art/prepare_tripo_unit.py writes (22 joints, one skin, one animation per board animation, keys at 12 fps).
+The raw glTF is what tools/art/prepare_tripo_unit.py writes (about 52 joints incl. the finger joints 1-3 since story 16.9, one skin, one animation per board animation, keys at 12 fps).
 Every clip is sampled at 60 frames a second (slerp of the rotations, lerp of the hips' translation, like the glTF loader of the
-board does at runtime) and written as the local pose of each joint per row: 22 quaternions (half float) plus the hips' translation
+board does at runtime) and written as the local pose of each joint per row: J quaternions (half float) plus the hips' translation
 (float). The renderer builds the matrix texture of the vertex animation (src/render/shared/vat.ts) from it by forward kinematics
 when the figure is loaded, and the hand sockets (weapon placement) with it. The file also carries the rig it needs for that
 (joint names, parents, rest pose, inverse bind matrices, the sockets' local transforms), so the loader needs no glTF skeleton data.
@@ -92,10 +92,10 @@ class Rig:
         if np.abs(self.rest_s - 1).max() > 1e-3:
             raise SystemExit("a joint is scaled: the .vat format keeps the joints' size at 1")
         self.ibm = accessor(js, bin_, skin["inverseBindMatrices"])  # glTF order, as the accessor holds them
-        # sockets: nodes that are no joint, hang below one and carry a name starting with socket_
+        # sockets: nodes that are no joint, hang below one and carry a name starting with socket_ (body) or grip_ (palms, story 16.9)
         self.sockets = []
         for ni, node in enumerate(self.nodes):
-            if ni in self.index or not node.get("name", "").startswith("socket_") or ni not in parent:
+            if ni in self.index or not node.get("name", "").startswith(("socket_", "grip_")) or ni not in parent:
                 continue
             if parent[ni] not in self.index:
                 raise SystemExit(f"{node['name']} does not hang below a joint")
