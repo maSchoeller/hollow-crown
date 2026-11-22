@@ -210,6 +210,8 @@ export interface RenderDef {
     /** story 16.6: glow of the rune weapons (channel and stones) and the tint of their metals */
     rune: RuneGlowDef;
   };
+  /** story 16.14: the item stage (weapon view, enchanter, armoury): camera, spin, drag, light and the pose of each model */
+  itemStage: ItemStageDef;
   /** epic 13: grid, range tiles, path arrow, danger tiers, target-tile lines, HP bars, whole-map view, double tap */
   legibility: LegibilityDef;
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
@@ -243,6 +245,30 @@ export interface TimeOfDayDef {
   rim: { color: string; strength: number };
   /** factor on the strength of point lights (torches, fires, windows) */
   pointBoost: number;
+}
+
+/** Story 16.14: the item stage's values (`render.yaml` `itemStage`); angles in degrees, times in ms. */
+export interface ItemStageDef {
+  fov: number;
+  margin: number;
+  startPitchDeg: number;
+  tiltLimitDeg: number;
+  spinDegPerSec: number;
+  dragDegPerPx: number;
+  dampingPerSec: number;
+  restDegPerSec: number;
+  doubleTapMs: number;
+  tapSlopPx: number;
+  resetMs: number;
+  growMs: number;
+  /** pose per weapon model file name: yaw about the vertical axis, `upright` stands the long axis up */
+  models: Record<string, { yaw: number; upright?: boolean }>;
+  lights: { ambient: { color: string; intensity: number }; key: StageLightDef; rim: StageLightDef };
+}
+export interface StageLightDef {
+  color: string;
+  intensity: number;
+  direction: [number, number, number];
 }
 
 /** Story 16.6: how the rune weapons glow (`render.yaml` `gear.rune`, Art Direction §2.3, §4.7). */
