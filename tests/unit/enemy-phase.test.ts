@@ -130,7 +130,7 @@ describe('AI phase time (stories 15.10, 15.11)', () => {
     () => {
       const [m] = simulateCampaign(data, {
         runs: 1,
-        seed: 3,
+        seed: 1, // seed 3 loses the prologue since roads cost ½ (story 16.1); this test needs a first attempt won
         difficulty: 'normal',
         deathMode: 'standard',
         maxMissions: 1,
