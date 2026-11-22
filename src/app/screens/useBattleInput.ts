@@ -15,9 +15,9 @@ import type { BoardOverlays } from './useBoardOverlays';
 export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Command) => Promise<void>) {
   const {
     bark, boardRef, busy, cancelRef, classPick, confirmEnd, convoy, dialogue, info, items, levelUp, longRef, menu,
-    mode, objectives, pursueDone, reason, recap, s, setClassPick, setConfirmEnd, setConvoy, setDanger, setInfo,
+    mode, objectives, pursueDone, reason, recap, s, setClassPick, setConfirmEnd, setConvoy, setDanger, setLens, setInfo,
     setItems, setMenu, setMode, setObjectives, setPursueDone, setReason, setRecap, setTileInfo, setTrade, setWanted,
-    setWatch, tapRef, trade, unit, wanted,
+    setWatch, tapRef, tileInfo, trade, unit, wanted,
   } = b;
   const { reachOf, selUid } = ov;
   const playerTurn = s.phase === 'player' && !busy && !s.outcome;
@@ -88,8 +88,15 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
           setInfo(at.uid);
           return;
         }
-        if (dests.some((d) => samePos(d, p))) return setMode({ k: 'moved', uid: u.uid, to: p });
+        if (dests.some((d) => samePos(d, p))) {
+          setTileInfo(null);
+          return setMode({ k: 'moved', uid: u.uid, to: p });
+        }
         if (selectable(at)) return setMode(selectMode(at!));
+        // story 16.11: an empty field outside the range does not let go of the figure: the tile card says what it costs her to go there
+        // ([ASSUMPTION] a second tap on the same field lets go, as every tap beside the range did before)
+        if (!at && !(tileInfo && samePos(tileInfo, p))) return setTileInfo(p);
+        setTileInfo(null);
         setMode({ k: 'idle' });
         return;
       }
@@ -239,6 +246,10 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
     if (pursueOpen && !busy && mode.k === 'idle') setMode({ k: 'pursue', uid: s.pursue!.unit, to: null });
   }, [pursueOpen, busy, mode.k]);
 
+  // story 16.11: the tile card of an out-of-range field belongs to the chosen figure; a new choice or letting go ends it
+  const chosenUid = mode.k === 'idle' ? '' : mode.uid;
+  useEffect(() => setTileInfo(null), [chosenUid]);
+
   /** Selects the next unit that has not acted yet and centres the camera on it. */
   const nextUnit = () => {
     const ready = s.units.filter(selectable);
@@ -288,7 +299,7 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
     cancelRef.current();
   };
 
-  // keyboard (EXPERIENCE.md Interaction Primitives): Esc back, Space next unit, E end phase, D danger zone, F front band, arrows between bands
+  // keyboard (EXPERIENCE.md Interaction Primitives): Esc back, Space next unit, E end phase, D danger zone, G terrain lens, F front band, arrows between bands
   const ctxRef = useRef({ n: 0, go: () => undefined as void, step: (_d: number) => undefined as void });
   const keyRef = useRef<(e: KeyboardEvent) => void>(() => undefined);
   keyRef.current = (e: KeyboardEvent) => {
@@ -297,6 +308,7 @@ export function useBattleInput(b: BattleScreen, ov: BoardOverlays, run: (cmd: Co
     if (e.key === 'Escape') escape();
     else if (modal) return;
     else if (e.key === 'd' || e.key === 'D') setDanger((d) => !d);
+    else if (e.key === 'g' || e.key === 'G') setLens((l) => !l);
     else if (e.key === 'm' || e.key === 'M') boardRef.current?.wholeMap();
     else if (e.key === 'e' || e.key === 'E') endPhase();
     else if (mode.k === 'moved' && ctxRef.current.n > 0 && (e.key === 'f' || e.key === 'F')) ctxRef.current.go();

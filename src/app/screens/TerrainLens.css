@@ -1,0 +1,111 @@
+/* Terrain lens (story 16.11, DESIGN.md terrain-lens): legend pill, swatches, the hold ring and hint dots of the dock button. */
+
+.lens-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  max-width: 520px;
+  padding: 6px 12px;
+  border-radius: var(--hc-r-pill);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+}
+.lens-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* a 13 px pattern square: the same read as the board's tint */
+.lens-sw {
+  display: inline-block;
+  flex: none;
+  width: 13px;
+  height: 13px;
+  box-sizing: border-box;
+  border: 1.5px solid var(--hc-line);
+  border-radius: 3px;
+  background: var(--hc-cream-2);
+}
+.lens-sw.is-cover {
+  background: var(--lens-cover);
+}
+.lens-sw.is-slow {
+  background: var(--lens-slow);
+}
+.lens-sw.is-harm {
+  background: var(--lens-harm);
+}
+.lens-sw.is-fast {
+  background: repeating-linear-gradient(90deg, var(--lens-fast) 0 3px, var(--hc-cream-2) 3px 6px);
+}
+.lens-sw.is-blocked {
+  background: repeating-linear-gradient(45deg, var(--lens-blocked) 0 2px, transparent 2px 5px), var(--hc-cream-2);
+}
+.lens-sw.is-neutral {
+  background: var(--lens-neutral), var(--hc-cream-2);
+}
+
+/* the button "Gefahr" / "Gelände": light green while the lens is on */
+.hud-act.is-lens {
+  background: var(--hc-positive-soft, #e9f6ec);
+}
+/* three small dots at the upper right: the button can be held */
+.hud-act__dots {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  display: flex;
+  gap: 2px;
+  pointer-events: none;
+}
+.hud-act__dots i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--hc-line);
+  opacity: 0.55;
+}
+/* green ring that fills while the button is held (`--hold-ms` = the hold time) */
+.hud-act__ring {
+  position: absolute;
+  inset: 2px;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  pointer-events: none;
+}
+.hud-act__ring circle {
+  fill: none;
+  stroke: var(--hc-positive, #2f8a4c);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  animation: hud-act-hold var(--hold-ms, 400ms) linear forwards;
+}
+@keyframes hud-act-hold {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* "noch n" at the end of the path: pinned by the board, hangs to the right of the field */
+.lens-rest {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  translate: 0 -50%;
+  padding: 2px 9px 2px 7px;
+  border: 2px solid var(--hc-line);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-ember);
+  color: #fff;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+}

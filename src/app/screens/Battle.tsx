@@ -1,9 +1,11 @@
 /** The battle screen: HUD, sheets and panels over the 3D board. State, board, overlays, presentation, commands and input live in the hooks next to it. */
-import { type ActionOption, type BattleUnit, active, availableActions, ballistaForecast, canLayTraps, castBlock, classActionId, classPreview, contextEntries, damageAtHit, forecast, longPressView, ownTraps, passivePreview, posKey, stealBlock, unitAt, wantedView, weaponRange } from '../../core';
-import { BackPill, ClassPreviewCard, ContextBands, Dock, DockAction, ForecastCard, GoalPills, HintPill, MenuStone, OverviewStone, PassiveRuleCard, PhasePill, RosterPanel, SpeedControl, TerrainCard, TurnPill, UnitCardB, roleIcon } from './BattleHud';
+import { type ActionOption, type BattleUnit, active, availableActions, hasSpecialTerrain, ballistaForecast, canLayTraps, castBlock, classActionId, classPreview, contextEntries, damageAtHit, forecast, longPressView, ownTraps, passivePreview, posKey, stealBlock, unitAt, wantedView, weaponRange } from '../../core';
+import { BackPill, ClassPreviewCard, ContextBands, Dock, DockAction, ForecastCard, GoalPills, HintPill, MenuStone, OverviewStone, PassiveRuleCard, PhasePill, RosterPanel, SpeedControl, TurnPill, UnitCardB, roleIcon } from './BattleHud';
 import { BattleMenu, ClassPick, ConvoySheet, ItemPick, LevelUpPopup, ObjectivesPanel, StealPick, TradeSheet, UnitInfo } from './BattlePanels';
 import { CLASS_KINDS, type Mode, selectMode } from './battleMode';
 import { CutIn } from './CutIn';
+import { LensLegend, RestPill, useCoachHint } from './TerrainLens';
+import { TileCard } from './TileCard';
 import { EnemyStrip, RecapStone, TerrainChip, TerrainWarnPills, ThreatPill } from './BattleLegibility';
 import { Icon } from '../../ui/icons';
 import { ItemImage, Piece, PrimaryButton, SecondaryButton } from '../../ui/pieces';
@@ -20,7 +22,7 @@ import { openHandbook } from '../state/handbook';
 import { screen } from '../state/screen';
 import { settings, updateSettings } from '../state/settings';
 import { t } from '../../i18n';
-import { useEffect, useState } from 'preact/hooks';
+import { useEffect, useMemo, useState } from 'preact/hooks';
 import { useBattleScreen } from './useBattleScreen';
 import { useBattlePresentation } from './battlePresentation';
 import { useBoardLifecycle } from './useBoardLifecycle';
@@ -34,15 +36,15 @@ export function Battle() {
   const b = useBattleScreen();
   const {
     banner, bark, boardRef, bottomRef, cancelRef, chipRef, classPick, confirmEnd, convoy, cutIn, danger, dialogue,
-    floatRef, fogged, full, hp, info, items, levelUp, loading, menu, mode, objectives, phaseView, reason, recap, s,
-    setClassPick, setConvoy, setCutIn, setDanger, setInfo, setItems, setMenu, setMode, setObjectives, setReason,
-    setRecap, setToastState, setTrade, setWanted, stageRef, tileInfo, toast, topRef, trade, unit, wanted, whole, wide,
+    floatRef, fogged, full, hp, info, items, lens, levelUp, loading, menu, mode, objectives, phaseView, reason, recap, s,
+    setClassPick, setConvoy, setCutIn, setDanger, setInfo, setLens, setItems, setMenu, setMode, setObjectives, setReason,
+    setRecap, setToastState, setTrade, setWanted, restRef, stageRef, tileInfo, toast, topRef, trade, unit, wanted, whole, wide,
   } = b;
   const show = useBattlePresentation(b);
   useBoardLifecycle(b, show);
   const opt = settings.value;
   const ov = useBoardOverlays(b);
-  const { checkTile, checkFoes } = ov;
+  const { checkTile, checkFoes, rest, lensKindsShown } = ov;
   const run = makeRun(b, ov.reachOf, show);
   const { playerTurn, selectable, readyCount, leavePursue, finishPursue, confirmPursue, confirmAttack, confirmClassAction, confirmCast, nextUnit, endPhase, doAction, useItem, ctxRef } = useBattleInput(b, ov, run);
 
@@ -176,7 +178,17 @@ export function Battle() {
 
   const idleDock = (
     <Dock three>
-      <DockAction icon="danger" label={t('ui.danger')} on={danger} onClick={() => setDanger(!danger)} />
+      {/* story 16.11: a tap switches the danger zone, holding switches the terrain lens on; while it is on the button is "Terrain" and a tap ends it */}
+      <DockAction
+        variant={lens ? 'lens' : undefined}
+        icon={lens ? 'lens' : 'danger'}
+        label={lens ? t('ui.lens.name') : t('ui.danger')}
+        on={!lens && danger}
+        onClick={() => (lens ? setLens(false) : setDanger(!danger))}
+        onHold={() => setLens(true)}
+        holdMs={data.render.legibility.terrainLens.holdMs}
+        holdLabel={t('ui.lens.holdLabel')}
+      />
       <DockAction icon="next" label={t('ui.hud.nextUnit')} dim={!playerTurn || readyCount === 0} onClick={nextUnit} />
       <DockAction
         variant="primary"
@@ -192,21 +204,27 @@ export function Battle() {
   /** a long press on a medallion of the enemy strip opens what a long press on the foe opens (story 13.8) */
   const foeInfo = (u: BattleUnit) => (longPressView(data, u) === 'wanted' ? setWanted(u.uid) : setInfo(u.uid));
 
-  const card = selUnit && <UnitCardB data={data} state={s} u={selUnit} hp={hp[selUnit.uid] ?? selUnit.hp} onClick={() => setInfo(selUnit.uid)} />;
+  // story 16.11: with a figure chosen, a tap on an empty field out of her range puts the tile card (with her cost) in place of her card until a target field is set
+  const tileCard = selUnit && (mode.k === 'selected' || mode.k === 'moved') && tileInfo && !unitAt(s, tileInfo) ? <TileCard data={data} s={s} p={tileInfo} unit={selUnit} /> : null;
+  const card = tileCard ?? (selUnit && <UnitCardB data={data} state={s} u={selUnit} hp={hp[selUnit.uid] ?? selUnit.hp} onClick={() => setInfo(selUnit.uid)} />);
   const back = <BackPill onClick={() => cancelRef.current()} />;
   const tileUnit = tileInfo ? unitAt(s, tileInfo) : undefined;
+  // story 16.11: the first battle with special terrain tells once that holding "Danger" shows it
+  const special = useMemo(() => hasSpecialTerrain(data, s), [s.mapId]);
+  const lensHint = useCoachHint('lens', special && !loading && playerTurn && !lens && mode.k === 'idle' && !dialogue && !banner && !cutIn, data.render.legibility.terrainLens.hintMs);
 
   const sheet = otherPhase ? null : (
     <div class="hud-sheet">
       {reason && <HintPill reason>{reason}</HintPill>}
       {mode.k === 'idle' && (
         <>
+          {lensHint && <HintPill>{t('ui.lens.hint')}</HintPill>}
           {recap && <RecapStone turn={recap.turn} rows={recap.rows} units={full.units} onShow={(at) => void boardRef.current?.centerOn(at)} onClose={() => setRecap(null)} />}
           {tileInfo &&
             (tileUnit ? (
               <UnitCardB data={data} state={s} u={tileUnit} hp={hp[tileUnit.uid] ?? tileUnit.hp} onClick={() => setInfo(tileUnit.uid)} />
             ) : (
-              <TerrainCard data={data} s={s} p={tileInfo} />
+              <TileCard data={data} s={s} p={tileInfo} unit={s.units.find(selectable)} />
             ))}
           {idleDock}
         </>
@@ -357,6 +375,9 @@ export function Battle() {
           <div class="lg-pin" ref={chipRef} style={{ display: checkTile ? '' : 'none' }}>
             {checkTile && <TerrainChip data={data} s={s} p={checkTile} />}
           </div>
+          <div class="lg-pin" ref={restRef} style={{ display: rest === null ? 'none' : '' }}>
+            {rest !== null && <RestPill rest={rest} />}
+          </div>
         </div>
         {dialogue?.band && <SceneBand id={dialogue.id} onDone={dialogue.done} />}
         {bark && <SceneBand id={bark.b.scene} key={bark.seq} only={[bark.b.line]} params={bark.b.params} speed={boardRef.current?.speed ?? 1} onDone={bark.done} />}
@@ -380,6 +401,7 @@ export function Battle() {
               />
               <TerrainWarnPills data={data} s={s} onShow={(at) => void boardRef.current?.centerOn(at)} />
               {checkTile && <ThreatPill n={checkFoes.length} />}
+              {lens && mode.k === 'idle' && <LensLegend data={data} kinds={lensKindsShown} />}
               {opt.enemyStrip && !wide && <EnemyStrip data={data} s={s} hp={hp} onCenter={(u) => void boardRef.current?.centerOn(u.pos!)} onInfo={foeInfo} />}
             </>
           )}
