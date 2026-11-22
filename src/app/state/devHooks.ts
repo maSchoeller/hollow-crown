@@ -268,6 +268,31 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'weapon', item: inst.uid, back: { name: 'troop' } };
       },
       /**
+       * story 16.16: the enchanter's workbench of act 2 with Rhen carrying `itemId` (default the hammer: an axe v2 model with two settings) and a vault of
+       * stones in the convoy; `stoneId` lays that rune in as a probe (so the probe and the change list show),
+       * Unsaved campaign. `__hc.devEnchanter()`, `__hc.devEnchanter('hammer', 'water_rune_2')`.
+       */
+      devEnchanter: async (itemId = 'hammer', stoneId: string | null = null) => {
+        if (data.releasedActs?.includes(2)) await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { kind: 'castle', rooms: { enchanter: 2, smith: 1 } };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        c.gold = 3000;
+        const owner = c.roster[0]!;
+        const piece = newItem(c, itemId, data);
+        const slot = data.items[itemId]?.kind === 'shield' ? 'offHand' : 'mainHand';
+        owner.equip[slot] = piece;
+        // fire I x3 (ready to merge), fire II, water I, earth I x2, wind I, light I and two auxiliary runes
+        for (const id of ['fire_rune_1', 'fire_rune_1', 'fire_rune_1', 'fire_rune_2', 'water_rune_1', 'earth_rune_1', 'earth_rune_1', 'wind_rune_1', 'light_rune_1', 'edge_rune', 'precision_rune'])
+          if (data.runes[id]) c.convoy.push(newItem(c, id, data));
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'camp', tab: 'enchanter', unit: owner.id, item: piece.uid, ...(stoneId ? { stone: stoneId } : {}) };
+      },
+      /**
        * story 10.7: the memorial hall of act 2 at `level` with Gerrit's stone, fallen Fenn (scout) and a fallen mercenary marksman,
        * ready to pass on a lesson; `given = true` passes Fenn's lesson to Tobin first. Unsaved campaign.
        */
