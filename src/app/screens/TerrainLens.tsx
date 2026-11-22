@@ -51,9 +51,12 @@ export function useCoachHint(id: string, ready: boolean, ms: number): boolean {
   const [shown, setShown] = useState(false);
   useEffect(() => {
     if (!ready || coachSeen(id)) return;
-    markCoachSeen(id);
+    // seen only once it stood its full time: a dialogue or a tap that ends it early lets it come back
     setShown(true);
-    const timer = setTimeout(() => setShown(false), ms);
+    const timer = setTimeout(() => {
+      markCoachSeen(id);
+      setShown(false);
+    }, ms);
     return () => {
       clearTimeout(timer);
       setShown(false);

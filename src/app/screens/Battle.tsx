@@ -185,7 +185,7 @@ export function Battle() {
         label={lens ? t('ui.lens.name') : t('ui.danger')}
         on={!lens && danger}
         onClick={() => (lens ? setLens(false) : setDanger(!danger))}
-        onHold={lens ? undefined : () => setLens(true)}
+        onHold={() => setLens(true)}
         holdMs={data.render.legibility.terrainLens.holdMs}
         holdLabel={t('ui.lens.holdLabel')}
       />
@@ -211,7 +211,7 @@ export function Battle() {
   const tileUnit = tileInfo ? unitAt(s, tileInfo) : undefined;
   // story 16.11: the first battle with special terrain tells once that holding "Danger" shows it
   const special = useMemo(() => hasSpecialTerrain(data, s), [s.mapId]);
-  const lensHint = useCoachHint('lens', special && !loading && playerTurn && !lens && mode.k === 'idle', data.render.legibility.terrainLens.hintMs);
+  const lensHint = useCoachHint('lens', special && !loading && playerTurn && !lens && mode.k === 'idle' && !dialogue && !banner && !cutIn, data.render.legibility.terrainLens.hintMs);
 
   const sheet = otherPhase ? null : (
     <div class="hud-sheet">

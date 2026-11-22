@@ -20,10 +20,11 @@ export function useBoardOverlays(b: BattleScreen) {
   const toPos = (k: string) => k.split(',').map(Number) as Pos;
   /** the danger zone in tiers (story 13.5): attackers per field, the fields only sleeping foes reach */
   const threat = useMemo(() => {
-    if (!danger || lens) return null;
+    // the lens replaces the danger zone where it is drawn (idle); with a chosen figure the danger zone shows as before
+    if (!danger || (lens && mode.k === 'idle')) return null;
     const m = threatMap(data, s, 'player');
     return { tiles: [...m.byTile].map(([k, l]) => [toPos(k), l.length] as [Pos, number]), sleeping: [...m.sleeping].map(toPos) };
-  }, [s, danger, lens]);
+  }, [s, danger, lens, mode.k]);
   /** the terrain lens (story 16.11): every field with its effects for walking, and the effects the legend names */
   const lensList = useMemo(() => (lens ? lensTiles(data, s) : null), [s, lens]);
   const lensKindsShown = useMemo(() => (lensList ? lensPresent(lensList) : []), [lensList]);
@@ -90,7 +91,7 @@ export function useBoardOverlays(b: BattleScreen) {
       .reinforcements.filter((r, i) => r.announce && !s.reinforcementsDone.includes(i) && !(r.unlessFlag && s.flags.includes(r.unlessFlag)) && r.turn === s.turn + (r.phase === 'player' ? 1 : 0))
       .flatMap((r) => onDifficulty(r.units, s.settings.difficulty).map((u) => u.at));
     // hold zones of hostile vanguards in danger mode (hatched)
-    const hold = (danger && !lens) || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];
+    const hold = (danger && !(lens && mode.k === 'idle')) || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];
     const base = {
       // story 16.6: the rune weapons of the chosen figure and of the forecast's attacker and target glow in full
       glow: glowUids(mode),
@@ -128,7 +129,7 @@ export function useBoardOverlays(b: BattleScreen) {
       for (const o of s.units) if (o.pos && o.team !== 'enemy' && !o.gone) atk.delete(posKey(o.pos));
       const attack = [...atk].map((k) => k.split(',').map(Number) as Pos);
       const staves = !!combinedRange(data, s, u, true) && !combinedRange(data, s, u);
-      return board.setOverlays({ ...base, move: dests, costMarks: costMarks(data, s, u, dests), attack: staves ? [] : attack, heal: staves ? attack : [], path: hoverPath, cursor: checkTile ?? u.pos });
+      return board.setOverlays({ ...base, move: dests, costMarks: costMarks(data, s, u, dests), attack: staves ? [] : attack, heal: staves ? attack : [], path: hoverPath, cursor: checkTile ?? tileInfo ?? u.pos });
     }
     const to = mode.to;
     const ghost = samePos(to, u.pos) ? null : { uid: u.uid, pos: to };
