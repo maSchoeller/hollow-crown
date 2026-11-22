@@ -3,6 +3,7 @@ import type { HauntVariant } from '../mapDefs';
 import type { Effect } from '../storyDefs';
 import type { Command } from '../battle/commands';
 import type { BattleState, CampaignState } from '../state';
+import type { BuyTarget } from './buyFor';
 import type { BattleResult } from './campaign';
 import type { RestartScope } from './restart';
 
@@ -21,8 +22,9 @@ export interface QueuedEffects {
  * Plain JSON: every applied command goes into the journal, start state + journal replays the campaign.
  */
 export type CampaignCommand =
-  | { type: 'buy'; item: string }
-  | { type: 'buyOffer'; uid: string }
+  /** story 16.17: `for` buys it straight onto a figure (the worn item goes to the convoy); without it the item goes to the convoy */
+  | { type: 'buy'; item: string; for?: BuyTarget }
+  | { type: 'buyOffer'; uid: string; for?: BuyTarget }
   /** story 10.9: the merchant's ember spark (from level 3, at most 3, one per story mission), fixed price */
   | { type: 'buyEmberSpark' }
   | { type: 'sell'; uid: string }
@@ -39,7 +41,10 @@ export type CampaignCommand =
   /** story 10.11: strengthen the healing potion `item` at the smith (+5 healing per step, at most two steps, from act 2) */
   | { type: 'upgradePotion'; item: string }
   | { type: 'reroll'; uid: string; index: number }
-  | { type: 'insertRune'; item: string; rune: string }
+  /** `index`: the setting (0 large, 1 small); a taken setting is swapped and its old rune goes to the convoy (story 16.16); left out: the first empty one */
+  | { type: 'insertRune'; item: string; rune: string; index?: number }
+  /** story 16.16: buy a rune I from the enchanter and set it into setting `index` of `item` at once (`buyRuneError`) */
+  | { type: 'buyRune'; rune: string; item: string; index: number }
   | { type: 'removeRune'; item: string; index: number }
   | { type: 'mergeRunes'; rune: string }
   /** make the item of workshop recipe `recipe` from materials and gold (story 10.6, `craftCost`) */

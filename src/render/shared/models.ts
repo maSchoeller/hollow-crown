@@ -31,6 +31,7 @@ import { pieceFolder, socketName, unitModelPath, type FigurePiece, type Team } f
 import type { AssetStore } from '../host';
 import { assetUrl } from './assets';
 import { FigurePlugin, type FigureLook } from './figurePlugin';
+import { dressRuneWeapon, RuneKit, type StoneLoader } from './runeGlow';
 import type { VatData } from './vat';
 import type { VatHandle } from './vatLoader';
 
@@ -97,10 +98,16 @@ export async function loadContainer(scene: Scene, path: string, materials: boole
  * those into the scene's material list; the render host clears that list on a scene switch, which would dispose the
  * cache's materials (and leave the next scene's props without their texture). They go back off the list right away.
  */
-function instantiate(c: AssetContainer, scene: Scene, rename: (n: string) => string) {
+export function instantiate(c: AssetContainer, scene: Scene, rename: (n: string) => string) {
   const inst = c.instantiateModelsToScene(rename, false, { doNotInstantiate: true });
   for (const m of c.materials) scene.removeMaterial(m);
   return inst;
+}
+
+/** Story 16.10: the grip nodes of a book's two states; only one set is enabled. */
+export interface BookSwitch {
+  closed: TransformNode[];
+  open: TransformNode[];
 }
 
 /** A unit's 3D figure: animated node tree under `root`; its meshes sit in groups that share materials (body, weapons). */
@@ -117,8 +124,11 @@ export interface UnitModel {
   look: FigureLook;
   skeletons: Skeleton[];
   anims: Record<string, AnimationGroup>;
+  /** story 16.6: the glow meshes of the figure's rune weapons (channel, stones), not part of `groups`; absent without rune weapons */
+  rune?: RuneKit;
+  /** story 16.10: the closed and the open model of a book (grip nodes under the hand socket); the stance switch shows one of them */
+  book?: BookSwitch;
   /** one node per weapon between socket and model; turned by `hold` radians about the socket's X outside attacks */
-  grips: { node: TransformNode; hold: number }[];
   /**
    * Story 7.8: the figure plays a baked animation (`.vat`) instead of a skeleton: its body mesh draws the rows of the model's
    * texture the figure picks, the hand sockets (weapons) follow the table of the file. Set: `skeletons` and `anims` are empty.
@@ -216,8 +226,29 @@ export function sharedFigureMaterial(cache: Map<string, StandardMaterial>, scene
 }
 
 /**
+ * Story 16.6/16.14: loads a stone's file (`models/runes-v2/<id>.glb`) and hangs its parts on a setting node. `prefix` names the
+ * meshes (`<prefix>:<tag>:<rune>:<mesh>`), `gone` says the owner was disposed meanwhile (then nothing is hung).
+ */
+export function stoneLoader(store: AssetStore, prefix: string, gone: () => boolean): StoneLoader {
+  return async (runeId, node, tag) => {
+    const sc = await store.container(`models/runes-v2/${runeId}.glb`);
+    if (!sc || gone()) return undefined;
+    const si = instantiate(sc, store.scene, (n) => `${prefix}:${tag}:${runeId}:${n}`);
+    const out: Mesh[] = [];
+    for (const r of si.rootNodes) {
+      // the stone's frame sits on the setting node; the file's handedness root is dropped like the weapon's
+      for (const n of r.getChildren()) (n as TransformNode).parent = node;
+      r.dispose();
+    }
+    for (const m of node.getChildMeshes(false)) if (m instanceof Mesh && m.getTotalVertices() && m.name.includes(`:${tag}:${runeId}:`)) out.push(m);
+    for (const m of out) m.isPickable = false;
+    return out;
+  };
+}
+
+/**
  * Hangs the small models on the figure's sockets (tools/art/prepare_tripo_unit.py): the weapon library (GA9,
- * tools/art/blender_weapons.py) on the hand sockets `socket_r` / `socket_l`, the attached part of a pro path
+ * tools/art/blender_weapon_*.py) on the palm sockets `grip_r` / `grip_l`, the attached part of a pro path
  * (story 10.13, tools/art/blender_proparts.py) on the body sockets `socket_back` / `socket_head`. Figures without
  * sockets (the Blender figures) carry their weapon in the model and show no part.
  */
@@ -230,36 +261,58 @@ async function attachGear(
   /** the node of a socket, if the figure has it (a figure on baked animation makes it when the first piece asks) */
   socketOf: (socket: string) => TransformNode | undefined = (socket) =>
     root.getDescendants(false).find((n) => n.name.endsWith(`:${socket}`)) as TransformNode | undefined,
-): Promise<{ meshes: Mesh[]; grips: UnitModel['grips'] }> {
+): Promise<{ meshes: Mesh[]; kit?: RuneKit; book?: BookSwitch }> {
   const meshes: Mesh[] = [];
-  const grips: UnitModel['grips'] = [];
+  let kit: RuneKit | undefined;
+  let book: BookSwitch | undefined;
   for (const piece of gear) {
     const socket = socketOf(socketName(piece));
-    const c = socket && (await store.container(`models/${pieceFolder(piece)}/${piece.model}.glb`));
-    if (!socket || !c || root.isDisposed()) continue;
-    const grip = new TransformNode(`${name}:${piece.model}:grip`, store.scene);
-    grip.parent = socket;
-    grips.push({ node: grip, hold: (('hold' in piece ? (piece.hold ?? 0) : 0) * Math.PI) / 180 });
-    const inst = instantiate(c, store.scene, (n) => `${name}:${piece.model}:${n}`);
-    for (const glRoot of inst.rootNodes) {
-      // the socket already sits in the figure's glTF space: keep the meshes' glTF-local transforms and drop the
-      // weapon file's own handedness root
-      for (const n of glRoot.getChildren()) (n as TransformNode).parent = grip;
-      for (const m of glRoot.getChildMeshes(false).concat(grip.getChildMeshes(false))) {
-        if (!(m instanceof Mesh) || !m.getTotalVertices() || meshes.includes(m) || !m.name.startsWith(`${name}:${piece.model}:`)) continue;
-        // the team's cloth colours are written into the vertex buffer: own geometry only where there are vertex colours
-        if (m.isVerticesDataPresent(VertexBuffer.ColorKind)) {
-          m.makeGeometryUnique();
-          teamColours(m, ramp);
+    // story 16.10: a book also loads its open model (hidden), the stance switch shows one of the two
+    const open = 'modelOpen' in piece ? piece.modelOpen : undefined;
+    for (const model of open ? [piece.model, open] : [piece.model]) {
+      const isOpen = model !== piece.model;
+      // story 16.8: a signature model loads on demand; until it is there (or offline) the figure holds the group model
+      const c =
+        socket &&
+        ((await store.container(`models/${pieceFolder(piece)}/${model}.glb`)) ??
+          (!isOpen && 'fallback' in piece && piece.fallback ? await store.container(`models/${pieceFolder(piece)}/${piece.fallback}.glb`) : undefined));
+      if (!socket || !c || root.isDisposed()) continue;
+      const grip = new TransformNode(`${name}:${model}:grip`, store.scene);
+      grip.parent = socket;
+      if (isOpen) {
+        grip.setEnabled(false);
+        (book ??= { closed: [], open: [] }).open.push(grip);
+      } else if (open) (book ??= { closed: [], open: [] }).closed.push(grip);
+      const inst = instantiate(c, store.scene, (n) => `${name}:${model}:${n}`);
+      const own: Mesh[] = [];
+      for (const glRoot of inst.rootNodes) {
+        // the socket already sits in the figure's glTF space: keep the meshes' glTF-local transforms and drop the
+        // weapon file's own handedness root
+        for (const n of glRoot.getChildren()) (n as TransformNode).parent = grip;
+        for (const m of glRoot.getChildMeshes(false).concat(grip.getChildMeshes(false))) {
+          if (!(m instanceof Mesh) || !m.getTotalVertices() || own.includes(m) || meshes.includes(m) || !m.name.startsWith(`${name}:${model}:`)) continue;
+          // the team's cloth colours are written into the vertex buffer: own geometry only where there are vertex colours
+          if (m.isVerticesDataPresent(VertexBuffer.ColorKind)) {
+            m.makeGeometryUnique();
+            teamColours(m, ramp);
+          }
+          m.isPickable = false;
+          m.receiveShadows = true;
+          own.push(m);
         }
-        m.isPickable = false;
-        m.receiveShadows = true;
-        meshes.push(m);
+        glRoot.dispose();
       }
-      glRoot.dispose();
+      // story 16.6: a rune weapon (weapons-v2) gets its channel, stones and metal tint; the rest are ordinary weapon meshes
+      const runes = 'rune' in piece ? piece.rune : undefined;
+      if (runes && store.runeGlow) {
+        kit ??= new RuneKit(store.materials, store.scene, store.runeGlow);
+        const stones = stoneLoader(store, `${name}:${model}`, () => root.isDisposed());
+        meshes.push(...(await dressRuneWeapon(kit, store.runeGlow, runes, grip, own, stones)));
+      } else meshes.push(...own);
     }
   }
-  return { meshes, grips };
+  // a book whose open model did not load keeps its closed one at all times (the switch would hide the book)
+  return { meshes, kit, book: book && book.open.length && book.closed.length ? book : undefined };
 }
 
 /**
@@ -366,7 +419,8 @@ async function loadVatUnit(store: AssetStore, entry: VatEntry, team: Team, name:
     look,
     skeletons: [],
     anims: {},
-    grips: held.grips,
+    rune: held.kit,
+    book: held.book,
     vat: { entry, manager, sockets },
     dispose: () => {
       manager.dispose(false);
@@ -447,7 +501,8 @@ export async function loadUnitModel(
     look,
     skeletons: inst.skeletons,
     anims,
-    grips: held.grips,
+    rune: held.kit,
+    book: held.book,
     dispose: () => {
       for (const g of inst.animationGroups) g.dispose();
       // meshes, their geometry and skeletons are the figure's own; the materials and the textures are shared

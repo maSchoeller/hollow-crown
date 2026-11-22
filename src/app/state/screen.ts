@@ -20,12 +20,16 @@ export type Screen =
   /** `then`: where the last card leads (default the world map; the tone test of story 8.1 goes on to a scene) */
   | { name: 'farewell'; result: BattleResult; index: number; then?: Screen }
   | { name: 'defeat' }
-  /** `tab`: a room opened at once; `unit`: the figure preselected in it (the academy, story 10.2) */
-  | { name: 'camp'; tab?: string; unit?: string }
+  /** `tab`: a room opened at once; `unit`: the figure preselected in it (the academy, story 10.2); `item`: the piece preselected in the smith or enchanter (story 16.14); `stone`: a rune id laid in the enchanter as a probe (dev) */
+  | { name: 'camp'; tab?: string; unit?: string; item?: string; stone?: string }
   | { name: 'troop'; unit?: string; from?: From }
   | { name: 'chronicle'; from?: From }
   | { name: 'wanted'; unit?: string; from?: From }
   | { name: 'options'; back: Screen }
+  /** the weapon view (story 16.14): the piece `item` (uid) big on the item stage; `unit`: the figure its changes are worked out for */
+  | { name: 'weapon'; item: string; unit?: string; back: Screen }
+  /** the armoury in the keep (story 16.18): a 3D vault; `at`: the uid of the piece in front (back from the weapon view) */
+  | { name: 'armory'; at?: string }
   /** the rules handbook as a full-screen view (title, world map menu; epic 14) */
   | { name: 'handbook'; back: Screen }
   | { name: 'licenses'; back: Screen };

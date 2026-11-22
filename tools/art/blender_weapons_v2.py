@@ -5,18 +5,35 @@ blender -b --factory-startup --python tools/art/blender_weapons_v2.py -- [<out_d
 Writes art/models/weapons-v2/<id>.glb (default). Only `axe` exists so far; add sword/shield/spear as functions in
 WEAPONS that fill the scene with `Builder` helpers and return the metal object + optional rune parts.
 
-Frame (identical to tools/art/blender_weapons.py / public/assets/models/weapons/axe.glb, built in Blender Z-up and
+Frame (the old axe model of the retired weapon library, built in Blender Z-up and
 exported with the default glTF Y-up conversion, so in the glb: Blender Z -> glTF +Y, Blender Y -> glTF -Z):
   origin in the fist, haft along Blender +Z (the grip axis), the blade on the -Y side (glTF +Z), the blade face
   normal along +/-X (blade thickness in X). Units: 1 = one board tile before figureScale. Old axe: z -0.10..0.325.
 Colours: vertex colours (COLOR_0, linear) from art/palette/hollow-64.hex, alpha 1 (team key K2 not used).
 
-Glow parts (separate meshes/materials so the game can light them per rune element and tier):
-  rune_stone   object + material `rune_stone`: two domes (one per blade face), sits flush in the rune setting.
-  rune_channel object + material `rune_channel`: thin V-shaped strip inside the engraved groove (both faces).
-               UV map 1 (glTF TEXCOORD_1, named `fill`): U = fill 0 (at the socket) .. 1 (far end of the groove),
-               V = 0. UV map 0 is a dummy (all 0). Light the first 1/3, 2/3, all of it for tier I, II, III.
-Everything else is the object `axe` with the material `HC_Vertex` (vertex colours: steel, wood, leather).
+Parts (separate meshes/materials so the game can light and hide them):
+  axe          object + material `HC_Vertex` (vertex colours: steel, wood, leather), includes the main settings (rim + four prongs).
+  rune_channel object + material `rune_channel`: thin V-shaped strip inside the engraved groove (both faces), lifted
+               CH_LIFT above the groove floor. UV map 1 (glTF TEXCOORD_1, named `fill`): U = fill 0 (at the socket) .. 1
+               (far end of the groove), V = 0. UV map 0 is a dummy. Light the first 1/3, 2/3, all of it for tier I, II, III.
+  rune_socket2 object + material `HC_Vertex`: the second, small setting (rim + four small prongs, radius 0.55 x SOCKET_R,
+               no channel) on both faces; hide it for common items.
+  (no placeholder dome any more: the stones come from art/models/runes-v2/<rune>.glb)
+
+Stone nodes (empty glTF nodes, no mesh), the contract for the game (docs of the kit: STONE NODE CONVENTION below):
+  socket_rune_a_r / socket_rune_a_l   main setting, face +X (r) / -X (l) of the blade, at the socket centre
+  socket_rune_b_r / socket_rune_b_l   small setting on the block (Tuelle) face +X / -X, scale 0.55 on the node
+
+STONE NODE CONVENTION. A stone glb (runes-v2) has its origin at the centre of the flat base, the dome along its local +X
+and the symbol "up" along its local +Y (glTF) = Blender +Z. A socket node has exactly that frame: parent the stone's root to
+the node with an identity local transform and the stone sits flush in the setting (base STONE_SINK below the socket floor so
+it is not coplanar with the metal). Node origin = stone base centre, node +X (dome) points out of the metal, node +Y (glTF)
+is the symbol up. In the Blender build frame the right-hand node has identity rotation, the left-hand one is turned 180
+degrees about the haft axis (Z) so the dome points out of the other face. The small settings carry scale 0.55 on the node.
+Names ending _r / _l are the sides +X / -X of the build frame (axe: blade faces; sword: the faces before the final 90 degree
+turn, lance/shield see their docstrings).
+
+Triangles: axe 6 512 + rune_channel 256 + rune_socket2 928 = 7 696 (budget 8 500). Sibling scripts: sword 8 130, lance 8 478, shield 8 124. Stones: 388 (earth_rune_3) .. 1 460 (dark_rune_1), budget 2 000.
 """
 import math
 import os
@@ -207,6 +224,67 @@ def dist_to_poly(pts, poly):
     return np.sqrt((q ** 2).sum(2)).min(1)
 
 
+# ---------------------------------------------------------------- SETTING KIT (also executed by blender_weapon_sword.py)
+PRONG_SIZE = (0.0170, 0.0135, 0.0125)   # claw: height (along the face normal), radial, tangential
+PRONG_BEVEL = 0.0046
+SOCKET2_F = 0.55                        # small setting = main setting x this
+STONE_SINK = 0.0004                     # stone base this far below the socket floor (no coplanar faces)
+CH_LIFT = 0.0010                        # channel strip above the groove floor (apex); edges CH_LIFT * 0.7
+
+
+def local_frame(loc, rot_z=0.0, scale=1.0, pre=None):
+    """Node matrix: translation `loc`, rotation `rot_z` about Z, uniform scale; `pre` (4x4) is applied last (final frame)."""
+    m = Matrix.Translation(loc) @ Matrix.Rotation(rot_z, 4, "Z") @ Matrix.Diagonal((scale, scale, scale, 1.0))
+    return pre @ m if pre is not None else m
+
+
+def add_node(name, matrix):
+    ob = bpy.data.objects.new(name, None)
+    ob.empty_display_type = "ARROWS"
+    ob.empty_display_size = 0.02
+    bpy.context.scene.collection.objects.link(ob)
+    ob.matrix_world = matrix
+    return ob
+
+
+def setting_parts(matrix, h, f=1.0, segs=24, prong_bevel_segs=2, prong_offset_deg=0):
+    """Rim + four claws of a setting in the stone frame (dome +X, origin = stone base centre); `h` = height of the metal
+    surface above the stone base, f = scale (1 main, SOCKET2_F small). `matrix` places the frame in the weapon.
+    Returns (rim object, [claw objects]) with fixed normals."""
+    arcs = (0, 30, 60, 90, 120, 150, 180)
+    prof = [(f * (SOCKET_R - 0.0005), h - 0.0015 * f)]         + [(f * (SOCKET_R + 0.0050 - 0.0055 * math.cos(math.radians(a))), h + f * (0.0010 + 0.0042 * math.sin(math.radians(a)))) for a in arcs]         + [(f * (SOCKET_R + 0.0105), h - 0.0015 * f)]
+    rim = lathe(prof, segs, axis="X", close_ends=False, loop=True)
+    bmesh.ops.transform(rim, matrix=matrix, verts=rim.verts)
+    bmesh.ops.recalc_face_normals(rim, faces=rim.faces)
+    rim_o = new_obj("rim", mesh_from_bm(rim, "rim"))
+    claws = []
+    for k in range(4):
+        a = math.radians(prong_offset_deg + 90 * k)
+        bm = box_bm((0, 0, 0), tuple(v * f for v in PRONG_SIZE), bevel=PRONG_BEVEL * f, segs=prong_bevel_segs)
+        bmesh.ops.translate(bm, vec=(h + f * 0.0026, f * (SOCKET_R + 0.0003), 0), verts=bm.verts)
+        bmesh.ops.rotate(bm, cent=(0, 0, 0), matrix=Matrix.Rotation(a, 3, "X"), verts=bm.verts)
+        bmesh.ops.transform(bm, matrix=matrix, verts=bm.verts)
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        claws.append(new_obj("prong", mesh_from_bm(bm, "prong")))
+    return rim_o, claws
+
+
+def make_socket2(parts, fn_colour, name="rune_socket2"):
+    """Join the small-setting pieces into one object `rune_socket2` (material set by the caller's make_materials)."""
+    for p in parts:
+        set_colours(p, fn_colour)
+        shade(p, 40)
+    ob = join(parts, name)
+    ob.data.name = name
+    return ob
+
+
+def finish_socket2(ob):
+    mat_ = bpy.data.materials["HC_Vertex"]
+    ob.data.materials.clear()
+    ob.data.materials.append(mat_)
+
+
 # ---------------------------------------------------------------- axe
 # haft
 HAFT_R = 0.0225
@@ -214,6 +292,8 @@ Z_BOTTOM, Z_TOP = -0.10, 0.362
 # head
 T_TIP, B_TIP, E_FAR = (-0.133, 0.377), (-0.11, 0.181), -0.188
 BLOCK_Y, BLOCK_Z0, BLOCK_Z1, BLOCK_X = 0.033, 0.249, 0.339, 0.031
+BLOCK_BEVEL = 0.0125      # rounded socket (Tuelle) block, was 0.0095 / 3 segments (boxy)
+SOCKET2_C = (0.0, 0.288)  # small setting on the block faces (y, z)
 FACE = 0.0092        # panel face height (|x|)
 SOCKET_C = (-0.072, 0.284)
 SOCKET_R = 0.0258
@@ -388,43 +468,13 @@ def axe():
     dent_plate(plate, outline, gp)
     print('[hc] parts', flush=True)
     parts = [plate]
-    # --- rim + prongs, stones, channel strips (both faces)
-    stones, strips = [], []
+    # --- rim + prongs, channel strips, stone nodes (both faces)
+    strips, nodes = [], []
     for s in (1, -1):
-        arc_pts = [(SOCKET_R + 0.0050 - 0.0055 * math.cos(math.radians(a)), FACE + 0.0010 + 0.0042 * math.sin(math.radians(a)))
-                   for a in (0, 30, 60, 90, 120, 150, 180)]
-        rim = lathe([(SOCKET_R - 0.0005, FACE - 0.0015)] + arc_pts + [(SOCKET_R + 0.0105, FACE - 0.0015)], 24, axis="X",
-                    close_ends=False, loop=True)
-        bmesh.ops.transform(rim, matrix=Matrix.Diagonal((s, 1, 1, 1)), verts=rim.verts)
-        bmesh.ops.recalc_face_normals(rim, faces=rim.faces)
-        bmesh.ops.translate(rim, vec=(0, SOCKET_C[0], SOCKET_C[1]), verts=rim.verts)
-        ro = new_obj("rim", mesh_from_bm(rim, "rim"))
-        # (the groove runs on beneath the rim; the notch is not cut - exact booleans on the ring are unstable)
-        parts.append(ro)
-        for k in range(4):
-            a = math.radians(90 * k)
-            bm = box_bm((0, 0, 0), (0.0150, 0.0105, 0.0090), bevel=0.0036, segs=2)
-            bmesh.ops.translate(bm, vec=(FACE + 0.0018, SOCKET_R + 0.0004, 0), verts=bm.verts)
-            bmesh.ops.transform(bm, matrix=Matrix.Diagonal((s, 1, 1, 1)) if s > 0 else Matrix.Diagonal((-1, 1, 1, 1)), verts=bm.verts)
-            bmesh.ops.rotate(bm, cent=(0, 0, 0), matrix=Matrix.Rotation(a, 3, "X"), verts=bm.verts)
-            bmesh.ops.translate(bm, vec=(0, SOCKET_C[0], SOCKET_C[1]), verts=bm.verts)
-            parts.append(new_obj("prong", mesh_from_bm(bm, "prong")))
-        # stone: short flat side, then a domed cap
-        h0, h1 = FLOOR, FLOOR + 0.0042
-        cap_h = 0.0075
-        prof = [(0.0, h0), (SOCKET_R - 0.0006, h0), (SOCKET_R - 0.0006, h1)]
-        Rs = ((SOCKET_R - 0.0006) ** 2 + cap_h ** 2) / (2 * cap_h)
-        for i in range(1, 7):
-            ang = i / 6 * math.asin((SOCKET_R - 0.0006) / Rs)
-            prof.append(((SOCKET_R - 0.0006) * (1 - i / 6) if False else Rs * math.sin(math.asin((SOCKET_R - 0.0006) / Rs) * (1 - i / 6)),
-                         h1 + Rs * math.cos(math.asin((SOCKET_R - 0.0006) / Rs) * (1 - i / 6)) - (Rs - cap_h)))
-        prof[-1] = (0.0, h1 + cap_h)
-        sb = lathe(prof, 20, axis="X")
-        if s < 0:
-            bmesh.ops.transform(sb, matrix=Matrix.Diagonal((-1, 1, 1, 1)), verts=sb.verts)
-            bmesh.ops.reverse_faces(sb, faces=sb.faces)
-        bmesh.ops.translate(sb, vec=(0, SOCKET_C[0], SOCKET_C[1]), verts=sb.verts)
-        stones.append(new_obj("stone", mesh_from_bm(sb, "stone")))
+        M = local_frame((s * (FLOOR - STONE_SINK), SOCKET_C[0], SOCKET_C[1]), 0.0 if s > 0 else math.pi)
+        rim_o, claws = setting_parts(M, FACE - FLOOR + STONE_SINK)
+        parts += [rim_o] + claws
+        nodes.append(add_node("socket_rune_a_r" if s > 0 else "socket_rune_a_l", M))
         strips.append(channel_strip(gp, fill, s))
 
     # --- haft (wood), leather grip, block, rivets
@@ -435,28 +485,35 @@ def axe():
     parts.append(haft)
     parts.append(build_leather())
     block = new_obj("block", mesh_from_bm(box_bm((0, 0, (BLOCK_Z0 + BLOCK_Z1) / 2), (BLOCK_X * 2, BLOCK_Y * 2, BLOCK_Z1 - BLOCK_Z0),
-                                                bevel=0.0095, segs=3), "block"))
+                                                bevel=BLOCK_BEVEL, segs=4), "block"))
     parts.append(block)
     for s in (1, -1):
         bm = lathe([(0.0, 0.0), (0.0065, 0.0), (0.0085, 0.0016), (0.0082, 0.0036), (0.0055, 0.0056), (0.0, 0.0062)], 14, axis="X", close_ends=False)
         if s < 0:
             bmesh.ops.transform(bm, matrix=Matrix.Diagonal((-1, 1, 1, 1)), verts=bm.verts)
             bmesh.ops.reverse_faces(bm, faces=bm.faces)
-        bmesh.ops.translate(bm, vec=(s * (BLOCK_X - 0.0008), 0.020, 0.311), verts=bm.verts)
+        bmesh.ops.translate(bm, vec=(s * (BLOCK_X - 0.0008), 0.0, 0.322), verts=bm.verts)
         parts.append(new_obj("rivet", mesh_from_bm(bm, "rivet")))
 
+    # --- small second setting on both block faces (own mesh rune_socket2)
+    s2 = []
+    for s in (1, -1):
+        M = local_frame((s * (BLOCK_X - STONE_SINK), SOCKET2_C[0], SOCKET2_C[1]), 0.0 if s > 0 else math.pi, SOCKET2_F)
+        rim_o, claws = setting_parts(Matrix.Translation((s * (BLOCK_X - STONE_SINK), SOCKET2_C[0], SOCKET2_C[1]))
+                                     @ Matrix.Rotation(0.0 if s > 0 else math.pi, 4, "Z"), STONE_SINK, SOCKET2_F, 16, 1)
+        s2 += [rim_o] + claws
+        nodes.append(add_node("socket_rune_b_r" if s > 0 else "socket_rune_b_l", M))
+    sock2 = make_socket2(s2, lambda co, n: lerp_c(STEEL_M, STEEL_L, 0.45 + 0.35 * smooth((abs(co.x) - BLOCK_X) / 0.004)
+                                                  + 0.1 * (vnoise(co.y, co.z, 0.006, 15) - 0.5)))
     print('[hc] join', flush=True)
     metal = join(parts, "axe")
     shade(metal, 32)
     print('[hc] colours', flush=True)
     set_colours(metal, axe_colour(outline, gp))
     print('[hc] colours done', flush=True)
-    stone = join(stones, "rune_stone")
-    shade(stone, 60)
-    set_colours(stone, lambda co, n: lerp_c(STONE_D, STONE_L, smooth((abs(co.x) - 0.0075) / 0.005)))
     chan = join(strips, "rune_channel")
     set_colours(chan, lambda co, n: GLOW_DIM)
-    return metal, stone, chan
+    return metal, chan, sock2
 
 
 def lerp_c(a, b, t):
@@ -469,8 +526,8 @@ def channel_strip(gp, fill, s):
     tang = np.gradient(gp, axis=0)
     tang /= np.linalg.norm(tang, axis=1)[:, None]
     hw = GROOVE_HW * 0.82
-    x_e = FACE - GROOVE_DEPTH + GROOVE_DEPTH * (hw / GROOVE_HW) + 0.0003
-    x_a = FACE - GROOVE_DEPTH + 0.0006
+    x_e = FACE - GROOVE_DEPTH + GROOVE_DEPTH * (hw / GROOVE_HW) + CH_LIFT * 0.7
+    x_a = FACE - GROOVE_DEPTH + CH_LIFT
     cols = []
     for p, t in zip(gp, tang):
         n = np.array([-t[1], t[0]])
@@ -558,7 +615,7 @@ def axe_colour(outline, gp):
         if is_block or abs(x) > FACE + 0.0075 or y > -0.001:
             c = lerp_c(STEEL_D, STEEL_M, 0.35 + 0.5 * h)
             # lighter rounded edges of the block
-            edge = max(abs(x) - (BLOCK_X - 0.01), 0) / 0.01 * 0.45 + max(abs(y) - (BLOCK_Y - 0.01), 0) / 0.01 * 0.45
+            edge = max(abs(x) - (BLOCK_X - BLOCK_BEVEL), 0) / BLOCK_BEVEL * 0.45 + max(abs(y) - (BLOCK_Y - BLOCK_BEVEL), 0) / BLOCK_BEVEL * 0.45
             return lerp_c(c, STEEL_L, min(edge, 0.55) * (0.6 + 0.4 * h))
         bevel = 1 - smooth((d - 0.014) / 0.02)
         c = lerp_c(lerp_c(STEEL_D, STEEL_M, 0.28 + 0.45 * h), lerp_c(STEEL_M, STEEL_L, 0.55 + 0.45 * h), bevel)
@@ -580,7 +637,7 @@ def finish_rim_colours():
 WEAPONS = {"axe": axe}
 
 
-def make_materials(metal, stone, chan):
+def make_materials(metal, chan, sock2):
     m = bpy.data.materials.new("HC_Vertex")
     m.use_nodes = True
     nt = m.node_tree
@@ -596,7 +653,8 @@ def make_materials(metal, stone, chan):
     metal.data.attributes.new("material_index", "INT", "FACE") if "material_index" not in metal.data.attributes else None
     for p in metal.data.polygons:
         p.material_index = 0
-    for ob, name in ((stone, "rune_stone"), (chan, "rune_channel")):
+    finish_socket2(sock2)
+    for ob, name in ((chan, "rune_channel"),):
         ob.data.name = name
         mm = bpy.data.materials.new(name)
         mm.use_nodes = True
@@ -612,10 +670,10 @@ os.makedirs(OUT, exist_ok=True)
 for wid in argv[1:] or list(WEAPONS):
     for o in list(bpy.data.objects):
         bpy.data.objects.remove(o, do_unlink=True)
-    metal, stone, chan = WEAPONS[wid]()
-    make_materials(metal, stone, chan)
+    metal, chan, sock2 = WEAPONS[wid]()
+    make_materials(metal, chan, sock2)
     path = os.path.join(OUT, f"{wid}.glb")
     bpy.ops.export_scene.gltf(filepath=path, export_format="GLB", use_selection=False, export_vertex_color="ACTIVE",
                               export_animations=False, export_materials="EXPORT")
-    tris = {o.name: sum(len(p.vertices) - 2 for p in o.data.polygons) for o in (metal, stone, chan)}
+    tris = {o.name: sum(len(p.vertices) - 2 for p in o.data.polygons) for o in (metal, chan, sock2)}
     print(f"[hc] {path}: {sum(tris.values())} triangles {tris}", flush=True)

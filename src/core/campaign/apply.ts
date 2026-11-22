@@ -5,16 +5,17 @@ import type { Effect } from '../storyDefs';
 import { applyCommand } from '../battle/apply';
 import { newItem } from '../battle/create';
 import { rollAffixes } from '../loot';
-import { allItems, bagIsFull, canEquip, isKey, isRune, itemDef, runeSlotCount, sellPrice } from '../rules/items';
+import { allItems, bagIsFull, canEquip, isKey, isRune, itemDef, sellPrice } from '../rules/items';
 import { changeProPath, loadoutSlots, otherProPath, promote } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { relicCtx } from './relics';
-import type { BattleState, CampaignState } from '../state';
+import type { BattleState, CampaignState, ItemInstance } from '../state';
 import { recordHistory } from './history';
 import { clone } from '../util';
 import { changePathError, craftCost, dismissError, mergeError, hireCost, potionUpgradeCost, potionUpgradeError, promoteError, roomBuild, scarCost, secondPathError, sealOf, hireError, tavernWishError, unlockableRank, locateItem, offerPrice, rerollAllowed, rerollCost, runeMerge, takeItem, upgradable, upgradeCost, upgradeLimit } from './camp';
 import { dailyOffersOpen, emberSparkOffered, emberSparkPrice, shopPrice, storiesDone } from './aid';
 import { equipBestOpen, equipInto, gearTemplateOf, gearTemplatesOpen, runEquipBest, runGearTemplate } from './gear';
+import { buyPlan, placeBought } from './buyFor';
 import { heritageError } from './heritage';
 import { finishBattle, normalizeCampaign, shopStock } from './campaign';
 import { replayBattle } from './restart';
@@ -23,6 +24,8 @@ import { actOf, findNode } from './acts';
 import { choiceKey, findChoice } from './scene';
 import { applyEffects, validateEffects } from './effects';
 import { conditionContext, evalConditions } from './conditions';
+import type { BuyTarget } from './buyFor';
+import { buyRuneError, runeOffers, runeSetError, runeSlots } from './enchant';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
 
 function buyPrice(data: GameData, c: CampaignState, defId: string): number | null {
@@ -32,12 +35,27 @@ function buyPrice(data: GameData, c: CampaignState, defId: string): number | nul
   return shopPrice(data, c, itemDef(data, defId).price);
 }
 
+/** Check of "buy for a figure" (story 16.17): figure, place (the same plan the merchant shows), gold, then the convoy for what leaves. */
+function buyForError(data: GameData, c: CampaignState, target: BuyTarget, inst: ItemInstance, price: number): CampaignError | null {
+  const u = c.roster.find((r) => r.id === target.unit);
+  if (!u) return 'unknown_unit';
+  if (target.slot === 'bag') {
+    if (target.replace !== undefined && !u.bag.some((i) => i.uid === target.replace && !isKey(data, i))) return 'unknown_item';
+  } else if (target.replace !== undefined) return 'unknown_item';
+  const plan = buyPlan(data, c, target.unit, inst, target.slot, target.replace);
+  if (plan.error === 'bag_full') return 'bag_full';
+  if (plan.error && plan.error !== 'convoy_full') return 'cannot_equip';
+  if (c.gold < price) return 'not_enough_gold';
+  return plan.error === 'convoy_full' ? 'convoy_full' : null;
+}
+
 /** Checks a campaign command without changing anything (concept/24-architecture §8.1). */
 export function validateCampaign(data: GameData, c: CampaignState, cmd: CampaignCommand): CampaignError | null {
   switch (cmd.type) {
     case 'buy': {
       const price = buyPrice(data, c, cmd.item);
       if (price === null) return 'not_for_sale';
+      if (cmd.for) return buyForError(data, c, cmd.for, newItem(clone(c), cmd.item, data), price);
       if (c.gold < price) return 'not_enough_gold';
       if (c.convoy.length >= data.balance.economy.convoySize) return 'convoy_full';
       return null;
@@ -46,6 +64,7 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       const offer = c.offers.find((o) => o.uid === cmd.uid);
       // story 10.9: the deal of the day is on sale only from the merchant level `dailyOfferFromMerchantLevel`
       if (!offer || !dailyOffersOpen(data, c)) return 'not_for_sale';
+      if (cmd.for) return buyForError(data, c, cmd.for, offer, offerPrice(data, offer, c));
       return c.gold < offerPrice(data, offer, c) ? 'not_enough_gold' : null;
     }
     case 'buyEmberSpark': {
@@ -120,14 +139,10 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       const loc = locateItem(c, cmd.item);
       const rune = c.convoy.find((i) => i.uid === cmd.rune);
       if (!loc || !rune || !isRune(data, rune)) return 'unknown_item';
-      const rdef = data.runes[rune.def]!;
-      const runes = [...loc.inst.runes];
-      while (runes.length < runeSlotCount(data, loc.inst)) runes.push(null);
-      if (rdef.element && runes.some((r) => r && data.runes[r]?.element)) return 'no_slot';
-      if (!runes.includes(null)) return 'no_slot';
-      if (itemDef(data, loc.inst).slot === 'body' && !rdef.element) return 'no_slot';
-      return null;
+      return runeSetError(data, loc.inst, rune.def, cmd.index) ? 'no_slot' : null;
     }
+    case 'buyRune':
+      return buyRuneError(data, c, cmd.rune, locateItem(c, cmd.item)?.inst, cmd.index);
     case 'removeRune': {
       const loc = locateItem(c, cmd.item);
       return loc?.inst.runes[cmd.index] ? null : 'unknown_item';
@@ -285,20 +300,32 @@ function applyBare(data: GameData, prev: CampaignState, cmd: CampaignCommand): C
   const events: CampaignEvent[] = [];
   const gained = (uid: string, def: string) => events.push({ t: 'itemGained', uid, def });
   const lost = (uid: string, def: string) => events.push({ t: 'itemLost', uid, def });
+  /** a purchase straight onto a figure (story 16.17): gained, then equipped */
+  const bought = (inst: ItemInstance, target: BuyTarget) => {
+    placeBought(data, c, inst, target);
+    gained(inst.uid, inst.def);
+    events.push({ t: 'equipped', unit: target.unit, uid: inst.uid, slot: target.slot });
+  };
   switch (cmd.type) {
     case 'buy': {
       c.gold -= buyPrice(data, c, cmd.item)!;
       const inst = newItem(c, cmd.item, data);
-      c.convoy.push(inst);
-      gained(inst.uid, inst.def);
+      if (cmd.for) bought(inst, cmd.for);
+      else {
+        c.convoy.push(inst);
+        gained(inst.uid, inst.def);
+      }
       break;
     }
     case 'buyOffer': {
       const offer = c.offers.find((o) => o.uid === cmd.uid)!;
       c.gold -= offerPrice(data, offer, c);
       c.offers = c.offers.filter((o) => o.uid !== cmd.uid);
-      c.convoy.push(offer);
-      gained(offer.uid, offer.def);
+      if (cmd.for) bought(offer, cmd.for);
+      else {
+        c.convoy.push(offer);
+        gained(offer.uid, offer.def);
+      }
       break;
     }
     case 'buyEmberSpark': {
@@ -372,12 +399,34 @@ function applyBare(data: GameData, prev: CampaignState, cmd: CampaignCommand): C
     case 'insertRune': {
       const inst = locateItem(c, cmd.item)!.inst;
       const rune = c.convoy.find((i) => i.uid === cmd.rune)!;
-      const runes = [...inst.runes];
-      while (runes.length < runeSlotCount(data, inst)) runes.push(null);
-      runes[runes.indexOf(null)] = rune.def;
+      const runes = runeSlots(data, inst);
+      const at = cmd.index ?? runes.indexOf(null);
+      const old = runes[at];
+      runes[at] = rune.def;
       inst.runes = runes;
       c.convoy = c.convoy.filter((i) => i.uid !== cmd.rune);
       lost(rune.uid, rune.def);
+      // a swap: the rune that sat there goes to the convoy (it took the place of the stone that left)
+      if (old) {
+        const back = newItem(c, old, data);
+        c.convoy.push(back);
+        gained(back.uid, back.def);
+      }
+      events.push({ t: 'itemChanged', uid: inst.uid });
+      break;
+    }
+    case 'buyRune': {
+      const inst = locateItem(c, cmd.item)!.inst;
+      c.gold -= runeOffers(data, c).find((o) => o.id === cmd.rune)!.price;
+      const runes = runeSlots(data, inst);
+      const old = runes[cmd.index];
+      runes[cmd.index] = cmd.rune;
+      inst.runes = runes;
+      if (old) {
+        const back = newItem(c, old, data);
+        c.convoy.push(back);
+        gained(back.uid, back.def);
+      }
       events.push({ t: 'itemChanged', uid: inst.uid });
       break;
     }

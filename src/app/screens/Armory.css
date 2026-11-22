@@ -1,0 +1,134 @@
+/* The armoury (Armory.tsx, story 16.18): the 3D vault fills the screen, head pill and back stone float over it, the name plates
+   (DESIGN stand-plate) are set under their stand by the scene. No hard shadows beyond the head's own. */
+.ar {
+  background: #3b3631;
+  overflow: hidden;
+}
+.ar-stage {
+  touch-action: none;
+  cursor: grab;
+  z-index: 0;
+}
+.ar-stage:active {
+  cursor: grabbing;
+}
+.ar-head {
+  position: relative;
+  z-index: 2;
+  flex: none;
+}
+.ar-head .hc-head__title span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.ar-plates {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.ar-plate {
+  position: absolute;
+  left: 50%;
+  top: 80%;
+  visibility: hidden;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 96px;
+  min-height: 30px;
+  padding: 2px 7px 3px;
+  border: 1.5px solid var(--hc-line);
+  border-radius: 9px;
+  background: rgba(255, 248, 236, 0.94);
+  color: var(--hc-line);
+  font: inherit;
+  line-height: 1.05;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.ar-plate b {
+  max-width: 84px;
+  overflow: hidden;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ar-plate span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 84px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--hc-soft);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.ar-plate.is-worn {
+  background: rgba(255, 248, 236, 0.7);
+  border-style: dashed;
+}
+.ar-plate.is-empty {
+  background: rgba(255, 248, 236, 0.55);
+  border-style: dashed;
+}
+.ar-plate.is-front {
+  border-color: var(--hc-ember);
+}
+.ar-plate:focus-visible {
+  outline: 3px solid var(--hc-ember);
+  outline-offset: 2px;
+}
+.ar-hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  z-index: 1;
+  transform: translateX(-50%);
+  padding: 2px 10px;
+  border-radius: var(--hc-r-pill);
+  background: rgba(59, 42, 32, 0.55);
+  color: var(--hc-cream);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+/* the scene could not load: the plates stand in a plain list */
+.ar-list {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-content: flex-start;
+  overflow-y: auto;
+}
+.ar-list .ar-plate {
+  position: static;
+  visibility: visible;
+  transform: none;
+}
+/* `.hc-view > *` makes every child a relative column of 560 px: the stage, the plates and the hint float over the whole screen instead */
+.hc-view.ar > .ar-stage,
+.hc-view.ar > .ar-plates {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  margin: 0;
+}
+.hc-view.ar > .ar-hint {
+  position: absolute;
+  width: auto;
+  margin: 0;
+}

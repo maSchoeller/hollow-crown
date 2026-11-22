@@ -10,13 +10,13 @@ import {
   type BattleUnit,
   type ClassPreview,
   type ContextEntry,
+  type Element as ElementId,
   type Forecast,
   type PassivePreview,
   type GameData,
   type ItemInstance,
   type SideObjectiveDef,
   type Team,
-  levelAt,
 } from '../../core';
 import { mapOf, sideObjectiveDone, sideObjectiveProgress, sideObjectiveSpots, sideSubject } from '../../core/battle/objectives';
 import { bleedsOut } from '../../core/rules/effects';
@@ -27,7 +27,10 @@ import { sideLine } from '../../ui/goalText';
 import { asset } from '../../ui/asset';
 import { ItemChip } from '../../ui/pieces';
 import { artId } from './unitArt';
+import { useHoldPress } from './holdPress';
+import './TerrainLens.css';
 import { HelpStone } from './HelpStone';
+import { ElementBand, ElementFactor, GuardChip, RuneStone, StatusLine } from './ElementBand';
 import '../../ui/hud.css';
 
 const teamClass = (team: Team) => (team === 'enemy' ? 'is-enemy' : team === 'other' ? 'is-other' : 'is-player');
@@ -247,37 +250,12 @@ function PulseMark() {
   );
 }
 
-function WeaponChip({ data, item }: { data: GameData; item?: ItemInstance }) {
-  return item ? (
-    <ItemChip data={data} item={item} name={itemName(data, item)} />
-  ) : (
-    <span class="hud-chip">{t('ui.unarmed')}</span>
-  );
-}
-
-/** Terrain of an empty tile as a small stone. */
-export function TerrainCard({ data, s, p }: { data: GameData; s: BattleState; p: [number, number] }) {
-  const terr = data.terrain[s.terrain[p[1] * s.width + p[0]]!];
-  if (!terr) return null;
+function WeaponChip({ data, item, rune }: { data: GameData; item?: ItemInstance; rune?: { element: ElementId; tier: number } }) {
   return (
-    <div class="hc-piece hud-terrain">
-      <b class="hud-name hud-name--small">{t(`terrain.${terr.id}`)}</b>
-      <span class="hud-chips">
-        {levelAt(data, s, p) > 0 ? <span class="hud-chip">{t('ui.heightLevel', { n: levelAt(data, s, p) })}</span> : null}
-        <span class="hud-chip">
-          {t('ui.stat.def')} {terr.def}
-        </span>
-        <span class="hud-chip">
-          {t('ui.avoid')} {terr.avoid}
-        </span>
-        {terr.heal ? (
-          <span class="hud-chip">
-            {t('ui.heal')} {terr.heal}%
-          </span>
-        ) : null}
-      </span>
-      <HelpStone anchor={`terrain.${terr.id}`} />
-    </div>
+    <>
+      {item ? <ItemChip data={data} item={item} name={itemName(data, item)} /> : <span class="hud-chip">{t('ui.unarmed')}</span>}
+      {rune && <RuneStone element={rune.element} tier={rune.tier} />}
+    </>
   );
 }
 
@@ -411,29 +389,57 @@ export function DockAction({
   on,
   state,
   onClick,
+  onHold,
+  holdMs = 400,
+  holdLabel,
 }: {
   icon: string;
   label: string;
   sub?: ComponentChildren;
-  variant?: 'primary' | 'class' | 'ink';
+  variant?: 'primary' | 'class' | 'ink' | 'lens';
   /** impossible right now: dimmed, never hidden; a tap still answers with the reason */
   dim?: boolean;
   on?: boolean;
   /** passive role: the symbol shows a state (`ready` / `active`) instead of a button; a tap explains the rule */
   state?: 'ready' | 'active';
   onClick: () => void;
+  /** held for `holdMs`: fires once (a fill ring runs, three small dots on the corner hint at it); the tap still calls `onClick` (story 16.11) */
+  onHold?: () => void;
+  holdMs?: number;
+  /** spoken name of the button when it can be held */
+  holdLabel?: string;
 }) {
+  const hold = useHoldPress(holdMs, onHold);
   return (
     <button
       type="button"
       class={`hud-act ${variant ? `is-${variant}` : ''} ${dim ? 'is-dim' : ''} ${on ? 'is-on' : ''} ${state ? `is-state ${state === 'active' ? 'is-active' : ''}` : ''}`}
       aria-disabled={dim || undefined}
       aria-pressed={on}
-      onClick={onClick}
+      aria-label={hold ? holdLabel : undefined}
+      onClick={() => {
+        if (hold?.swallowClick()) return;
+        onClick();
+      }}
+      {...hold?.bind}
     >
       <Icon name={icon} size={26} />
       <span>{label}</span>
       {sub !== undefined && <small>{sub}</small>}
+      {hold && (
+        <>
+          <span class="hud-act__dots" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          {hold.holding && (
+            <svg class="hud-act__ring" viewBox="0 0 36 36" aria-hidden="true" style={{ '--hold-ms': `${holdMs}ms` }}>
+              <circle cx="18" cy="18" r="16" pathLength="100" />
+            </svg>
+          )}
+        </>
+      )}
     </button>
   );
 }
@@ -484,13 +490,13 @@ export function ForecastCard({
       : undefined;
   const dw = d.equip.mainHand;
   const elements = ruleOn(state, 'elements');
-  const who = (s: Forecast['attacker'], u: BattleUnit, w: ItemInstance | undefined, right: boolean) => (
+  const who = (s: Forecast['attacker'], foe: Forecast['attacker'], u: BattleUnit, w: ItemInstance | undefined, right: boolean) => (
     <div class={`hud-fc__who ${right ? 'is-right' : ''}`}>
       <Medallion u={u} hp={s.hpBefore} max={s.maxHp} size={52} level={false} />
       <div class="hud-fc__id">
         <span class="hud-name hud-name--small">{unitName(u)}</span>
         <span class="hud-chips">
-          <WeaponChip data={data} item={w} />
+          <WeaponChip data={data} item={w} rune={elements && s.element && s.elementTier ? { element: s.element, tier: s.elementTier } : undefined} />
           {s.triangle !== 0 && (
             <span class={`hud-chip ${s.triangle > 0 ? 'is-adv' : 'is-dis'}`}>
               <TriMark v={s.triangle} />
@@ -498,14 +504,12 @@ export function ForecastCard({
             </span>
           )}
           {s.effective && <span class="hud-chip is-gold">{t('ui.effective')}</span>}
-          {elements && s.element && s.elementMult !== 1 && (
-            <span class={`hud-chip ${s.elementMult > 1 ? 'is-adv' : 'is-dis'}`}>
-              <ElementIcon el={s.element} size={14} />
-              {s.elementMult > 1 ? '+' : ''}
-              {Math.round((s.elementMult - 1) * 100)}%
-            </span>
-          )}
         </span>
+        {elements && foe.guard && (
+          <span class="hud-chips">
+            <GuardChip guard={foe.guard} />
+          </span>
+        )}
       </div>
     </div>
   );
@@ -515,6 +519,7 @@ export function ForecastCard({
       return (
         <span class="hud-fc__val">
           {s.damage}
+          {elements && <ElementFactor mult={s.elementMult} />}
           {s.strikes > 1 && <small class="hud-fc__mult">×{s.strikes}</small>}
         </span>
       );
@@ -548,10 +553,11 @@ export function ForecastCard({
   return (
     <div class="hc-piece hud-fc">
       <div class="hud-fc__head">
-        {who(f.attacker, a, aw, false)}
+        {who(f.attacker, f.defender, a, aw, false)}
         <span class="hud-l1">{t('ui.fc.vs')}</span>
-        {who(f.defender, d, dw, true)}
+        {who(f.defender, f.attacker, d, dw, true)}
       </div>
+      <ElementBand side={f.attacker} enabled={elements} />
       <div class="hud-fc__table">
         <div class="hud-fc__row">
           {val(f.attacker, 'dmg')}
@@ -574,6 +580,8 @@ export function ForecastCard({
           {hpCell(f.defender, d, f.defenderHpAfter, f.defenderFlees)}
         </div>
       </div>
+      <StatusLine data={data} side={f.attacker} knockbackBlocked={f.attacker.knockback?.blocked} />
+      <StatusLine data={data} side={f.defender} />
       <div class="hud-chips hud-fc__notes">
         {siege && (
           <span class="hud-chip is-gold">
@@ -588,14 +596,6 @@ export function ForecastCard({
             {t('ui.action.aim')}: {t('ui.fc.aim', { range: aim.rangeBonus, hit: aim.hit })}
           </span>
         )}
-        {f.attacker.status
-          .filter((x) => x.chance > 0)
-          .map((x) => (
-            <span class="hud-chip" key={x.status}>
-              {t(`ui.status.${x.status}`)} {x.chance}%
-              <HelpStone anchor={`status.${x.status}`} />
-            </span>
-          ))}
         {tandem && (
           <span class="hud-chip is-gold">
             {t('ui.tandem')}: {unitName(tandem)} ({f.tandem!.damage} · {f.tandem!.hit}%)
@@ -607,13 +607,6 @@ export function ForecastCard({
           </span>
         )}
         {f.order[0] === 'd' && <span class="hud-chip is-dis">{t('ui.fc.counterFirst')}</span>}
-        {f.attacker.knockback && (
-          <span class="hud-chip">
-            {f.attacker.knockback.blocked
-              ? t('ui.fc.knockbackBlocked', { n: data.balance.status.knockbackBlockedDamage })
-              : t('ui.fc.knockback')}
-          </span>
-        )}
         {/* the forecast's "?" in its own spot below the table, never over the names and weapons of the head (story 14.7) */}
         <HelpStone anchor="forecast" />
       </div>

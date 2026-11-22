@@ -1,20 +1,23 @@
 """Hollow Crown – weapon library v2: the rune LANCE (one-handed spear), same look as the approved rune axe.
 
-blender -b --factory-startup --python tools/art/blender_weapon_lance.py -- [<out_dir>] [--render <dir>]
+blender -b --factory-startup --python tools/art/blender_weapon_lance.py -- [<out_dir>]
 
-Writes art/models/weapons-v2/lance.glb (default) and, with --render, the preview images (front, side, head_closeup,
-tiers, old_vs_new) into <dir>. Helpers, palette and the rune-setting constants are taken from blender_weapons_v2.py
-(only its definitions are executed, not its axe export), so socket diameter and depth are the axe's by construction.
+Writes art/models/weapons-v2/lance.glb (default). Helpers, palette, the rune-setting constants and the SETTING KIT (stone
+nodes, rim/claw builders, lifts; read the STONE NODE CONVENTION in its docstring) are taken from blender_weapons_v2.py (only
+its definitions are executed, not its axe export), so socket diameter and depth are the axe's by construction. Previews: see
+tools/art/blender_weapons_v2_sheet.py.
 
 Frame = the old public/assets/models/weapons/lance.glb (tools/art/blender_weapons.py `lance`): built along Blender +Z with
 the grip origin at z = 0 (fist), then tilted 55 deg about X (thrust grip) and moved to x = -0.03, so `hold: -125` in
 content/core/render.yaml keeps working. Like the old blade the head is wide along X and flat towards +/-Y (rune faces on
 +/-Y in the grip frame). Units: 1 = one board tile before figureScale.
 
-Glow parts as in the axe (see blender_weapons_v2.py docstring): `rune_stone` (two domes, flush in the setting),
-`rune_channel` (V strip in the groove, UV map 1 `fill` = 0 at the socket .. 1 at the groove end), everything else is the
-object `lance` with the material HC_Vertex. The stones are the axe's stones moved out by STONE_DX (the collar face is
-higher than the axe's blade panel); their shape, diameter and depth are unchanged.
+Objects: `lance` (HC_Vertex, includes the main settings and the lower sleeve), `rune_channel` (V strip in the groove, UV map
+1 `fill` = 0 at the socket .. 1 at the groove end), `rune_socket2` (small settings on the lower sleeve, HC_Vertex).
+Nodes (empty): socket_rune_a_r / _a_l = main setting on the collar face that is +X / -X in the build frame (grip frame +Y /
+-Y before the tilt rotation is applied to the node as well), socket_rune_b_r / _b_l = small setting on the sleeve 0.125 below
+the collar (scale 0.55 on the node). The right node is the stone frame turned by the game-frame transform, the left one
+additionally by 180 degrees about the shaft. Triangles: lance 7 182 + rune_channel 368 + rune_socket2 928 = 8 478.
 """
 import math
 import os
@@ -33,8 +36,7 @@ import numpy as np  # noqa: E402,F811
 from mathutils import Matrix, Vector  # noqa: E402,F811
 
 args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-RENDER = args[args.index("--render") + 1] if "--render" in args else None
-pos = [a for i, a in enumerate(args) if not a.startswith("--") and (i == 0 or args[i - 1] != "--render")]
+pos = [a for a in args if not a.startswith("--")]
 OUT_DIR = pos[0] if pos else os.path.join(ROOT, "art", "models", "weapons-v2")
 
 # ---------------------------------------------------------------- dimensions (grip frame, before the tilt)
@@ -53,6 +55,9 @@ EDGE = 0.002
 Z_G_START = ZC + SOCKET_R * 0.97
 Z_G_END = ZR + S_GROOVE_END * L_HEAD
 TILT_X, OFFSET_X = 55.0, -0.03       # old lance frame
+ZSL = ZC - 0.125                     # lower sleeve centre (small settings)
+CX2 = 0.0245                         # sleeve face height
+GAME = Matrix.Translation((OFFSET_X, 0, 0)) @ Matrix.Rotation(math.radians(TILT_X), 4, "X") @ Matrix.Rotation(math.radians(90), 4, "Z")
 
 
 _LW = None
@@ -205,8 +210,8 @@ def channel_strip_var(path_z, fill, xs, s):
     hw = GW * 0.62
     cols = []
     for z, x in zip(path_z, xs):
-        x_e = x - GD + GD * (hw / GW) + 0.0003
-        x_a = x - GD + 0.0006
+        x_e = x - GD + GD * (hw / GW) + CH_LIFT * 0.7
+        x_a = x - GD + CH_LIFT
         cols.append([bm.verts.new((s * x_e, -hw, z)), bm.verts.new((s * x_a, 0.0, z)), bm.verts.new((s * x_e, hw, z))])
     for a, b in zip(cols, cols[1:]):
         for k in range(2):
@@ -229,42 +234,15 @@ def channel_strip_var(path_z, fill, xs, s):
     return new_obj("chan", mesh_from_bm(bm, "chan"))
 
 
-def setting_parts(s):
-    """Rim, four prongs and the stone for the face on side s: the axe's geometry, lifted by STONE_DX."""
-    parts = []
-    arc_pts = [(SOCKET_R + 0.0050 - 0.0055 * math.cos(math.radians(a)), CX + 0.0006 + 0.0030 * math.sin(math.radians(a)))
-               for a in (0, 30, 60, 90, 120, 150, 180)]
-    rim = lathe([(SOCKET_R - 0.0005, CX - 0.0015)] + arc_pts + [(SOCKET_R + 0.0105, CX - 0.0015)], 24, axis="X",
-                close_ends=False, loop=True)
-    bmesh.ops.transform(rim, matrix=Matrix.Diagonal((s, 1, 1, 1)), verts=rim.verts)
-    bmesh.ops.recalc_face_normals(rim, faces=rim.faces)
-    bmesh.ops.translate(rim, vec=(0, 0, ZC), verts=rim.verts)
-    rim_o = new_obj("rim", mesh_from_bm(rim, "rim"))
-    prongs = []
-    for k in range(4):
-        a = math.radians(45 + 90 * k)            # diagonals: the groove leaves between the two upper prongs
-        bm = box_bm((0, 0, 0), (0.0170, 0.0125, 0.0120), bevel=0.0045, segs=3)
-        bmesh.ops.translate(bm, vec=(CX + 0.0012, SOCKET_R + 0.0012, 0), verts=bm.verts)
-        bmesh.ops.transform(bm, matrix=Matrix.Diagonal((s, 1, 1, 1)), verts=bm.verts)
-        bmesh.ops.rotate(bm, cent=(0, 0, 0), matrix=Matrix.Rotation(a, 3, "X"), verts=bm.verts)
-        bmesh.ops.translate(bm, vec=(0, 0, ZC), verts=bm.verts)
-        prongs.append(new_obj("prong", mesh_from_bm(bm, "prong")))
-    # stone: identical to the axe's (short flat side, then a domed cap), moved out by STONE_DX
-    h0, h1 = FLOOR + STONE_DX, FLOOR + 0.0042 + STONE_DX
-    cap_h = 0.0075
-    prof = [(0.0, h0), (SOCKET_R - 0.0006, h0), (SOCKET_R - 0.0006, h1)]
-    Rs = ((SOCKET_R - 0.0006) ** 2 + cap_h ** 2) / (2 * cap_h)
-    for i in range(1, 7):
-        prof.append((Rs * math.sin(math.asin((SOCKET_R - 0.0006) / Rs) * (1 - i / 6)),
-                     h1 + Rs * math.cos(math.asin((SOCKET_R - 0.0006) / Rs) * (1 - i / 6)) - (Rs - cap_h)))
-    prof[-1] = (0.0, h1 + cap_h)
-    sb = lathe(prof, 20, axis="X")
-    if s < 0:
-        bmesh.ops.transform(sb, matrix=Matrix.Diagonal((-1, 1, 1, 1)), verts=sb.verts)
-        bmesh.ops.reverse_faces(sb, faces=sb.faces)
-    bmesh.ops.translate(sb, vec=(0, 0, ZC), verts=sb.verts)
-    stone = new_obj("stone", mesh_from_bm(sb, "stone"))
-    return [rim_o] + prongs, stone
+def build_sleeve():
+    """Second, lower collar (sleeve) carrying the small settings: bulbous like the collar, faces flattened to |x| = CX2."""
+    prof = [(0.0, -0.030), (0.028, -0.030), (0.038, -0.026), (0.0425, -0.018), (0.0440, -0.008), (0.0440, 0.008), (0.0425, 0.018),
+            (0.038, 0.026), (0.028, 0.030), (0.0, 0.030)]
+    bm = lathe([(r_, ZSL + dz) for r_, dz in prof], 24)
+    for v in bm.verts:
+        v.co.x = max(-CX2, min(CX2, v.co.x))
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    return new_obj("sleeve", mesh_from_bm(bm, "sleeve"))
 
 
 # ---------------------------------------------------------------- colours
@@ -343,27 +321,35 @@ def lance():
     set_colours(leather, leather_fn)
     for o in (butt, shaft, leather):
         shade(o, 45)
-    parts = steel + [ferr, butt, shaft, leather]
-    stones, strips = [], []
+    sleeve = build_sleeve()
+    shade(sleeve, 45)
+    set_colours(sleeve, steel_fn(0.05, False))
+    parts = steel + [ferr, butt, shaft, leather, sleeve]
+    strips = []
     for s in (1, -1):
-        rp, stone = setting_parts(s)
-        for o in rp:
+        M = local_frame((s * (FLOOR + STONE_DX - STONE_SINK), 0.0, ZC), 0.0 if s > 0 else math.pi)
+        rim_o, claws = setting_parts(M, FACE - FLOOR + STONE_SINK, prong_offset_deg=45)   # diagonals: the groove leaves between the upper claws
+        for o in [rim_o] + claws:
             set_colours(o, steel_fn(0.25, False))
-        parts += rp
-        for o in rp:
             shade(o, 40)
-        stones.append(stone)
+        parts += [rim_o] + claws
+        add_node("socket_rune_a_r" if s > 0 else "socket_rune_a_l", GAME @ M)
         strips.append(channel_strip_var(path_z, fill, xs, s))
+    s2 = []
+    for s in (1, -1):
+        loc = (s * (CX2 - STONE_SINK), 0.0, ZSL)
+        rot = 0.0 if s > 0 else math.pi
+        rim_o, claws = setting_parts(Matrix.Translation(loc) @ Matrix.Rotation(rot, 4, "Z"), STONE_SINK, SOCKET2_F, 16, 1)
+        s2 += [rim_o] + claws
+        add_node("socket_rune_b_r" if s > 0 else "socket_rune_b_l", GAME @ local_frame(loc, rot, SOCKET2_F))
+    sock2 = make_socket2(s2, steel_fn(0.3, False))
     metal = join(parts, "lance")
-    stone = join(stones, "rune_stone")
-    shade(stone, 60)
-    set_colours(stone, lambda co, nn: lerp_c(STONE_D, STONE_L, smooth((abs(co.x) - 0.0075 - STONE_DX) / 0.005)))
     chan = join(strips, "rune_channel")
     set_colours(chan, lambda co, nn: GLOW_DIM)
-    return metal, stone, chan
+    return metal, chan, sock2
 
 
-def make_materials(metal, stone, chan):
+def make_materials(metal, chan, sock2):
     m = bpy.data.materials.new("HC_Vertex")
     m.use_nodes = True
     nt = m.node_tree
@@ -375,7 +361,8 @@ def make_materials(metal, stone, chan):
     metal.data.name = "lance"
     metal.data.materials.clear()
     metal.data.materials.append(m)
-    for ob, name in ((stone, "rune_stone"), (chan, "rune_channel")):
+    finish_socket2(sock2)
+    for ob, name in ((chan, "rune_channel"),):
         ob.data.name = name
         mm = bpy.data.materials.new(name)
         mm.use_nodes = True
@@ -389,204 +376,25 @@ def make_materials(metal, stone, chan):
 
 def to_game_frame(obs):
     # width of the head along X like the old blade (flat sides towards +/-Y), then the old thrust-grip tilt and offset
-    M = Matrix.Translation((OFFSET_X, 0, 0)) @ Matrix.Rotation(math.radians(TILT_X), 4, "X") @ Matrix.Rotation(math.radians(90), 4, "Z")
     for o in obs:
-        o.data.transform(M)
+        o.data.transform(GAME)
         o.data.update()
-
-
-# ---------------------------------------------------------------- previews
-FIRE = (0xF2 / 255, 0x60 / 255, 0x3A / 255)
-
-
-def srgb_lin(c):
-    return tuple(lin(x) for x in c)
-
-
-def glow_materials(tier, stone, chan):
-    fire = srgb_lin(FIRE) + (1.0,)
-    ms = stone.data.materials[0]
-    mc = chan.data.materials[0]
-    for m in (ms, mc):
-        m.node_tree.nodes.clear()
-    # stone
-    nt = ms.node_tree
-    out = nt.nodes.new("ShaderNodeOutputMaterial")
-    if tier == 0:
-        b = nt.nodes.new("ShaderNodeBsdfPrincipled")
-        a = nt.nodes.new("ShaderNodeVertexColor")
-        a.layer_name = "Col"
-        nt.links.new(a.outputs["Color"], b.inputs["Base Color"])
-        b.inputs["Roughness"].default_value = 0.4
-        nt.links.new(b.outputs[0], out.inputs[0])
-    else:
-        e = nt.nodes.new("ShaderNodeEmission")
-        e.inputs["Color"].default_value = fire
-        e.inputs["Strength"].default_value = (2.0, 3.5, 6.0)[tier - 1]
-        nt.links.new(e.outputs[0], out.inputs[0])
-    # channel: lit where fill < tier/3
-    nt = mc.node_tree
-    out = nt.nodes.new("ShaderNodeOutputMaterial")
-    uv = nt.nodes.new("ShaderNodeUVMap")
-    uv.uv_map = "fill"
-    sep = nt.nodes.new("ShaderNodeSeparateXYZ")
-    nt.links.new(uv.outputs["UV"], sep.inputs[0])
-    lt = nt.nodes.new("ShaderNodeMath")
-    lt.operation = "LESS_THAN"
-    nt.links.new(sep.outputs["X"], lt.inputs[0])
-    lt.inputs[1].default_value = tier / 3 + 1e-4
-    em = nt.nodes.new("ShaderNodeEmission")
-    em.inputs["Color"].default_value = fire
-    em.inputs["Strength"].default_value = (3.0, 4.0, 5.0)[max(tier - 1, 0)]
-    dark = nt.nodes.new("ShaderNodeBsdfPrincipled")
-    dark.inputs["Base Color"].default_value = GLOW_DIM
-    dark.inputs["Roughness"].default_value = 0.5
-    mix = nt.nodes.new("ShaderNodeMixShader")
-    nt.links.new(lt.outputs[0], mix.inputs[0])
-    nt.links.new(dark.outputs[0], mix.inputs[1])
-    nt.links.new(em.outputs[0], mix.inputs[2])
-    nt.links.new(mix.outputs[0], out.inputs[0])
-
-
-def setup_render(w, h):
-    sc = bpy.context.scene
-    for name in ("BLENDER_EEVEE", "BLENDER_EEVEE_NEXT"):
-        try:
-            sc.render.engine = name
-            break
-        except TypeError:
-            continue
-    sc.render.resolution_x, sc.render.resolution_y = w, h
-    sc.render.film_transparent = False
-    sc.view_settings.view_transform = "Standard"
-    sc.view_settings.look = "None"
-    wd = bpy.data.worlds.new("w")
-    wd.use_nodes = True
-    bg = wd.node_tree.nodes["Background"]
-    bg.inputs["Color"].default_value = (0.30, 0.31, 0.34, 1)
-    bg.inputs["Strength"].default_value = 1.0
-    sc.world = wd
-    for o in list(bpy.data.objects):
-        if o.type in ("LIGHT", "CAMERA"):
-            bpy.data.objects.remove(o, do_unlink=True)
-    for loc, energy in (((0.8, -0.6, 1.0), 1.2), ((-0.7, 0.5, 0.6), 0.5)):
-        ld = bpy.data.lights.new("sun", "SUN")
-        ld.energy = energy
-        ld.angle = math.radians(25)
-        lo = bpy.data.objects.new("sun", ld)
-        bpy.context.scene.collection.objects.link(lo)
-        d = -Vector(loc)
-        lo.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
-
-
-def shoot(path, loc, target, ortho=None, lens=70, up_hint=None):
-    sc = bpy.context.scene
-    for o in [o for o in bpy.data.objects if o.type == "CAMERA"]:
-        bpy.data.objects.remove(o, do_unlink=True)
-    cd = bpy.data.cameras.new("cam")
-    if ortho:
-        cd.type = "ORTHO"
-        cd.ortho_scale = ortho
-    else:
-        cd.lens = lens
-    co = bpy.data.objects.new("cam", cd)
-    bpy.context.scene.collection.objects.link(co)
-    co.location = Vector(loc)
-    co.rotation_euler = (Vector(target) - Vector(loc)).to_track_quat("-Z", "Y").to_euler()
-    sc.camera = co
-    sc.render.filepath = path
-    bpy.ops.render.render(write_still=True)
-
-
-def render_all(metal, stone, chan, rot_fn):
-    """Upright previews (grip frame, rune faces turned to +/-X before the final frame is applied)."""
-    os.makedirs(RENDER, exist_ok=True)
-    setup_render(720, 1000)
-    glow_materials(0, stone, chan)
-    zm = 0.17
-    shoot(os.path.join(RENDER, "front.png"), (1.6, 0, zm), (0, 0, zm), ortho=1.0)
-    shoot(os.path.join(RENDER, "side.png"), (0, -1.6, zm), (0, 0, zm), ortho=1.0)
-    setup_render(1000, 1000)
-    shoot(os.path.join(RENDER, "head_closeup.png"), (0.62, -0.34, ZC + 0.09), (0, 0, ZC + 0.085), lens=90)
-    tiers = []
-    for t in range(4):
-        glow_materials(t, stone, chan)
-        p = os.path.join(RENDER, f"_tier{t}.png")
-        setup_render(500, 760)
-        shoot(p, (0.70, -0.20, ZC + 0.09), (0, 0, ZC + 0.09), ortho=0.34)
-        tiers.append(p)
-    return tiers
 
 
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
     for o in list(bpy.data.objects):
         bpy.data.objects.remove(o, do_unlink=True)
-    metal, stone, chan = lance()
-    make_materials(metal, stone, chan)
-    tiers = []
-    if RENDER:
-        tiers = render_all(metal, stone, chan, None)
-        # restore plain game materials for the export
-        make_game_materials_again(stone, chan)
-    to_game_frame([metal, stone, chan])
+    metal, chan, sock2 = lance()
+    make_materials(metal, chan, sock2)
+    to_game_frame([metal, chan, sock2])
     path = os.path.join(OUT_DIR, "lance.glb")
     bpy.ops.export_scene.gltf(filepath=path, export_format="GLB", use_selection=False, export_vertex_color="ACTIVE",
                               export_animations=False, export_materials="EXPORT")
-    tris = {o.name: sum(len(p.vertices) - 2 for p in o.data.polygons) for o in (metal, stone, chan)}
-    allv = np.array([v.co[:] for o in (metal, stone, chan) for v in o.data.vertices])
+    tris = {o.name: sum(len(p.vertices) - 2 for p in o.data.polygons) for o in (metal, chan, sock2)}
+    allv = np.array([v.co[:] for o in (metal, chan, sock2) for v in o.data.vertices])
     print(f"[hc] {path}: {sum(tris.values())} triangles {tris}", flush=True)
     print(f"[hc] bbox game frame min {allv.min(0)} max {allv.max(0)}", flush=True)
-    if RENDER:
-        old_vs_new(metal, stone, chan)
-        compose_tiers(tiers)
-
-
-def make_game_materials_again(stone, chan):
-    for ob, name in ((stone, "rune_stone"), (chan, "rune_channel")):
-        mm = ob.data.materials[0]
-        mm.node_tree.nodes.clear()
-        b = mm.node_tree.nodes.new("ShaderNodeBsdfPrincipled")
-        a = mm.node_tree.nodes.new("ShaderNodeVertexColor")
-        a.layer_name = "Col"
-        mm.node_tree.links.new(a.outputs["Color"], b.inputs["Base Color"])
-        o = mm.node_tree.nodes.new("ShaderNodeOutputMaterial")
-        mm.node_tree.links.new(b.outputs[0], o.inputs[0])
-        b.inputs["Roughness"].default_value = 0.5
-
-
-def old_vs_new(metal, stone, chan):
-    glow_materials(0, stone, chan)
-    old_path = os.path.join(ROOT, "public", "assets", "models", "weapons", "lance.glb")
-    before = set(bpy.data.objects)
-    bpy.ops.import_scene.gltf(filepath=old_path)
-    olds = [o for o in bpy.data.objects if o not in before]
-    for o in olds:
-        if o.parent is None:
-            o.location.y += 0.0
-    for o in (metal, stone, chan):
-        o.location.y += 0.42      # the new one to the right of the old one in the side view
-    setup_render(1200, 900)
-    shoot(os.path.join(RENDER, "old_vs_new.png"), (2.0, 0.0, 0.10), (0, 0.0, 0.10), ortho=1.5)
-    for o in (metal, stone, chan):
-        o.location.y -= 0.42
-
-
-def compose_tiers(files):
-    try:
-        imgs = [bpy.data.images.load(f) for f in files]
-        w, h = imgs[0].size
-        out = np.zeros((h, w * 4, 4), np.float32)
-        for i, im in enumerate(imgs):
-            px = np.array(im.pixels[:], np.float32).reshape(h, w, 4)
-            out[:, i * w:(i + 1) * w] = px
-        res = bpy.data.images.new("tiers", w * 4, h)
-        res.pixels = out.ravel()
-        res.filepath_raw = os.path.join(RENDER, "tiers.png")
-        res.file_format = "PNG"
-        res.save()
-    except Exception as ex:
-        print("[hc] tiers compose failed", ex)
 
 
 main()

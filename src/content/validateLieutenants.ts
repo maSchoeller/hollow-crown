@@ -72,6 +72,8 @@ export function validateLieutenants(data: GameData, locales: Locales, err: Err, 
     perAct.set(lt.act, (perAct.get(lt.act) ?? 0) + 1);
     if (!data.classes[lt.class]) err(f, `${lt.id}: unknown class ${lt.class}`);
     if (!data.items[lt.signatureItem]) err(f, `${lt.id}: unknown signature item ${lt.signatureItem}`);
+    // story 16.18: the armoury knows a signature by its tag
+    else if (!data.items[lt.signatureItem]!.tags?.includes('signature')) err(f, `${lt.id}: signature item ${lt.signatureItem} needs the tag signature (items.yaml)`);
     lt.grudgeSkills.forEach((s, i) => {
       const sk = data.skills[s];
       if (!sk) err(f, `${lt.id}: unknown grudge skill ${s} (step ${i + 1})`);

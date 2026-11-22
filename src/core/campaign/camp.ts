@@ -5,10 +5,8 @@ import { bagIsFull, canEquip, isWeapon, itemCategory, itemDef, itemStatMods, slo
 import { levelCap, otherProPath, promotionTargets } from '../rules/progression';
 import { activeSkillIds, expToNext } from '../rules/skills';
 import { relicCtx } from './relics';
-import { computeStats } from '../rules/stats';
 import { maxRank, pendingRank, rankIndex } from '../rules/supports';
 import type { CampaignState, ItemInstance, UnitRecord } from '../state';
-import { clone } from '../util';
 import { shopPrice } from './aid';
 import { castleTier, roomLevel } from './castle';
 import { conditionContext, evalCondition } from './conditions';
@@ -532,54 +530,6 @@ export function equipCandidates(data: GameData, c: CampaignState, unit: UnitReco
   };
   for (const i of unit.bag) consider(i, 'bag');
   for (const i of c.convoy) consider(i, 'convoy');
-  return out;
-}
-
-/** One changed value of an equip preview; `better` decides the colour (green/red). */
-export interface EquipDelta {
-  key: 'mt' | 'hit' | 'crit' | 'rng' | 'wt' | 'hp' | 'str' | 'mag' | 'skl' | 'spd' | 'lck' | 'def' | 'res' | 'mov' | 'avoid' | 'load';
-  delta: number;
-  better: boolean;
-}
-
-/**
- * What changes when `inst` goes into `slot` of `unit`: the same formulas as the battle (`computeStats`,
- * `weaponProfile`), shown green/red against what is worn now. Empty for a bag place.
- */
-export function equipPreview(data: GameData, unit: UnitRecord, inst: ItemInstance, slot: EquipSlot | 'bag'): EquipDelta[] {
-  if (slot === 'bag') return [];
-  const after = clone(unit);
-  after.bag = after.bag.filter((i) => i.uid !== inst.uid);
-  after.equip[slot] = clone(inst);
-  const d = itemDef(data, inst);
-  if (slot === 'mainHand' && d.twoHanded) delete after.equip.offHand;
-  if (slot === 'offHand' && after.equip.mainHand && itemDef(data, after.equip.mainHand).twoHanded) delete after.equip.mainHand;
-  const out: EquipDelta[] = [];
-  const push = (key: EquipDelta['key'], delta: number, lowerIsBetter = false) => {
-    if (delta) out.push({ key, delta, better: lowerIsBetter ? delta < 0 : delta > 0 });
-  };
-  const cur = unit.equip[slot];
-  const weaponSlot = slot === 'mainHand' && isWeapon(d);
-  if (weaponSlot) {
-    const a = weaponProfile(data, inst);
-    const b = cur && isWeapon(itemDef(data, cur)) ? weaponProfile(data, cur) : null;
-    push('mt', a.might - (b?.might ?? 0));
-    push('hit', a.hit - (b?.hit ?? 0));
-    push('crit', a.crit - (b?.crit ?? 0));
-    push('rng', a.range[1] - (b?.range[1] ?? 1));
-    push('wt', a.weight - (b?.weight ?? 0), true);
-  }
-  const s0 = computeStats(data, unit);
-  const s1 = computeStats(data, after);
-  push('hp', s1.maxHp - s0.maxHp);
-  for (const k of ['str', 'mag', 'skl', 'spd', 'lck', 'def', 'res'] as const) push(k, s1.stats[k] - s0.stats[k]);
-  push('mov', s1.mov - s0.mov);
-  push('avoid', s1.avoid - s0.avoid);
-  if (!weaponSlot) {
-    push('hit', s1.hit - s0.hit);
-    push('crit', s1.crit - s0.crit);
-  }
-  push('load', s1.load - s0.load, true);
   return out;
 }
 

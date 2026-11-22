@@ -77,8 +77,28 @@ export function moveCost(data: GameData, s: BattleState, unit: BattleUnit, p: Po
   if (!inBounds(s, p)) return null;
   const id = terrainAt(s, p);
   if (overrides && overrides[id] !== undefined) return overrides[id]!;
-  const cls = data.classes[unit.classId]!;
-  return data.terrain[id]?.cost[cls.moveType] ?? null;
+  return moveCostOf(data, id, data.classes[unit.classId]!.moveType);
+}
+
+/** What entering a tile of terrain `id` costs a unit of this move type, skills aside (the one lookup in `terrain.yaml`); null = impassable. */
+export function moveCostOf(data: GameData, id: string, moveType: MoveType): number | null {
+  return data.terrain[id]?.cost[moveType] ?? null;
+}
+
+const minSteps = new WeakMap<object, number>();
+
+/**
+ * The least a step onto a tile can cost in this content (halves count since story 16.1: road and bridge cost 0.5): the unit of the AI's
+ * distance buckets and the bound its pruning tests need (a way of n steps costs at least n times this). Derived from `terrain.yaml`, never a constant.
+ */
+export function minStepCost(data: GameData): number {
+  let m = minSteps.get(data.terrain);
+  if (m === undefined) {
+    m = 1;
+    for (const t of Object.values(data.terrain)) for (const c of Object.values(t.cost)) if (c !== null && c > 0 && c < m) m = c;
+    minSteps.set(data.terrain, m);
+  }
+  return m;
 }
 
 export interface ReachNode {
@@ -89,8 +109,11 @@ export interface ReachNode {
   pos: Pos;
 }
 
+/** Whether terrain `id` hurts a unit entering it (`burningTileHit`); the terrain lens paints it as damage (story 16.11). */
+export const isHazardTerrain = (id: string): boolean => id === 'burning';
+
 /** A tile that hurts a unit entering it (`burningTileHit`): the path search walks around it when a way of the same cost exists. */
-export const isHazard = (s: BattleState, p: Pos): boolean => terrainAt(s, p) === 'burning';
+export const isHazard = (s: BattleState, p: Pos): boolean => isHazardTerrain(terrainAt(s, p));
 
 /**
  * Halten (Vorkämpfer, story 2.4): the neighbour tiles of every active unit hostile to `team` whose class action is `hold`.

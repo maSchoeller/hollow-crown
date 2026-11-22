@@ -25,7 +25,7 @@ next to the measured height of the black silhouette (weapon, hair and the ground
 times the pixel ratio (up to 2.5 on "Hoch", content/core/render.yaml quality).
 
 Weapons: the figures carry their weapon only at runtime (src/render/board.ts gearOf): the first equippable weapon of the
-unit's item list gives the weapon group (items.yaml weaponType -> render.yaml gear.weapons -> art/models/weapons/<model>.glb,
+unit's item list gives the weapon group (items.yaml weaponType -> render.yaml gear.weapons -> art/models/weapons-v2/<model>.glb,
 sockets socket_r / socket_l, rotated by `hold` degrees about the socket X axis outside an attack), a shield or other
 off-hand item adds render.yaml gear.offHand. The item list comes from content (derive_gear()):
   - story figures: content/acts/act1/units.yaml (the avatar for avatar_a / avatar_b)
@@ -44,7 +44,7 @@ import tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 UNITS = os.path.join(ROOT, "art", "models", "units")
-WEAPONS = os.path.join(ROOT, "art", "models", "weapons")
+WEAPONS = os.path.join(ROOT, "art", "models", "weapons-v2")
 OUT = os.path.join(ROOT, "art", "previews")
 
 # sheet groups (story 8.3 AC 1): company, lieutenants, generic enemies

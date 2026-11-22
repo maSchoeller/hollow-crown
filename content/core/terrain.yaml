@@ -1,5 +1,5 @@
 # Gelände (concept/06 §2, Bewegungskosten concept/04 §2). Startwerte [C].
-# cost: Bewegungskosten je Bewegungstyp, null = nicht betretbar.
+# cost: Bewegungskosten je Bewegungstyp, null = nicht betretbar; halbe Punkte sind erlaubt (Straße, Brücke und Steg kosten 0.5, Story 16.1).
 # ground: Bodenschicht fürs Dual-Grid-Rendering, prop: Requisite darüber (art/README.md).
 # level: Höhenstufe als Regel (GDD; Standard 0; 1 Wehrgang, Dach, Terrasse; 2 Turm, Felsnase). Eine Karte hebt beliebiges Gelände zusätzlich mit `levels:` (Wald auf der Terrasse bleibt Wald). Die Mauer selbst bleibt unbetretbar und Stufe 0, begehbar ist `rampart`.
 # connector: ramp|stairs führt von diesem Feld zum einen Nachbarn eine Stufe höher; wer sie nutzen darf, sagt cost. Leitern sind kein Gelände: Sie lehnen an der Wand (Karte `ladders:`, Regel balance.yaml elevation.climb). opensTo: geschlossener Durchgang, öffnet zu diesem Gelände.
@@ -7,7 +7,7 @@
 # (Standard 0), cliff = Seitenwand earth|rock|wall (Standard earth), water = Wasserfläche darüber.
 - { id: plain,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: plain, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: dirt }
 - { id: grass,    def: 0, avoid: 0,   heal: 0,  flammable: true,  ground: grass, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: grass }
-- { id: road,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: road }
+- { id: road,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  cost: { foot: 0.5, armored: 0.5, mounted: 0.5, flier: 0.5, monster: 0.5 }, surface: road }
 - { id: forest,   def: 1, avoid: 20,  heal: 0,  flammable: true,  ground: grass, prop: tree, cost: { foot: 2, armored: 3, mounted: 3, flier: 1, monster: 2 }, surface: grass }
 - { id: sand,     def: 0, avoid: 5,   heal: 0,  flammable: false, ground: sand,  cost: { foot: 2, armored: 3, mounted: 3, flier: 1, monster: 2 }, surface: sand }
 - { id: mountain, def: 2, avoid: 30,  heal: 0,  flammable: false, ground: grass, prop: rock, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: 3 }, surface: grass, height: 0.75, cliff: rock }
@@ -15,7 +15,7 @@
 - { id: cave_rock, def: 0, avoid: 0,   heal: 0,  flammable: false, ground: grass, prop: rock, cost: { foot: null, armored: null, mounted: null, flier: null, monster: null }, surface: grass, height: 0.75, cliff: rock }
 - { id: shallows, def: 0, avoid: -10, heal: 0,  flammable: false, ground: shallows, cost: { foot: 3, armored: null, mounted: 4, flier: 1, monster: 2 }, surface: riverbed, height: -0.15, water: true }
 - { id: river,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: river, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: riverbed, height: -0.32, water: true }
-- { id: bridge,   def: 0, avoid: 0,   heal: 0,  flammable: false, ground: river, prop: bridge, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: riverbed, height: -0.32, water: true }
+- { id: bridge,   def: 0, avoid: 0,   heal: 0,  flammable: false, ground: river, prop: bridge, cost: { foot: 0.5, armored: 0.5, mounted: 0.5, flier: 0.5, monster: 0.5 }, surface: riverbed, height: -0.32, water: true }
 - { id: fort,     def: 2, avoid: 20,  heal: 20, flammable: false, ground: plain, prop: fort, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: dirt }
 - { id: throne,   def: 3, avoid: 30,  heal: 20, flammable: false, ground: plain, prop: throne, seizable: true, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: stone, height: 0.15, cliff: wall }
 - { id: gate,     def: 2, avoid: 20,  heal: 0,  flammable: false, ground: road,  prop: gate, seizable: true, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: road }
@@ -72,10 +72,10 @@
 # Steg: Werte wie die Brücke, Modell aus boardwalk_* nach den Nachbarfeldern (src/render/board/wallKit.ts). footbridge ist derselbe Steg über klarem Bach.
 - { id: swamp,    def: 0, avoid: -10, heal: 0,  flammable: false, ground: shallows, cost: { foot: 3, armored: null, mounted: 4, flier: 1, monster: 2 }, surface: peat, height: -0.15, water: true, waterLook: mire }
 - { id: creek,    def: 0, avoid: 0,   heal: 0,  flammable: false, ground: river, cost: { foot: null, armored: null, mounted: null, flier: 1, monster: null }, surface: peat, height: -0.32, water: true, waterLook: creek }
-- { id: boardwalk, def: 0, avoid: 0,  heal: 0,  flammable: false, ground: river, prop: boardwalk, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: peat, height: -0.32, water: true, waterLook: creek }
-- { id: footbridge, def: 0, avoid: 0, heal: 0,  flammable: false, ground: river, prop: boardwalk, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: riverbed, height: -0.32, water: true }
+- { id: boardwalk, def: 0, avoid: 0,  heal: 0,  flammable: false, ground: river, prop: boardwalk, cost: { foot: 0.5, armored: 0.5, mounted: 0.5, flier: 0.5, monster: 0.5 }, surface: peat, height: -0.32, water: true, waterLook: creek }
+- { id: footbridge, def: 0, avoid: 0, heal: 0,  flammable: false, ground: river, prop: boardwalk, cost: { foot: 0.5, armored: 0.5, mounted: 0.5, flier: 0.5, monster: 0.5 }, surface: riverbed, height: -0.32, water: true }
 # Story 11.24: Hängebrücke (2-5) mit den Werten des Stegs, Modell rope_bridge_* (Anker am Ufer, src/render/board/wallKit.ts)
-- { id: rope_bridge, def: 0, avoid: 0, heal: 0, flammable: false, ground: river, prop: rope_bridge, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: riverbed, height: -0.32, water: true }
+- { id: rope_bridge, def: 0, avoid: 0, heal: 0, flammable: false, ground: river, prop: rope_bridge, cost: { foot: 0.5, armored: 0.5, mounted: 0.5, flier: 0.5, monster: 0.5 }, surface: riverbed, height: -0.32, water: true }
 # Story 11.24: Kai (2-7) mit den Werten von plain, Modell quay_* mit der Steinkante zum offenen Wasser
 - { id: quay,     def: 0, avoid: 0,   heal: 0,  flammable: false, ground: road,  prop: quay, cost: { foot: 1, armored: 1, mounted: 1, flier: 1, monster: 1 }, surface: road }
 # Gewölbe (1-7): Boden wie plain, nur dunkler Stein; Sarkophag sperrt wie der Wagen; Wandfackel steht an der Nordkante, das Feld bleibt begehbar. Startwerte [C].

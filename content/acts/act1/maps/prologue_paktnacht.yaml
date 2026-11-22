@@ -8,6 +8,7 @@
 # Abweichung von „nur Nahkampf-Gegner“ (Produktinhaber 2026-10-24): Der eine Schütze ist Vorgabe des Produktinhabers vom 2026-11-05. Der Schütze trägt die Figur temple_guard, damit keine neue Figur in den ersten Download kommt.
 # Das Beben t_quake in Runde 3 öffnet Brennas Pforte [1,11] (set_terrain; vorher öffnet sie Brenna mit dem Schlüssel) und wirft vier Säulen um (Ruinen, Deckung). Keine Säule liegt auf einem Feld, auf dem jemand stehen könnte.
 # Balancing 2026-11-05 [C]: Stufen wie im Entwurf, tg1 wartet zwei Felder weiter südlich ([5,7] statt [5,5]), erste Berührung etwas später. Niedergestreckt wird in der Simulation fast nur Rhen, das ist hier Niederlage (noDeath nimmt ihn aus): Mehr Druck senkt den Sieg, bevor die Niedergestreckten die 0,4 erreichen (tg1 Stufe 3: 79 % Sieg, 0,23).
+# Balancing 2026-11-22 (Story 16.2): Straße kostet ½ (16.1), der Avatar lief in Runde 1 allein bis [6,8] in tg1/tg2 und fiel in 25 von 50 Läufen. Der Säulengang (y 2–8) ist deshalb Pflaster ohne Straßenkosten (plain, wie vor 16.1 gelaufen); Innenhof-Einlass (y 1) und unterer Hof bleiben Straße.
 # Abweichung vom Entwurf: Kohlebecken an den Punktlichtern (wie die alte Karte, sonst leuchten die Lichter aus dem Nichts). Neue Modelle stairs_idle gehört zu core (packs.yaml).
 id: prologue_paktnacht
 nameKey: map.prologue_paktnacht.name
@@ -34,13 +35,13 @@ legend:
 terrain: |
   WWWWWWddWWWWWW
   TT,W______W,TT
-  T,,Wb____bW,,T
-  ,,,G______G,,,
-  T,,WP____PW,,T
-  TT,W.____.W,TT
-  T,,WP____PW,,T
-  ,,,W.____.W,,,
-  T,,WP____PW,T,
+  T,,Wb....bW,,T
+  ,,,G......G,,,
+  T,,WP....PW,,T
+  TT,W......W,TT
+  T,,WP....PW,,T
+  ,,,W......W,,,
+  T,,WP....PW,T,
   WWGWWWGGrrrGWW
   _W.F..__.SF..W
   _d..b.__..b..W

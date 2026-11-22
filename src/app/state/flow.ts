@@ -109,6 +109,7 @@ const defSource = (d: MapUnitDef): MissionUnit => ({
   sprite: d.sprite ?? d.char,
   classId: d.class,
   gearItems: d.items.map((i) => i.def),
+  gearRunes: d.items.flatMap((i) => i.runes ?? []),
 });
 
 /** A unit on the board as the loading plan sees it: its figure and the weapons it has in hand. */
@@ -118,6 +119,7 @@ const battleSource = (u: BattleUnit): MissionUnit => ({
   charId: u.charId,
   classId: u.classId,
   gearItems: [u.equip.mainHand?.def, u.equip.offHand?.def].filter((x): x is string => !!x),
+  gearRunes: [u.equip.mainHand, u.equip.offHand].flatMap((i) => i?.runes ?? []).filter((x): x is string => !!x),
 });
 
 /**
@@ -140,6 +142,7 @@ async function ensureBattleAssets(nodeId: string, units: readonly BattleUnit[], 
     sprites: manifest.units,
     music: manifest.audio,
     weaponModels: manifest.models?.weapons,
+    runeModels: manifest.models?.runes,
     partModels: manifest.models?.parts,
     items: data.items,
     gear: data.render.gear,

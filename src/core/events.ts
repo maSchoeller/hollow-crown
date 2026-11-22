@@ -1,5 +1,5 @@
 import type { Element, Pos, Stats, StatusId, Team } from './defs';
-import type { ItemInstance } from './state';
+import type { Epithet, ItemInstance } from './state';
 
 /** Events produced by the core. The renderer plays them as animations; the UI reads the new state. */
 export type GameEvent =
@@ -43,6 +43,8 @@ export type GameEvent =
   | { t: 'retreated'; unit: string }
   | { t: 'rescued'; unit: string; by: string }
   | { t: 'escaped'; unit: string }
+  /** a weapon of the company felled a foe (story 16.5); `epithet` only in the event that earns it */
+  | { t: 'chronicle'; unit: string; uid: string; kills: number; epithet?: Epithet }
   | { t: 'exp'; unit: string; amount: number; before: number; after: number; capped?: true }
   | { t: 'levelUp'; unit: string; level: number; gains: Partial<Stats> }
   | { t: 'mastered'; unit: string; skill: string }

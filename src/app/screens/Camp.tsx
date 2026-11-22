@@ -6,7 +6,7 @@
  */
 import { useEffect, useState } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
-import { actOf, availableSupportTalks, buildableRooms, castleScene, homeRooms, pendingHomeScene, roomBuild, roomLevel, type CampaignCommand, type CastleScene, type RoomDef, type RoomStatus } from '../../core';
+import { actOf, armoryOpen, availableSupportTalks, buildableRooms, castleScene, homeRooms, pendingHomeScene, roomBuild, roomLevel, type CampaignCommand, type CastleScene, type RoomDef, type RoomStatus } from '../../core';
 import { t } from '../../i18n';
 import { asset } from '../../ui/asset';
 import { Toast } from '../../ui/components';
@@ -17,6 +17,7 @@ import { screen } from '../state/screen';
 import { campaign, campaignCommand, data } from '../state/session';
 import { lockReason, Room, type Apply } from './Rooms';
 import { Castle3d, castle3dFlag, CastleDevBar, type DevKeepsakes } from './Castle3d';
+import { bannerColours } from './armoryModel';
 import { Pips, UpArrow } from './roomStone';
 import { Scene } from './Scene';
 import '../../ui/camp.css';
@@ -26,7 +27,7 @@ import '../../ui/camp.css';
  * troop and map. "Set out" and deployment live on the node card of the map, saving in the map's round menu (product owner
  * 2026-10-24).
  */
-export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
+export function Camp({ tab, unit, item, stone }: { tab?: string; unit?: string; item?: string; stone?: string }) {
   const c = campaign.value!;
   const [open, setOpen] = useState<string | null>(tab ?? null);
   const [toast, setToast] = useState<string | null>(null);
@@ -62,6 +63,9 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
   /** story 10.1: a castle room that can be built up now carries the green arrow on its stone */
   const canBuild = (id: string) => castle && roomBuild(data, c, id).error === null;
   const buildable = castle ? buildableRooms(data, c) : 0;
+  // story 16.18: the armoury is no room: a stone over the keep and the last tile, once the company owns a relic or signature weapon
+  const armory = armoryOpen(data, c);
+  const openArmory = () => (screen.value = { name: 'armory' });
   const scene = castle ? devScene(castleScene(data, c), devTier, devKeepsakes) : null;
   return (
     <div class={`hm ${open ? 'has-room' : ''} ${mourn ? 'hm--mourn' : ''}`}>
@@ -73,6 +77,7 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
           onRoom={(_id, st) => (st ? tap(st) : setToast(t('ui.dev.castle3d.noRoom')))}
           fallback={asset(`locations/${view.image}.webp`)}
           stats={devBar}
+          armory={armory ? { onOpen: openArmory, banners: bannerColours(data, c) } : null}
         />
       ) : (
         <img class="hm__scene" src={asset(`locations/${view.image}.webp`)} alt="" draggable={false} />
@@ -97,7 +102,7 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
       </div>
       <div class="hm__spacer" />
       {room ? (
-        <Room key={room.id} room={room} apply={apply} onClose={close} unit={room.id === tab ? unit : undefined} />
+        <Room key={room.id} room={room} apply={apply} onClose={close} unit={room.id === tab ? unit : undefined} item={room.id === tab ? item : undefined} stone={room.id === tab ? stone : undefined} />
       ) : (
         <div class="hm__stack">
           <Piece class="hm-rooms">
@@ -129,6 +134,14 @@ export function Camp({ tab, unit }: { tab?: string; unit?: string }) {
                 </button>
               );
             })}
+            {armory && (
+              <button type="button" class="hm-room" onClick={openArmory}>
+                <span class="hm-room__stone">
+                  <Icon name="armory" size={26} />
+                </span>
+                {t('ui.armory.title')}
+              </button>
+            )}
           </Piece>
           <nav class="hm-nav">
             <button type="button" onClick={() => (screen.value = { name: 'troop', from: 'camp' })}>

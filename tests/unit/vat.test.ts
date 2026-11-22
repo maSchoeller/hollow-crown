@@ -15,7 +15,9 @@ interface Spec {
   restQ: number[][];
   ibm: number[][];
   sockets: { name: string; joint: number; t: number[]; q: number[]; s: number[] }[];
-  clips: { name: string; first: number; rows: number; loop: boolean }[];
+  clips: { name: string; first: number; rows: number; loop: boolean; fps?: number }[];
+  /** file version: 1 (one rate for all clips, default) or 2 (u8 rate per clip) */
+  version?: 1 | 2;
   /** [row][joint] quaternions and the root translation per row */
   rotations: number[][][];
   translations: number[][];
@@ -33,7 +35,7 @@ function encode(spec: Spec): Uint8Array {
   };
   const str = (s: string) => (u8(s.length), [...s].forEach((c) => u8(c.charCodeAt(0))));
   [0x48, 0x43, 0x56, 0x54].forEach(u8);
-  u16(1);
+  u16(spec.version ?? 1);
   u16(60);
   u16(spec.names.length);
   u16(spec.sockets.length);
@@ -58,6 +60,7 @@ function encode(spec: Spec): Uint8Array {
     u32(c.first);
     u32(c.rows);
     u8(c.loop ? 1 : 0);
+    if (spec.version === 2) u8(c.fps ?? 60);
   }
   while (parts.length % 4) u8(0);
   const R = spec.rotations.length;
@@ -87,7 +90,7 @@ function chain(rows: number[][][], translations: number[][], clips: Spec['clips'
     restQ: [IDENTITY_Q, IDENTITY_Q, IDENTITY_Q],
     // world of the rest pose: root y 1, mid y 2, tip y 3; the inverse binds undo them
     ibm: [trans(0, -1, 0), trans(0, -2, 0), trans(0, -3, 0)],
-    sockets: [{ name: 'socket_r', joint: 2, t: [0, 0.5, 0], q: IDENTITY_Q, s: [1.25, 1.25, 1.25] }],
+    sockets: [{ name: 'grip_r', joint: 2, t: [0, 0.5, 0], q: IDENTITY_Q, s: [1.25, 1.25, 1.25] }],
     clips,
     rotations: rows,
     translations,
@@ -126,7 +129,17 @@ describe('parseVat', () => {
     expect(v.sockets).toHaveLength(1);
     expect(v.sockets[0]!.s[0]).toBeCloseTo(1.25);
     expect([...v.clips.keys()]).toEqual(['idle', 'attack', 'downed']);
-    expect(v.clips.get('attack')).toEqual({ name: 'attack', first: 2, rows: 3, loop: false });
+    expect(v.clips.get('attack')).toEqual({ name: 'attack', first: 2, rows: 3, loop: false, fps: 60 });
+  });
+
+  it('reads version 2 with a rate per clip and rejects unknown versions', () => {
+    const v2 = parseVat(encode({ ...spec, version: 2, clips: [{ ...clips[0]!, fps: 30 }, clips[1]!, clips[2]!] }));
+    expect(v2.clips.get('idle')).toEqual({ name: 'idle', first: 0, rows: 2, loop: true, fps: 30 });
+    expect(v2.clips.get('attack')!.fps).toBe(60);
+    expect(v2.rows).toBe(6);
+    const bad = encode(spec);
+    bad[4] = 3;
+    expect(() => parseVat(bad)).toThrow(/version 3/);
   });
 
   it('puts parents first whatever the joint order of the file', () => {
@@ -175,28 +188,36 @@ describe('loadVat without a worker', () => {
 });
 
 describe('clipRow', () => {
-  const loop = { name: 'idle', first: 10, rows: 120, loop: true };
-  const once = { name: 'attack', first: 200, rows: 31, loop: false };
+  const loop = { name: 'idle', first: 10, rows: 120, loop: true, fps: 60 };
+  const once = { name: 'attack', first: 200, rows: 31, loop: false, fps: 60 };
 
   it('walks the rows at the file rate and wraps a loop', () => {
-    expect(clipRow(loop, 0, 60)).toBe(10);
-    expect(clipRow(loop, 1 / 60, 60)).toBe(11);
-    expect(clipRow(loop, 1.5, 60)).toBe(10 + 90);
-    expect(clipRow(loop, 2, 60)).toBe(10); // 120 rows = 2 s: back at the first row
-    expect(clipRow(loop, 2 + 1 / 60, 60)).toBe(11);
+    expect(clipRow(loop, 0)).toBe(10);
+    expect(clipRow(loop, 1 / 60)).toBe(11);
+    expect(clipRow(loop, 1.5)).toBe(10 + 90);
+    expect(clipRow(loop, 2)).toBe(10); // 120 rows = 2 s: back at the first row
+    expect(clipRow(loop, 2 + 1 / 60)).toBe(11);
   });
 
   it('does not lose a row to rounding at the key frames', () => {
     // the key frames of the board's clips lie 5 rows apart (12 fps keys, 60 fps rows)
-    for (let k = 0; k <= 6; k++) expect(clipRow(once, k / 12, 60)).toBe(200 + 5 * k);
+    for (let k = 0; k <= 6; k++) expect(clipRow(once, k / 12)).toBe(200 + 5 * k);
+  });
+
+  it('uses the rate of the clip, so a slow clip steps slower than a 60 fps one', () => {
+    const slow = { name: 'rest_blade', first: 40, rows: 120, loop: true, fps: 30 }; // 4 s breathing at 30 rows a second
+    expect(clipRow(slow, 1)).toBe(70);
+    expect(clipRow(slow, 4)).toBe(40);
+    expect(clipRow(slow, 4 + 1 / 30)).toBe(41);
+    expect(clipRow({ ...slow, loop: false }, 9)).toBe(159);
   });
 
   it('stays on the last row of a clip that does not loop, and scales with the speed', () => {
-    expect(clipRow(once, 0.5, 60)).toBe(230);
-    expect(clipRow(once, 5, 60)).toBe(230);
-    expect(clipRow(once, -1, 60)).toBe(200);
-    expect(clipRow(once, 0.25, 60, 1.6)).toBe(200 + 24);
-    expect(clipRow(once, 1, 60, 1.6)).toBe(230);
+    expect(clipRow(once, 0.5)).toBe(230);
+    expect(clipRow(once, 5)).toBe(230);
+    expect(clipRow(once, -1)).toBe(200);
+    expect(clipRow(once, 0.25, 1.6)).toBe(200 + 24);
+    expect(clipRow(once, 1, 1.6)).toBe(230);
   });
 });
 
@@ -268,21 +289,36 @@ describe('baked figure files', () => {
     const buf = readFileSync(file);
     const v: VatData = parseVat(await inflateVat(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)));
     expect(v.fps).toBe(60);
-    expect(v.names).toHaveLength(22);
+    expect(v.names).toHaveLength(52); // story 16.9: finger joints 1-3 stay
     // the hand sockets (GA9) and the body sockets of the attached parts (story 10.13)
-    expect(v.sockets.map((s) => s.name).sort()).toEqual(['socket_back', 'socket_head', 'socket_l', 'socket_r']);
+    expect(v.sockets.map((s) => s.name).sort()).toEqual(['grip_l', 'grip_r', 'socket_back', 'socket_head']);
     // durations x 60 (+ 1 unless a loop, which leaves out the row that comes round again); downed shows its last row only
     const rows = (n: string) => v.clips.get(n)!.rows;
-    expect(rows('idle')).toBe(Math.round(15.3333 * 60));
+    expect(rows('idle')).toBe(120); // story 16.10: idle = rest_none, one breath of 4 s at 30 rows a second
+    expect(v.clips.get('idle')).toEqual({ ...v.clips.get('rest_none')!, name: 'idle' }); // the same rows, no copy
     expect(rows('walk')).toBe(Math.round((28 / 12) * 60));
     expect(rows('hit')).toBe(31);
     expect(rows('downed')).toBe(1);
     for (const a of ['attack', 'attack_cast', 'attack_chop', 'attack_shoot', 'attack_thrust']) expect(rows(a)).toBe(31);
+    // the stances of Lucan's classes (tools/art/tripo_units.py figure_stances()): per stance rest, three gestures, ready and the switch
+    for (const st of ['blade', 'lance', 'blade_shield', 'none']) {
+      for (const c of [`rest_${st}`, `gesture_${st}_look`, `gesture_${st}_shift`, `gesture_${st}_regrip`]) expect(v.clips.has(c), c).toBe(true);
+      expect(v.clips.get(`rest_${st}`)!.rows).toBe(120);
+      expect(v.clips.get(`rest_${st}`)!.fps).toBe(30);
+      expect(v.clips.get(`rest_${st}`)!.loop).toBe(true);
+    }
+    for (const st of ['blade', 'lance']) {
+      expect(v.clips.get(`ready_${st}`)!.loop).toBe(true);
+      expect(v.clips.get(`ready_in_${st}`)).toMatchObject({ rows: 16, fps: 60, loop: false }); // 0.25 s at 60 rows a second
+    }
+    expect(v.clips.get('attack')!.fps).toBe(60);
+    expect([...v.clips.keys()].some((n) => n.startsWith('grip_'))).toBe(false); // the single-frame finger clips of story 16.9 are gone
     expect(v.clips.get('idle')!.loop).toBe(true);
     expect(v.clips.get('attack')!.loop).toBe(false);
     // the clips tile the rows without gaps
     let next = 0;
     for (const c of [...v.clips.values()].sort((a, b) => a.first - b.first)) {
+      if (c.first < next) continue; // idle shares the rows of rest_none
       expect(c.first).toBe(next);
       next += c.rows;
     }

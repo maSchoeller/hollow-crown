@@ -133,6 +133,9 @@ export interface MissionSim {
   /** story 15.11: what the board plays with „Gemeinsam“ after the time budget of an enemy phase (`PhaseTime.shown`) */
   phaseShown: number;
   phaseShownMax: number;
+  /** story 16.5, won attempts: weapon kills (all weapons of the company) and epithets earned in the mission */
+  kills: number;
+  epithets: number;
   /** Testlabor S1: rounds of each first attempt won, in run order (for p10/p50/p90) */
   winTurns: number[];
   /** Testlabor S1: side objective id → runs whose won attempt fulfilled it (out of `cleared`) */
@@ -153,6 +156,8 @@ export interface CampaignSim {
   spent: { heal: number; buy: number; upgrade: number; rooms: number; hire: number; craft: number; sparks: number };
   /** story 11.28: mercenaries the home heuristic hired over the act (all runs) */
   hired: number;
+  /** story 16.5: weapon chronicle at the end of every run (finished or not): kills and epithets of all weapons, summed over the runs */
+  chronicle: { kills: number; epithets: number };
   /** haunts played between the missions (all runs): played, won, gold they paid, fallen companions */
   haunts: { played: number; won: number; gold: number; fallen: number };
   /** story 11.4: runs that reached the aimed act, summed army level and gold when its first node comes up (after the camp and haunts) */
@@ -486,6 +491,12 @@ function firstPlayable(data: GameData, c0: CampaignState, order?: string[]): Cam
   return undefined;
 }
 
+/** Story 16.5: kills and epithets over every weapon of the company (equipment, bags, convoy). */
+export function weaponChronicle(c: CampaignState): { kills: number; epithets: number } {
+  const all = [...c.roster.flatMap((u) => [...Object.values(u.equip), ...u.bag]), ...c.convoy];
+  return { kills: all.reduce((n, i) => n + (i?.kills ?? 0), 0), epithets: all.filter((i) => i?.epithet).length };
+}
+
 const emptySim = (): CampaignSim => ({
   missions: [],
   finished: 0,
@@ -493,6 +504,7 @@ const emptySim = (): CampaignSim => ({
   endArmyLevel: 0,
   spent: { heal: 0, buy: 0, upgrade: 0, rooms: 0, hire: 0, craft: 0, sparks: 0 },
   hired: 0,
+  chronicle: { kills: 0, epithets: 0 },
   haunts: { played: 0, won: 0, gold: 0, fallen: 0 },
   entry: { runs: 0, armyLevel: 0, gold: 0 },
   skipped: {},
@@ -571,7 +583,7 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
         missions.get(id) ??
         missions
           .set(id, {
-            node: id, map: node.map, expectedLevel: nodeLevel(data, c, node), reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, rooms: 0, materials: 0, deaths: 0, reserve: 0, reserveLevel: 0, reserveExp: 0,
+            node: id, map: node.map, expectedLevel: nodeLevel(data, c, node), reached: 0, wins: 0, downs: 0, gold: 0, sideGold: 0, cleared: 0, armyLevel: 0, rooms: 0, materials: 0, deaths: 0, reserve: 0, reserveLevel: 0, reserveExp: 0, kills: 0, epithets: 0,
             turns: 0, actions: 0, deployed: 0, phases: 0, phaseSingle: 0, phaseMarch: 0, phaseSingleMax: 0, phaseMarchMax: 0, phaseShown: 0, phaseShownMax: 0,
             winTurns: [], side: Object.fromEntries(data.maps[node.map]!.objectives.side.map((s) => [s.id, 0])), hauntsBefore: 0, goldBefore: 0,
           })
@@ -625,6 +637,10 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
       m.gold += won.result.gold;
       m.sideGold += sideGoldOf(won.result);
       m.deaths += won.result.fallen.length;
+      const chronBefore = weaponChronicle(c);
+      const chronAfter = weaponChronicle(won.campaign);
+      m.kills += chronAfter.kills - chronBefore.kills;
+      m.epithets += chronAfter.epithets - chronBefore.epithets;
       // story 10.8: the reserve of the won attempt, also without a training ground (then it got no EP)
       const given = new Map(won.result.reserve.map((r) => [r.unit, r.exp]));
       for (const u of reserveOf(won.campaign, won.deployed)) {
@@ -644,6 +660,9 @@ export function simulateCampaign(data: GameData, o: CampaignSimOptions): Campaig
       out.endGold += c.gold;
       out.endArmyLevel += armyLevel(data, c);
     }
+    const chron = weaponChronicle(c);
+    out.chronicle.kills += chron.kills;
+    out.chronicle.epithets += chron.epithets;
   }
   out.missions = [...missions.values()];
   return out;
@@ -665,6 +684,7 @@ export function mergeCampaignSims(parts: CampaignSim[]): CampaignSim {
     out.endArmyLevel += p.endArmyLevel;
     out.hired += p.hired;
     sumInto(out.spent, p.spent);
+    sumInto(out.chronicle, p.chronicle);
     sumInto(out.haunts, p.haunts);
     sumInto(out.entry, p.entry);
     for (const [id, n] of Object.entries(p.skipped)) out.skipped[id] = (out.skipped[id] ?? 0) + n;

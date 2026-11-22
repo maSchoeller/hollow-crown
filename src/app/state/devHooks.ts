@@ -246,6 +246,78 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'troop' };
       },
       /**
+       * story 16.14: the weapon view with `itemId` (default: the steel axe) in the convoy, `runeId` in its large and
+       * `smallId` in its small setting (a rune id, or null for an empty one), twelve kills and an epithet. Unsaved campaign.
+       * `__hc.devWeapon()`, `__hc.devWeapon('iron_shield', 'wind_rune_2')`, `__hc.devWeapon('steel_axe', 'fire_rune_3')`.
+       */
+      devWeapon: async (itemId = 'steel_axe', runeId: string | null = 'fire_rune_2', smallId: string | null = 'edge_rune') => {
+        if (data.releasedActs?.includes(2)) await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { kind: 'castle', rooms: { enchanter: 1, smith: 1 } };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        const inst = newItem(c, itemId, data);
+        inst.runes = [runeId, smallId].filter((r, i) => (i === 0 || r) && (!r || data.runes[r])).slice(0, 2);
+        inst.kills = 12;
+        inst.epithet = { kind: 'holder', by: c.roster[0]!.id, word: 0 };
+        c.convoy.push(inst);
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'weapon', item: inst.uid, back: { name: 'troop' } };
+      },
+      /**
+       * story 16.16: the enchanter's workbench of act 2 with Rhen carrying `itemId` (default the hammer: an axe v2 model with two settings) and a vault of
+       * stones in the convoy; `stoneId` lays that rune in as a probe (so the probe and the change list show),
+       * Unsaved campaign. `__hc.devEnchanter()`, `__hc.devEnchanter('hammer', 'water_rune_2')`.
+       */
+      devEnchanter: async (itemId = 'hammer', stoneId: string | null = null) => {
+        if (data.releasedActs?.includes(2)) await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { kind: 'castle', rooms: { enchanter: 2, smith: 1 } };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        c.gold = 3000;
+        const owner = c.roster[0]!;
+        const piece = newItem(c, itemId, data);
+        const slot = data.items[itemId]?.kind === 'shield' ? 'offHand' : 'mainHand';
+        owner.equip[slot] = piece;
+        // fire I x3 (ready to merge), fire II, water I, earth I x2, wind I, light I and two auxiliary runes
+        for (const id of ['fire_rune_1', 'fire_rune_1', 'fire_rune_1', 'fire_rune_2', 'water_rune_1', 'earth_rune_1', 'earth_rune_1', 'wind_rune_1', 'light_rune_1', 'edge_rune', 'precision_rune'])
+          if (data.runes[id]) c.convoy.push(newItem(c, id, data));
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'camp', tab: 'enchanter', unit: owner.id, item: piece.uid, ...(stoneId ? { stone: stoneId } : {}) };
+      },
+      /**
+       * story 16.18: the armoury of the castle: Dragon Ember in the convoy, Hask's Tinder worn by Rhen with a wind rune, a second signature
+       * (Wolf Fang) in the convoy, the Pact Warden's shield still hidden and a lieutenant in reach (2 routs). Unsaved campaign.
+       * `__hc.devArmory()`; `__hc.devArmory(false)` leaves the screen on the castle, where the stone and banners hang over the keep.
+       */
+      devArmory: async (openScreen = true) => {
+        if (data.releasedActs?.includes(2)) await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { kind: 'castle', rooms: {} };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        const owner = c.roster[0]!;
+        const tinder = newItem(c, 'tinder', data);
+        if (data.runes['wind_rune_1']) tinder.runes[0] = 'wind_rune_1';
+        owner.equip.mainHand = tinder;
+        for (const id of ['dragon_ember', 'wolf_fang']) if (data.items[id]) c.convoy.push(newItem(c, id, data));
+        // a lieutenant who is met and not yet beaten often enough to drop his signature
+        const lt = Object.values(data.lieutenants).find((l) => !['tinder', 'wolf_fang'].includes(l.signatureItem));
+        if (lt) c.lieutenants = { ...c.lieutenants, [lt.id]: { met: true, encounters: 2, grudge: 0, routs: 2, signatureDropped: false } };
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = openScreen ? { name: 'armory' } : { name: 'camp' };
+      },
+      /**
        * story 10.7: the memorial hall of act 2 at `level` with Gerrit's stone, fallen Fenn (scout) and a fallen mercenary marksman,
        * ready to pass on a lesson; `given = true` passes Fenn's lesson to Tobin first. Unsaved campaign.
        */

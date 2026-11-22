@@ -5,12 +5,88 @@ import { HANDBOOK_FORMATS, HANDBOOK_GRAPHICS } from '../core/renderDefs';
 import { slugId, weaponGroup, weaponType } from './schemaBase';
 
 const qualityLevel = z.object({ maxDpr: z.number().positive(), shadowMap: z.number().int().min(0) });
-const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
+const gripKind = z.enum(['fist', 'flat', 'bow', 'lute']);
+const stanceKind = z.enum(['lance', 'staff', 'blade', 'axe', 'bow', 'book', 'lute']);
+const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), modelOpen: z.string().regex(/^[a-z0-9_]+$/).optional(), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), grip: gripKind, stance: stanceKind.optional(), stanceMod: z.literal('shield').optional() });
+const itemPiece = z.object({ model: z.string().regex(/^sig\/[a-z0-9_]+$/), hand: z.enum(['left', 'right']).optional(), motion: z.string().regex(/^[a-z]+$/).optional(), grip: gripKind.optional() });
 const partPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), socket: z.enum(['back', 'head']) });
 const decorSchema = z.object({ model: z.string(), map: z.number().min(0).max(1), scenery: z.number().min(0).max(1), scale: z.tuple([z.number().positive(), z.number().positive()]) });
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 const unit = z.number().min(0).max(1);
+const metalTint = z.object({ tint: hex, sheen: z.number().min(0).max(1) });
+const runeGlowSchema = z.object({
+  colors: z.object({ fire: hex, wind: hex, earth: hex, water: hex, light: hex, dark: hex, utility: hex }),
+  gold: hex,
+  empty: hex,
+  fillThresholds: z.tuple([unit, unit, unit]).refine((t) => t[0] < t[1] && t[1] <= t[2], 'thresholds must rise'),
+  edge: z.number().min(0).max(0.5),
+  floor: unit,
+  state: z.object({ dim: unit, full: unit }).refine((s) => s.dim <= s.full, 'dim above full'),
+  pulse: z.object({ periodMs: z.number().int().min(100), amplitude: unit }),
+  stone: z.object({ body: unit, symbolLift: unit, coreLift: unit, selfLit: unit }),
+  metals: z.object({ satLimit: z.number().positive().max(1), iron: metalTint, steel: metalTint, silver: metalTint }),
+});
+const stageLight = z.object({ color: hex, intensity: z.number().min(0), direction: z.tuple([z.number(), z.number(), z.number()]) });
+const itemStageSchema = z.object({
+  fov: z.number().min(5).max(80),
+  margin: z.number().min(1).max(4),
+  startPitchDeg: z.number().min(-80).max(80),
+  tiltLimitDeg: z.number().min(10).max(89),
+  spinDegPerSec: z.number().min(0),
+  dragDegPerPx: z.number().positive(),
+  dampingPerSec: z.number().positive(),
+  restDegPerSec: z.number().min(0),
+  doubleTapMs: z.number().int().min(100),
+  tapSlopPx: z.number().min(0),
+  resetMs: z.number().int().min(0),
+  growMs: z.number().int().min(0),
+  fuseMs: z.number().int().min(0),
+  models: z.record(z.string().regex(/^[a-z0-9_]+$/), z.object({ yaw: z.number().min(-360).max(360), upright: z.boolean().optional() })),
+  lights: z.object({ ambient: z.object({ color: hex, intensity: z.number().min(0) }), key: stageLight, rim: stageLight }),
+});
+const vec3 = z.tuple([z.number(), z.number(), z.number()]);
+const armorySchema = z.object({
+  fov: z.number().min(5).max(80),
+  camera: z.object({ height: z.number(), distance: z.number().positive(), aimY: z.number() }),
+  wheelRadius: z.number().positive(),
+  standRadius: z.number().positive(),
+  standHeight: z.number().positive(),
+  ringWidth: z.number().positive(),
+  pieceSize: z.number().positive(),
+  pieceLift: z.number().min(0),
+  frontScale: z.number().min(1),
+  frontLift: z.number().min(0),
+  spinDegPerSec: z.number().min(0),
+  dragDegPerPx: z.number().positive(),
+  flingSeconds: z.number().min(0),
+  snapMs: z.number().int().min(0),
+  tapSlopPx: z.number().min(0),
+  plateAnchorY: z.number(),
+  plateReach: z.number().int().min(0),
+  colors: z.object({ ringGold: hex, ringEmpty: hex, ghost: hex, stone: hex, wall: hex, floor: hex, wheel: hex }),
+  ghostAlpha: z.number().min(0.05).max(1),
+  pillars: z.number().int().min(0).max(24),
+  pillarRadius: z.number().positive(),
+  hall: z.object({ radius: z.number().positive(), height: z.number().positive() }),
+  lights: z.object({
+    ambient: z.object({ color: hex, intensity: z.number().min(0) }),
+    key: stageLight,
+    spot: z.object({ color: hex, intensity: z.number().min(0), height: z.number().positive(), angleDeg: z.number().min(5).max(120), exponent: z.number().min(0) }),
+  }),
+  banners: z.object({
+    gold: hex,
+    anchor: vec3,
+    width: z.number().positive(),
+    height: z.number().positive(),
+    gap: z.number().min(0),
+    perRow: z.number().int().min(1),
+    rowGap: z.number().positive(),
+    swayDeg: z.number().min(0),
+    periodMs: z.number().int().min(200),
+  }),
+  pinLift: z.number(),
+});
 const teamLook = z.object({ ui: hex, ramp: z.tuple([hex, hex, hex, hex]) });
 const timeOfDayDef = z.object({
   ambient: z.object({ color: hex, intensity: z.number().min(0) }),
@@ -70,6 +146,16 @@ const legibilitySchema = z.object({
   }),
   reach: z.object({ color: hex, strength: unit }),
   terrainWarn: z.object({ color: hex, alpha: unit, pulse: unit }),
+  terrainLens: z.object({
+    cover: tint,
+    slow: tint,
+    harm: tint,
+    fast: tint.extend({ stripe: z.number().positive(), gap: z.number().positive() }),
+    blocked: tint.extend({ stripe: z.number().positive(), gap: z.number().positive() }),
+    neutral: tint,
+    holdMs: ms,
+    hintMs: ms,
+  }),
   trap: z.object({ color: hex, outline: hex, alpha: unit, radius: z.number().positive(), width: z.number().positive(), jaw: z.number().min(0) }),
   hpBar: z.object({ tick: z.number().int().positive(), tickWide: z.number().int().positive(), wideFrom: z.number().int().positive(), critical: unit, widthTiles: z.number().positive(), minPx: z.number().positive(), maxPx: z.number().positive(), heightPx: z.number().positive(), lift: z.number().min(0) }),
   view: z.object({ wholeMapMargin: z.number().min(0) }),
@@ -106,6 +192,7 @@ export const renderSchema = z.object({
     vat: z.boolean(),
     warm: z.union([z.literal(0), z.literal(1), z.literal(2)]),
     tintPool: z.number().int().nonnegative(),
+    stance: z.object({ switchS: z.number().positive(), gestureEveryS: z.tuple([z.number().positive(), z.number().positive()]).refine((g) => g[0] <= g[1], 'min above max') }),
     precompileMs: z.number().int().min(0),
     sceneryPropsLow: z.number().int().min(0),
     sceneryVariants: z.number().int().min(1),
@@ -135,11 +222,17 @@ export const renderSchema = z.object({
     decorOn: z.record(z.string(), z.array(decorSchema)),
   }),
   look: lookSchema,
+  itemStage: itemStageSchema,
+  armory: armorySchema,
   gear: z.object({
     weapons: z.partialRecord(weaponType, gearPiece),
     offHand: z.partialRecord(weaponGroup, gearPiece),
+    /** story 16.8: single items (signature weapons, relics) with their own model, keyed by item id */
+    items: z.record(z.string().regex(/^[a-z0-9_]+$/), itemPiece),
     /** story 10.13: attached part per pro path, keyed by the `proPart` of the class */
     proParts: z.record(z.string().regex(/^[a-z0-9_]+$/), partPiece),
+    /** story 16.6: glow of the rune weapons (channel and stones), metal tints */
+    rune: runeGlowSchema,
   }),
   legibility: legibilitySchema,
   quality: z.object({ high: qualityLevel, mid: qualityLevel, low: qualityLevel }),

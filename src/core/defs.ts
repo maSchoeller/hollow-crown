@@ -85,6 +85,13 @@ export interface ItemDef {
   weaponType?: WeaponType;
   /** weapon group: required for weapons, tomes, staves and shields; foci and lutes are accessories with a group */
   group?: WeaponGroup;
+  /** story 16.6: the metal a weapon or shield is made of; the board tints the model (`render.yaml` `gear.rune.metals`), the form stays. Without: steel */
+  metal?: MetalId;
+  /**
+   * story 16.8: the rune a signature weapon or relic shows in its main setting when no rune sits there; a list gives one rune per relic
+   * stage (stage 1 first). Display only: no rule effect, `ItemInstance.runes` stays as it is [ASSUMPTION].
+   */
+  fixedRune?: string | string[];
   damageType?: 'physical' | 'magical';
   element?: Element;
   mt?: number;
@@ -376,14 +383,60 @@ export interface SkillDef {
   target?: { ally?: boolean; adjacent?: boolean; exhausted?: boolean };
 }
 
-/** A weapon library model (art/models/weapons/<model>.glb), the hand it is held in and its attack animation. */
+/** Story 16.6: the metals a rune weapon is told apart by (tint, same form). */
+export const METALS = ['iron', 'steel', 'silver'] as const;
+export type MetalId = (typeof METALS)[number];
+
+/** One rune in a rune weapon's setting: its id (file `models/runes-v2/<id>.glb`), element (`utility`: auxiliary rune) and tier 1-3. */
+export interface RuneLook {
+  id: string;
+  element: Element | 'utility';
+  tier: 1 | 2 | 3;
+}
+
+/**
+ * What a rune weapon shows besides its form (story 16.6, made by the board from the item instance, never from render.yaml):
+ * the metal, the rune in the main setting (it also lights the channel), the rune in the small setting (auxiliary runes) and
+ * whether the item has that second setting (two rune slots, `rarityRuneSlots`).
+ */
+export interface GearRunes {
+  metal: MetalId;
+  main: RuneLook | null;
+  small: RuneLook | null;
+  smallSlot: boolean;
+}
+
+/** How a hand closes on a held model (story 16.9, Art Direction §4.5): fist round a shaft or hilt, flat hand under a book, bow grip, half fist on a lute neck. */
+export type GripKind = 'fist' | 'flat' | 'bow' | 'lute';
+/** story 16.10: the stance a held piece gives its figure (clip keys rest_<stance> ..., tools/art/stance_poses.py); none = no weapon */
+export type StanceKind = 'lance' | 'staff' | 'blade' | 'axe' | 'bow' | 'book' | 'lute';
+
+/** A weapon library model (art/models/weapons-v2/<model>.glb, the rune weapons), the hand it is held in and its attack animation. */
 export interface GearPiece {
   model: string;
+  /** story 16.10: the open state of a book (`models/weapons-v2/<modelOpen>.glb`); loads with the closed model (hidden) and replaces it while the figure is in its ready stance */
+  modelOpen?: string;
   hand: 'left' | 'right';
   /** the figure plays attack_<motion> instead of attack, if it has it (art-direction §4.5) */
   motion?: string;
-  /** degrees about the hand socket's X outside attacks: the model is built in its striking grip */
-  hold?: number;
+  /** story 16.9: how the hand closes on the model (finger poses `grip_<kind>` of the figure, tools/art/grip_poses.py) */
+  grip: GripKind;
+  /** story 16.10: the stance of a main weapon, or of an off-hand piece that sets its own (lute, focus: it replaces the weapon's) */
+  stance?: StanceKind;
+  /** story 16.10: `shield` adds the shield arm to the stance (clip key `<stance>_shield`) */
+  stanceMod?: 'shield';
+  /** runtime only (`gearOf` of the board): metal and runes of the item in this hand, for rune weapons */
+  rune?: GearRunes;
+  /** runtime only (`modelFor`, story 16.8): the group model to show when the item's own model is not loaded (on demand, offline) */
+  fallback?: string;
+}
+
+/** Story 16.8: the model of one item (`render.yaml` `gear.items`); what it leaves out (hand, motion, grip) the group's piece gives. */
+export interface GearItemPiece {
+  model: string;
+  hand?: 'left' | 'right';
+  motion?: string;
+  grip?: GripKind;
 }
 
 /** Story 10.13: the visible part of a pro path, hung on a body socket of the figure (`render.yaml` `gear.proParts`). */
@@ -398,10 +451,10 @@ export type FigurePiece = GearPiece | PartPiece;
 /** The socket a piece hangs on, as `tools/art/prepare_tripo_unit.py` names it. */
 export function socketName(piece: FigurePiece): string {
   if ('socket' in piece) return `socket_${piece.socket}`;
-  return piece.hand === 'right' ? 'socket_r' : 'socket_l';
+  return piece.hand === 'right' ? 'grip_r' : 'grip_l';
 }
 
 /** The folder of a piece's model below `public/assets/models/`. */
-export function pieceFolder(piece: FigurePiece): 'weapons' | 'parts' {
-  return 'socket' in piece ? 'parts' : 'weapons';
+export function pieceFolder(piece: FigurePiece): 'weapons-v2' | 'parts' {
+  return 'socket' in piece ? 'parts' : 'weapons-v2';
 }

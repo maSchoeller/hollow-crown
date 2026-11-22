@@ -1,0 +1,77 @@
+/* Person bar (story 16.17, DESIGN `person-bar`): a fixed cream strip, outline below, medallions 40 px, the chosen one with an ember ring. */
+.pbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: grid;
+  gap: 6px;
+  padding: 8px 4px 6px;
+  background: var(--hc-cream-2);
+  border-bottom: var(--hc-outline-small) solid var(--hc-line);
+  border-radius: var(--hc-r-chip) var(--hc-r-chip) 0 0;
+}
+.pbar__meds {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  overflow-x: auto;
+  padding: 2px 2px 3px;
+}
+.pbar__med {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  width: 48px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--hc-line);
+  font: 700 11px var(--hc-font-label);
+  cursor: pointer;
+}
+.pbar__med .trp-head,
+.pbar__face {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: var(--hc-outline-small) solid var(--hc-line);
+  background: var(--hc-cream);
+  overflow: hidden;
+}
+.pbar__med[aria-pressed='true'] .trp-head,
+.pbar__med[aria-pressed='true'] .pbar__face {
+  border: 3px solid var(--hc-ember);
+  box-shadow: 0 0 0 2px var(--hc-line);
+}
+.pbar__med[aria-pressed='true'] {
+  color: var(--hc-ember-dark);
+}
+.pbar__label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pbar__who {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  font-size: 12.5px;
+}
+.pbar__who b {
+  font-family: var(--hc-font-name);
+  font-size: 15px;
+}
+.pbar__sub {
+  color: var(--hc-soft);
+}
+.pbar__worn {
+  margin-left: auto;
+  display: flex;
+  gap: 3px;
+}

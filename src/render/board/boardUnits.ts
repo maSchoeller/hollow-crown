@@ -3,11 +3,15 @@
  * Part of the class chain BoardBase → BoardSetup → BoardProps → BoardUnits → BoardCamera → BoardFrame → BoardView.
  */
 import { timerLook } from './aiPacing';
+import './costMarks.css';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { BattleState, BattleUnit, FigurePiece, GearPiece, PartPiece, Pos, StatusId } from '../../core';
-import { bleedsOut, itemDef, maxHpOf, modelId, shadowHidden, unitFigureId, unitVatPath } from '../../core';
+import { bleedsOut, itemDef, maxHpOf, modelId, runeSlotCount, shadowHidden, unitFigureId, unitVatPath } from '../../core';
 import { loadManifest, loadUnitSheet } from '../shared/assets';
 import { loadUnitModel } from '../shared/models';
+import { fixedRuneOf, modelFor } from '../shared/gearModel';
+import { gearRunesOf, glowState, runeKey, runeLookOf } from '../shared/runeLook';
+import { stanceKeyOf } from '../shared/stance';
 import { ModelFigure, SpriteFigure, type Figure, type FigureAnim } from '../shared/figures';
 import { buildGridMesh, buildOverlayMeshes, type Overlays } from './overlays';
 import type { HpBarMode, KillKind } from './badges';
@@ -27,8 +31,8 @@ export abstract class BoardUnits extends BoardProps {
 
   /** Weapon model of the equipped weapon group (GA9); its motion picks the figure's attack animation. */
   protected weaponOf(u: BattleUnit): GearPiece | undefined {
-    const main = u.equip.mainHand && itemDef(this.data, u.equip.mainHand).weaponType;
-    return main ? this.data.render.gear.weapons[main] : undefined;
+    const def = u.equip.mainHand && itemDef(this.data, u.equip.mainHand);
+    return def && def.weaponType ? modelFor(def, this.data.render.gear) : undefined;
   }
 
   /** Attached part of the unit's pro path (story 10.13); undefined for a class without one or an unknown part. */
@@ -42,21 +46,49 @@ export abstract class BoardUnits extends BoardProps {
    * the weapon first) and the attached part of the pro path (story 10.13).
    */
   protected gearOf(u: BattleUnit): FigurePiece[] {
-    const { offHand } = this.data.render.gear;
     const out: GearPiece[] = [];
     const w = this.weaponOf(u);
-    if (w) out.push(w);
-    const group = u.equip.offHand && itemDef(this.data, u.equip.offHand).group;
-    const off = group && offHand[group];
-    if (off && !out.some((p) => p.hand === off.hand)) out.push(off);
+    if (w) out.push(this.withRunes(w, u.equip.mainHand));
+    const offDef = u.equip.offHand && itemDef(this.data, u.equip.offHand);
+    const off = offDef && offDef.group ? modelFor(offDef, this.data.render.gear) : undefined;
+    if (off && !out.some((p) => p.hand === off.hand)) out.push(this.withRunes(off, u.equip.offHand));
     const part = this.proPartOf(u);
     return part ? [...out, part] : out;
   }
 
+  /** Story 16.10: the stance key of the unit's clips: main weapon, off-hand piece (a shield adds, a lute or focus replaces), `none` unarmed. */
+  protected stanceKeyOf(u: BattleUnit): string {
+    const offDef = u.equip.offHand && itemDef(this.data, u.equip.offHand);
+    const off = offDef && offDef.group ? modelFor(offDef, this.data.render.gear) : undefined;
+    return stanceKeyOf(this.weaponOf(u), off);
+  }
+
+  /** Story 16.6: a weapon piece carries the metal and runes of the item in that hand. */
+  private withRunes(piece: GearPiece, item: BattleUnit['equip'][keyof BattleUnit['equip']]): GearPiece {
+    if (!item) return piece;
+    const def = itemDef(this.data, item);
+    const rune = gearRunesOf(this.data.runes, item.runes, runeSlotCount(this.data, item), def.metal);
+    // story 16.8: a signature piece shows its fixed rune in the main setting while slot 0 holds none (display only; the relic stage comes from the battle)
+    const fixed = item.runes[0] ? null : runeLookOf(this.data.runes, fixedRuneOf(def, this.state?.relicStages?.[def.id] ?? 1));
+    return { ...piece, rune: fixed ? { ...rune, main: fixed } : rune };
+  }
+
+  /** The figure's rebuild key: models, hands, and the metal and runes of rune weapons (a changed rune builds the figure anew, story 16.6). */
   protected gearKey(u: BattleUnit): string {
-    return this.gearOf(u)
-      .map((p) => ('socket' in p ? `${p.model}@${p.socket}` : `${p.model}@${p.hand}`))
+    return [u.equip.mainHand?.def ?? '-', u.equip.offHand?.def ?? '-', ...this.gearOf(u)
+      .map((p) => ('socket' in p ? `${p.model}@${p.socket}` : `${p.model}@${p.hand}${runeKey(p.rune)}`))]
       .join();
+  }
+
+  /** Story 16.6: every figure's rune glow from the overlays: full for the uids of `Overlays.glow`, else dimmed. */
+  protected applyGlow(): void {
+    for (const [uid, v] of this.units) {
+      if (!v.figure.setRuneGlow && !v.figure.setStance) continue;
+      const state = glowState(this.overlays.glow, uid);
+      v.figure.setRuneGlow?.(state);
+      // story 16.10: the figure the glow marks as full (chosen, forecast) takes its ready stance
+      v.figure.setStance?.(state === 'full');
+    }
   }
 
   protected async makeFigure(u: BattleUnit, name: string): Promise<Figure> {
@@ -70,7 +102,8 @@ export abstract class BoardUnits extends BoardProps {
       const model = await loadUnitModel(this.store, mid, u.team, name, this.gearOf(u), manifestModels?.unitPacks, vatPath);
       if (model) {
         model.root.scaling.setAll(this.data.render.board.figureScale);
-        return new ModelFigure(model, this.weaponOf(u)?.motion, this.data.render.board.idleHz, this.data.render.board.tintPool);
+        const { switchS, gestureEveryS } = this.data.render.board.stance;
+        return new ModelFigure(model, this.weaponOf(u)?.motion, this.data.render.board.idleHz, this.data.render.board.tintPool, { key: this.stanceKeyOf(u), switchS, gestureEveryS });
       }
     }
     const weapon = u.equip.mainHand ? itemDef(this.data, u.equip.mainHand).weaponType : undefined;
@@ -158,6 +191,12 @@ export abstract class BoardUnits extends BoardProps {
       };
       this.units.set(u.uid, v);
       this.rings.add(u.uid, u.team);
+      // only 3D figures take these (a sprite figure has neither, so nothing is looked up for it)
+      if (figure.setRuneGlow || figure.setStance) {
+        const glow = glowState(this.overlays.glow, u.uid);
+        figure.setRuneGlow?.(glow);
+        figure.setStance?.(glow === 'full');
+      }
     }
     v.x = pos[0];
     v.y = pos[1];
@@ -234,6 +273,40 @@ export abstract class BoardUnits extends BoardProps {
     const old = this.pins.get(key);
     if (old && old.el === el && old.tile[0] === tile[0] && old.tile[1] === tile[1] && old.at.east === at.east && old.at.south === at.south && old.at.lift === at.lift) return;
     this.pins.set(key, { el, tile, at, x: NaN, y: NaN });
+    this.wake();
+  }
+
+  /**
+   * Cost marks of the move range (story 16.11): per field either dots (one per movement point) or a "½" pill at its lower right
+   * corner, DOM in the float layer pinned to the field. Rebuilt only when the marks changed.
+   */
+  protected syncCostMarks(marks: NonNullable<Overlays['costMarks']>): void {
+    const sig = marks.map((m) => `${m.at[0]},${m.at[1]}:${m.pips}:${m.label ?? ''}`).join('|');
+    if (sig === this.costSig) return;
+    this.costSig = sig;
+    for (const [key, el] of this.costEls) {
+      this.pins.delete(key);
+      el.remove();
+    }
+    this.costEls.clear();
+    for (const m of marks) {
+      const key = `cost:${m.at[0]},${m.at[1]}`;
+      const el = document.createElement('div');
+      el.className = 'hc-cost';
+      el.setAttribute('aria-hidden', 'true');
+      const inner = document.createElement('span');
+      if (m.pips) {
+        inner.className = 'hc-cost__pips';
+        for (let i = 0; i < m.pips; i++) inner.appendChild(document.createElement('i'));
+      } else {
+        inner.className = 'hc-cost__half';
+        inner.textContent = m.label;
+      }
+      el.appendChild(inner);
+      this.floatLayer.appendChild(el);
+      this.costEls.set(key, el);
+      this.pin(key, el, m.at, { east: 0.42, south: 0.42 });
+    }
     this.wake();
   }
 
@@ -418,6 +491,8 @@ export abstract class BoardUnits extends BoardProps {
 
   setOverlays(o: Overlays): void {
     this.overlays = o;
+    this.syncCostMarks(o.costMarks ?? []);
+    this.applyGlow();
     this.wake();
     this.buildOverlays();
     void this.updateGhost();

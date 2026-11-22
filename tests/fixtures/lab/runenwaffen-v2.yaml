@@ -1,0 +1,17 @@
+# Story 16.6: Runenwaffen v2 auf dem Brett (Axt, Schwert, Lanze, Schild) mit Steinen der Stufen I-III, Eisen und Stahl,
+# zweite Fassung bei seltenen Waffen, Gegnerwaffe mit Rune.
+#   Dev-Server, dann bei 375×812: http://localhost:5173/hollow-crown/?lab=runenwaffen-v2
+question: Sitzt die Rune in der Waffe, und glimmt sie gedämpft bzw. leuchtet bei Auswahl und Vorschau voll?
+map: m1_4_wolfslager
+seed: 5
+turn: 5
+units:
+  lucan: { at: [8, 6], items: [steel_sword], runes: { mainHand: [fire_rune_3] } }
+  tobin: { at: [6, 6], items: [iron_axe, tower_shield], runes: { mainHand: [water_rune_1], offHand: [light_rune_2] } }
+  brenna: { at: [9, 7], items: [horseslayer], runes: { mainHand: [wind_rune_2, precision_rune] } }
+  osric: { at: [9, 5], items: [armorpiercer], runes: { mainHand: [earth_rune_3, force_rune] } }
+  # Story 16.7: übrige Gruppen (Bogen, Dolch, Stab, Buch; den Fokus zeigt das Abnahmebild)
+  mira: { at: [7, 5], items: [steel_bow], runes: { mainHand: [fire_rune_2] } }
+  fenn: { at: [8, 5], items: [iron_dagger], runes: { mainHand: [water_rune_3] } }
+  liora: { at: [6, 5], items: [heal_staff], runes: { mainHand: [light_rune_1] } }
+  avatar: { at: [7, 6], items: [ember], runes: { mainHand: [fire_rune_1] } }

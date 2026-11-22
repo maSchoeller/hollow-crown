@@ -310,22 +310,6 @@
   font-weight: 700;
   font-size: 14px;
 }
-.hm-who {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 6px 4px;
-  border-radius: var(--hc-r-chip);
-  background: var(--hc-cream-2);
-}
-.hm-who__one {
-  display: grid;
-  justify-items: center;
-  gap: 2px;
-  font-family: var(--hc-font-label);
-  font-weight: 700;
-  font-size: 11px;
-}
 .hm-upbar {
   display: flex;
   align-items: center;
@@ -401,24 +385,6 @@
   align-items: center;
   gap: 2px;
   min-width: 0;
-}
-/* "ab Verzauberer Stufe n" under a rune that cannot be merged yet (story 10.6) */
-.hm-offer__name:has(.hm-offer__note) {
-  flex-wrap: wrap;
-}
-/* the merge button names its cost (story 10.6) and takes the row under the rune's name */
-.hm-offer--merge > :first-child {
-  grid-row: span 2;
-}
-.hm-offer--merge > button {
-  grid-column: 2 / -1;
-  justify-self: start;
-}
-.hm-offer__note {
-  flex-basis: 100%;
-  font-family: var(--hc-font-label);
-  font-size: 12px;
-  color: var(--hc-soft);
 }
 .hm-stat-line {
   display: flex;
@@ -666,26 +632,4 @@
   margin-left: auto;
   font-family: var(--hc-font-label);
   font-weight: 700;
-}
-/* merchant (story 10.9): the panel holds the ember moment; the total discount stands as a mark beside the tabs */
-.hm-merchant {
-  position: relative;
-}
-.hm-merchant__head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.hm-merchant__head > :first-child {
-  flex: 1;
-  min-width: 0;
-}
-.hm-discount {
-  flex: none;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--hc-positive-soft);
-  font-family: var(--hc-font-label);
-  font-weight: 700;
-  font-size: 12px;
 }

@@ -77,8 +77,8 @@ describe('2-7 "Das Kontor am Silbermeer": the crane lever', () => {
     expect(data.terrain.lever!.cost.foot).toBeNull();
     const fromSlot = way(s, 'lucan', BESIDE);
     expect(labUnit(s, 'lucan').pos).toEqual([7, 23]);
-    expect(fromSlot.cost).toBe(16);
-    expect(fromSlot.turns).toBe(4);
+    expect(fromSlot.cost).toBe(11);
+    expect(fromSlot.turns).toBe(3);
     expect(new Set(fromSlot.terrain)).toEqual(new Set(['plain', 'quay', 'road']));
   });
 
@@ -86,7 +86,7 @@ describe('2-7 "Das Kontor am Silbermeer": the crane lever', () => {
     const start = situation();
     for (const p of SPAN) expect(terrainAt(start, p)).toBe('river');
     // before the crane the north quay is only to be had over the bridge in the middle: a long way around
-    expect(way(start, 'avatar', [15, 11]).cost).toBe(13);
+    expect(way(start, 'avatar', [15, 11]).cost).toBe(10.5);
 
     const avatar = labUnit(start, 'avatar');
     expect(availableActions(data, start, avatar, avatar.pos!).some((a) => a.kind === 'lever')).toBe(false);
@@ -97,9 +97,9 @@ describe('2-7 "Das Kontor am Silbermeer": the crane lever', () => {
     expect(dialogues(events)).toEqual(['scn.m2_7.crane']);
     expect(state.firedTriggers).toContain('t_crane');
     for (const p of SPAN) expect(terrainAt(state, p)).toBe('footbridge');
-    // and now the span is the short way to the north quay, four steps straight north
+    // and now the span is the short way to the north quay, four steps straight north (three of them on the footbridge at ½, story 16.1)
     const crossing = way(state, 'avatar', [15, 11]);
-    expect(crossing.cost).toBe(4);
+    expect(crossing.cost).toBe(2.5);
     expect(crossing.terrain).toEqual(['footbridge', 'footbridge', 'footbridge', 'quay']);
     // the lever stays down, so the trigger never fires a second time
     expect(state.objects.find((o) => o.id === 'l_crane')!.state).toBe('open');
@@ -122,8 +122,8 @@ describe('2-8 "Kronfeld": the ford in the east', () => {
     expect(data.terrain.shallows!.cost).toMatchObject({ foot: 3, armored: null });
     const fromSlot = way(s, 'lucan', FORD);
     expect(labUnit(s, 'lucan').pos).toEqual([12, 18]);
-    expect(fromSlot.cost).toBe(26);
-    expect(fromSlot.turns).toBe(6);
+    expect(fromSlot.cost).toBe(20.5);
+    expect(fromSlot.turns).toBe(5);
     expect(fromSlot.terrain.at(-1)).toBe('shallows');
   });
 
@@ -214,8 +214,8 @@ describe('N6 "Die Gauklertruppe": the stage of the troupe', () => {
     expect([terrainAt(s, STAIRS), terrainAt(s, STAGE)]).toEqual(['stairs', 'terrace']);
     const fromSlot = way(s, 'lucan', STAGE);
     expect(labUnit(s, 'lucan').pos).toEqual([8, 15]);
-    expect(fromSlot.cost).toBe(13);
-    expect(fromSlot.turns).toBe(3);
+    expect(fromSlot.cost).toBe(8.5);
+    expect(fromSlot.turns).toBe(2);
     expect(fromSlot.terrain.slice(-2)).toEqual(['stairs', 'terrace']);
     // the troupe master waits up there, so whoever climbs the stage stands next to her
     expect(labUnit(s, 'troupe_master').pos).toEqual([10, 5]);

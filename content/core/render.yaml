@@ -119,6 +119,9 @@ board:
   vat: true                               # Story 7.8: Figuren mit .vat-Datei (Bild-zu-3D) laufen als gebackene Vertex-Animation statt als Skelett; false = Skelettpfad (Messvergleich)
   warm: 2                                 # Story 7.8: wie viel beim Laden vorgewärmt wird: 0 = nur Vorkompilieren, 1 = + Blitz-/Verblass-Varianten und Requisiten-Zwillinge, 2 = + Aufwärm-Zeichnen
   tintPool: 24                            # Story 7.8: so viele Blitz-/Verblassen-Materialien je (Textur, Fall) bleiben für die nächsten Treffer erhalten, statt je Treffer neu erzeugt zu werden
+  stance:                                 # Story 16.10: Ruhe und Kampfhaltung der Figuren; switchS = Dauer des Wechsels (ready_in_<s>, s), gestureEveryS = Abstand zwischen zwei Ruhe-Gesten [min, max] in s
+    switchS: 0.25
+    gestureEveryS: [6, 10]
   precompileMs: 8000                      # Story 7.7: so lange wartet das Brett beim Laden höchstens auf das Vorkompilieren der Shader
   figureScale: 1.3                        # D4: 3D-Figuren gegenüber dem Blender-Maßstab, damit sie wie die Sprites ~80 % eines Felds füllen
   # Story 8.10: Requisiten vor oder auf dem Feld einer Einheit werden halbdurchsichtig. alpha = Deckkraft der verblassten
@@ -238,6 +241,18 @@ legibility:
   reach: { color: "#E0473A", strength: 0.38 }
   # Story 11.10: Warnung vor einem Geländewechsel (set_terrain mit warn): Streifen auf dem Brett und Kante der HUD-Zeile, eine Farbe
   terrainWarn: { color: "#E8A317", alpha: 0.75, pulse: 0.2 }
+  # Story 16.11: Gelände-Linse (DESIGN.md terrain-lens). Fläche je Feld nach Wirkung für „zu Fuß“: Schutz grün, langsam gold, Schaden rot, schnell Creme-Streifen,
+  # gesperrt dunkle Schraffur 45°, neutrale Felder leicht abgedunkelt; zwei Wirkungen teilen das Feld diagonal. stripe/gap = Streifenbreite und Abstand in Feldern.
+  # holdMs = Haltedauer am Knopf „Gefahr“, bis die Linse an- oder ausgeht; hintMs = so lange steht der Einmal-Hinweis
+  terrainLens:
+    cover: { color: "#2F8A4C", alpha: 0.55 }
+    slow: { color: "#D9A931", alpha: 0.6 }
+    harm: { color: "#B83A2E", alpha: 0.6 }
+    fast: { color: "#FFF8EC", alpha: 0.8, stripe: 0.11, gap: 0.11 }
+    blocked: { color: "#3C3228", alpha: 0.6, stripe: 0.09, gap: 0.2 }
+    neutral: { color: "#281E14", alpha: 0.22 }
+    holdMs: 400
+    hintMs: 7000
   # Story 10.5: eigene Falle auf Feldhöhe (nur die Spielerseite sieht sie): dunkle Kontur, rostfarbener Ring, Zähne nach innen (jaw = Länge)
   trap: { color: "#C0703A", outline: "#2B1E16", alpha: 0.95, radius: 0.3, width: 0.06, jaw: 0.1 }
   # Story 13.3: Lebensleiste über dem Kopf. tick = Teilstrich je so viele TP, ab wideFrom max. TP je tickWide; critical = Anteil der max. TP,
@@ -247,29 +262,73 @@ legibility:
   view: { wholeMapMargin: 1 }
   doubleTapMs: 300
 
-# GA9 (concept/23-art-direction §4.2): sichtbares Waffenteil je Waffengruppe der ausgerüsteten Waffe bzw. je Art des
-# Gegenstands in der Nebenhand. model = art/models/weapons/<model>.glb (tools/art/blender_weapons.py), hand = Hand-Sockel
-# der Figur, motion = eigene Angriffsanimation attack_<motion> (§4.5; ohne: der Schwerthieb), hold = Drehung in Grad um die
-# X-Achse des Sockels außerhalb des Angriffs (das Modell ist im Angriffsgriff gebaut). Nur Bild-zu-3D-Figuren haben
-# Sockel; die Blender-Figuren tragen ihre Waffe fest im Modell.
+# GA9 (concept/23-art-direction §4.2, §4.7): sichtbares Waffenteil je Waffengruppe der ausgerüsteten Waffe bzw. je Art des
+# Gegenstands in der Nebenhand. model = art/models/weapons-v2/<model>.glb (tools/art/blender_weapon_<gruppe>.py, Runenwaffen mit
+# Fassung und Rinne, Stories 16.6/16.7), modelOpen = aufgeschlagenes Buch (Umschalten: Story 16.10), hand = Hand-Sockel
+# der Figur (Griff-Sockel `grip_r`/`grip_l` in der Handfläche, Rahmen: tools/art/prepare_tripo_unit.py sockets(); das Modell trägt seinen
+# Griffpunkt als Node `grip`, tools/art/weapon_grip_nodes.py), motion = eigene Angriffsanimation attack_<motion> (§4.5; ohne: der
+# Schwerthieb), grip = Griffart (Story 16.9, Fingerposen in allen Clips, tools/art/grip_poses.py): fist | flat | bow | lute.
+# stance = Haltungsart (Story 16.10, Ruhe/Gesten/Kampfhaltung als Clips `rest_<stance>` ..., Daten in tools/art/stance_poses.py): lance | staff |
+# blade | axe | bow | book | lute; steht sie an einem Nebenhand-Stück (lute, focus), ersetzt sie die Haltung der Hauptwaffe. stanceMod: shield
+# macht aus `<stance>` den Clipschlüssel `<stance>_shield` (Schildarm). tools/art/tripo_units.py liest beides, um je Figur nur die Haltungen
+# ihrer Klassen zu backen. Nur Bild-zu-3D-Figuren haben Sockel; die Blender-Figuren tragen ihre Waffe fest im Modell.
 gear:
   weapons:
-    sword: { model: sword, hand: right }
-    dagger: { model: dagger, hand: right }   # ohne eigene Bewegung: der Schwerthieb (ein Dolchstich ist noch nicht animiert)
-    lance: { model: lance, hand: right, motion: thrust, hold: -125 }
-    axe: { model: axe, hand: right, motion: chop }
-    bow: { model: bow, hand: left, motion: shoot }
-    anima: { model: book, hand: left, motion: cast }
-    light: { model: book, hand: left, motion: cast }
-    dark: { model: book, hand: left, motion: cast }
-    staff: { model: staff, hand: right, motion: cast }
+    sword: { model: sword, hand: right, grip: fist, stance: blade }
+    dagger: { model: dagger, hand: right, grip: fist, stance: blade }   # ohne eigene Bewegung: der Schwerthieb (ein Dolchstich ist noch nicht animiert)
+    lance: { model: lance, hand: right, motion: thrust, grip: fist, stance: lance }
+    axe: { model: axe, hand: right, motion: chop, grip: fist, stance: axe }
+    bow: { model: bow, hand: left, motion: shoot, grip: bow, stance: bow }
+    anima: { model: book, modelOpen: book_open, hand: left, motion: cast, grip: flat, stance: book }
+    light: { model: book, modelOpen: book_open, hand: left, motion: cast, grip: flat, stance: book }
+    dark: { model: book, modelOpen: book_open, hand: left, motion: cast, grip: flat, stance: book }
+    staff: { model: staff, hand: right, motion: cast, grip: fist, stance: staff }
   offHand:
-    shield: { model: shield, hand: left }
-    lute: { model: lute, hand: left }   # nach Waffengruppe des Gegenstands (Nebenhand), nicht nach kind: Laute und Fokus sind beide Zubehör
+    shield: { model: shield, hand: left, grip: fist, stanceMod: shield }
+    lute: { model: lute, hand: left, grip: lute, stance: lute }   # nach Waffengruppe des Gegenstands (Nebenhand), nicht nach kind: Laute und Fokus sind beide Zubehör
+    focus: { model: focus, hand: left, grip: flat, stance: book }
+  # Story 16.8: Signaturwaffen und Relikte mit eigenem Modell (art/models/weapons-v2/sig/<id>.glb, tools/art/blender_weapon_signatures.py), Schlüssel = Item-Id.
+  # Hand, Bewegung und Haltung kommen von der Gruppe des Items (Armbrüste: Bogen); `modelFor` (src/render/shared/gearModel.ts) löst auf, Brett und
+  # alle Ansichten lesen dieselbe Quelle. dragon_ember ist ein Schmuckstück: nur für Ansichten, nie am Brett.
+  items:
+    tinder: { model: sig/tinder }
+    bounty: { model: sig/bounty }
+    wolf_fang: { model: sig/wolf_fang }
+    little_hands: { model: sig/little_hands }
+    rowenas_lance: { model: sig/rowenas_lance }
+    wasp_sting: { model: sig/wasp_sting }
+    gold_hook: { model: sig/gold_hook }
+    dravns_oath: { model: sig/dravns_oath }
+    magpie: { model: sig/magpie }
+    white_wolf: { model: sig/white_wolf }
+    heirloom: { model: sig/heirloom }
+    final_curtain: { model: sig/final_curtain }
+    pact_warden_shield: { model: sig/pact_warden_shield }
+    dragon_ember: { model: sig/dragon_ember }
   # Story 10.13 (§4.2): sichtbares Anhängeteil je Profi-Weg, `proPart` der Klasse in content/core/classes.yaml.
   # model = art/models/parts/<model>.glb (tools/art/blender_proparts.py), socket = Körper-Sockel der Figur
   # (`socket_back` am oberen Brustwirbel, `socket_head` am Scheitel; tools/art/prepare_tripo_unit.py). Nur
   # Bild-zu-3D-Figuren haben Sockel; Blender-Figuren zeigen kein Teil.
+  # Story 16.6 (Art Direction §2.3, §4.7): Glühen der Runenwaffen. Steine liegen als art/models/runes-v2/<runeId>.glb;
+  # die Rinne der Waffe (`rune_channel`, UV1 `fill`) leuchtet bis zur Schwelle der Stufe (I ein Drittel, II zwei Drittel, III ganz mit Puls).
+  # Zustand: gedämpft (`dim`, auf dem Brett immer) oder voll (`full`, gewählte Figur, Angreifer und Ziel der Kampfvorschau, Gegner genauso).
+  rune:
+    colors: { fire: "#F2603A", wind: "#7BD389", earth: "#B9874B", water: "#4AA8E8", light: "#F7D96B", dark: "#8E5BD9", utility: "#E9E4D8" }
+    gold: "#E0A93C"                       # Goldrand und Goldteile des Steins (Stufe III), gleich hell in beiden Zuständen
+    empty: "#2A2724"                      # Rinne ohne Rune (und der unbeleuchtete Rest) – dunkler Rinnenboden
+    fillThresholds: [0.3333, 0.6667, 1]   # Füllwert `fill` der Rinne, bis zu dem sie leuchtet, je Stufe I/II/III
+    edge: 0.06                            # Weichheit des Übergangs (Anteil von `fill`)
+    floor: 0.1                            # unbeleuchtete Rinne eines Runenträgers: Anteil der Elementfarbe
+    state: { dim: 0.3, full: 1 }          # Leuchtstärke gedämpft / voll (Sichtprüfung 2026-11-22: 0.45 war zu nah an voll)
+    pulse: { periodMs: 1600, amplitude: 0.3 }  # nur Stufe III: Leuchtstärke schwankt um bis zu `amplitude` nach unten
+    stone: { body: 0.55, symbolLift: 0.5, coreLift: 0.85, selfLit: 0.8 }  # Stein: Körper = Elementfarbe * body (beleuchtet, Eigenleuchten selfLit), Symbol/Kern heller (Anteil Weiß)
+    # Metall: Vertexfarben des Modells (nur die grauen, kaum gesättigten Flächen; Holz und Leder bleiben) werden mit `tint`
+    # multipliziert und zu `sheen` Richtung Weiß aufgehellt – gleiche Form, anderes Material
+    metals:
+      satLimit: 0.35
+      iron: { tint: "#D8D2CC", sheen: 0 }      # warmes, dunkleres Grau
+      steel: { tint: "#E8EEF4", sheen: 0.08 }  # kühler und heller
+      silver: { tint: "#FFFFFF", sheen: 0.4 }  # fast weiß mit Glanz
   proParts:
     tower_shield: { model: tower_shield, socket: back }      # Bollwerk
     ram_axe: { model: ram_axe, socket: back }                # Brecher
@@ -287,6 +346,82 @@ gear:
     trap_belt: { model: trap_belt, socket: back }            # Fallensteller
     general_cloak: { model: general_cloak, socket: back }    # Großstratege
     standard: { model: standard, socket: back }              # Bannerherr
+
+# Story 16.14: die Item-Bühne (Waffenansicht, später Verzauberer und Waffenkammer): ein Gegenstand groß auf warmem Grund, drehbar
+# per Ziehen. Das Rinnen-Leuchten nach Stufe, die Steine und das Pulsieren kommen aus `gear.rune`, nicht von hier.
+itemStage:
+  fov: 26                    # senkrechter Blickwinkel in Grad
+  margin: 1.2                # Abstand der Kamera als Vielfaches des knappen Einpassens
+  startPitchDeg: 10          # Anfangsneigung
+  tiltLimitDeg: 69           # Neigung höchstens so weit nach oben und unten (±1,2 rad)
+  spinDegPerSec: 22          # Eigendrehgang, bis der Spieler zieht
+  dragDegPerPx: 0.55         # Drehung je Pixel Ziehen
+  dampingPerSec: 3.2         # Auslaufen nach dem Loslassen (e^-d*t), Schwung in Grad je Sekunde
+  restDegPerSec: 2           # darunter bleibt die Bühne stehen und fällt auf fpsIdle
+  doubleTapMs: 320           # Doppeltippen setzt die Ansicht zurück
+  tapSlopPx: 10
+  resetMs: 380               # Rückfahrt der Ansicht
+  growMs: 450                # ein neuer Stein wächst von 0 auf 1
+  fuseMs: 1100               # Verschmelzen (Story 16.16): drei Lichter fliegen zusammen, dann der Blitz in Elementfarbe
+  # Lage der Modelle (Grad Gier um die Hochachse); upright = die Längsachse wird aufgerichtet (die Lanze ist im Griff schräg gebaut)
+  models:
+    sword: { yaw: 0 }
+    axe: { yaw: 90 }
+    lance: { yaw: 90, upright: true }
+    shield: { yaw: -90 }
+  lights:
+    ambient: { color: "#FFE9CC", intensity: 0.75 }
+    key: { color: "#FFF3DD", intensity: 1.1, direction: [-0.5, -0.8, 0.6] }
+    rim: { color: "#FFB27A", intensity: 0.6, direction: [0.7, -0.2, -0.7] }
+
+# Story 16.18: die Waffenkammer im Bergfried (3D-Gewölbe mit Drehscheibe) und die Banner am Bergfried. Längen in Szeneneinheiten
+# (Meter), Winkel in Grad, Zeiten in ms. Kamera, Licht und Modelllage der Ständer; Modelllage der Stücke aus `itemStage.models`.
+armory:
+  fov: 28                    # senkrechter Blickwinkel
+  camera: { height: 2.0, distance: 6.4, aimY: 1.8 }   # Kamera hinter der Scheibe, Blick auf die Höhe aimY
+  wheelRadius: 2.3           # Radius der Drehscheibe (Mitte bis Ständer)
+  standRadius: 0.62          # Steinsockel
+  standHeight: 0.55
+  ringWidth: 0.07            # Ring (Rune) auf dem Sockel
+  pieceSize: 1.7             # Stücke werden auf diesen Durchmesser (Hülle) eingepasst
+  pieceLift: 0.22            # Abstand des Stücks über dem Sockel
+  frontScale: 1.5            # das vordere Stück wächst auf dieses Maß
+  frontLift: 0.12            # und steht etwas höher
+  spinDegPerSec: 24          # langsame Eigendrehung der Stücke
+  dragDegPerPx: 0.3          # Wischen: Drehung der Scheibe je Pixel
+  flingSeconds: 0.18         # so weit (s) schwingt der Wisch nach, bevor eingerastet wird
+  snapMs: 420                # Einrasten auf den Ständer
+  tapSlopPx: 10
+  plateAnchorY: -0.12        # Namensschild unter dem Sockel (Szeneneinheiten)
+  plateReach: 1              # Schilder: das vordere und so viele Nachbarn je Seite
+  colors:
+    ringGold: "#D9A441"      # Stück ohne Rune
+    ringEmpty: "#8A8F96"     # leerer Ständer (verborgen oder in Reichweite)
+    ghost: "#EAF2FF"         # getragenes Stück: heller Umriss
+    stone: "#6E6A66"         # Sockel
+    wall: "#3B3631"
+    floor: "#1F1B18"
+    wheel: "#4A453F"
+  ghostAlpha: 0.38           # Deckkraft des getragenen Stücks
+  pillars: 7                 # Säulen im Halbrund hinter der Scheibe
+  pillarRadius: 0.5
+  hall: { radius: 14, height: 9 }
+  lights:
+    ambient: { color: "#FFE2BC", intensity: 0.55 }
+    key: { color: "#FFF1D6", intensity: 0.9, direction: [-0.4, -0.85, 0.5] }
+    spot: { color: "#FFE9B8", intensity: 2.2, height: 5.2, angleDeg: 34, exponent: 2 }   # warmer Kegel von oben auf das vordere Stück
+  # Banner am Bergfried (Burg-Ansicht): je Stück im Besitz ein Tuch in der Runenfarbe
+  banners:
+    gold: "#D9A441"          # Stück ohne Rune
+    anchor: [0, -4.2, -3.2]  # Mitte der Reihe, relativ zur Bergfried-Spitze (KEEP_TIP)
+    width: 0.9
+    height: 2.6
+    gap: 0.35                # Abstand zwischen zwei Tüchern
+    perRow: 5                # mehr Tücher beginnen eine zweite Reihe darunter
+    rowGap: 3.0
+    swayDeg: 4               # leichtes Wehen
+    periodMs: 3200
+  pinLift: -1.6              # Stein der Waffenkammer am Bergfried, knapp unter der Spitze (die Spitze liegt am oberen Rand, darüber blendet die Burg Steine aus)
 
 # D8: Qualitätsstufen. maxDpr = höchste Pixeldichte der Render-Auflösung, shadowMap = Kantenlänge der Schattenkarte (0 = keine Schatten)
 quality:

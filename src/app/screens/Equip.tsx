@@ -1,50 +1,36 @@
 /** Equip list of one place of a figure, with the green/red comparison (concept/25-ux mockup 06, story 6.2). */
 import { useState } from 'preact/hooks';
-import { equipCandidates, equipPreview, itemDef, type EquipDelta, type EquipSlot, type ItemInstance, type UnitRecord } from '../../core';
+import { changeList, equipCandidates, itemDef, type ChangeLine, type EquipSlot, type ItemInstance, type UnitRecord } from '../../core';
 import { isKey } from '../../core/rules/items';
 import { t } from '../../i18n';
 import { ItemLine, itemName, Toast, unitName } from '../../ui/components';
+import { ChangeList } from '../../ui/ChangeList';
 import { Backdrop, Piece, PrimaryButton, ScreenHead, SecondaryButton } from '../../ui/pieces';
+import { Icon } from '../../ui/icons';
 import { audio } from '../audio';
+import { openWeapon } from '../state/weaponView';
 import { campaign, campaignCommand, data } from '../state/session';
 import { homeBackdrop } from '../campaignInfo';
 
-/** Label of a changed value in the comparison. */
-const DELTA_LABEL: Record<EquipDelta['key'], string> = {
-  mt: 'ui.mt',
-  hit: 'ui.hit',
-  crit: 'ui.crit',
-  rng: 'ui.rng',
-  wt: 'ui.wt',
-  hp: 'ui.stat.hp',
-  str: 'ui.stat.str',
-  mag: 'ui.stat.mag',
-  skl: 'ui.stat.skl',
-  spd: 'ui.stat.spd',
-  lck: 'ui.stat.lck',
-  def: 'ui.stat.def',
-  res: 'ui.stat.res',
-  mov: 'ui.stat.mov',
-  avoid: 'ui.avoid',
-  load: 'ui.stat.load',
-};
-
-/** Right side of a line: up to three changed values, green when better and red when worse than what is worn. */
-export function Deltas({ list, max = 3 }: { list: EquipDelta[]; max?: number }) {
+/** Right side of a line: up to three changed values (written out, from the change list), green when better and red when worse than what is worn. */
+export function Deltas({ list, max = 3 }: { list: ChangeLine[]; max?: number }) {
   return (
     <>
-      {list.slice(0, max).map((d) => (
-        <span key={d.key} class={d.better ? 'hc-up' : 'hc-down'} style={{ display: 'block' }}>
-          {t(DELTA_LABEL[d.key])} {d.delta > 0 ? '+' : '−'}
-          {Math.abs(d.delta)}
-        </span>
-      ))}
+      {list
+        .filter((l): l is Extract<ChangeLine, { kind: 'stat' }> => l.kind === 'stat')
+        .slice(0, max)
+        .map((d) => (
+          <span key={d.key} class={d.better ? 'hc-up' : 'hc-down'} style={{ display: 'block' }}>
+            {t(`ui.change.stat.${d.key}`)} {d.delta > 0 ? '+' : '−'}
+            {Math.abs(d.delta)}
+          </span>
+        ))}
     </>
   );
 }
 
 /** Why an item cannot go to this place; the text names the role or weapon so the player knows what to change. */
-function reason(unit: UnitRecord, inst: ItemInstance, error: string): string {
+export function reason(unit: UnitRecord, inst: ItemInstance, error: string): string {
   const d = itemDef(data, inst);
   switch (error) {
     case 'weapon_group':
@@ -100,10 +86,16 @@ export function EquipView({ unit, slot, index, onBack }: { unit: UnitRecord; slo
             selected={pick === inst.uid}
             dim={!!error}
             sub={error ? reason(unit, inst, error) : undefined}
-            side={!error && slot !== 'bag' ? <Deltas list={equipPreview(data, unit, inst, slot)} /> : undefined}
+            side={!error && slot !== 'bag' ? <Deltas list={changeList(data, unit, inst, { slot }).lines} /> : undefined}
             onClick={() => setPick(pick === inst.uid ? null : inst.uid)}
           />
         ))}
+        {chosen && slot !== 'bag' && <ChangeList result={changeList(data, unit, chosen.inst, { slot })} empty={worn?.def === chosen.inst.def ? 'ui.change.alreadyWorn' : undefined} />}
+        {(slot === 'mainHand' || slot === 'offHand') && (chosen?.inst ?? worn) && (
+          <button type="button" class="hc-tab wv-open" onClick={() => openWeapon((chosen?.inst ?? worn)!.uid, { unit: unit.id })}>
+            <Icon name="eye" size={16} /> {t('ui.weaponView.open')}
+          </button>
+        )}
         {cands.length === 0 && !worn && <div style={{ color: 'var(--hc-soft)', padding: 12 }}>{t('ui.equip.none')}</div>}
       </Piece>
       <div class="hc-btns">

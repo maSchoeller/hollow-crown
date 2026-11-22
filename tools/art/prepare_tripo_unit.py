@@ -1,7 +1,7 @@
 """Hollow Crown – prepare a Tripo image-to-3D figure for the battle board (concept/23-art-direction §4.6).
 
 blender -b --factory-startup --python tools/art/prepare_tripo_unit.py -- <in.glb> <out.glb> [--height 0.8] [--tex 512] [--faces 6000]
-                                                                             [--anims <library.glb> [--anims <more.glb> ...]]
+                                                                             [--anims <library.glb> [--anims <more.glb> ...]] [--stances lance,blade_shield,...] [--lean <lean.glb>]
 
 Feet on z = 0, centred on the tile, facing south (Blender -Y, glTF +Z) and scaled to the board height of the
 Blender figures (1 glTF unit = 1 tile, figureScale in content/render.yaml applies on top). Keeps only the base
@@ -14,17 +14,29 @@ are mapped by keyword to the board's animations and retimed to its sprite timing
 attack (and attack_<motion> per weapon group) = 0.5 s with the impact at 0.25 s (hitFrame 3 at 12 fps), hit = 0.5 s; idle, walk and downed (last frame)
 keep their length. --anims (repeatable; the first file wins on a name clash) fills the animations the export lacks from other Tripo exports
 (same Mixamo bone names), transferred relative to each rig's rest pose (retarget()); a new figure then needs only the Tripo auto-rig.
-Sockets (sockets()) carry what the renderer attaches at runtime: the hand sockets the weapon layer (GA9), the body
-sockets `socket_back` and `socket_head` the attached part of a pro path (story 10.13).
+Sockets (sockets()) carry what the renderer attaches at runtime: the palm sockets `grip_r` / `grip_l` the weapon layer (GA9,
+story 16.9), the body sockets `socket_back` and `socket_head` the attached part of a pro path (story 10.13).
+Fingers (story 16.9): thumb, index, middle, ring and pinky joints 1-3 stay in the rig (slim_rig() folds only the `4` tips and `_End`
+bones away); every clip keys them in the grip kind of the figure's stance (tools/art/grip_poses.py, finger_quats()).
+Stances (story 16.10, tools/art/stance_poses.py): --stances lists the stance keys of the figure (`none` is always added); per stance stance_clips()
+builds rest_<s>, gesture_<s>_look|shift|regrip, ready_<s>, ready_in_<s> (arms and legs by two-bone IK onto the data of stance_poses.py, then baked as
+FK keys) and `idle` = rest_none. The glTF written to <out.glb> carries all of them (tools/art/bake_vat.py bakes it); --lean <path> writes a
+second file without the stance clips (the model the board loads: its clips are only the fallback without the .vat).
 Usually run for all figures through `pnpm art:tripo` (tools/art/tripo_units.py).
 """
 import os
 import sys
 import zlib
 
+import re
+
 import bpy
 import numpy as np
-from mathutils import Matrix, Vector
+from mathutils import Matrix, Quaternion, Vector
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import grip_poses
+import stance_poses
 
 argv = sys.argv[sys.argv.index("--") + 1:]
 src, dst = argv[0], argv[1]
@@ -32,11 +44,15 @@ height = float(argv[argv.index("--height") + 1]) if "--height" in argv else 0.8
 tex = int(argv[argv.index("--tex") + 1]) if "--tex" in argv else 512
 faces = int(argv[argv.index("--faces") + 1]) if "--faces" in argv else 0
 anims = [argv[i + 1] for i, a in enumerate(argv) if a == "--anims"]
+stance_keys = [k for k in (argv[argv.index("--stances") + 1].split(",") if "--stances" in argv else []) if k and k != "none"] + ["none"]
+lean_path = argv[argv.index("--lean") + 1] if "--lean" in argv else None
 
 FPS = 12  # board animations are sampled at the sprite rate; halves the animation data
+SCENE_FPS = 60  # the scene's rate when the glTF is written (stance clips are keyed up to 60 a second); keys of the board clips lie KEY frames apart
+KEY = SCENE_FPS // FPS
 # Tripo preset (English action name prefix) -> board animation
 PRESETS = {"idle": "idle", "walk": "walk", "slash": "attack", "hit_to_body_01": "hit", "fall": "downed"}
-REQUIRED = set(PRESETS.values())
+REQUIRED = set(PRESETS.values()) - {"idle"}  # idle = rest_none now (stance_clips()); the Tripo idle (with its sway) is not used
 # attacks per weapon group (art-direction §4.5), attack_<motion>; content/render.yaml gear picks the motion per weapon.
 # Optional: without one the renderer plays the sword's attack. AI animations are named after their prompt.
 PRESETS.update({"bow shot": "attack_shoot", "axe chop": "attack_chop", "spear thrust": "attack_thrust",
@@ -46,12 +62,14 @@ EXTRAS = {"retreat": "flee", "victory cheer": "cheer"}
 PRESETS.update(EXTRAS)
 DOWNWARD = {"attack_chop"}  # impact at the fastest downward hand movement
 ATTACK_HALF = 6  # source frames (at FPS) on each side of the impact; squeezed into 3 frames (0.25 s) each
-SKIP = ("Thumb", "Index", "Middle", "Ring", "Pinky")  # finger bones: not readable at board size, never keyed
+SKIP = ("Thumb", "Index", "Middle", "Ring", "Pinky")  # finger bones: not taken from the Tripo animations; finger_keys() keys the grip of the stance in every clip
+TIP = re.compile(r"(Thumb|Index|Middle|Ring|Pinky)4$|_End$")  # finger tips and end bones: folded into the joint before them (slim_rig)
 HAND = "mixamorig:RightHand"
 TEAM_KEY = 2  # team ramp step for the cloth (K2 = mid tone, src/render/models.ts TEAM_RAMP)
 CLOTH_GREY = 0.85  # texture value under the team colour
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
+bpy.context.preferences.edit.keyframe_new_interpolation_type = "LINEAR"  # the keys are dense; bake_vat.py interpolates linearly like the exporter
 scene = bpy.context.scene
 scene.render.fps = FPS
 bpy.ops.import_scene.gltf(filepath=src)
@@ -248,7 +266,7 @@ def bake(action, name, t0, t1, frames):
             pb.rotation_mode = "QUATERNION"
             # only the hips move; every other bone just rotates (Mixamo bones keep their length and scale)
             for path in (("location", "rotation_quaternion") if pb.parent is None else ("rotation_quaternion",)):
-                pb.keyframe_insert(path, frame=i)
+                pb.keyframe_insert(path, frame=i * KEY)
     out.use_fake_user = True
     return out
 
@@ -260,7 +278,6 @@ if arm:
     if missing:
         raise SystemExit(f"missing Tripo presets for {sorted(missing)} (export them from Tripo or pass --anims)")
     keep = {
-        "idle": bake(found["idle"], "idle", *found["idle"].frame_range, span(found["idle"])),
         "walk": bake(found["walk"], "walk", *found["walk"].frame_range, span(found["walk"])),
         "hit": bake(found["hit"], "hit", *found["hit"].frame_range, FPS // 2 + 1),
         "downed": bake(found["downed"], "downed", *found["downed"].frame_range, span(found["downed"])),
@@ -281,10 +298,7 @@ if arm:
         arm.animation_data.nla_tracks.remove(track)
     for pb in arm.pose.bones:
         pb.matrix_basis = Matrix()
-    for name, act in keep.items():  # one NLA track per animation: the glTF exporter writes one animation each
-        track = arm.animation_data.nla_tracks.new()
-        track.name = name
-        track.strips.new(name, 0, act)
+    # the NLA tracks (one per animation: the glTF exporter writes one animation each) follow in make_tracks(), after the fingers are keyed
 
 # base colour only
 base = None
@@ -380,28 +394,98 @@ def skin_top(bone_name):
     return top
 
 
+GRIP_TILT = 0.0  # degrees: the grip axis turned from the thumb side towards the wrist (a blade then rises when the arm hangs)
+PALM_AT = 0.3  # palm centre as a share of the hand mesh's extent from the wrist to the finger tips
+PALM_LIFT = 0.12  # the grip axis lies this share of the wrist -> knuckle distance above the palm surface (the fingers close around it)
+
+
+def hand_frame(side):
+    """The hand of one side in the rest pose, in world axes of the board figure, from the bones and the skin of the hand only
+    (so one rule fits every figure): `a` along the hand towards the fingers, `t` across the palm from the little finger to the
+    thumb, `n` the palm normal (the side the fingers close to; palms face down in the Mixamo rest pose), `curl` the axis
+    that closes the fingers (a x n), `origin` the palm centre above the palm surface, `length` wrist -> knuckles.
+    Rest pose must be active."""
+    bones = arm.data.bones
+    mw = arm.matrix_world
+
+    def head(name):
+        return mw @ bones[f"mixamorig:{side}{name}"].head_local
+
+    wrist = head("Hand")
+    length = (head("HandMiddle1") - wrist).length
+    a = (head("HandMiddle1") - wrist).normalized()
+    t = head("HandThumb1") - head("HandPinky1")
+    t = (t - a * t.dot(a)).normalized()
+    n = a.cross(t)
+    if n.z > 0:  # palms face down; the other sign is the back of the hand
+        n = -n
+    n = n.normalized()
+    # the skin of the hand: vertices mostly weighted to the hand bone and its fingers, in the rest pose
+    dg = bpy.context.evaluated_depsgraph_get()
+    pts = []
+    for o in skinned:
+        index = {vg.index: vg.name for vg in o.vertex_groups}
+        ev = o.evaluated_get(dg)
+        m = ev.to_mesh()
+        for v, src in zip(m.vertices, o.data.vertices):
+            if sum(g.weight for g in src.groups if index.get(g.group, "").startswith(f"mixamorig:{side}Hand")) > 0.5:
+                pts.append(ev.matrix_world @ v.co)
+        ev.to_mesh_clear()
+    if len(pts) < 24:  # a hand the skin hardly weights to its bones (gauntlet, mitten): the vertices around the knuckles instead
+        pts = []
+        for o in skinned:
+            ev = o.evaluated_get(dg)
+            m = ev.to_mesh()
+            pts += [q for q in (ev.matrix_world @ v.co for v in m.vertices) if (q - (wrist + a * length)).length < length * 2.0]
+            ev.to_mesh_clear()
+    along = np.array([(p - wrist).dot(a) for p in pts])
+    if len(pts) < 24:
+        raise SystemExit(f"hand_frame: {side} hand has only {len(pts)} skin vertices (hand length {length:.4f})")
+    lo, hi = float(along.min()), float(along.max())
+    mid = lo + (hi - lo) * PALM_AT  # the hand mesh runs from the wrist to the finger tips: the palm is its first part
+    centre = wrist + a * mid
+    slab = [p for p, d in zip(pts, along) if abs(d - mid) < (hi - lo) * 0.15]
+    if len(slab) < 8:
+        raise SystemExit(f"hand_frame: {side} hand has {len(slab)} of {len(pts)} skin vertices around the palm")
+    surface = max((p - centre).dot(n) for p in slab)
+    across = sum((p - centre).dot(t) for p in slab) / len(slab)
+    origin = centre + n * (surface + length * PALM_LIFT) + t * across
+    return {"a": a, "t": t, "n": n, "curl": a.cross(n).normalized(), "origin": origin, "length": length, "span": hi - lo, "wrist": wrist}
+
+
 def sockets():
-    """Empties in the fists and on the body, parented to their bone; the renderer hangs a small model there at runtime:
-    `socket_r` / `socket_l` the weapon library (tools/art/blender_weapons.py) by weapon group (GA9), `socket_back` and
+    """Empties in the palms and on the body, parented to their bone; the renderer hangs a small model there at runtime:
+    `grip_r` / `grip_l` the weapon library (tools/art/blender_weapon_*.py) by weapon group (GA9, story 16.9), `socket_back` and
     `socket_head` the attached part of a pro path (tools/art/blender_proparts.py, story 10.13).
 
-    Hand frame in the rest pose: +Y up along the hand towards the forearm, +Z forward across the fist (the grip axis),
-    +X = Y × Z (the figure's left). Body frame: +Y world up, +Z the figure's facing, +X its left — `socket_back` sits in
+    Palm frame in the rest pose, in glTF axes as the runtime sees it (hand_frame()): the origin lies on the palm, +Y is the grip axis across the fist from the little
+    finger to the thumb (a weapon's shaft end -> tip, a book's spine up), +Z along the hand towards the fingers (the cutting edge /
+    broad side of a held model), +X = Y x Z (the palm normal). The same rule for every figure: the weapon models carry a
+    `grip` node in this frame. Body frame: +Y world up, +Z the figure's facing, +X its left — `socket_back` sits in
     the middle of the upper chest (a part offsets itself backwards, towards -Z), `socket_head` on the crown.
     Unit scale in board units throughout."""
     arm.data.pose_position = "REST"
     bpy.context.view_layer.update()
     fwd = Vector((0, -1, 0))
     made = []
-    for name, side in (("socket_r", "Right"), ("socket_l", "Left")):
+    for name, side in (("grip_r", "Right"), ("grip_l", "Left")):
         bone = arm.data.bones[f"mixamorig:{side}Hand"]
-        m = arm.matrix_world @ bone.matrix_local
-        y = -m.col[1].to_3d().normalized()  # bone +Y runs along the fingers, away from the forearm
-        z = (fwd - y * fwd.dot(y)).normalized()  # forward across the fist, whatever the bone's roll
+        h = hand_frame(side)
+        y = h["t"]
+        z = h["a"]
+        if GRIP_TILT:  # from the thumb side towards the wrist, about the palm normal
+            q = Quaternion(h["n"], np.radians(GRIP_TILT))
+            y, z = q @ y, q @ z
+        y = (y - z * y.dot(z)).normalized()
         x = y.cross(z)
-        grip = arm.matrix_world @ (bone.head_local + (bone.tail_local - bone.head_local) * 0.5)
-        frame = Matrix((x, y, z)).transposed().to_4x4()
-        frame.translation = grip
+        # the frame below is named in glTF axes (Y grip axis, Z edge); the exporter turns Blender Z into glTF +Y and Blender -Y into
+        # glTF +Z, so the Blender node is built with the columns (x, -z, y)
+        forearm = (h["wrist"] - arm.matrix_world @ arm.data.bones[f"mixamorig:{side}ForeArm"].head_local).normalized()
+        off = (h["origin"] - h["wrist"]).length
+        if off > 1.6 * h["span"] or abs(y.dot(forearm)) > 0.9:
+            raise SystemExit(f"sockets: {name} lies {off / h['span']:.2f} hand spans from the wrist, grip axis x forearm {y.dot(forearm):.2f}")
+        frame = Matrix((x, -z, y)).transposed().to_4x4()
+        frame.translation = h["origin"]
         ob = bpy.data.objects.new(name, None)
         bpy.context.scene.collection.objects.link(ob)
         ob.parent = arm
@@ -460,13 +544,14 @@ def pose_probe():
 
 
 def slim_rig():
-    """Story 7.8: 65 -> 22 joints, lossless. Finger and end bones are never keyed (SKIP above, the board shows no fingers), so in
-    every pose a skin matrix of such a bone equals its parent's (world = parent x rest-local, the inverse bind undoes the rest-local).
-    Their skin weights are therefore added to the nearest kept ancestor (the hand; Toe_End -> ToeBase, HeadTop_End -> Head) and the
-    bones are removed. The vertex positions under an arbitrary pose are compared before and after (the build stops on a deviation)."""
+    """Story 7.8, 16.9: 65 -> 52 joints, lossless. The finger tips (`4`) and end bones are never keyed, so in every pose a skin matrix of
+    such a bone equals its parent's (world = parent x rest-local, the inverse bind undoes the rest-local). Their skin weights are
+    therefore added to the nearest kept ancestor (the last finger joint; Toe_End -> ToeBase, HeadTop_End -> Head) and the bones
+    are removed. Finger joints 1-3 stay (story 16.9): the board animations leave them in the rest pose, grip_clips() closes them.
+    The vertex positions under an arbitrary pose are compared before and after (the build stops on a deviation)."""
     global dropped
     names = {b.name for b in arm.data.bones}
-    dropped = {n for n in names if any(sk in n for sk in SKIP) or n.endswith("_End")}
+    dropped = {n for n in names if TIP.search(n)}
     if not dropped:
         return
     target = {}
@@ -505,15 +590,405 @@ def slim_rig():
         raise SystemExit(f"slim_rig: vertex positions moved by {dev} (limit {2e-4 * height})")
 
 
+def finger_axes():
+    """Per finger joint of both hands: (curl axis, swing axis) in the joint's own rest frame, from the hand frame (hand_frame()), so one
+    table of angles (tools/art/grip_poses.py) fits every figure whatever its bones' roll. The rest pose is made active for it."""
+    arm.data.pose_position = "REST"
+    bpy.context.view_layer.update()
+    arm_rot = arm.matrix_world.to_3x3().normalized()
+    out = {}
+    for side in ("Left", "Right"):
+        h = hand_frame(side)
+        for finger in grip_poses.FINGERS + ("Thumb",):
+            for joint in (1, 2, 3):
+                name = f"mixamorig:{side}Hand{finger}{joint}"
+                if name not in arm.pose.bones:
+                    continue
+                rest = (arm_rot @ arm.pose.bones[name].bone.matrix_local.to_3x3().normalized()).inverted()  # world -> joint-local axes
+                out[(side, finger, joint)] = (rest @ h["curl"], rest @ h["n"])
+    arm.data.pose_position = "POSE"
+    return out
+
+
+def finger_quats(kind, side, axes, scale=1.0):
+    """{bone name: quaternion} of the finger joints of one hand closed for a grip kind (`none`: empty), the angles times `scale`."""
+    out = {}
+    for (finger, joint), (curl, swing) in grip_poses.finger_pose(kind).items():
+        axis, swing_axis = axes[(side, finger, joint)]
+        q = Quaternion(axis, np.radians(curl * scale))
+        if swing:
+            q = Quaternion(swing_axis, np.radians(swing * scale)) @ q
+        out[f"mixamorig:{side}Hand{finger}{joint}"] = q
+    return out
+
+
+def finger_keys(action, kinds, axes, last):
+    """Keys the finger joints of an action (constant: its first and last frame) in the grip kinds (right, left) of the figure's stance."""
+    arm.animation_data.action = action
+    quats = {}
+    for side, kind in (("Right", kinds[0]), ("Left", kinds[1])):
+        quats.update(finger_quats(kind, side, axes))
+    for pb in arm.pose.bones:
+        if any(s in pb.name for s in SKIP):
+            pb.rotation_mode = "QUATERNION"
+            pb.rotation_quaternion = quats.get(pb.name, (1, 0, 0, 0))
+            for f in (0, last):
+                pb.keyframe_insert("rotation_quaternion", frame=f)
+    arm.animation_data.action = None
+
+
+class Poser:
+    """Poses the whole figure for a stance from the data of tools/art/stance_poses.py, in the figure's own measures, and hands the pose
+    back as FK values. Forward kinematics run here in Python (parent x rest-relative x basis), so no depsgraph update is needed per frame.
+    Everything is done in armature space; world vectors are brought in with the inverse of the armature's matrix (which scales by the board scale)."""
+
+    def __init__(self):
+        arm.data.pose_position = "REST"
+        bpy.context.view_layer.update()
+        bones = arm.data.bones
+        mw = arm.matrix_world
+        self.mw, self.mi = mw.copy(), mw.inverted()
+        self.scale = mw.to_scale().x
+        self.rot_w2a = self.mi.to_3x3().normalized()  # world direction -> armature direction
+        self.rest = {b.name: b.matrix_local.copy() for b in bones}
+        self.parent = {b.name: (b.parent.name if b.parent else None) for b in bones}
+        self.rest_rel = {n: (self.rest[p].inverted() @ self.rest[n]) if p else self.rest[n] for n, p in self.parent.items()}
+        self.order = []
+        for n in self.parent:
+            chain = []
+            while n and n not in self.order:
+                chain.append(n)
+                n = self.parent[n]
+            self.order += reversed(chain)
+
+        def w(name):
+            return mw @ bones[f"mixamorig:{name}"].head_local
+
+        up = Vector((0, 0, 1))
+        r, l = w("RightArm"), w("LeftArm")
+        self.up = up
+        self.side = {"r": Vector((r.x - l.x, r.y - l.y, 0)).normalized()}
+        self.side["l"] = -self.side["r"]
+        self.fwd = up.cross(self.side["r"])
+        self.half_w = (r - l).length / 2
+        mid = (r + l) / 2
+        self.origin = mid  # the shoulders' centre in the rest pose
+        self.height = height
+        # the sockets in the rest pose: world frame E of grip_r / grip_l; the hand bone's rest matrix is in self.rest
+        self.sock = {k: bpy.data.objects[f"grip_{k}"].matrix_world.copy() for k in ("r", "l")}
+        self.hand_name = {"r": "mixamorig:RightHand", "l": "mixamorig:LeftHand"}
+        self.axes = finger_axes()
+        self.foot_rest = {k: bones[f"mixamorig:{n}Foot"].head_local.copy() for k, n in (("r", "Right"), ("l", "Left"))}
+        self.lengths = {}
+        for k, n in (("r", "Right"), ("l", "Left")):
+            self.lengths[k, "arm"] = ((bones[f"mixamorig:{n}ForeArm"].head_local - bones[f"mixamorig:{n}Arm"].head_local).length,
+                                      (bones[f"mixamorig:{n}Hand"].head_local - bones[f"mixamorig:{n}ForeArm"].head_local).length)
+            self.lengths[k, "leg"] = ((bones[f"mixamorig:{n}Leg"].head_local - bones[f"mixamorig:{n}UpLeg"].head_local).length,
+                                      (bones[f"mixamorig:{n}Foot"].head_local - bones[f"mixamorig:{n}Leg"].head_local).length)
+        arm.data.pose_position = "POSE"
+        self.basis = {}
+        self.pose = {}
+        self.short = 0.0  # largest distance (board units) a hand target lay beyond the arm's reach
+        self.reset()
+        a1, a2 = self.lengths["r", "arm"]
+        self.reach = (a1 + a2) * self.scale  # one arm, in board units
+        print(f"[hc] body: height {height}, half shoulder width {self.half_w:.3f}, shoulders {mid.z:.3f}, hips {(mw @ bones['mixamorig:Hips'].head_local).z:.3f}, "
+              f"arm {a1 * self.scale:.3f} + {a2 * self.scale:.3f}", flush=True)
+
+    # --- kinematics -------------------------------------------------------------------------------------------------------------
+    def reset(self):
+        self.basis = {n: [Vector((0, 0, 0)), Quaternion((1, 0, 0, 0))] for n in self.parent}
+        self.fk()
+
+    def fk(self):
+        for n in self.order:
+            loc, q = self.basis[n]
+            m = Matrix.Translation(loc) @ q.to_matrix().to_4x4()
+            p = self.parent[n]
+            self.pose[n] = (self.pose[p] @ self.rest_rel[n] @ m) if p else (self.rest_rel[n] @ m)
+
+    def frame_of(self, n):
+        """Orientation a bone has in armature space with its own basis at identity, given its parent's pose."""
+        p = self.parent[n]
+        rest = self.rest[n].to_3x3().normalized()
+        if not p:
+            return rest
+        return self.pose[p].to_3x3().normalized() @ self.rest[p].to_3x3().normalized().inverted() @ rest
+
+    def set_orient(self, n, r):
+        """Basis rotation of bone `n` so that its armature-space orientation is the 3x3 `r` (its parents posed, fk() run)."""
+        self.basis[n][1] = (self.frame_of(n).inverted() @ r).to_quaternion()
+
+    def turn(self, n, axis, deg):
+        """Rotates bone `n` (about its head) by `deg` about an armature-space `axis`, on top of what it already has."""
+        f = self.frame_of(n)
+        r = Matrix.Rotation(np.radians(deg), 3, axis)
+        self.basis[n][1] = (f.inverted() @ r @ f).to_quaternion() @ self.basis[n][1]
+
+    def a(self, v):
+        """World direction -> armature-space unit direction."""
+        return (self.rot_w2a @ v).normalized()
+
+    def two_bone(self, root, target, l1, l2, pole):
+        d = target - root
+        dist = d.length
+        reach = (l1 + l2) * 0.995
+        if dist > reach:
+            self.short = max(self.short, (dist - reach) * self.scale)
+        dist = min(max(dist, abs(l1 - l2) + 1e-4), reach)
+        u = d.normalized()
+        pv = pole - u * pole.dot(u)
+        pv = pv.normalized() if pv.length > 1e-6 else Vector((0, 0, 1)).cross(u).normalized()
+        a = (l1 * l1 - l2 * l2 + dist * dist) / (2 * dist)
+        h = float(np.sqrt(max(l1 * l1 - a * a, 0.0)))
+        return root + u * a + pv * h, root + u * dist
+
+    def aim(self, n, joint, tail, new_dir):
+        """Orients bone `n` so that its rest direction (head of `joint` -> head of `tail`) points along `new_dir` (shortest turn from the rest pose)."""
+        b = arm.data.bones
+        d0 = (b[tail].head_local - b[joint].head_local).normalized()
+        self.set_orient(n, d0.rotation_difference(new_dir).to_matrix() @ self.rest[n].to_3x3().normalized())
+
+    # --- targets ----------------------------------------------------------------------------------------------------------------
+    def axes_of(self, hand_key, yaw):
+        """(side, forward) world axes of a hand's table, the body frame turned by `yaw` degrees (the right side towards the front)."""
+        side, fwd = self.side[hand_key], self.fwd
+        c, s_ = np.cos(np.radians(yaw)), np.sin(np.radians(yaw))
+        return side * c + fwd * s_, fwd * c - side * s_
+
+    def grip_frame(self, hand_key, at, d1, d2, w1, w2, yaw):
+        """World matrix D of the palm socket: at `at`, turned so that the held model's features w1 / w2 (grip frame) point along d1 / d2."""
+        side, fwd = self.axes_of(hand_key, yaw)
+
+        def world(v):
+            return side * v[0] + fwd * v[1] + self.up * v[2]
+
+        p = self.origin + side * (at[0] * self.half_w) + fwd * (at[1] * self.reach) + self.up * (at[2] * self.reach)
+        w1, w2 = Vector(w1).normalized(), Vector(w2)
+        w2 = (w2 - w1 * w2.dot(w1)).normalized()
+        e1 = world(d1).normalized()
+        e2 = world(d2)
+        e2 = (e2 - e1 * e2.dot(e1)).normalized()
+        wm = Matrix((w1, w2, w1.cross(w2))).transposed()  # columns: the features in the grip frame
+        dm = Matrix((e1, e2, e1.cross(e2))).transposed()  # columns: where they point in the world
+        r = dm @ wm.transposed()  # grip frame -> world
+        xv, yv, zv = r @ Vector((1, 0, 0)), r @ Vector((0, 1, 0)), r @ Vector((0, 0, 1))
+        d = Matrix((xv, -zv, yv)).transposed().to_4x4()  # the sockets' columns (x, -z, y), see sockets()
+        d.translation = p
+        return d
+
+    # --- one frame --------------------------------------------------------------------------------------------------------------
+    def solve(self, hands, body, breath=0.0, look=(0.0, 0.0), shift=(0.0, 0.0), shrug=0.0, finger=("none", "none"), finger_scale=1.0, turn_sign=1.0):
+        """Poses the figure: `hands` {"r","l"} -> (at, d1, d2, w1, w2) blended table entries, `body` {lean, lower, turn}, breath 0..1, look (yaw, pitch degrees),
+        shift (sideways, in figure heights; roll in degrees), shrug degrees, finger = (grip kind r, kind l), finger_scale 0..1."""
+        self.reset()
+        yaw = body["turn"] * turn_sign
+        up_a, side_a, fwd_a = self.a(self.up), self.a(self.side["r"]), self.a(self.fwd)
+        # hips: down, sideways, turned and rolled
+        drop = -body["lower"] * self.height + breath * stance_poses.BREATH_RISE * self.height
+        d_a = self.mi.to_3x3() @ (self.up * drop + self.side["r"] * (shift[0] * self.height))
+        hips = "mixamorig:Hips"
+        self.basis[hips][0] = self.rest[hips].to_3x3().normalized().inverted() @ d_a
+        self.fk()
+        self.turn(hips, up_a, yaw)
+        self.turn(hips, fwd_a, shift[1])
+        self.fk()
+        lean = -body["lean"]  # about the side axis: negative = forwards
+        for n, share in (("Spine", 0.3), ("Spine1", 0.3), ("Spine2", 0.4)):
+            self.turn(f"mixamorig:{n}", side_a, lean * share + (stance_poses.BREATH_SPINE_DEG * breath if n == "Spine2" else 0.0))
+            self.turn(f"mixamorig:{n}", fwd_a, -shift[1] * 0.35)  # the hips' roll and turn are partly taken back in the spine
+            self.turn(f"mixamorig:{n}", up_a, -yaw * 0.35)
+            self.fk()
+        for key, sgn in (("Right", -1.0), ("Left", 1.0)):  # shoulders rise with the breath
+            self.turn(f"mixamorig:{key}Shoulder", fwd_a, sgn * (stance_poses.BREATH_SHRUG_DEG * breath + shrug))
+        self.fk()
+        # head: look, kept level against the lean
+        self.turn("mixamorig:Neck", up_a, look[0] * 0.4 - yaw * 0.3)
+        self.turn("mixamorig:Neck", side_a, look[1] * 0.4 - lean * 0.3)
+        self.fk()
+        self.turn("mixamorig:Head", up_a, look[0] * 0.6 - yaw * 0.3)
+        self.turn("mixamorig:Head", side_a, look[1] * 0.6 - lean * 0.3)
+        self.fk()
+        # legs: the feet stay where they stand
+        for k, n in (("r", "Right"), ("l", "Left")):
+            l1, l2 = self.lengths[k, "leg"]
+            up_n, leg_n, foot_n = f"mixamorig:{n}UpLeg", f"mixamorig:{n}Leg", f"mixamorig:{n}Foot"
+            root = self.pose[up_n].translation.copy()
+            knee, ankle = self.two_bone(root, self.foot_rest[k], l1, l2, fwd_a)
+            self.aim(up_n, up_n, leg_n, (knee - root).normalized())
+            self.fk()
+            self.aim(leg_n, leg_n, foot_n, (ankle - knee).normalized())
+            self.fk()
+            self.set_orient(foot_n, self.rest[foot_n].to_3x3().normalized())
+            self.fk()
+        # arms onto the hand targets, the hand turned onto the grip frame
+        for k, n in (("r", "Right"), ("l", "Left")):
+            at, d1, d2, w1, w2 = hands[k]
+            d = self.grip_frame(k, at, d1, d2, w1, w2, yaw)
+            hd = self.mi @ d @ self.sock[k].inverted() @ self.mw @ self.rest[self.hand_name[k]]  # the hand bone's matrix (armature space) that puts the socket on D
+            target = hd.translation.copy()
+            l1, l2 = self.lengths[k, "arm"]
+            sh, fo, ha = f"mixamorig:{n}Arm", f"mixamorig:{n}ForeArm", f"mixamorig:{n}Hand"
+            root = self.pose[sh].translation.copy()
+            side, fwd = self.axes_of(k, yaw)
+            pole = self.a(-fwd * 0.8 + side * 0.6 - self.up * 0.4)
+            elbow, wrist = self.two_bone(root, target, l1, l2, pole)
+            self.aim(sh, sh, fo, (elbow - root).normalized())
+            self.fk()
+            self.aim(fo, fo, ha, (wrist - elbow).normalized())
+            self.fk()
+            self.set_orient(ha, hd.to_3x3().normalized())
+            self.fk()
+        # fingers (constant per grip kind, opened by `finger_scale` in a regrip)
+        for n, kind in (("Right", finger[0]), ("Left", finger[1])):
+            for name, q in finger_quats(kind or "none", n, self.axes, finger_scale).items():
+                self.basis[name][1] = q
+
+    def sample(self):
+        """{bone: (location, quaternion)} of the pose just solved."""
+        return {n: (v[0].copy(), v[1].copy()) for n, v in self.basis.items()}
+
+
+def smooth(x):
+    return x * x * (3 - 2 * x)
+
+
+def lerp_hand(a, b, u):
+    """Blend of two entries (at, d1, d2, w1, w2) of a hand table."""
+    return tuple(Vector(p) * (1 - u) + Vector(q) * u for p, q in zip(a, b))
+
+
+def lerp_body(a, b, u):
+    return {k: a[k] * (1 - u) + b[k] * u for k in a}
+
+
+def key_samples(action, samples, frames):
+    """Writes sampled poses (list of {bone: (location, quaternion)}) as FK keys at `frames` of an action; a bone that never moves gets two keys."""
+    arm.animation_data.action = action
+    for name in samples[0]:
+        pb = arm.pose.bones.get(name)
+        if pb is None:
+            continue
+        pb.rotation_mode = "QUATERNION"
+        qs = []
+        for smp in samples:
+            q = smp[name][1].copy()
+            if qs:
+                q.make_compatible(qs[-1])
+            qs.append(q)
+        locs = [smp[name][0] for smp in samples]
+        moving = any((q - qs[0]).magnitude > 1e-6 for q in qs) or any((v - locs[0]).length > 1e-7 for v in locs)
+        for i in (range(len(samples)) if moving else (0, len(samples) - 1)):
+            pb.rotation_quaternion = qs[i]
+            pb.keyframe_insert("rotation_quaternion", frame=frames[i])
+            if pb.parent is None:
+                pb.location = locs[i]
+                pb.keyframe_insert("location", frame=frames[i])
+    arm.animation_data.action = None
+
+
+def stance_clips(poser, stances):
+    """-> {clip name: action} of every stance clip of the figure (see the docstring of tools/art/stance_poses.py)."""
+    sp = stance_poses
+    acts = {}
+
+    def make(name, rate, count, fn):
+        """`count` + 1 rows at `rate`: fn(i, t) -> keyword arguments of Poser.solve."""
+        poser.short = 0.0
+        samples, frames = [], []
+        for i in range(count + 1):
+            poser.solve(**fn(i, i / rate))
+            samples.append(poser.sample())
+            frames.append(int(round(i * SCENE_FPS / rate)))
+        act = bpy.data.actions.new(name)
+        act.use_fake_user = True
+        key_samples(act, samples, frames)
+        acts[name] = act
+        if poser.short > 0.004:
+            print(f"[hc] {name}: a hand target lies up to {poser.short:.3f} board units beyond the arm's reach", flush=True)
+
+    for st in stances:
+        base = st[: -len("_shield")] if st.endswith("_shield") else st
+        rest_h, ready_h = sp.stance_hands(st, "rest"), sp.stance_hands(st, "ready")
+        body_rest, body_ready = sp.stance_body(base, "rest"), sp.stance_body(base, "ready")
+        sign = sp.TURN_SIGN.get(base, 1.0)
+        kinds = sp.grip_kinds(st)
+
+        def hands(u, rest_h=rest_h, ready_h=ready_h):
+            return {k: lerp_hand((rest_h[k]["at"], rest_h[k]["d1"], rest_h[k]["d2"], *rest_h[k]["w"]),
+                                 (ready_h[k]["at"], ready_h[k]["d1"], ready_h[k]["d2"], *ready_h[k]["w"]), u) for k in ("r", "l")}
+
+        def args(u, breath=0.0, hands=hands, body_rest=body_rest, body_ready=body_ready, sign=sign, kinds=kinds, **kw):
+            return dict(hands=hands(u), body=lerp_body(body_rest, body_ready, u), breath=breath, finger=kinds, turn_sign=sign, **kw)
+
+        n_rest = int(round(sp.BREATH_S * sp.SLOW_FPS))
+        make(f"rest_{st}", sp.SLOW_FPS, n_rest, lambda i, t: args(0.0, (1 - np.cos(2 * np.pi * t / sp.BREATH_S)) / 2))
+        for g, length in sp.GESTURE_S.items():
+            n = int(round(length * sp.SLOW_FPS))
+
+            def gesture(i, t, g=g, n=n):
+                x = i / n
+                bump = np.sin(np.pi * x) ** 2
+                if g == "look":
+                    return args(0.0, look=(sp.LOOK_YAW_DEG * np.sin(2 * np.pi * x) * np.sin(np.pi * x), sp.LOOK_PITCH_DEG * bump))
+                if g == "shift":
+                    return args(0.0, shift=(sp.SHIFT_SIDE * bump, sp.SHIFT_ROLL_DEG * bump))
+                return args(0.0, shrug=sp.REGRIP_SHRUG_DEG * bump, finger_scale=1.0 - sp.REGRIP_OPEN * bump)
+
+            make(f"gesture_{st}_{g}", sp.SLOW_FPS, n, gesture)
+        if st == "none":
+            continue  # nothing to make ready without a weapon: the runtime stays in rest_none [ASSUMPTION]
+        make(f"ready_{st}", sp.SLOW_FPS, int(round(sp.READY_S * sp.SLOW_FPS)),
+             lambda i, t: args(1.0, 0.7 * (1 - np.cos(2 * np.pi * t / sp.READY_S)) / 2))
+        n_in = int(round(sp.SWITCH_S * 60))
+        make(f"ready_in_{st}", 60, n_in, lambda i, t: args(smooth(i / n_in)))
+    return acts
+
+
+def make_tracks(clips):
+    """One NLA track per clip: the glTF exporter writes one animation each."""
+    for track in list(arm.animation_data.nla_tracks):
+        arm.animation_data.nla_tracks.remove(track)
+    for name, act in clips.items():
+        track = arm.animation_data.nla_tracks.new()
+        track.name = name
+        track.strips.new(name, 0, act)
+
+
 dropped = set()
+stance_names = []
 if arm:
     slim_rig()
     sockets()
+    poser = Poser()
+    stance_acts = stance_clips(poser, stance_keys)
+    stance_names = list(stance_acts)
+    # the board's own clips keep their length; the fingers of the figure's first stance close in all of them
+    first = next((sk for sk in stance_keys if sk != "none"), "none")
+    for name, act in keep.items():
+        finger_keys(act, stance_poses.grip_kinds(first), poser.axes, int(round(act.frame_range[1])))
+    keep["idle"] = stance_acts["rest_none"]  # idle = the calm breathing of rest_none (bake_vat.py shares its rows)
+    print(f"[hc] stances {', '.join(stance_keys)}: {len(stance_acts)} clips, fingers of the other clips in the grip of {first}", flush=True)
+    make_tracks({**keep, **stance_acts})
+    scene.render.fps = SCENE_FPS  # keys of the board's clips lie KEY frames apart, stance clips at their own steps
+    arm.data.pose_position = "POSE"
+    for pb in arm.pose.bones:
+        pb.rotation_quaternion = (1, 0, 0, 0)
+        pb.location = (0, 0, 0)
 
-bpy.ops.export_scene.gltf(filepath=dst, export_format="GLB", use_selection=False, export_image_format="JPEG",
-                          export_jpeg_quality=88, export_apply=arm is None, export_vertex_color="ACTIVE", export_animations=arm is not None,
-                          export_animation_mode="NLA_TRACKS", export_force_sampling=False,
-                          export_optimize_animation_size=True)
+def export_glb(path):
+    bpy.ops.export_scene.gltf(filepath=path, export_format="GLB", use_selection=False, export_image_format="JPEG",
+                              export_jpeg_quality=88, export_apply=arm is None, export_vertex_color="ACTIVE", export_animations=arm is not None,
+                              export_animation_mode="NLA_TRACKS", export_force_sampling=False,
+                              export_optimize_animation_size=True)
+
+
+export_glb(dst)
+if arm and lean_path:
+    # the model the board loads: its animations are only the fallback without the .vat, so the stance clips stay out of it
+    for name in stance_names:
+        arm.animation_data.nla_tracks.remove(arm.animation_data.nla_tracks[name])
+    export_glb(lean_path)
 tris = sum(len(p.vertices) - 2 for p in body.data.polygons)
 print(f"[hc] {dst}: {tris} triangles, height {height}, texture {tex}px, rigged {arm is not None}, "
       f"team cloth {cloth_vertices} vertices", flush=True)

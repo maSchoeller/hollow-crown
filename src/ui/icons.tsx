@@ -24,6 +24,7 @@ const P: Record<string, string> = {
   search: 'M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM15.5 15.5L20 20',
   book: 'M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1zM12 6v14',
   box: 'M4 7h16v13H4zM4 7l2-3h12l2 3M10 11h4',
+  eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
   more: 'M5 12h.01M12 12h.01M19 12h.01',
   save: 'M5 4h11l3 3v13H5zM8 4v5h7V4M8 20v-6h8v6',
   download: 'M12 4v11M7 10l5 5 5-5M5 20h14',
@@ -62,6 +63,10 @@ const P: Record<string, string> = {
   // roles (class-action slot of the battle dock)
   avoid: 'M4 18c5 0 6-11 11-11h5M17 4l3 3-3 3',
   shield: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z',
+  // story 16.12: armor (breastplate), hit points (heart), rounds (hourglass) of the forecast
+  armored: 'M8 4l-4 3 2 4 2-1v10h8V10l2 1 2-4-4-3c-.5 1.5-2 2.5-4 2.5S8.5 5.5 8 4z',
+  hp: 'M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z',
+  turns: 'M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9',
   blade: 'M12 2.5l2.5 3.5v8h-5V6zM6.5 14h11M12 14v5.5M10 21h4',
   bow: 'M6 3c8 3 8 15 0 18M6 3v18M4 12h16M17 9l3 3-3 3',
   ballista: 'M4 9c5-4 11-4 16 0M12 7v9M3 13h15M15 10l3 3-3 3M8 20l4-4 4 4',
@@ -91,7 +96,27 @@ const P: Record<string, string> = {
   fallen: 'M12 3v18M7 8h10',
   // the castle of the home (act pill, world map) and the memorial stone (memorial hall), after mockup 04
   castle: 'M4 21V8h3V5h3v3h4V5h3v3h3v13zM10 21v-5h4v5',
+  // story 16.18: the armoury (one slanted sword, after mockup vitrine C; the training ground has the crossed blades) and the crown of a signature weapon
+  armory: 'M20 4l-10 10M20 4h-4M20 4v4M7 11l6 6M9.5 14.5L5 19M4 18l2 2',
+  crown: 'M4 18l-1-10 5 4 4-7 4 7 5-4-1 10zM4 21h16',
   stone: 'M6 21V10a6 6 0 0 1 12 0v11zM4 21h16M12 9v6M9.5 11.5h5',
+  // values of the change list (story 16.13): line shapes in the same grid, no fill
+  move: 'M5 4h5v7l8 2a2 2 0 0 1 2 2v3H5zM5 20h15',
+  weight: 'M8 9h8l3 11H5zM12 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
+  range: 'M3 12h18M3 8v8M21 8v8M8 9l-4 3 4 3M16 9l4 3-4 3',
+  crit: 'M12 3l2 6 6 3-6 3-2 6-2-6-6-3 6-3z',
+  resist: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6zM8.5 12c1.2-1.6 2.3-1.6 3.5 0s2.3 1.6 3.5 0',
+  strength: 'M3 10v4M6 8v8M18 8v8M21 10v4M6 12h12',
+  magic: 'M5 19L15 9M14 4l1.2 2.8L18 8l-2.8 1.2L14 12l-1.2-2.8L10 8l2.8-1.2zM19 14l.6 1.4L21 16l-1.4.6L19 18l-.6-1.4L17 16l1.4-.6z',
+  skill: 'M5 19c6 0 12-6 14-14-8 2-14 8-14 14zM5 19l8-8',
+  speed: 'M13 3L5 14h6l-1 7 8-11h-6z',
+  luck: 'M5 5h14v14H5zM9 9h.01M15 9h.01M12 12h.01M9 15h.01M15 15h.01',
+  load: 'M4 8l8-4 8 4v9l-8 4-8-4zM4 8l8 4 8-4M12 12v9',
+  // movement types and the terrain lens (story 16.11)
+  boot: 'M8 3h5v9l5 2.5a2 2 0 0 1 1.5 2V20H6V9z',
+  mounted: 'M5 20l2-6-3-3 4-6 6 2 4 5-2 3-3-1-1 6z',
+  flier: 'M3 13c4-6 10-8 18-9-2 6-6 10-12 11l3 4c-4 0-7-2-9-6z',
+  lens: 'M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM15.5 15.5L20 20M10.5 7.5v6M7.5 10.5h6',
   // elements
   fire: 'M12 3c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1.5 4 3 4 0-3-1.5-6 0-9z',
   wind: 'M3 9h11a3 3 0 1 0-3-3M3 14h15a3 3 0 1 1-3 3M3 19h7',
@@ -139,4 +164,33 @@ export function TriMark({ v, label }: { v: number; label?: string }) {
 
 export function ElementIcon({ el, size = 16 }: { el: Element; size?: number }) {
   return <Icon name={el} size={size} class={`el-${el}`} />;
+}
+
+/**
+ * Element mark: a disc in the element colour with the line icon in it (story 16.13; 15 and 18 px are used by the change
+ * list, light and dark take dark and cream strokes so the icon stays readable).
+ */
+export function ElementDot({ el, size = 18, label }: { el: Element; size?: number; label?: string }) {
+  const ink = el === 'light' || el === 'wind' ? 'var(--hc-line)' : 'var(--hc-cream)';
+  return (
+    <span
+      class={`el-dot el-dot-${el}`}
+      role={label ? 'img' : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : 'true'}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 'none',
+        width: size,
+        height: size,
+        borderRadius: '50%',
+        background: `var(--hc-element-${el})`,
+        color: ink,
+      }}
+    >
+      <Icon name={el} size={Math.round(size * 0.72)} />
+    </span>
+  );
 }

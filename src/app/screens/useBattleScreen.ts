@@ -29,6 +29,8 @@ export function useBattleScreen() {
   /** the board is still being built: a cover says so, because nothing on the map reacts yet (not when a built one is taken over) */
   const [loading, setLoading] = useState(() => !boardWaits(boardKey(full.mapId)));
   const [danger, setDanger] = useState(settings.value.dangerDefault);
+  /** the terrain lens (story 16.11): on until switched off; while it is on it replaces the danger zone */
+  const [lens, setLens] = useState(false);
   const [watch, setWatch] = useState<string[]>([]);
   const [info, setInfo] = useState<string | null>(null);
   /** the wanted poster of a lieutenant is open (story 3.6); it shows his danger zone, too */
@@ -70,6 +72,8 @@ export function useBattleScreen() {
   /** the field under the mouse while a unit is selected (PC hover, story 13.6) */
   const [hover, setHover] = useState<Pos | null>(null);
   const chipRef = useRef<HTMLDivElement>(null);
+  /** the pill "noch n" at the end of the path (story 16.11) */
+  const restRef = useRef<HTMLDivElement>(null);
   /** the Nachsetzen chance the player let go (key of `s.pursue` and the turn); the core keeps it until the next command */
   const [pursueDone, setPursueDone] = useState<string | null>(null);
   /** the camera shows the whole map (story 15.11: the overview stone is pressed) */
@@ -99,7 +103,7 @@ export function useBattleScreen() {
   const barkSeq = useRef(0);
 
   return {
-    session, full, fogged, s, stageRef, floatRef, topRef, bottomRef, boardRef, mode, setMode, busy, setBusy, loading, setLoading, danger, setDanger, watch, setWatch, info, setInfo, wanted, setWanted, watchRef, tileInfo, setTileInfo, banner, setBanner, cutIn, setCutIn, cutSeq, dialogue, setDialogue, bark, setBark, levelUp, setLevelUp, toast, setToastState, setToast, menu, setMenu, classPick, setClassPick, reason, setReason, phaseView, setPhaseView, confirmEnd, setConfirmEnd, objectives, setObjectives, trade, setTrade, convoy, setConvoy, items, setItems, hp, setHp, recap, setRecap, hover, setHover, chipRef, pursueDone, setPursueDone, whole, setWhole, wide, unit, bandScene, tapRef, longRef, cancelRef, cutInRef, eventRef, openingBark, ltSpoken, ltReady, fleeSpoken, barkSeq,
+    session, full, fogged, s, stageRef, floatRef, topRef, bottomRef, boardRef, mode, setMode, busy, setBusy, loading, setLoading, danger, setDanger, lens, setLens, watch, setWatch, info, setInfo, wanted, setWanted, watchRef, tileInfo, setTileInfo, banner, setBanner, cutIn, setCutIn, cutSeq, dialogue, setDialogue, bark, setBark, levelUp, setLevelUp, toast, setToastState, setToast, menu, setMenu, classPick, setClassPick, reason, setReason, phaseView, setPhaseView, confirmEnd, setConfirmEnd, objectives, setObjectives, trade, setTrade, convoy, setConvoy, items, setItems, hp, setHp, recap, setRecap, hover, setHover, chipRef, restRef, pursueDone, setPursueDone, whole, setWhole, wide, unit, bandScene, tapRef, longRef, cancelRef, cutInRef, eventRef, openingBark, ltSpoken, ltReady, fleeSpoken, barkSeq,
   };
 }
 

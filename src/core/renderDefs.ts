@@ -1,5 +1,5 @@
 /** Render, legibility, handbook, look and world-map definitions (content/core/render.yaml and friends) as the core sees them. */
-import type { GearPiece, PartPiece, HomeKind, Season, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
+import type { Element, GearItemPiece, GearPiece, MetalId, PartPiece, HomeKind, Season, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
 import type { Condition } from './storyDefs';
 
 export interface PropVariant {
@@ -32,6 +32,17 @@ export interface LegibilityDef {
   reach: { color: string; strength: number };
   /** story 11.10: warning before a map event changes the ground: amber stripes on the board and the edge of the HUD line */
   terrainWarn: { color: string; alpha: number; pulse: number };
+  /** story 16.11: the terrain lens: tint per effect, stripes (fast, blocked) with width and gap in tiles; `holdMs` the hold time on the Danger button, `hintMs` the one-time hint */
+  terrainLens: {
+    cover: { color: string; alpha: number };
+    slow: { color: string; alpha: number };
+    harm: { color: string; alpha: number };
+    fast: { color: string; alpha: number; stripe: number; gap: number };
+    blocked: { color: string; alpha: number; stripe: number; gap: number };
+    neutral: { color: string; alpha: number };
+    holdMs: number;
+    hintMs: number;
+  };
   /** story 10.5: an own trap on the board: dark outline ring, coloured ring and jaws (radius, ring width and jaw length in tiles) */
   trap: { color: string; outline: string; alpha: number; radius: number; width: number; jaw: number };
   /** story 13.3: HP bar over the head */
@@ -187,6 +198,8 @@ export interface RenderDef {
     warm: 0 | 1 | 2;
     /** Story 7.8: tint (flash/fade) materials kept per texture and case for reuse */
     tintPool: number;
+    /** story 16.10: `switchS` = seconds a figure takes between rest and ready stance, `gestureEveryS` = [min, max] seconds between two idle gestures */
+    stance: { switchS: number; gestureEveryS: [number, number] };
     /** story 7.7: the board waits at most this long (ms) for the shaders to compile at load */
     precompileMs: number;
     /** size of 3D figures relative to their Blender scale */
@@ -206,8 +219,16 @@ export interface RenderDef {
   gear: {
     weapons: Partial<Record<WeaponType, GearPiece>>;
     offHand: Partial<Record<WeaponGroup, GearPiece>>;
+    /** story 16.8: model of single items (signature weapons, relics) by item id, `sig/<id>`; resolved by `modelFor` (src/render/shared/gearModel.ts) */
+    items: Record<string, GearItemPiece>;
     proParts: Record<string, PartPiece>;
+    /** story 16.6: glow of the rune weapons (channel and stones) and the tint of their metals */
+    rune: RuneGlowDef;
   };
+  /** story 16.14: the item stage (weapon view, enchanter, armoury): camera, spin, drag, light and the pose of each model */
+  itemStage: ItemStageDef;
+  /** story 16.18: the armoury vault (turntable of stands) and the banners on the keep */
+  armory: ArmoryDef;
   /** epic 13: grid, range tiles, path arrow, danger tiers, target-tile lines, HP bars, whole-map view, double tap */
   legibility: LegibilityDef;
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
@@ -241,6 +262,83 @@ export interface TimeOfDayDef {
   rim: { color: string; strength: number };
   /** factor on the strength of point lights (torches, fires, windows) */
   pointBoost: number;
+}
+
+/** Story 16.14: the item stage's values (`render.yaml` `itemStage`); angles in degrees, times in ms. */
+export interface ItemStageDef {
+  fov: number;
+  margin: number;
+  startPitchDeg: number;
+  tiltLimitDeg: number;
+  spinDegPerSec: number;
+  dragDegPerPx: number;
+  dampingPerSec: number;
+  restDegPerSec: number;
+  doubleTapMs: number;
+  tapSlopPx: number;
+  resetMs: number;
+  growMs: number;
+  /** story 16.16: the merge flight (three lights fly together, then the flash) */
+  fuseMs: number;
+  /** pose per weapon model file name: yaw about the vertical axis, `upright` stands the long axis up */
+  models: Record<string, { yaw: number; upright?: boolean }>;
+  lights: { ambient: { color: string; intensity: number }; key: StageLightDef; rim: StageLightDef };
+}
+/** Story 16.18: the armoury's values (`render.yaml` `armory`); lengths in scene units, angles in degrees, times in ms. */
+export interface ArmoryDef {
+  fov: number;
+  camera: { height: number; distance: number; aimY: number };
+  wheelRadius: number;
+  standRadius: number;
+  standHeight: number;
+  ringWidth: number;
+  pieceSize: number;
+  pieceLift: number;
+  frontScale: number;
+  frontLift: number;
+  spinDegPerSec: number;
+  dragDegPerPx: number;
+  flingSeconds: number;
+  snapMs: number;
+  tapSlopPx: number;
+  plateAnchorY: number;
+  plateReach: number;
+  colors: { ringGold: string; ringEmpty: string; ghost: string; stone: string; wall: string; floor: string; wheel: string };
+  ghostAlpha: number;
+  pillars: number;
+  pillarRadius: number;
+  hall: { radius: number; height: number };
+  lights: { ambient: { color: string; intensity: number }; key: StageLightDef; spot: { color: string; intensity: number; height: number; angleDeg: number; exponent: number } };
+  banners: { gold: string; anchor: [number, number, number]; width: number; height: number; gap: number; perRow: number; rowGap: number; swayDeg: number; periodMs: number };
+  /** height of the armoury stone above the keep's tip */
+  pinLift: number;
+}
+
+export interface StageLightDef {
+  color: string;
+  intensity: number;
+  direction: [number, number, number];
+}
+
+/** Story 16.6: how the rune weapons glow (`render.yaml` `gear.rune`, Art Direction §2.3, §4.7). */
+export interface RuneGlowDef {
+  /** glow colour per element; `utility` for the auxiliary runes */
+  colors: Record<Element | 'utility', string>;
+  gold: string;
+  /** the dark channel floor of a weapon without a rune */
+  empty: string;
+  /** `fill` of the channel up to which it glows, per tier I–III */
+  fillThresholds: [number, number, number];
+  /** softness of the edge of the lit part (share of `fill`) */
+  edge: number;
+  /** the unlit rest of a rune's channel, as a share of the element colour */
+  floor: number;
+  /** glow strength, dimmed (board) and full (chosen figure, forecast) */
+  state: { dim: number; full: number };
+  /** tier III only: strength sinks by up to `amplitude` once per `periodMs` */
+  pulse: { periodMs: number; amplitude: number };
+  stone: { body: number; symbolLift: number; coreLift: number; selfLit: number };
+  metals: { satLimit: number } & Record<MetalId, { tint: string; sheen: number }>;
 }
 
 /** Weather: acts it may appear in (content:check), grade of light and sky, and the parts that make it. */

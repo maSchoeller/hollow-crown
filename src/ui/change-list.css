@@ -1,0 +1,117 @@
+/* Change list and chips (story 16.13, DESIGN `change-list`): round symbol, name, new value, difference; dashed lines, no shadows. */
+.chg {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.chg-row {
+  display: flex;
+  align-items: center;
+  gap: var(--hc-gap);
+  padding: 7px 0;
+  border-bottom: 1px dashed color-mix(in srgb, var(--hc-line) 35%, transparent);
+  font: 500 var(--hc-size-body) var(--hc-font-body);
+  color: var(--hc-line);
+}
+.chg-row:last-child {
+  border-bottom: 0;
+}
+.chg-sym {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: 50%;
+  background: var(--hc-cream-2);
+  color: var(--hc-line);
+}
+.chg-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.chg-label {
+  font-weight: 600;
+}
+.chg-sub {
+  font-size: var(--hc-size-label);
+  color: var(--hc-soft);
+}
+.chg-value {
+  font: 700 var(--hc-size-number) var(--hc-font-label);
+  font-variant-numeric: tabular-nums;
+}
+.chg-delta {
+  min-width: 2.2em;
+  text-align: right;
+  font: 700 var(--hc-size-number) var(--hc-font-label);
+  font-variant-numeric: tabular-nums;
+}
+.chg-up {
+  color: var(--hc-positive);
+}
+.chg-down {
+  color: var(--hc-negative);
+}
+.chg-new {
+  font: 700 var(--hc-size-caps) var(--hc-font-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hc-ember-dark);
+}
+.chg-gone {
+  font: 700 var(--hc-size-caps) var(--hc-font-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--hc-negative);
+}
+.chg-row.is-gone .chg-label,
+.chg-chip.is-gone .chg-value {
+  text-decoration: line-through;
+  color: var(--hc-soft);
+}
+.chg-empty {
+  padding: 8px 0;
+  font: 500 var(--hc-size-body) var(--hc-font-body);
+  color: var(--hc-soft);
+}
+.chg-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--hc-gap-tight);
+}
+.chg-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 2px 3px;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+  font: 600 var(--hc-size-label) var(--hc-font-label);
+}
+
+/* compact state: symbol + number tiles (story 16.14) */
+.chg-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--hc-gap-tight);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chg-stat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 4px;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+}
+.chg-stat__v {
+  font: 700 var(--hc-size-body) var(--hc-font-label);
+  font-variant-numeric: tabular-nums;
+}

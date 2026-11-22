@@ -1,6 +1,6 @@
 /** Schemas of items, affixes, runes, sets, classes, characters and skills. */
 import { z } from 'zod';
-import { element, itemRefSchema, moveType, partialStats, range, rarity, statMods, statsSchema, statusId, weaponGroup, weaponType } from './schemaBase';
+import { element, itemRefSchema, metalId, moveType, partialStats, range, rarity, statMods, statsSchema, statusId, weaponGroup, weaponType } from './schemaBase';
 import { conditionsListSchema } from './schemaConditions';
 
 export const itemSchema = z.object({
@@ -9,6 +9,9 @@ export const itemSchema = z.object({
   slot: z.enum(['mainHand', 'offHand', 'head', 'body', 'accessory', 'bag']),
   weaponType: weaponType.optional(),
   group: weaponGroup.optional(),
+  metal: metalId.optional(),
+  /** story 16.8: rune shown in the main setting (display only); a list per relic stage */
+  fixedRune: z.union([z.string(), z.array(z.string()).min(1).max(3)]).optional(),
   damageType: z.enum(['physical', 'magical']).optional(),
   element: element.optional(),
   mt: z.number().optional(),
@@ -218,7 +221,7 @@ export const skillEffect = z
     damageTakenPercent: z.number(),
     statusChanceBonus: z.number(),
     healBonus: z.number(),
-    terrainCost: z.record(z.string(), z.number()),
+    terrainCost: z.record(z.string(), z.number().multipleOf(0.5)),
     rangeBonus: z.number(),
     lifestealPercent: z.number(),
     ignoreDefPercent: z.number(),

@@ -34,6 +34,7 @@ import { campaign, campaignCommand, campaignRelics, data } from '../state/sessio
 import { homeBackdrop } from '../campaignInfo';
 import { screen, type From } from '../state/screen';
 import { EquipView } from './Equip';
+import { openWeapon } from '../state/weaponView';
 import { UnitBust, UnitHead } from './unitArt';
 import '../../ui/troop.css';
 
@@ -298,6 +299,17 @@ export function Figure({
             </button>
           ))}
         </div>
+        {!readOnly && onSlot && (
+          <div class="trp-chips">
+            {slots
+              .filter((s) => s.item && (s.slot === 'mainHand' || s.slot === 'offHand'))
+              .map((s) => (
+                <button key={s.key} type="button" class="hc-tab" onClick={() => openWeapon(s.item!.uid, { unit: unit.id })}>
+                  <Icon name="eye" size={16} /> {t('ui.weaponView.openNamed', { item: t(`item.${s.item!.def}.name`) })}
+                </button>
+              ))}
+          </div>
+        )}
         {gearOpen && (
           <div class="trp-chips trp-gear">
             <button type="button" class="hc-tab" onClick={() => apply({ type: 'saveGearTemplate', unit: unit.id }) && setToast(t('ui.figure.gearTemplateSaved'))}>

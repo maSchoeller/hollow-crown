@@ -37,9 +37,10 @@ describe('pro path parts', () => {
     expect(socketName(proParts.tower_shield!)).toBe('socket_back');
     expect(socketName(proParts.mitre!)).toBe('socket_head');
     expect(pieceFolder(proParts.tower_shield!)).toBe('parts');
-    expect(socketName(data.render.gear.weapons.sword!)).toBe('socket_r');
-    expect(socketName(data.render.gear.weapons.bow!)).toBe('socket_l');
-    expect(pieceFolder(data.render.gear.weapons.sword!)).toBe('weapons');
+    expect(socketName(data.render.gear.weapons.sword!)).toBe('grip_r');
+    expect(socketName(data.render.gear.weapons.bow!)).toBe('grip_l');
+    expect(pieceFolder(data.render.gear.weapons.sword!)).toBe('weapons-v2');
+    expect(pieceFolder(data.render.gear.weapons.bow!)).toBe('weapons-v2');
   });
 
   it('fetches the part model of a pro class with the mission, and nothing for a base class', () => {
@@ -92,11 +93,11 @@ describe('figures with body sockets', () => {
     for (const f of vats) {
       const buf = readFileSync(`${dir}/${f}`);
       const v = parseVat(await inflateVat(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)));
-      expect(v.sockets.map((s) => s.name).sort(), f).toEqual(['socket_back', 'socket_head', 'socket_l', 'socket_r']);
+      expect(v.sockets.map((s) => s.name).sort(), f).toEqual(['grip_l', 'grip_r', 'socket_back', 'socket_head']);
       withSockets.push(f.slice(0, -4));
     }
     // the Blender figures (story 4.6 §4.6: kept until an image-to-3D figure replaces them) carry their weapon in the model
     const without = glbs.filter((id) => !withSockets.includes(id)).sort();
     expect(without).toEqual(['avatar', 'fighter', 'mage']);
-  });
+  }, 30_000); // inflates and parses all 42 baked figures (about 6 s alone since story 16.10 added the stance clips); runs only where Git LFS pulled them
 });

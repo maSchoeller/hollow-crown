@@ -300,3 +300,26 @@ Ausgangspunkt: Die Vitrine für besondere Waffen war beschlossen, offen waren Or
 - Außen am Bergfried **je Stück ein Banner** in Runenfarbe (ohne Rune gold).
 - Folge: Relikte und Signaturen ohne Waffenmodell (Drachenglut, Letzter Vorhang) brauchen ein Modell; bis dahin Item-Bild auf dem Ständer.
 - Mockup `art/mockups/ausruestung-2026-11/vitrine.html` (echte Modelle aus `art/models/weapons-v2/` und `runes-v2/`).
+
+## 2026-11-22: Runenwaffen v2 im Spiel (Story 16.6, Nachtlauf, Abnahme durch den Produktinhaber offen)
+
+- Axt, Schwert, Lanze und Schild aus `art/models/weapons-v2/` ersetzen die alten Gruppenmodelle; Steine aus `art/models/runes-v2/<runeId>.glb` sitzen an leeren Knoten `socket_rune_a*` (Hauptfassung, je Blattseite) und `socket_rune_b*` (kleine Fassung, Maßstab 0,55 am Knoten). Die Platzhalter-Kuppel `rune_stone` im Waffenmodell entfällt.
+- Abnahmepunkte nachgearbeitet: Schild in Ocker und Umbra statt Beige (Blau, Rot und Grün sind Teamfarben, §2.1, und bleiben vom Schild fern) [ASSUMPTION]; Krallen größer; Axt-Tülle runder; Stein II mit Facettenring und kräftigerem Symbol, von vorn von Stufe I unterscheidbar; Rinne 0,001 über dem Rinnenboden, Steinbasis unter dem Fassungsboden gegen Flimmern.
+- Zweite, kleine Fassung (`rune_socket2`, Selten und besser) [ASSUMPTION Lage]: Axt am Block neben dem Stiel, Schwert am Parierstangenarm, Lanze an einer zweiten Hülse unter der Tülle, Schild unter dem Buckelring. Gewöhnliche Waffen blenden sie aus.
+- Metall je Item im neuen Feld `metal` (iron, steel, silver; ohne Feld Stahl) [ASSUMPTION]; Tönung nur der grauen Flächen, Holz und Leder bleiben.
+- Leuchten in `content/core/render.yaml` `gear.rune`: gedämpft 0,3, voll 1, Stufe III pulsiert. Die Elementrune sitzt in der Hauptfassung und füllt die Rinne, Hilfsrunen in der kleinen Fassung.
+- Befund Sichtprüfung: Auf dem Brett ist die Rinne nur ein bis zwei Pixel breit und wirkt dunkelrot; der Stein trägt das Leuchten. Ob die Rinne breiter werden soll, entscheidet der Produktinhaber am Bild `s4-16-6-brett.png`.
+
+## 2026-11-22: Runenwaffen v2 für alle übrigen Gruppen (Story 16.7, Nachtlauf, Abnahme offen)
+
+- Bogen, Dolch, Stab, Buch (zugeklappt `book`, aufgeschlagen `book_open`), Laute und Fokus als v2-Modelle mit Fassung gleicher Größe, Rinne entlang der Form und kleiner Fassung; die alten Gruppenmodelle sind entfernt.
+- Ohne ChatGPT-Bauplan nach den gemalten Item-Icons gebaut, weil ChatGPT in der Nacht nicht erreichbar war [ASSUMPTION]; Baupläne können nachgereicht werden.
+- Aufgeschlagenes Buch: Fassung auf der rechten Seite, kleine Fassung auf der linken (der Deckelrand ist zu schmal). Fokus neu: Kristallscheibe an einem Stiel, linke Hand.
+- Buchdeckel tiefviolett, Kristalle hellgrau; keine Teamfarben als große Flächen.
+
+## 2026-11-22: Signaturwaffen und Relikte mit eigenem Modell (Story 16.8, Abnahme der Merkmale offen)
+
+- 14 Stücke als `art/models/weapons-v2/sig/<itemId>.glb` (Gruppenmodell plus Merkmal, eigene Tönung); `render.yaml` `gear.items` (Schlüssel = Item-Id) zeigt darauf, Hand, Bewegung und Haltung kommen von der Gruppe (Armbrüste: Bogen). Eine Auflösung `modelFor` (`src/render/shared/gearModel.ts`) für Brett und spätere Ansichten; `gearKey` enthält die Item-Id.
+- Neues Feld `fixedRune` am Item (Rune-Id oder Liste je Relikt-Stufe), Werte laut Tabelle der Story [ASSUMPTION: nur Darstellung, keine Regelwirkung, `ItemInstance.runes` und Speicherformat unberührt]. Das Brett zeigt sie in der Hauptfassung, solange Fassung 0 leer ist; die Relikt-Stufe kommt aus `BattleState.relicStages` (ohne Eintrag Stufe 1).
+- `dragon_ember` (Schmuckstück) ist für Waffenansicht, Figurenblatt und Waffenkammer auflösbar, wird am Brett nie angehängt [ASSUMPTION].
+- Ladeplan lädt das Sig-Modell der getragenen Stücke und alle Steine der `fixedRune`-Liste; `sig/` liegt im ersten Download (Regex von `first-mission.mjs`).

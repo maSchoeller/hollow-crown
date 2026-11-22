@@ -18,6 +18,7 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
 import type { Node } from '@babylonjs/core/node';
 import { CreateCylinder } from '@babylonjs/core/Meshes/Builders/cylinderBuilder';
+import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
@@ -122,6 +123,9 @@ export class CastleView implements HostedView {
   private tiered: Tagged = [];
   private tier = -1;
   private pins = new Map<string, HTMLElement>();
+  /** story 16.18: the armoury's banners on the keep */
+  private banners: Array<{ mesh: Mesh; mat: StandardMaterial; phase: number }> = [];
+  private bannerKey = '';
   private disposed = false;
   private input = new AbortController();
   /** the aim's depth at rest (fit, on resize) */
@@ -199,6 +203,7 @@ export class CastleView implements HostedView {
 
   frame(now: number): void {
     this.placeCamera();
+    this.swayBanners(now);
     const calls = this.host.engine._drawCalls;
     const before = calls?.current ?? 0;
     this.scene.render();
@@ -218,6 +223,11 @@ export class CastleView implements HostedView {
     this.input.abort();
     this.shadows?.dispose();
     this.smokeTex.dispose();
+    for (const b of this.banners) {
+      b.mesh.dispose(false, false);
+      b.mat.dispose();
+    }
+    this.banners = [];
     this.host.release(this);
   }
 
@@ -391,6 +401,47 @@ export class CastleView implements HostedView {
     else this.pins.delete(id);
   }
 
+  /**
+   * Story 16.18: one small cloth per piece of the armoury hangs on the keep, in the colour of the piece's rune (gold without one).
+   * `colours` replaces the banners that hang now; position, size and sway come from `render.yaml` `armory.banners`.
+   */
+  setBanners(colours: string[]): void {
+    if (this.disposed) return;
+    const key = colours.join();
+    if (key === this.bannerKey) return;
+    this.bannerKey = key;
+    for (const b of this.banners) {
+      b.mesh.dispose(false, false);
+      b.mat.dispose();
+    }
+    this.banners = [];
+    const def = this.data.render.armory.banners;
+    colours.forEach((hex, i) => {
+      const row = Math.floor(i / def.perRow);
+      const inRow = Math.min(def.perRow, colours.length - row * def.perRow);
+      const col = i % def.perRow;
+      const step = def.width + def.gap;
+      const mesh = CreatePlane(`castle:banner:${i}`, { width: def.width, height: def.height }, this.scene);
+      mesh.isPickable = false;
+      // the cloth hangs from its top edge: its pivot is the top, so it sways from there
+      mesh.setPivotPoint(new Vector3(0, def.height / 2, 0));
+      mesh.position.set(KEEP_TIP.x + def.anchor[0] + (col - (inRow - 1) / 2) * step, KEEP_TIP.y + def.anchor[1] - row * def.rowGap - def.height / 2, KEEP_TIP.z + def.anchor[2]);
+      const mat = new StandardMaterial(`castle:banner:${i}`, this.scene);
+      mat.diffuseColor = Color3.FromHexString(hex);
+      mat.emissiveColor = Color3.FromHexString(hex).scale(0.35);
+      mat.specularColor = Color3.Black();
+      mat.backFaceCulling = false;
+      mesh.material = mat;
+      this.banners.push({ mesh, mat, phase: i * 0.9 });
+    });
+  }
+
+  /** The banners sway a little (`swayDeg`, `periodMs`). */
+  private swayBanners(now: number): void {
+    const def = this.data.render.armory.banners;
+    for (const b of this.banners) b.mesh.rotation.z = Math.sin((now / def.periodMs) * Math.PI * 2 + b.phase) * def.swayDeg * (Math.PI / 180);
+  }
+
   // ------------------------------------------------------------------ effects
 
   private makeSmokeTexture(): DynamicTexture {
@@ -509,9 +560,10 @@ export class CastleView implements HostedView {
     const vp = new Viewport(0, 0, w, h);
     const tm = this.scene.getTransformMatrix();
     for (const [id, el] of this.pins) {
-      const v = this.rooms.get(id);
-      if (!v) continue;
-      const p = Vector3.Project(v.pin, Matrix.IdentityReadOnly, tm, vp);
+      // story 16.18: the armoury has no building, its stone floats over the keep's tip
+      const at = id === 'armory' ? KEEP_TIP.add(new Vector3(0, this.data.render.armory.pinLift, 0)) : this.rooms.get(id)?.pin;
+      if (!at) continue;
+      const p = Vector3.Project(at, Matrix.IdentityReadOnly, tm, vp);
       el.style.left = `${p.x}px`;
       el.style.top = `${p.y}px`;
       // panned away: no stone over the HUD
