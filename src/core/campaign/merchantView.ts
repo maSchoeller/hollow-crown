@@ -7,9 +7,9 @@ import { itemDef, type EquipError } from '../rules/items';
 import { changeList, type ChangeResult } from '../rules/changes';
 import type { GameData } from '../gameData';
 import type { CampaignState, ItemInstance, UnitRecord } from '../state';
-import { dailyOffersOpen, offerPrice, shopPrice } from './aid';
+import { dailyOffersOpen, shopPrice } from './aid';
 import { buyPlan, type BuyPlan } from './buyFor';
-import { usableBy } from './camp';
+import { offerPrice, usableBy } from './camp';
 import { shopStock } from './campaign';
 
 /** The shopper of the convoy medallion (no figure). */

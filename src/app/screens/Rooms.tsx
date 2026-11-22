@@ -14,23 +14,17 @@ import {
   availableSupportTalks,
   campfireLock,
   reservePct,
-  dailyOffersOpen,
-  emberSparkOffered,
   equipBestOpen,
   gearTemplatesOpen,
-  emberSparkPrice,
   hireCost,
   hireError,
   isHealingPotion,
   itemDef,
   locateItem,
-  offerPrice,
   potionUpgradeCost,
   potionUpgradeError,
   potionUpgradeOpen,
-  priceChangePct,
   shopPrice,
-  shopStock,
   roomBuild,
   scarCost,
   rerollAllowed,
@@ -47,7 +41,6 @@ import {
   upgradeCost,
   upgradeLimit,
   upgradePreview,
-  usableBy,
   STAT_KEYS,
   type CampaignCommand,
   type Condition,
@@ -67,7 +60,6 @@ import { WorkshopRoom } from './Workshop';
 import { MerchantRoom } from './Merchant';
 import { MemorialRoom } from './Memorial';
 import { TrainingRoom } from './Training';
-import { Sparks } from '../../ui/Sparks';
 import { campaign, data } from '../state/session';
 import { UnitHead } from './unitArt';
 import '../../ui/camp.css';
