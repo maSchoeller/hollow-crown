@@ -156,6 +156,7 @@ Claude Opus 5.5 (Sub-Session der Staffel-3-Screens)
 ### Completion Notes List
 
 - Bühne `ItemStageView` (HostedView) und Hülle `ItemStageFrame` (dynamischer Import, Item-Bild bis zur Bereitschaft, ohne Modell oder bei Fehlschlag), Waffenansicht `WeaponView` als Screen `weapon`, Einstiege in `Equip.tsx` und `Troop.tsx`, Sprünge „Verzaubern“/„Aufwerten“ (`camp` mit `item`, `SmithRoom`/`EnchanterRoom` starten mit der Auswahl), Dev-Hook `__hc.devWeapon`.
+- `pnpm check` grün (lint, 100 % der Tests, content:check, build): erster Download 2,28 MB (Budget 30, Ziel 12); die Bühne kommt über dynamischen Import, die GLB-Dateien laden bei Bedarf.
 - Nicht geprüft (kein Dev-Server): Sicht, Lage der Modelle, Bühnenlicht, Layout bei 375 × 812; der Bildbeleg steht aus. Kein Test für die Raum-Vorauswahl (Rooms.tsx hat keine Komponententests; die Änderung ist `useState(item ?? null)`).
 
 ### File List
