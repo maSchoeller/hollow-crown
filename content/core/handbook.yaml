@@ -6,7 +6,7 @@
 # graphic: icon (großes Symbol), triangle (Waffendreieck aus balance), elements (Kreislauf aus balance), terrain (Tabelle der
 # Gelände aus terrain.yaml), class (Steckbrief aus classes.yaml), lesson (Zeilen der Lektions-Szene), rarity (Tabelle aus balance).
 # format: plain 15 · signed +15 · percent 15% · signedPercent +15% · factor ×3 · factorPercent 1.2 → +20% · share 0.1 → 10%.
-# anchor: Kontext-„?“ im Spiel (forecast, status.<id>); Gelände, Klassen und Lektionen bekommen terrain.<id>, class.<id>, lesson.<szene>.
+# anchor: Kontext-„?“ im Spiel (forecast, elements, status.<id>); Gelände, Klassen und Lektionen bekommen terrain.<id>, class.<id>, lesson.<szene>.
 # fromAct: die Regel kommt erst mit diesem Akt (Epic 10) und steht als „ab Akt n“ da.
 
 categories:
@@ -98,6 +98,7 @@ entries:
       - { id: dmg, ref: balance.triangle.damage, format: signed, icon: attack }
     see: [hit_chance, elements, forecast]
   - id: elements
+    anchor: elements
     category: weapons
     graphic: elements
     values:

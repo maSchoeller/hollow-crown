@@ -81,6 +81,22 @@ export function moveCost(data: GameData, s: BattleState, unit: BattleUnit, p: Po
   return data.terrain[id]?.cost[cls.moveType] ?? null;
 }
 
+const minSteps = new WeakMap<object, number>();
+
+/**
+ * The least a step onto a tile can cost in this content (halves count since story 16.1: road and bridge cost 0.5): the unit of the AI's
+ * distance buckets and the bound its pruning tests need (a way of n steps costs at least n times this). Derived from `terrain.yaml`, never a constant.
+ */
+export function minStepCost(data: GameData): number {
+  let m = minSteps.get(data.terrain);
+  if (m === undefined) {
+    m = 1;
+    for (const t of Object.values(data.terrain)) for (const c of Object.values(t.cost)) if (c !== null && c > 0 && c < m) m = c;
+    minSteps.set(data.terrain, m);
+  }
+  return m;
+}
+
 export interface ReachNode {
   cost: number;
   /** harmful tiles (`isHazard`) entered on the way here: among ways of the same cost the search keeps the one with the fewest */

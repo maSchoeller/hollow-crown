@@ -288,18 +288,18 @@ development_status:
 
   # Epic 16: Ausrüstung zum Anfassen
   epic-16: in-progress
-  16-1-strassen-und-bruecken-kosten: backlog  # Straßen und Brücken kosten ½
+  16-1-strassen-und-bruecken-kosten: review  # Straßen und Brücken kosten ½
   16-2-balancing-nachzug-fuer-prolog-1-2-2-1-und-2-8: backlog  # Balancing-Nachzug für Prolog, 1-2, 2-1 und 2-8
   16-3-gegnerphase-standardmaessig-2: backlog  # Gegnerphase standardmäßig 2×
-  16-4-schild-runen: review  # Schild-Runen
-  16-5-waffen-chronik-mit-kill-zaehler-und-beinamen: backlog  # Waffen-Chronik mit Kill-Zähler und Beinamen
+  16-4-schild-runen: done  # Schild-Runen
+  16-5-waffen-chronik-mit-kill-zaehler-und-beinamen: review  # Waffen-Chronik mit Kill-Zähler und Beinamen
   16-6-runenwaffen-v2-im-spiel-axt-schwert-lanze-schild: backlog  # Runenwaffen v2 im Spiel (Axt, Schwert, Lanze, Schild)
   16-7-runenwaffen-v2-fuer-alle-uebrigen-waffengruppen: backlog  # Runenwaffen v2 für alle übrigen Waffengruppen
   16-8-modelle-fuer-signaturwaffen-und-relikte: backlog  # Modelle für Signaturwaffen und Relikte
   16-9-griff-rig-und-fingerknochen-fuer-alle-brettfiguren: backlog  # Griff-Rig und Fingerknochen für alle Brettfiguren
   16-10-ruhe-haltung-je-waffenart-und-kampfhaltung-bei-auswahl: backlog  # Ruhe, Haltung je Waffenart und Kampfhaltung bei Auswahl
   16-11-brett-erklaert-gelaende-und-bewegungskosten: backlog  # Brett erklärt Gelände und Bewegungskosten
-  16-12-kampfvorschau-mit-element-band: backlog  # Kampfvorschau mit Element-Band
+  16-12-kampfvorschau-mit-element-band: review  # Kampfvorschau mit Element-Band
   16-13-aenderungsliste-und-linien-icons-als-gemeinsame-bausteine: review  # Änderungsliste und Linien-Icons als gemeinsame Bausteine
   16-14-waffenansicht: backlog  # Waffenansicht
   16-15-figurenblatt-als-3d-ankleidepuppe: backlog  # Figurenblatt als 3D-Ankleidepuppe

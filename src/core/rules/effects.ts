@@ -286,6 +286,11 @@ function bleedOut(data: GameData, s: BattleState, team: Team, events: GameEvent[
   }
 }
 
+/** Burn damage of one round (start of phase and forecast share it, story 16.12). */
+export function burnDamage(data: GameData, maxHp: number): number {
+  return Math.max(1, Math.floor((maxHp * data.balance.status.burnPercentMaxHp) / 100));
+}
+
 /** Start of a team's phase: burn damage, terrain healing, renewal, standing in fire. */
 export function startOfPhase(data: GameData, s: BattleState, team: Team, events: GameEvent[]): void {
   bleedOut(data, s, team, events);
@@ -293,7 +298,7 @@ export function startOfPhase(data: GameData, s: BattleState, team: Team, events:
     if (u.team !== team || !onMap(u) || u.downed) continue;
     const st = computeStats(data, u, { state: s });
     if (hasStatus(u, 'burning')) {
-      const dmg = Math.max(1, Math.floor((st.maxHp * data.balance.status.burnPercentMaxHp) / 100));
+      const dmg = burnDamage(data, st.maxHp);
       if (damageUnit(data, s, u, dmg, 'burn', events)) continue;
     }
     if (u.pos && terrainAt(s, u.pos) === 'burning') {

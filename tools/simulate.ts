@@ -188,6 +188,9 @@ async function runCampaign(act: string) {
       material: per(m.materials, m.reached).toFixed(1),
       expected: m.expectedLevel,
       deaths: per(m.deaths, m.cleared).toFixed(2),
+      // story 16.5: weapon kills and epithets per won mission
+      kills: per(m.kills, m.cleared).toFixed(1),
+      epithets: per(m.epithets, m.cleared).toFixed(2),
       flagged: Object.keys(f).length ? Object.keys(f).join(',') : '',
     };
   });
@@ -219,6 +222,14 @@ async function runCampaign(act: string) {
       `ember sparks ${per(sim.spent.sparks, runs).toFixed(0)} (${per(sim.spent.sparks / Math.max(1, emberSparkPrice(data)), runs).toFixed(2)} bought), ` +
       `hire ${per(sim.spent.hire, runs).toFixed(0)} (${per(sim.hired, runs).toFixed(1)} mercenaries)`,
   );
+  // story 16.5: weapon chronicle; target act 1 about 150 kills and 6 epithets, acts 1+2 at most 8 epithets (measured only, the threshold is set)
+  {
+    const kills = per(sim.chronicle.kills, runs);
+    const epithets = per(sim.chronicle.epithets, runs);
+    const first = sim.missions.find((m) => m.epithets > 0)?.node ?? '–';
+    const warn = actNo === 1 ? (Math.abs(kills - 150) > 50 || Math.abs(epithets - 6) > 3 ? ' ⚠ far from 150 kills / 6 epithets' : '') : epithets > 8 ? ' ⚠ more than 8 epithets' : '';
+    console.log(`weapon chronicle: kills ${kills.toFixed(0)} per run, epithets ${epithets.toFixed(1)} per run, first epithet in ${first}${warn}`);
+  }
   if (actNo > 1) {
     const e = sim.entry;
     console.log(
@@ -270,6 +281,7 @@ async function runCampaign(act: string) {
       ? { acts, entry: { runs: sim.entry.runs, armyLevel: per(sim.entry.armyLevel, sim.entry.runs), gold: per(sim.entry.gold, sim.entry.runs) }, skipped: sim.skipped }
       : {}),
     battleHours: battleMin / 60,
+    chronicle: { killsPerRun: per(sim.chronicle.kills, runs), epithetsPerRun: per(sim.chronicle.epithets, runs) },
     missions: sim.missions.map((m) => ({
       node: m.node,
       map: m.map,
@@ -284,6 +296,8 @@ async function runCampaign(act: string) {
       materials: per(m.materials, m.reached),
       expectedLevel: m.expectedLevel,
       deaths: per(m.deaths, m.cleared),
+      kills: per(m.kills, m.cleared),
+      epithets: per(m.epithets, m.cleared),
       rounds: per(m.turns, m.wins),
       turns: turnStats(m.winTurns),
       actions: per(m.actions, m.wins),
