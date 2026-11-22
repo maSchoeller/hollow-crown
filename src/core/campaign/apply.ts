@@ -5,7 +5,7 @@ import type { Effect } from '../storyDefs';
 import { applyCommand } from '../battle/apply';
 import { newItem } from '../battle/create';
 import { rollAffixes } from '../loot';
-import { allItems, bagIsFull, canEquip, isKey, isRune, itemDef, runeFits, runeSlotCount, sellPrice } from '../rules/items';
+import { allItems, bagIsFull, canEquip, isKey, isRune, itemDef, sellPrice } from '../rules/items';
 import { changeProPath, loadoutSlots, otherProPath, promote } from '../rules/progression';
 import { activeSkillIds } from '../rules/skills';
 import { relicCtx } from './relics';
@@ -25,6 +25,7 @@ import { choiceKey, findChoice } from './scene';
 import { applyEffects, validateEffects } from './effects';
 import { conditionContext, evalConditions } from './conditions';
 import type { BuyTarget } from './buyFor';
+import { buyRuneError, runeOffers, runeSetError, runeSlots } from './enchant';
 import type { CampaignApplyResult, CampaignCommand, CampaignError, CampaignEvent } from './commands';
 
 function buyPrice(data: GameData, c: CampaignState, defId: string): number | null {
@@ -138,14 +139,10 @@ export function validateCampaign(data: GameData, c: CampaignState, cmd: Campaign
       const loc = locateItem(c, cmd.item);
       const rune = c.convoy.find((i) => i.uid === cmd.rune);
       if (!loc || !rune || !isRune(data, rune)) return 'unknown_item';
-      const rdef = data.runes[rune.def]!;
-      const runes = [...loc.inst.runes];
-      while (runes.length < runeSlotCount(data, loc.inst)) runes.push(null);
-      if (rdef.element && runes.some((r) => r && data.runes[r]?.element)) return 'no_slot';
-      if (!runes.includes(null)) return 'no_slot';
-      if (!runeFits(data, itemDef(data, loc.inst), rdef)) return 'no_slot';
-      return null;
+      return runeSetError(data, loc.inst, rune.def, cmd.index) ? 'no_slot' : null;
     }
+    case 'buyRune':
+      return buyRuneError(data, c, cmd.rune, locateItem(c, cmd.item)?.inst, cmd.index);
     case 'removeRune': {
       const loc = locateItem(c, cmd.item);
       return loc?.inst.runes[cmd.index] ? null : 'unknown_item';
@@ -402,12 +399,34 @@ function applyBare(data: GameData, prev: CampaignState, cmd: CampaignCommand): C
     case 'insertRune': {
       const inst = locateItem(c, cmd.item)!.inst;
       const rune = c.convoy.find((i) => i.uid === cmd.rune)!;
-      const runes = [...inst.runes];
-      while (runes.length < runeSlotCount(data, inst)) runes.push(null);
-      runes[runes.indexOf(null)] = rune.def;
+      const runes = runeSlots(data, inst);
+      const at = cmd.index ?? runes.indexOf(null);
+      const old = runes[at];
+      runes[at] = rune.def;
       inst.runes = runes;
       c.convoy = c.convoy.filter((i) => i.uid !== cmd.rune);
       lost(rune.uid, rune.def);
+      // a swap: the rune that sat there goes to the convoy (it took the place of the stone that left)
+      if (old) {
+        const back = newItem(c, old, data);
+        c.convoy.push(back);
+        gained(back.uid, back.def);
+      }
+      events.push({ t: 'itemChanged', uid: inst.uid });
+      break;
+    }
+    case 'buyRune': {
+      const inst = locateItem(c, cmd.item)!.inst;
+      c.gold -= runeOffers(data, c).find((o) => o.id === cmd.rune)!.price;
+      const runes = runeSlots(data, inst);
+      const old = runes[cmd.index];
+      runes[cmd.index] = cmd.rune;
+      inst.runes = runes;
+      if (old) {
+        const back = newItem(c, old, data);
+        c.convoy.push(back);
+        gained(back.uid, back.def);
+      }
       events.push({ t: 'itemChanged', uid: inst.uid });
       break;
     }

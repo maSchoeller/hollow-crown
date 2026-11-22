@@ -57,16 +57,18 @@ export interface ItemStageFrameProps {
   onSelect?: (key: 'main' | 'small') => void;
   /** reports when the stage shows the model (`true`) or the image shows (`false`) */
   onReady?: (ready: boolean) => void;
+  /** receives the live stage (null while there is none), for effects the owner triggers (the enchanter's merge flight) */
+  stageRef?: { current: ItemStage | null };
   children?: ComponentChildren;
 }
 
-export function ItemStageFrame({ data, quality, item, model, runes, label, settings = [], selected, onSelect, onReady, children }: ItemStageFrameProps) {
+export function ItemStageFrame({ data, quality, item, model, runes, label, settings = [], selected, onSelect, onReady, stageRef, children }: ItemStageFrameProps) {
   /** the host's canvas goes in here; Preact never renders into it */
   const slot = useRef<HTMLDivElement>(null);
   const stage = useRef<ItemStage | null>(null);
   const [ready, setReady] = useState(false);
-  const latest = useRef({ runes, onReady });
-  latest.current = { runes, onReady };
+  const latest = useRef({ runes, onReady, stageRef });
+  latest.current = { runes, onReady, stageRef };
   const shownKey = useRef('');
 
   useEffect(() => {
@@ -84,6 +86,7 @@ export function ItemStageFrame({ data, quality, item, model, runes, label, setti
         st.dispose();
         stage.current = null;
       }
+      if (latest.current.stageRef) latest.current.stageRef.current = ok ? st : null;
       setReady(ok);
       latest.current.onReady?.(ok);
     }).catch(() => {
@@ -94,6 +97,7 @@ export function ItemStageFrame({ data, quality, item, model, runes, label, setti
       gone = true;
       st?.dispose();
       stage.current = null;
+      if (latest.current.stageRef) latest.current.stageRef.current = null;
       setReady(false);
     };
   }, [model]);

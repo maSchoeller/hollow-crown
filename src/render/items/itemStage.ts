@@ -4,8 +4,8 @@
  * path, the runes in the settings (`GearRunes`) and what `render.yaml` says. Rune, channel glow, stones and the metal tint are the
  * ones of the board's rune weapons (`runeGlow.ts`, `runeLook.ts`), not a second implementation.
  *
- * Contract (kept stable): `show(path, runes)` loads the model and dresses it, `setRunes(runes, { grow })` swaps the runes (a new
- * stone grows in), `reset()` returns to the start pose, `dispose()` frees everything the stage made and gives the cached files back.
+ * Contract (kept stable, 16.16 added `fuse`): `show(path, runes)` loads the model and dresses it, `setRunes(runes, { grow })` swaps the
+ * runes (a new stone grows in), `fuse(colour)` lets three lights fly together with a flash, `reset()` returns to the start pose, `dispose()` frees everything the stage made and gives the cached files back.
  * Models and stones are held through `host.store(this)` (the shared cache), so a model that the board loaded is not loaded again.
  */
 import { Camera } from '@babylonjs/core/Cameras/camera';
@@ -17,7 +17,8 @@ import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode';
-import type { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
 import type { GameData, GearRunes } from '../../core';
 import { renderHost, type AssetStore, type HostedView, type Quality, type RenderHost } from '../host';
 import { dressRuneWeapon, RuneKit } from '../shared/runeGlow';
@@ -30,6 +31,8 @@ export interface ItemStage {
   show(path: string, runes: GearRunes): Promise<boolean>;
   /** Swaps the runes in the settings; `grow` lets a new stone grow in (0 to 1 over `itemStage.growMs`). */
   setRunes(runes: GearRunes, opts?: { grow?: boolean }): Promise<void>;
+  /** Story 16.16: three lights fly together in the middle and flash in `colour` (`#rrggbb`); resolves when it is over (`itemStage.fuseMs`). */
+  fuse(colour: string): Promise<void>;
   /** Back to the start pose (also a double tap). */
   reset(): void;
   /** Frees the item, lights, camera, listeners and the cached files; the stage is dead afterwards. */
@@ -70,6 +73,8 @@ export class ItemStageView implements HostedView, ItemStage {
   private last = 0;
   /** ms since the stones began to grow; null: not growing */
   private growing: number | null = null;
+  /** the running merge effect: its lights, flash and clock */
+  private fx: { orbs: Mesh[]; flash: Mesh; mat: StandardMaterial; ms: number; done: () => void } | null = null;
   private input = new AbortController();
   private touchAction: string;
   /** dressing runs one job at a time: the next `setRunes` waits for the one before */
@@ -186,6 +191,61 @@ export class ItemStageView implements HostedView, ItemStage {
     this.motion.reset();
   }
 
+  fuse(colour: string): Promise<void> {
+    this.endFuse();
+    if (this.disposed) return Promise.resolve();
+    const mat = new StandardMaterial('stage:fuse', this.scene);
+    mat.disableLighting = true;
+    mat.emissiveColor = hexColor(colour);
+    mat.diffuseColor = Color3.Black();
+    mat.specularColor = Color3.Black();
+    const size = this.radius * 0.18;
+    const orbs = [0, 1, 2].map((i) => {
+      const m = CreateSphere(`stage:fuse:${i}`, { diameter: size, segments: 8 }, this.scene);
+      m.material = mat;
+      m.isPickable = false;
+      return m;
+    });
+    const flash = CreateSphere('stage:fuse:flash', { diameter: this.radius * 1.6, segments: 12 }, this.scene);
+    flash.material = mat;
+    flash.isPickable = false;
+    flash.visibility = 0;
+    return new Promise<void>((done) => {
+      this.fx = { orbs, flash, mat, ms: 0, done };
+    });
+  }
+
+  /** The merge effect's frame at `k` (0-1): the lights come in on a spiral for the first 70 %, then the flash grows and fades. */
+  private stepFuse(dt: number): void {
+    const fx = this.fx;
+    if (!fx) return;
+    const total = Math.max(1, this.data.render.itemStage.fuseMs);
+    fx.ms += dt * 1000;
+    const k = Math.min(1, fx.ms / total);
+    const fly = Math.min(1, k / 0.7);
+    const near = 1 - (1 - fly) * (1 - fly);
+    fx.orbs.forEach((o, i) => {
+      const a = (i / 3) * Math.PI * 2 + fly * 2.2;
+      const r = this.radius * 1.1 * (1 - near);
+      o.position.set(Math.cos(a) * r, Math.sin(a) * r, 0);
+      o.isVisible = fly < 1;
+    });
+    const flashK = k <= 0.7 ? 0 : (k - 0.7) / 0.3;
+    fx.flash.visibility = flashK <= 0 ? 0 : 0.85 * (1 - flashK);
+    fx.flash.scaling.setAll(0.2 + flashK * 1.2);
+    if (k >= 1) this.endFuse();
+  }
+
+  private endFuse(): void {
+    const fx = this.fx;
+    if (!fx) return;
+    this.fx = null;
+    for (const o of fx.orbs) o.dispose(false, false);
+    fx.flash.dispose(false, false);
+    fx.mat.dispose();
+    fx.done();
+  }
+
   private queue(job: () => Promise<boolean>): Promise<boolean> {
     const run = this.working.then(job, job);
     this.working = run.catch(() => false);
@@ -285,13 +345,14 @@ export class ItemStageView implements HostedView, ItemStage {
 
   busy(): boolean {
     const r = this.runes;
-    return this.motion.busy() || this.growing !== null || r?.main?.tier === 3 || r?.small?.tier === 3;
+    return this.motion.busy() || this.growing !== null || this.fx !== null || r?.main?.tier === 3 || r?.small?.tier === 3;
   }
 
   frame(now: number): void {
     const dt = this.last ? Math.min(0.1, (now - this.last) / 1000) : 0;
     this.last = now;
     this.motion.step(dt);
+    this.stepFuse(dt);
     this.pivot.rotation.set(this.motion.pitch, this.motion.yaw, 0);
     if (this.growing !== null) {
       this.growing += dt * 1000;
@@ -310,6 +371,7 @@ export class ItemStageView implements HostedView, ItemStage {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
+    this.endFuse();
     this.input.abort();
     this.slot.style.touchAction = this.touchAction;
     this.clearItem();
