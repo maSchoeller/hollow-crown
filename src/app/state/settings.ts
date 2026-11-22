@@ -24,11 +24,11 @@ export interface Settings {
   grid: 'off' | 'subtle' | 'strong';
   hpBars: 'always' | 'hurt' | 'off';
   enemyStrip: boolean;
-  /** version of the enemy-phase pace; a stored setting of an older one is reset, because the old default (2x) was too fast to follow */
+  /** version of the enemy-phase pace; a stored setting of an older one is reset once to the default: rev 2 reset to 1x (2026-10-28), rev 3 lifts to 2x (story 16.3); after that the player's choice stays */
   enemyPaceRev: number;
 }
 
-const ENEMY_PACE_REV = 2;
+const ENEMY_PACE_REV = 3;
 
 const SETTINGS_KEY = 'hc.settings';
 /** Settings of a first start in the language `lang`. */
@@ -36,7 +36,7 @@ export function defaultSettings(lang: Lang): Settings {
   return {
     lang,
     speed: 1,
-    enemySpeed: 1,
+    enemySpeed: 2,
     enemyMarch: 'together',
     dangerDefault: false,
     confirmForecast: true,
