@@ -355,6 +355,55 @@ itemStage:
     key: { color: "#FFF3DD", intensity: 1.1, direction: [-0.5, -0.8, 0.6] }
     rim: { color: "#FFB27A", intensity: 0.6, direction: [0.7, -0.2, -0.7] }
 
+# Story 16.18: die Waffenkammer im Bergfried (3D-Gewölbe mit Drehscheibe) und die Banner am Bergfried. Längen in Szeneneinheiten
+# (Meter), Winkel in Grad, Zeiten in ms. Kamera, Licht und Modelllage der Ständer; Modelllage der Stücke aus `itemStage.models`.
+armory:
+  fov: 28                    # senkrechter Blickwinkel
+  camera: { height: 2.0, distance: 6.4, aimY: 1.8 }   # Kamera hinter der Scheibe, Blick auf die Höhe aimY
+  wheelRadius: 2.3           # Radius der Drehscheibe (Mitte bis Ständer)
+  standRadius: 0.62          # Steinsockel
+  standHeight: 0.55
+  ringWidth: 0.07            # Ring (Rune) auf dem Sockel
+  pieceSize: 1.7             # Stücke werden auf diesen Durchmesser (Hülle) eingepasst
+  pieceLift: 0.22            # Abstand des Stücks über dem Sockel
+  frontScale: 1.5            # das vordere Stück wächst auf dieses Maß
+  frontLift: 0.12            # und steht etwas höher
+  spinDegPerSec: 24          # langsame Eigendrehung der Stücke
+  dragDegPerPx: 0.3          # Wischen: Drehung der Scheibe je Pixel
+  flingSeconds: 0.18         # so weit (s) schwingt der Wisch nach, bevor eingerastet wird
+  snapMs: 420                # Einrasten auf den Ständer
+  tapSlopPx: 10
+  plateAnchorY: -0.12        # Namensschild unter dem Sockel (Szeneneinheiten)
+  plateReach: 1              # Schilder: das vordere und so viele Nachbarn je Seite
+  colors:
+    ringGold: "#D9A441"      # Stück ohne Rune
+    ringEmpty: "#8A8F96"     # leerer Ständer (verborgen oder in Reichweite)
+    ghost: "#EAF2FF"         # getragenes Stück: heller Umriss
+    stone: "#6E6A66"         # Sockel
+    wall: "#3B3631"
+    floor: "#1F1B18"
+    wheel: "#4A453F"
+  ghostAlpha: 0.38           # Deckkraft des getragenen Stücks
+  pillars: 7                 # Säulen im Halbrund hinter der Scheibe
+  pillarRadius: 0.5
+  hall: { radius: 14, height: 9 }
+  lights:
+    ambient: { color: "#FFE2BC", intensity: 0.55 }
+    key: { color: "#FFF1D6", intensity: 0.9, direction: [-0.4, -0.85, 0.5] }
+    spot: { color: "#FFE9B8", intensity: 2.2, height: 5.2, angleDeg: 34, exponent: 2 }   # warmer Kegel von oben auf das vordere Stück
+  # Banner am Bergfried (Burg-Ansicht): je Stück im Besitz ein Tuch in der Runenfarbe
+  banners:
+    gold: "#D9A441"          # Stück ohne Rune
+    anchor: [0, -4.2, -3.2]  # Mitte der Reihe, relativ zur Bergfried-Spitze (KEEP_TIP)
+    width: 0.9
+    height: 2.6
+    gap: 0.35                # Abstand zwischen zwei Tüchern
+    perRow: 5                # mehr Tücher beginnen eine zweite Reihe darunter
+    rowGap: 3.0
+    swayDeg: 4               # leichtes Wehen
+    periodMs: 3200
+  pinLift: -1.6              # Stein der Waffenkammer am Bergfried, knapp unter der Spitze (die Spitze liegt am oberen Rand, darüber blendet die Burg Steine aus)
+
 # D8: Qualitätsstufen. maxDpr = höchste Pixeldichte der Render-Auflösung, shadowMap = Kantenlänge der Schattenkarte (0 = keine Schatten)
 quality:
   high: { maxDpr: 2.5, shadowMap: 2048 }

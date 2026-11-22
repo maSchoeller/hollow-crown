@@ -49,7 +49,24 @@ export function CastleDevBar({ tier, setTier, keepsakes, setKeepsakes }: { tier:
  * The scene in the picture's place. `scene` says what it shows (`castleScene`, with the dev bar's overrides applied),
  * `onRoom` is a tap on a building or stone (status null: a room the content does not have yet). `fallback` is the picture.
  */
-export function Castle3d({ rooms, scene, canBuild, onRoom, fallback, stats: showStats }: { rooms: RoomStatus[]; scene: CastleScene; canBuild: (id: string) => boolean; onRoom: (id: string, status: RoomStatus | null) => void; fallback: string; stats: boolean }) {
+export function Castle3d({
+  rooms,
+  scene,
+  canBuild,
+  onRoom,
+  fallback,
+  stats: showStats,
+  armory,
+}: {
+  rooms: RoomStatus[];
+  scene: CastleScene;
+  canBuild: (id: string) => boolean;
+  onRoom: (id: string, status: RoomStatus | null) => void;
+  fallback: string;
+  stats: boolean;
+  /** story 16.18: the armoury (no room): its stone over the keep and one banner per colour; null: nothing is owned yet */
+  armory?: { onOpen: () => void; banners: string[] } | null;
+}) {
   /** the host's canvas goes in here; Preact never renders into it */
   const stage = useRef<HTMLDivElement>(null);
   const view = useRef<CastleView | null>(null);
@@ -100,6 +117,7 @@ export function Castle3d({ rooms, scene, canBuild, onRoom, fallback, stats: show
     for (const id of ids.current) v.setLevel(id, levelOf(id));
     v.setTier(scene.tier);
     for (const k of scene.keepsakes) v.setKeepsake(k.id, k.state);
+    v.setBanners(armory?.banners ?? []);
   });
 
   return (
@@ -124,6 +142,13 @@ export function Castle3d({ rooms, scene, canBuild, onRoom, fallback, stats: show
             {st.room.levels.length > 0 && st.open && <Pips level={levelOf(st.room.id)} max={st.room.levels.length + 1} />}
           </button>
         ))}
+      {ready && armory && (
+        <button ref={(el) => view.current?.setPin('armory', el)} type="button" class="hm-anchor c3d-pin" aria-label={t('ui.armory.title')} onClick={armory.onOpen}>
+          <span class="hm-room__stone">
+            <Icon name="armory" size={18} />
+          </span>
+        </button>
+      )}
       {stats && <small class="c3d-stats">{t('ui.dev.castle3d.stats', { fps: stats.fps, calls: stats.drawCalls })}</small>}
     </div>
   );

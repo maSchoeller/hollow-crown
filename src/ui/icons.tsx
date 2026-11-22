@@ -96,6 +96,9 @@ const P: Record<string, string> = {
   fallen: 'M12 3v18M7 8h10',
   // the castle of the home (act pill, world map) and the memorial stone (memorial hall), after mockup 04
   castle: 'M4 21V8h3V5h3v3h4V5h3v3h3v13zM10 21v-5h4v5',
+  // story 16.18: the armoury (one slanted sword, after mockup vitrine C; the training ground has the crossed blades) and the crown of a signature weapon
+  armory: 'M20 4l-10 10M20 4h-4M20 4v4M7 11l6 6M9.5 14.5L5 19M4 18l2 2',
+  crown: 'M4 18l-1-10 5 4 4-7 4 7 5-4-1 10zM4 21h16',
   stone: 'M6 21V10a6 6 0 0 1 12 0v11zM4 21h16M12 9v6M9.5 11.5h5',
   // values of the change list (story 16.13): line shapes in the same grid, no fill
   move: 'M5 4h5v7l8 2a2 2 0 0 1 2 2v3H5zM5 20h15',

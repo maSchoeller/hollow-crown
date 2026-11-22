@@ -293,6 +293,31 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'camp', tab: 'enchanter', unit: owner.id, item: piece.uid, ...(stoneId ? { stone: stoneId } : {}) };
       },
       /**
+       * story 16.18: the armoury of the castle: Dragon Ember in the convoy, Hask's Tinder worn by Rhen with a wind rune, a second signature
+       * (Wolf Fang) in the convoy, the Pact Warden's shield still hidden and a lieutenant in reach (2 routs). Unsaved campaign.
+       * `__hc.devArmory()`; `__hc.devArmory(false)` leaves the screen on the castle, where the stone and banners hang over the keep.
+       */
+      devArmory: async (openScreen = true) => {
+        if (data.releasedActs?.includes(2)) await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { kind: 'castle', rooms: {} };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        const owner = c.roster[0]!;
+        const tinder = newItem(c, 'tinder', data);
+        if (data.runes['wind_rune_1']) tinder.runes[0] = 'wind_rune_1';
+        owner.equip.mainHand = tinder;
+        for (const id of ['dragon_ember', 'wolf_fang']) if (data.items[id]) c.convoy.push(newItem(c, id, data));
+        // a lieutenant who is met and not yet beaten often enough to drop his signature
+        const lt = Object.values(data.lieutenants).find((l) => !['tinder', 'wolf_fang'].includes(l.signatureItem));
+        if (lt) c.lieutenants = { ...c.lieutenants, [lt.id]: { met: true, encounters: 2, grudge: 0, routs: 2, signatureDropped: false } };
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = openScreen ? { name: 'armory' } : { name: 'camp' };
+      },
+      /**
        * story 10.7: the memorial hall of act 2 at `level` with Gerrit's stone, fallen Fenn (scout) and a fallen mercenary marksman,
        * ready to pass on a lesson; `given = true` passes Fenn's lesson to Tobin first. Unsaved campaign.
        */

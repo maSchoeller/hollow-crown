@@ -10,6 +10,7 @@ import { Troop } from './screens/Troop';
 import { Chronicle } from './screens/Chronicle';
 import { Wanted } from './screens/Wanted';
 import { WeaponView } from './screens/WeaponView';
+import { Armory } from './screens/Armory';
 import { Licenses } from './screens/Licenses';
 import { Options, Title } from './screens/Menus';
 import { HandbookScreen, HandbookSheet } from './screens/Handbook';
@@ -123,6 +124,8 @@ function Screens() {
       return <Wanted unit={sc.unit} from={sc.from} />;
     case 'chronicle':
       return <Chronicle from={sc.from} />;
+    case 'armory':
+      return <Armory at={sc.at} />;
     case 'weapon':
       return <WeaponView key={sc.item} item={sc.item} unit={sc.unit} back={sc.back} />;
     case 'options':
