@@ -246,6 +246,28 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'troop' };
       },
       /**
+       * story 16.14: the weapon view with `itemId` (default: the rare hammer, two settings) in the convoy, `runeId` in its large and
+       * `smallId` in its small setting (a rune id, or null for an empty one), twelve kills and an epithet. Unsaved campaign.
+       * `__hc.devWeapon()`, `__hc.devWeapon('iron_shield', 'wind_rune_2')`, `__hc.devWeapon('hammer', 'fire_rune_3', 'edge_rune')`.
+       */
+      devWeapon: async (itemId = 'hammer', runeId: string | null = 'fire_rune_2', smallId: string | null = 'edge_rune') => {
+        if (data.releasedActs?.includes(2)) await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { kind: 'castle', rooms: { enchanter: 1, smith: 1 } };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        const inst = newItem(c, itemId, data);
+        inst.runes = [runeId, smallId].filter((r, i) => (i === 0 || r) && (!r || data.runes[r])).slice(0, 2);
+        inst.kills = 12;
+        inst.epithet = { kind: 'holder', by: c.roster[0]!.id, word: 0 };
+        c.convoy.push(inst);
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'weapon', item: inst.uid, back: { name: 'troop' } };
+      },
+      /**
        * story 10.7: the memorial hall of act 2 at `level` with Gerrit's stone, fallen Fenn (scout) and a fallen mercenary marksman,
        * ready to pass on a lesson; `given = true` passes Fenn's lesson to Tobin first. Unsaved campaign.
        */
