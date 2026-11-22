@@ -97,6 +97,16 @@ export function elementMultiplier(data: GameData, el: Element | undefined, aff: 
   return m;
 }
 
+/** Damage core of one hit before skills: (attack - defence + triangle) x element multiplier, capped by the element bonus. Shared by `calcSide` and the change list. */
+export function hitDamage(data: GameData, atk: number, def: number, triangle: number, elementMult: number): number {
+  const b = data.balance;
+  const base = atk - def;
+  let dmg = Math.floor((base + triangle * b.triangle.damage) * elementMult);
+  const cap = Math.floor(Math.max(0, base) * (1 + b.element.maxBonusPercent / 100));
+  if (base > 0 && dmg > cap) dmg = cap;
+  return dmg;
+}
+
 function equippedWeapon(u: BattleUnit): ItemInstance | undefined {
   return u.equip.mainHand;
 }
@@ -164,11 +174,7 @@ function calcSide(
     const tagBonus = wp.damageVsTag.filter((x) => oppTags.includes(x.tag)).reduce((t, x) => t + x.bonus, 0);
     atk = (magic ? stats.stats.mag : stats.stats.str) + might + stats.skills.damage + buffDamage + tagBonus;
     elementMult = elements ? elementMultiplier(data, wp.element, oppStats.affinity, oppTags, oppStats.shield) : 1;
-    const base = atk - def;
-    const triDmg = tri * b.triangle.damage;
-    let dmg = Math.floor((base + triDmg) * elementMult);
-    const cap = Math.floor(Math.max(0, base) * (1 + b.element.maxBonusPercent / 100));
-    if (base > 0 && dmg > cap) dmg = cap;
+    let dmg = hitDamage(data, atk, def, tri, elementMult);
     dmg = Math.floor((Math.max(0, dmg) * oppStats.skills.damageTakenPercent) / 100);
     damage = Math.max(0, dmg);
     const hitRaw =
