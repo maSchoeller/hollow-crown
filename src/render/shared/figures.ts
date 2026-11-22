@@ -106,7 +106,6 @@ export class ModelFigure implements Figure {
 
   play(anim: FigureAnim, facing: Facing, speed: number): void {
     this.model.root.rotation.y = YAW[facing];
-    for (const g of this.model.grips) g.node.rotation.x = anim === 'attack' ? 0 : g.hold;
     if (this.model.vat) {
       this.playBaked(anim, speed);
       return;

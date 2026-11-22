@@ -367,19 +367,6 @@
   background: var(--hc-offer-soft);
   color: var(--hc-lieutenant);
 }
-.hud-terrain {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 14px;
-}
-.hud-terrain .hud-name {
-  flex: none;
-}
-.hud-terrain .hud-chips {
-  margin: 0;
-}
-
 /* medallion: round head, HP ring in the team colour, level pill at the bottom */
 .hud-medal {
   --hud-size: 78px;

@@ -5,8 +5,9 @@ import { HANDBOOK_FORMATS, HANDBOOK_GRAPHICS } from '../core/renderDefs';
 import { slugId, weaponGroup, weaponType } from './schemaBase';
 
 const qualityLevel = z.object({ maxDpr: z.number().positive(), shadowMap: z.number().int().min(0) });
-const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), modelOpen: z.string().regex(/^[a-z0-9_]+$/).optional(), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
-const itemPiece = z.object({ model: z.string().regex(/^sig\/[a-z0-9_]+$/), hand: z.enum(['left', 'right']).optional(), motion: z.string().regex(/^[a-z]+$/).optional(), hold: z.number().min(-180).max(180).optional() });
+const gripKind = z.enum(['fist', 'flat', 'bow', 'lute']);
+const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), modelOpen: z.string().regex(/^[a-z0-9_]+$/).optional(), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), grip: gripKind });
+const itemPiece = z.object({ model: z.string().regex(/^sig\/[a-z0-9_]+$/), hand: z.enum(['left', 'right']).optional(), motion: z.string().regex(/^[a-z]+$/).optional(), grip: gripKind.optional() });
 const partPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), socket: z.enum(['back', 'head']) });
 const decorSchema = z.object({ model: z.string(), map: z.number().min(0).max(1), scenery: z.number().min(0).max(1), scale: z.tuple([z.number().positive(), z.number().positive()]) });
 
@@ -144,6 +145,16 @@ const legibilitySchema = z.object({
   }),
   reach: z.object({ color: hex, strength: unit }),
   terrainWarn: z.object({ color: hex, alpha: unit, pulse: unit }),
+  terrainLens: z.object({
+    cover: tint,
+    slow: tint,
+    harm: tint,
+    fast: tint.extend({ stripe: z.number().positive(), gap: z.number().positive() }),
+    blocked: tint.extend({ stripe: z.number().positive(), gap: z.number().positive() }),
+    neutral: tint,
+    holdMs: ms,
+    hintMs: ms,
+  }),
   trap: z.object({ color: hex, outline: hex, alpha: unit, radius: z.number().positive(), width: z.number().positive(), jaw: z.number().min(0) }),
   hpBar: z.object({ tick: z.number().int().positive(), tickWide: z.number().int().positive(), wideFrom: z.number().int().positive(), critical: unit, widthTiles: z.number().positive(), minPx: z.number().positive(), maxPx: z.number().positive(), heightPx: z.number().positive(), lift: z.number().min(0) }),
   view: z.object({ wholeMapMargin: z.number().min(0) }),

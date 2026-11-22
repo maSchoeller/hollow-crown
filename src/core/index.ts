@@ -29,6 +29,7 @@ export * from './rules/vision';
 export * from './rules/progression';
 export * from './rules/supports';
 export * from './rules/legibility';
+export * from './rules/terrainLens';
 export * from './rules/traps';
 export * from './rules/stealth';
 export * from './handbook';

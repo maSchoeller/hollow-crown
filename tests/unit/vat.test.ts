@@ -87,7 +87,7 @@ function chain(rows: number[][][], translations: number[][], clips: Spec['clips'
     restQ: [IDENTITY_Q, IDENTITY_Q, IDENTITY_Q],
     // world of the rest pose: root y 1, mid y 2, tip y 3; the inverse binds undo them
     ibm: [trans(0, -1, 0), trans(0, -2, 0), trans(0, -3, 0)],
-    sockets: [{ name: 'socket_r', joint: 2, t: [0, 0.5, 0], q: IDENTITY_Q, s: [1.25, 1.25, 1.25] }],
+    sockets: [{ name: 'grip_r', joint: 2, t: [0, 0.5, 0], q: IDENTITY_Q, s: [1.25, 1.25, 1.25] }],
     clips,
     rotations: rows,
     translations,
@@ -268,9 +268,9 @@ describe('baked figure files', () => {
     const buf = readFileSync(file);
     const v: VatData = parseVat(await inflateVat(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)));
     expect(v.fps).toBe(60);
-    expect(v.names).toHaveLength(22);
+    expect(v.names).toHaveLength(52); // story 16.9: finger joints 1-3 stay
     // the hand sockets (GA9) and the body sockets of the attached parts (story 10.13)
-    expect(v.sockets.map((s) => s.name).sort()).toEqual(['socket_back', 'socket_head', 'socket_l', 'socket_r']);
+    expect(v.sockets.map((s) => s.name).sort()).toEqual(['grip_l', 'grip_r', 'socket_back', 'socket_head']);
     // durations x 60 (+ 1 unless a loop, which leaves out the row that comes round again); downed shows its last row only
     const rows = (n: string) => v.clips.get(n)!.rows;
     expect(rows('idle')).toBe(Math.round(15.3333 * 60));
@@ -278,6 +278,7 @@ describe('baked figure files', () => {
     expect(rows('hit')).toBe(31);
     expect(rows('downed')).toBe(1);
     for (const a of ['attack', 'attack_cast', 'attack_chop', 'attack_shoot', 'attack_thrust']) expect(rows(a)).toBe(31);
+    for (const k of ['fist', 'flat', 'bow', 'lute']) expect(v.clips.has(`grip_${k}`), k).toBe(true); // finger poses per grip kind (story 16.9)
     expect(v.clips.get('idle')!.loop).toBe(true);
     expect(v.clips.get('attack')!.loop).toBe(false);
     // the clips tile the rows without gaps

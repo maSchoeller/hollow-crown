@@ -3,6 +3,7 @@
  * Part of the class chain BoardBase → BoardSetup → BoardProps → BoardUnits → BoardCamera → BoardFrame → BoardView.
  */
 import { timerLook } from './aiPacing';
+import './costMarks.css';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
 import type { BattleState, BattleUnit, FigurePiece, GearPiece, PartPiece, Pos, StatusId } from '../../core';
 import { bleedsOut, itemDef, maxHpOf, modelId, runeSlotCount, shadowHidden, unitFigureId, unitVatPath } from '../../core';
@@ -255,6 +256,40 @@ export abstract class BoardUnits extends BoardProps {
     this.wake();
   }
 
+  /**
+   * Cost marks of the move range (story 16.11): per field either dots (one per movement point) or a "½" pill at its lower right
+   * corner, DOM in the float layer pinned to the field. Rebuilt only when the marks changed.
+   */
+  protected syncCostMarks(marks: NonNullable<Overlays['costMarks']>): void {
+    const sig = marks.map((m) => `${m.at[0]},${m.at[1]}:${m.pips}:${m.label ?? ''}`).join('|');
+    if (sig === this.costSig) return;
+    this.costSig = sig;
+    for (const [key, el] of this.costEls) {
+      this.pins.delete(key);
+      el.remove();
+    }
+    this.costEls.clear();
+    for (const m of marks) {
+      const key = `cost:${m.at[0]},${m.at[1]}`;
+      const el = document.createElement('div');
+      el.className = 'hc-cost';
+      el.setAttribute('aria-hidden', 'true');
+      const inner = document.createElement('span');
+      if (m.pips) {
+        inner.className = 'hc-cost__pips';
+        for (let i = 0; i < m.pips; i++) inner.appendChild(document.createElement('i'));
+      } else {
+        inner.className = 'hc-cost__half';
+        inner.textContent = m.label;
+      }
+      el.appendChild(inner);
+      this.floatLayer.appendChild(el);
+      this.costEls.set(key, el);
+      this.pin(key, el, m.at, { east: 0.42, south: 0.42 });
+    }
+    this.wake();
+  }
+
   protected placePins(): void {
     for (const p of this.pins.values()) {
       const s = this.screenOfXYZ(p.tile[0] + 0.5 + (p.at.east ?? 0), this.tileTop(p.tile) + (p.at.lift ?? 0), -(p.tile[1] + 0.5 + (p.at.south ?? 0)));
@@ -436,6 +471,7 @@ export abstract class BoardUnits extends BoardProps {
 
   setOverlays(o: Overlays): void {
     this.overlays = o;
+    this.syncCostMarks(o.costMarks ?? []);
     this.applyGlow();
     this.wake();
     this.buildOverlays();

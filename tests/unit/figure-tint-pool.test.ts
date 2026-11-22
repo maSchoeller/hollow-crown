@@ -62,7 +62,6 @@ describe('model figure tint (story 7.8)', () => {
       look,
       skeletons: [],
       anims: {},
-      grips: [],
       dispose: () => undefined,
     } as unknown as UnitModel;
     return { f: new ModelFigure(model, undefined, 10, 4), body, model };
