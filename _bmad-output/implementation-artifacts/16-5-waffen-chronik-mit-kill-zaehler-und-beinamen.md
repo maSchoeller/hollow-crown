@@ -1,6 +1,6 @@
 # Story 16.5: Waffen-Chronik mit Kill-Zähler und Beinamen
 
-Status: review
+Status: done
 
 Quelle: `concept/26-epics/epics/epic-16.md` (Story 16.5, nur auf Branch `claude/quirky-murdock-e609cc`), Regel im GDD „Waffen-Chronik (Produktinhaber 2026-11-21, Thema 7)“ (Inventar und Ausrüstung). Unabhängig von 16.1–16.4; 16.14 (Waffenansicht) baut darauf auf und zeigt Kills und Beinamen an. **Diese Story baut keine Oberfläche**, nur Regel, Daten, Locale-Texte und Simulation.
 

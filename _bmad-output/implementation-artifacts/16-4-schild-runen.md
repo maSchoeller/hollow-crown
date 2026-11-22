@@ -1,6 +1,6 @@
 # Story 16.4: Schild-Runen
 
-Status: review
+Status: done
 
 ## Story
 
