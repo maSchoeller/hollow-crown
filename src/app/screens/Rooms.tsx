@@ -229,9 +229,9 @@ function ownerOf(uid: string): UnitRecord | undefined {
 }
 
 /** Smith: upgrade up to the limit of the smith's level; reroll only from the level `rerollFromSmithLevel`. */
-export function SmithRoom({ room, apply, onClose }: { room: RoomDef; apply: Apply; onClose: () => void }) {
+export function SmithRoom({ room, apply, onClose, item }: { room: RoomDef; apply: Apply; onClose: () => void; item?: string }) {
   const c = campaign.value!;
-  const [sel, setSel] = useState<string | null>(null);
+  const [sel, setSel] = useState<string | null>(item ?? null);
   const limit = upgradeLimit(data, c);
   const all: ItemInstance[] = [...c.roster.flatMap((u) => [...Object.values(u.equip), ...u.bag]).filter((i): i is ItemInstance => !!i), ...c.convoy];
   const gear = all.filter(upgradable.bind(null, data));
@@ -589,9 +589,9 @@ export function CampfireRoom({ room, apply, onClose }: { room: RoomDef; apply: A
 // ---------------------------------------------------------------- enchanter
 
 /** Enchanter (runes): choose a piece of gear, then a rune; kept working although its story is Epic 10. */
-export function EnchanterRoom({ room, apply, onClose }: { room: RoomDef; apply: Apply; onClose: () => void }) {
+export function EnchanterRoom({ room, apply, onClose, item }: { room: RoomDef; apply: Apply; onClose: () => void; item?: string }) {
   const c = campaign.value!;
-  const [sel, setSel] = useState<string | null>(null);
+  const [sel, setSel] = useState<string | null>(item ?? null);
   const runes = c.convoy.filter((i) => data.runes[i.def]);
   const gear: ItemInstance[] = [...c.roster.flatMap((u) => [...Object.values(u.equip), ...u.bag]).filter((i): i is ItemInstance => !!i), ...c.convoy].filter((i) => runeSlotCount(data, i) > 0);
   const selInst = sel ? locateItem(c, sel)?.inst : undefined;
@@ -659,22 +659,22 @@ export function EnchanterRoom({ room, apply, onClose }: { room: RoomDef; apply: 
 }
 
 /** Dispatch by room function. */
-export function Room({ room, apply, onClose, unit }: { room: RoomDef; apply: Apply; onClose: () => void; unit?: string }) {
+export function Room({ room, apply, onClose, unit, item }: { room: RoomDef; apply: Apply; onClose: () => void; unit?: string; item?: string }) {
   return (
     <RoomApply.Provider value={apply}>
-      <RoomBody room={room} apply={apply} onClose={onClose} unit={unit} />
+      <RoomBody room={room} apply={apply} onClose={onClose} unit={unit} item={item} />
     </RoomApply.Provider>
   );
 }
 
-function RoomBody({ room, apply, onClose, unit }: { room: RoomDef; apply: Apply; onClose: () => void; unit?: string }) {
+function RoomBody({ room, apply, onClose, unit, item }: { room: RoomDef; apply: Apply; onClose: () => void; unit?: string; item?: string }) {
   switch (room.function) {
     case 'convoy':
       return <ConvoyRoom room={room} apply={apply} onClose={onClose} />;
     case 'merchant':
       return <MerchantRoom room={room} apply={apply} onClose={onClose} />;
     case 'smith':
-      return <SmithRoom room={room} apply={apply} onClose={onClose} />;
+      return <SmithRoom room={room} apply={apply} onClose={onClose} item={item} />;
     case 'healer':
       return <HealerRoom room={room} apply={apply} onClose={onClose} />;
     case 'tavern':
@@ -684,7 +684,7 @@ function RoomBody({ room, apply, onClose, unit }: { room: RoomDef; apply: Apply;
     case 'memorial':
       return <MemorialRoom room={room} apply={apply} onClose={onClose} />;
     case 'enchanter':
-      return <EnchanterRoom room={room} apply={apply} onClose={onClose} />;
+      return <EnchanterRoom room={room} apply={apply} onClose={onClose} item={item} />;
     case 'academy':
       return <AcademyRoom room={room} apply={apply} onClose={onClose} unit={unit} />;
     case 'workshop':

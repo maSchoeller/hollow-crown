@@ -9,6 +9,7 @@ import { Campaigns, NewCampaign } from './screens/Campaigns';
 import { Troop } from './screens/Troop';
 import { Chronicle } from './screens/Chronicle';
 import { Wanted } from './screens/Wanted';
+import { WeaponView } from './screens/WeaponView';
 import { Licenses } from './screens/Licenses';
 import { Options, Title } from './screens/Menus';
 import { HandbookScreen, HandbookSheet } from './screens/Handbook';
@@ -115,13 +116,15 @@ function Screens() {
     case 'defeat':
       return <Defeat />;
     case 'camp':
-      return <Camp tab={sc.tab} unit={sc.unit} />;
+      return <Camp tab={sc.tab} unit={sc.unit} item={sc.item} />;
     case 'troop':
       return <Troop from={sc.from} />;
     case 'wanted':
       return <Wanted unit={sc.unit} from={sc.from} />;
     case 'chronicle':
       return <Chronicle from={sc.from} />;
+    case 'weapon':
+      return <WeaponView key={sc.item} item={sc.item} unit={sc.unit} back={sc.back} />;
     case 'options':
       return <Options back={sc.back} />;
     case 'licenses':

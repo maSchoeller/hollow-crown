@@ -6,7 +6,9 @@ import { t } from '../../i18n';
 import { ItemLine, itemName, Toast, unitName } from '../../ui/components';
 import { ChangeList } from '../../ui/ChangeList';
 import { Backdrop, Piece, PrimaryButton, ScreenHead, SecondaryButton } from '../../ui/pieces';
+import { Icon } from '../../ui/icons';
 import { audio } from '../audio';
+import { openWeapon } from '../state/weaponView';
 import { campaign, campaignCommand, data } from '../state/session';
 import { homeBackdrop } from '../campaignInfo';
 
@@ -89,6 +91,11 @@ export function EquipView({ unit, slot, index, onBack }: { unit: UnitRecord; slo
           />
         ))}
         {chosen && slot !== 'bag' && <ChangeList result={changeList(data, unit, chosen.inst, { slot })} empty={worn?.def === chosen.inst.def ? 'ui.change.alreadyWorn' : undefined} />}
+        {(slot === 'mainHand' || slot === 'offHand') && (chosen?.inst ?? worn) && (
+          <button type="button" class="hc-tab wv-open" onClick={() => openWeapon((chosen?.inst ?? worn)!.uid, { unit: unit.id })}>
+            <Icon name="eye" size={16} /> {t('ui.weaponView.open')}
+          </button>
+        )}
         {cands.length === 0 && !worn && <div style={{ color: 'var(--hc-soft)', padding: 12 }}>{t('ui.equip.none')}</div>}
       </Piece>
       <div class="hc-btns">

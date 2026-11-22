@@ -1,0 +1,101 @@
+/* The weapon view (WeaponView.tsx, story 16.14): head, item stage (item-stage.css), values, rune change, chronicle line, keys. */
+.wv {
+  gap: 8px;
+}
+.wv-head {
+  display: flex;
+  align-items: center;
+  gap: var(--hc-gap);
+}
+.wv-head__id {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.wv-head__name {
+  margin: 0;
+  font-family: var(--hc-font-name);
+  font-weight: 700;
+  font-size: var(--hc-size-name);
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+.wv-head__epithet {
+  font-weight: 600;
+  font-style: italic;
+  font-size: var(--hc-size-name-small);
+  color: var(--hc-soft);
+}
+.wv-rarity {
+  justify-self: start;
+  padding: 1px 9px;
+  border: var(--hc-outline-small) solid currentcolor;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  color: var(--hc-rarity-common);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-caps);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.wv-rarity.r-rare {
+  color: var(--hc-rarity-rare);
+}
+.wv-rarity.r-epic {
+  color: var(--hc-rarity-epic);
+}
+.wv-rarity.r-legendary {
+  color: var(--hc-lieutenant);
+}
+.wv-rarity.r-relic {
+  color: var(--hc-rarity-relic-accent);
+}
+.wv-close {
+  flex: none;
+}
+.wv-body {
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: 46%;
+  overflow: auto;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.wv-setting {
+  margin: 0;
+  font-size: var(--hc-size-label);
+}
+.wv-h {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 4px;
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: var(--hc-size-caps);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+.wv-h small {
+  font-size: var(--hc-size-caps);
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+.wv-chronicle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding-top: 6px;
+  border-top: var(--hc-outline-small) dashed var(--hc-cream-2);
+  color: var(--hc-lieutenant);
+  font-style: italic;
+}
+.wv-keys {
+  flex: none;
+}

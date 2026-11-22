@@ -31,7 +31,7 @@ import { pieceFolder, socketName, unitModelPath, type FigurePiece, type Team } f
 import type { AssetStore } from '../host';
 import { assetUrl } from './assets';
 import { FigurePlugin, type FigureLook } from './figurePlugin';
-import { dressRuneWeapon, RuneKit } from './runeGlow';
+import { dressRuneWeapon, RuneKit, type StoneLoader } from './runeGlow';
 import type { VatData } from './vat';
 import type { VatHandle } from './vatLoader';
 
@@ -98,7 +98,7 @@ export async function loadContainer(scene: Scene, path: string, materials: boole
  * those into the scene's material list; the render host clears that list on a scene switch, which would dispose the
  * cache's materials (and leave the next scene's props without their texture). They go back off the list right away.
  */
-function instantiate(c: AssetContainer, scene: Scene, rename: (n: string) => string) {
+export function instantiate(c: AssetContainer, scene: Scene, rename: (n: string) => string) {
   const inst = c.instantiateModelsToScene(rename, false, { doNotInstantiate: true });
   for (const m of c.materials) scene.removeMaterial(m);
   return inst;
@@ -219,6 +219,27 @@ export function sharedFigureMaterial(cache: Map<string, StandardMaterial>, scene
 }
 
 /**
+ * Story 16.6/16.14: loads a stone's file (`models/runes-v2/<id>.glb`) and hangs its parts on a setting node. `prefix` names the
+ * meshes (`<prefix>:<tag>:<rune>:<mesh>`), `gone` says the owner was disposed meanwhile (then nothing is hung).
+ */
+export function stoneLoader(store: AssetStore, prefix: string, gone: () => boolean): StoneLoader {
+  return async (runeId, node, tag) => {
+    const sc = await store.container(`models/runes-v2/${runeId}.glb`);
+    if (!sc || gone()) return undefined;
+    const si = instantiate(sc, store.scene, (n) => `${prefix}:${tag}:${runeId}:${n}`);
+    const out: Mesh[] = [];
+    for (const r of si.rootNodes) {
+      // the stone's frame sits on the setting node; the file's handedness root is dropped like the weapon's
+      for (const n of r.getChildren()) (n as TransformNode).parent = node;
+      r.dispose();
+    }
+    for (const m of node.getChildMeshes(false)) if (m instanceof Mesh && m.getTotalVertices() && m.name.includes(`:${tag}:${runeId}:`)) out.push(m);
+    for (const m of out) m.isPickable = false;
+    return out;
+  };
+}
+
+/**
  * Hangs the small models on the figure's sockets (tools/art/prepare_tripo_unit.py): the weapon library (GA9,
  * tools/art/blender_weapon_*.py) on the hand sockets `socket_r` / `socket_l`, the attached part of a pro path
  * (story 10.13, tools/art/blender_proparts.py) on the body sockets `socket_back` / `socket_head`. Figures without
@@ -271,20 +292,7 @@ async function attachGear(
     const runes = 'rune' in piece ? piece.rune : undefined;
     if (runes && store.runeGlow) {
       kit ??= new RuneKit(store.materials, store.scene, store.runeGlow);
-      const stones = async (runeId: string, node: TransformNode, tag: string) => {
-        const sc = await store.container(`models/runes-v2/${runeId}.glb`);
-        if (!sc || root.isDisposed()) return undefined;
-        const si = instantiate(sc, store.scene, (n) => `${name}:${piece.model}:${tag}:${runeId}:${n}`);
-        const out: Mesh[] = [];
-        for (const r of si.rootNodes) {
-          // the stone's frame sits on the setting node; the file's handedness root is dropped like the weapon's
-          for (const n of r.getChildren()) (n as TransformNode).parent = node;
-          r.dispose();
-        }
-        for (const m of node.getChildMeshes(false)) if (m instanceof Mesh && m.getTotalVertices() && m.name.includes(`:${tag}:${runeId}:`)) out.push(m);
-        for (const m of out) m.isPickable = false;
-        return out;
-      };
+      const stones = stoneLoader(store, `${name}:${piece.model}`, () => root.isDisposed());
       meshes.push(...(await dressRuneWeapon(kit, store.runeGlow, runes, grip, own, stones)));
     } else meshes.push(...own);
   }

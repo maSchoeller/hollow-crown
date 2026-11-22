@@ -92,3 +92,26 @@
   background: var(--hc-cream-2);
   font: 600 var(--hc-size-label) var(--hc-font-label);
 }
+
+/* compact state: symbol + number tiles (story 16.14) */
+.chg-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--hc-gap-tight);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.chg-stat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 4px;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+}
+.chg-stat__v {
+  font: 700 var(--hc-size-body) var(--hc-font-label);
+  font-variant-numeric: tabular-nums;
+}
