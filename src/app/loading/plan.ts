@@ -91,7 +91,11 @@ export function gearModels(itemIds: readonly string[], items: GearItems, gear: G
     if (!d) continue;
     // story 16.8: the piece of an item (own signature model or its group's); dragon_ember has neither weapon type nor group: its model is for the screens, never the board
     const piece = (d.weaponType || d.group) && modelFor({ ...d, id } as never, gear);
-    if (piece) out.add(piece.model);
+    if (piece) {
+      out.add(piece.model);
+      // story 16.10: the open state of a book loads with it (the stance switch shows it)
+      if (piece.modelOpen) out.add(piece.modelOpen);
+    }
   }
   return [...out];
 }

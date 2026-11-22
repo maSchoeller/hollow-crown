@@ -198,6 +198,8 @@ export interface RenderDef {
     warm: 0 | 1 | 2;
     /** Story 7.8: tint (flash/fade) materials kept per texture and case for reuse */
     tintPool: number;
+    /** story 16.10: `switchS` = seconds a figure takes between rest and ready stance, `gestureEveryS` = [min, max] seconds between two idle gestures */
+    stance: { switchS: number; gestureEveryS: [number, number] };
     /** story 7.7: the board waits at most this long (ms) for the shaders to compile at load */
     precompileMs: number;
     /** size of 3D figures relative to their Blender scale */

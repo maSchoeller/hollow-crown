@@ -99,5 +99,5 @@ describe('figures with body sockets', () => {
     // the Blender figures (story 4.6 §4.6: kept until an image-to-3D figure replaces them) carry their weapon in the model
     const without = glbs.filter((id) => !withSockets.includes(id)).sort();
     expect(without).toEqual(['avatar', 'fighter', 'mage']);
-  });
+  }, 30_000); // inflates and parses all 42 baked figures (about 6 s alone since story 16.10 added the stance clips); runs only where Git LFS pulled them
 });

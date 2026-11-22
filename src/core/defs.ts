@@ -408,17 +408,23 @@ export interface GearRunes {
 
 /** How a hand closes on a held model (story 16.9, Art Direction §4.5): fist round a shaft or hilt, flat hand under a book, bow grip, half fist on a lute neck. */
 export type GripKind = 'fist' | 'flat' | 'bow' | 'lute';
+/** story 16.10: the stance a held piece gives its figure (clip keys rest_<stance> ..., tools/art/stance_poses.py); none = no weapon */
+export type StanceKind = 'lance' | 'staff' | 'blade' | 'axe' | 'bow' | 'book' | 'lute';
 
 /** A weapon library model (art/models/weapons-v2/<model>.glb, the rune weapons), the hand it is held in and its attack animation. */
 export interface GearPiece {
   model: string;
-  /** story 16.10: the open state of a book (`models/weapons-v2/<modelOpen>.glb`); only data until the stance switch exists */
+  /** story 16.10: the open state of a book (`models/weapons-v2/<modelOpen>.glb`); loads with the closed model (hidden) and replaces it while the figure is in its ready stance */
   modelOpen?: string;
   hand: 'left' | 'right';
   /** the figure plays attack_<motion> instead of attack, if it has it (art-direction §4.5) */
   motion?: string;
   /** story 16.9: how the hand closes on the model (finger poses `grip_<kind>` of the figure, tools/art/grip_poses.py) */
   grip: GripKind;
+  /** story 16.10: the stance of a main weapon, or of an off-hand piece that sets its own (lute, focus: it replaces the weapon's) */
+  stance?: StanceKind;
+  /** story 16.10: `shield` adds the shield arm to the stance (clip key `<stance>_shield`) */
+  stanceMod?: 'shield';
   /** runtime only (`gearOf` of the board): metal and runes of the item in this hand, for rune weapons */
   rune?: GearRunes;
   /** runtime only (`modelFor`, story 16.8): the group model to show when the item's own model is not loaded (on demand, offline) */
