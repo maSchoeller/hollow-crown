@@ -102,7 +102,8 @@ export class ModelFigure implements Figure {
   private timeline: RestTimeline | null = null;
   private timeStart = 0;
   private readyStart = 0;
-  private firstRest = true;
+  /** how many rest periods began: each one starts at its own offset, so figures back from a fight do not breathe in step */
+  private restEntries = 0;
 
   /** `motion`: the weapon group's own animations (`attack_<motion>` …) win over the defaults, if the figure has them */
   constructor(
@@ -239,15 +240,14 @@ export class ModelFigure implements Figure {
     return this.swFrom + (this.swTo - this.swFrom) * k;
   }
 
-  /** a rest or ready period begins at `now` (ms): the rest timeline starts over (the first time at the figure's own offset), the ready loop at its first row */
+  /** a rest or ready period begins at `now` (ms): the rest timeline starts over (each time at an offset of its own), the ready loop at its first row */
   private enterStance(now: number): void {
     const r = this.resolved!;
     this.readyStart = now;
     this.timeStart = now;
     if (!r.rest) return;
     const restS = r.rest.rows / r.rest.fps;
-    const offset = this.firstRest ? startOffset(this.seed, restS) : 0;
-    this.firstRest = false;
+    const offset = startOffset((this.seed + this.restEntries++) >>> 0, restS);
     this.timeline = new RestTimeline(this.seed, restS, r.gestures.map((g) => g.rows / g.fps), this.stanceSetup!.gestureEveryS, offset);
   }
 

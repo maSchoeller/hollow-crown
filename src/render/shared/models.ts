@@ -311,7 +311,8 @@ async function attachGear(
       } else meshes.push(...own);
     }
   }
-  return { meshes, kit, book };
+  // a book whose open model did not load keeps its closed one at all times (the switch would hide the book)
+  return { meshes, kit, book: book && book.open.length && book.closed.length ? book : undefined };
 }
 
 /**

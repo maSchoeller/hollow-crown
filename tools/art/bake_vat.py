@@ -6,7 +6,7 @@ The raw glTF is what tools/art/prepare_tripo_unit.py writes (about 52 joints inc
 board animation and per stance clip of story 16.10: rest_*, gesture_*, ready_*, ready_in_*, keys on the 60 fps grid).
 Every clip is sampled at its own rate (60 rows a second, the slow stance clips rest_*, gesture_*, ready_* at 30; tools/art/stance_poses.py clip_fps()):
 slerp of the rotations, lerp of the hips' translation, like the glTF loader of the board does at runtime. `idle` is no clip of its own: it shares
-the rows of rest_none (the calm breathing), and the stance loops (rest_*, ready_*) and idle, walk loop and written as the local pose of each joint per row: J quaternions (half float) plus the hips' translation
+the rows of rest_none (the calm breathing), the stance loops (rest_*, ready_*), idle and walk loop; the rows are written as the local pose of each joint per row: J quaternions (half float) plus the hips' translation
 (float). The renderer builds the matrix texture of the vertex animation (src/render/shared/vat.ts) from it by forward kinematics
 when the figure is loaded, and the hand sockets (weapon placement) with it. The file also carries the rig it needs for that
 (joint names, parents, rest pose, inverse bind matrices, the sockets' local transforms), so the loader needs no glTF skeleton data.
