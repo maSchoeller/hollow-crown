@@ -1,6 +1,6 @@
 # Story 16.10: Ruhe, Haltung je Waffenart und Kampfhaltung bei Auswahl
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -116,3 +116,14 @@ damit das Brett lebendig wirkt, ohne zu taumeln.
 ### Completion Notes List
 
 ### File List
+
+Claude Sonnet (Umsetzung A/B, Review), gelenkt von Claude Opus 5.5.
+
+### Completion Notes (2026-11-22)
+
+- 42 Tripo-Figuren neu gebaut: je Haltung `rest_<s>`, `gesture_<s>_look|shift|regrip`, `ready_<s>`, `ready_in_<s>`; `idle` = ruhiges Atmen ohne Taumeln; Finger der Griffart in allen Clips, `grip_*` entfallen. Haltungen je Figur aus den Klassen (`tools/art/tripo_units.py` `figure_stances()`), Posen als Daten in `tools/art/stance_poses.py` (IK je Bild).
+- `.vat` Version 2 (Rate je Clip; Ruhe, Gesten, Kampf 30 fps). Mittel 89 KB gz (vorher 118), größte Figur 0,30 MB gz. Paket act1 39,25 / 40 MB (vorher 39,96), Erstdownload 14,40 MB (Ziel 12, Warnung wie zuvor).
+- Laufzeit `src/render/shared/stance.ts` (Schlüssel, Rückfall, deterministischer Gestenplan), `ModelFigure.setStance`, Kopplung an `Overlays.glow` in `boardUnits.ts`, Buch auf/zu in `attachGear`.
+- Review-Befunde behoben: Buch ohne geladenes offenes Modell bleibt sichtbar; jede Ruhephase mit eigenem Versatz.
+- Bildrate auf dem Referenzgerät nicht gemessen (kein Gerät im Nachtlauf); die Laufzeit wählt weiter nur eine Zeile je Figur und Bild, ohne Mehrkosten gegenüber `idle`.
+- Bekannt: Lanzen- und Stabende schweben in Ruhe etwa 0,1 über dem Boden (Armlänge der Chibi-Figuren); Mira hält den Bogen in Ruhe fast hinter dem Bein; Wechsel beginnt in Bild 0 der Ruhe (kleiner Sprung möglich, Atmen ist klein).
