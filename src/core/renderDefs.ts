@@ -1,5 +1,5 @@
 /** Render, legibility, handbook, look and world-map definitions (content/core/render.yaml and friends) as the core sees them. */
-import type { GearPiece, PartPiece, HomeKind, Season, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
+import type { Element, GearPiece, MetalId, PartPiece, HomeKind, Season, Team, TimeOfDay, WeaponGroup, WeaponType, Weather } from './defs';
 import type { Condition } from './storyDefs';
 
 export interface PropVariant {
@@ -207,6 +207,8 @@ export interface RenderDef {
     weapons: Partial<Record<WeaponType, GearPiece>>;
     offHand: Partial<Record<WeaponGroup, GearPiece>>;
     proParts: Record<string, PartPiece>;
+    /** story 16.6: glow of the rune weapons (channel and stones) and the tint of their metals */
+    rune: RuneGlowDef;
   };
   /** epic 13: grid, range tiles, path arrow, danger tiers, target-tile lines, HP bars, whole-map view, double tap */
   legibility: LegibilityDef;
@@ -241,6 +243,27 @@ export interface TimeOfDayDef {
   rim: { color: string; strength: number };
   /** factor on the strength of point lights (torches, fires, windows) */
   pointBoost: number;
+}
+
+/** Story 16.6: how the rune weapons glow (`render.yaml` `gear.rune`, Art Direction §2.3, §4.7). */
+export interface RuneGlowDef {
+  /** glow colour per element; `utility` for the auxiliary runes */
+  colors: Record<Element | 'utility', string>;
+  gold: string;
+  /** the dark channel floor of a weapon without a rune */
+  empty: string;
+  /** `fill` of the channel up to which it glows, per tier I–III */
+  fillThresholds: [number, number, number];
+  /** softness of the edge of the lit part (share of `fill`) */
+  edge: number;
+  /** the unlit rest of a rune's channel, as a share of the element colour */
+  floor: number;
+  /** glow strength, dimmed (board) and full (chosen figure, forecast) */
+  state: { dim: number; full: number };
+  /** tier III only: strength sinks by up to `amplitude` once per `periodMs` */
+  pulse: { periodMs: number; amplitude: number };
+  stone: { body: number; symbolLift: number; coreLift: number; selfLit: number };
+  metals: { satLimit: number } & Record<MetalId, { tint: string; sheen: number }>;
 }
 
 /** Weather: acts it may appear in (content:check), grade of light and sky, and the parts that make it. */

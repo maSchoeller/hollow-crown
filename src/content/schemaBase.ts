@@ -9,6 +9,8 @@ export const statMods = z
   .object({ hp: stat, str: stat, mag: stat, skl: stat, spd: stat, lck: stat, def: stat, res: stat, mov: stat })
   .partial();
 export const element = z.enum(['fire', 'wind', 'earth', 'water', 'light', 'dark']);
+/** story 16.6: the metals a rune weapon is told apart by (`METALS` in core/defs.ts) */
+export const metalId = z.enum(['iron', 'steel', 'silver']);
 export const weaponType = z.enum(['sword', 'lance', 'axe', 'dagger', 'bow', 'anima', 'light', 'dark', 'staff', 'breath']);
 export const weaponGroup = z.enum(WEAPON_GROUPS);
 export const moveType = z.enum(['foot', 'armored', 'mounted', 'flier', 'monster']);

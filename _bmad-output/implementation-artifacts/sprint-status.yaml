@@ -293,7 +293,7 @@ development_status:
   16-3-gegnerphase-standardmaessig-2: backlog  # Gegnerphase standardmäßig 2×
   16-4-schild-runen: done  # Schild-Runen
   16-5-waffen-chronik-mit-kill-zaehler-und-beinamen: review  # Waffen-Chronik mit Kill-Zähler und Beinamen
-  16-6-runenwaffen-v2-im-spiel-axt-schwert-lanze-schild: backlog  # Runenwaffen v2 im Spiel (Axt, Schwert, Lanze, Schild)
+  16-6-runenwaffen-v2-im-spiel-axt-schwert-lanze-schild: review  # Runenwaffen v2 im Spiel (Axt, Schwert, Lanze, Schild)
   16-7-runenwaffen-v2-fuer-alle-uebrigen-waffengruppen: backlog  # Runenwaffen v2 für alle übrigen Waffengruppen
   16-8-modelle-fuer-signaturwaffen-und-relikte: backlog  # Modelle für Signaturwaffen und Relikte
   16-9-griff-rig-und-fingerknochen-fuer-alle-brettfiguren: backlog  # Griff-Rig und Fingerknochen für alle Brettfiguren
