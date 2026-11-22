@@ -1,6 +1,6 @@
 # Story 16.18: Waffenkammer im Bergfried
 
-Status: review
+Status: done
 
 ## Story
 
@@ -97,3 +97,8 @@ claude-sonnet-5-5 (Sonnet 5.5)
 - src/app/screens/Armory.tsx (neu), Armory.css (neu), armoryModel.ts (neu), weaponViewModel.ts, WeaponView.tsx, Camp.tsx, Castle3d.tsx, src/app/App.tsx
 - src/app/state/screen.ts, src/app/state/devHooks.ts, src/ui/icons.tsx
 - tests/unit/armory.test.ts (neu), armory-math.test.ts (neu), armory-model.test.ts (neu)
+
+### Prüfung durch den Orchestrator (2026-11-22)
+
+- Sichtprüfung 375 × 812: Bühne war nur 150 px hoch (`.hc-view > *` überschrieb `position: absolute`), Schilder blieben unsichtbar (leerer Inline-Wert fiel auf CSS `hidden` zurück, lokale statt Weltposition), Randschilder abgeschnitten, Wischen brach bei fehlschlagendem `setPointerCapture` ab, Umriss trug Vertex-Farben, Stein über der Spitze lag im HUD-Bereich (jetzt `pinLift: -1.6`), Icon glich dem Übungsplatz (jetzt schräges Schwert wie Mockup C). Alles behoben; Kamera `aimY 1.8`, `frontScale 1.5`.
+- Review (gds-code-review, Sonnet): keine Blocker. Behoben: Content-Prüfung „Leutnant-Signatur trägt Tag `signature`“, unbenutzter Schlüssel `ui.armory.loading` entfernt, Ständer werden nur bei geändertem Inhalt neu aufgebaut. Offen (Nit): Animationsgruppen aus `instantiate()` werden nicht eigens freigegeben (Waffen-GLBs ohne Animation).

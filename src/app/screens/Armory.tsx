@@ -39,7 +39,10 @@ export function Armory({ at }: { at?: string }) {
 function ArmoryBody({ c, at }: { c: CampaignState; at?: string }) {
   const pieces = armoryOf(data, c).pieces;
   const count = pieces.filter((p) => p.kind === 'owned').length;
-  const specs = useMemo(() => armorySpecs(data, c, (d) => itemImageSrc(d)), [c]);
+  // the stands are rebuilt (and their models reloaded) only when what they show changes, not on every campaign change
+  const fresh = armorySpecs(data, c, (d) => itemImageSrc(d));
+  const specsKey = JSON.stringify(fresh);
+  const specs = useMemo(() => fresh, [specsKey]);
   const startAt = Math.max(0, pieces.findIndex((p) => p.kind === 'owned' && p.uid === at));
   const slot = useRef<HTMLDivElement>(null);
   const view = useRef<ArmoryView | null>(null);
