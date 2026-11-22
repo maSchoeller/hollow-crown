@@ -827,6 +827,11 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
+      "heritage": null,
+      "gearTemplate": null,
+      "traits": [],
       "portrait": "avatar_b",
       "sprite": "avatar",
       "name": "Ilsa",
@@ -945,6 +950,11 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
+      "heritage": null,
+      "gearTemplate": null,
+      "traits": [],
       "portrait": "kael",
       "sprite": "kael",
       "uid": "kael",
@@ -1057,6 +1067,11 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
+      "heritage": null,
+      "gearTemplate": null,
+      "traits": [],
       "portrait": "brenna",
       "sprite": "brenna",
       "uid": "brenna",
@@ -1162,6 +1177,11 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
+      "heritage": null,
+      "gearTemplate": null,
+      "traits": [],
       "portrait": "tobin",
       "sprite": "tobin",
       "uid": "tobin",
@@ -1248,6 +1268,8 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
       "sprite": "temple_guard",
       "portrait": "class_temple_guard",
       "uid": "tg1",
@@ -1339,6 +1361,8 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
       "sprite": "temple_guard",
       "portrait": "class_temple_guard",
       "uid": "tg2",
@@ -1430,6 +1454,8 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
       "sprite": "temple_guard",
       "portrait": "class_temple_guard",
       "uid": "tg3",
@@ -1521,6 +1547,8 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
       "sprite": "temple_guard",
       "portrait": "class_temple_guard",
       "uid": "tg4",
@@ -1619,6 +1647,8 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
       "sprite": "temple_guard",
       "portrait": "class_temple_guard",
       "uid": "tg5",
@@ -1710,6 +1740,8 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
       "sprite": "temple_guard",
       "portrait": "class_temple_guard",
       "uid": "tg6",
@@ -1799,6 +1831,8 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
       "sprite": "temple_guard",
       "portrait": "class_temple_guard",
       "uid": "tg7",
@@ -1888,6 +1922,8 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
       "sprite": "temple_guard",
       "portrait": "class_temple_guard",
       "uid": "tg8",
@@ -1977,6 +2013,8 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
       "sprite": "temple_guard",
       "portrait": "class_temple_guard",
       "uid": "tg9",
@@ -2068,6 +2106,8 @@
       "mastered": [],
       "loadout": [],
       "sp": {},
+      "promotionGain": {},
+      "secondPath": null,
       "sprite": "temple_guard",
       "portrait": "class_temple_guard",
       "uid": "tg10",
@@ -2191,6 +2231,38 @@
      "fenn|mira": {
       "points": 0,
       "rank": null
+     },
+     "jory|nell": {
+      "points": 0,
+      "rank": null
+     },
+     "nell|varek": {
+      "points": 0,
+      "rank": null
+     },
+     "odile|varek": {
+      "points": 0,
+      "rank": null
+     },
+     "odile|sable": {
+      "points": 0,
+      "rank": null
+     },
+     "ilka|sable": {
+      "points": 0,
+      "rank": null
+     },
+     "brann|ilka": {
+      "points": 0,
+      "rank": null
+     },
+     "amos|liora": {
+      "points": 0,
+      "rank": null
+     },
+     "amos|grosk": {
+      "points": 0,
+      "rank": null
      }
     },
     "flags": [],
@@ -2220,7 +2292,7 @@
      "unit": "avatar",
      "to": [
       6,
-      5
+      8
      ],
      "action": {
       "kind": "wait"
@@ -2242,7 +2314,7 @@
      "unit": "brenna",
      "to": [
       7,
-      5
+      7
      ],
      "action": {
       "kind": "wait"
@@ -2252,8 +2324,8 @@
      "type": "act",
      "unit": "tobin",
      "to": [
-      7,
-      4
+      6,
+      7
      ],
      "action": {
       "kind": "wait"
@@ -2266,8 +2338,8 @@
      "type": "act",
      "unit": "avatar",
      "to": [
-      9,
-      5
+      7,
+      6
      ],
      "action": {
       "kind": "wait"
@@ -2288,25 +2360,25 @@
      "type": "act",
      "unit": "brenna",
      "to": [
-      6,
-      5
+      4,
+      7
      ],
      "action": {
       "kind": "attack",
       "target": "tg1",
-      "weapon": "i7"
+      "weapon": "i8"
      }
     },
     {
      "type": "act",
      "unit": "tobin",
      "to": [
-      5,
-      5
+      6,
+      8
      ],
      "action": {
       "kind": "attack",
-      "target": "tg2",
+      "target": "tg1",
       "weapon": "i11"
      }
     },
@@ -2317,8 +2389,8 @@
      "type": "act",
      "unit": "avatar",
      "to": [
-      6,
-      3
+      7,
+      6
      ],
      "action": {
       "kind": "wait"

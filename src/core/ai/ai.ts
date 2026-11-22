@@ -9,7 +9,7 @@ import { checkObjectives, mapOf, runTriggers } from '../battle/objectives';
 import { deathless, fleesAtZero, withdraw } from '../rules/effects';
 import { expectedDamage, forecast, type Forecast } from '../rules/combat';
 import { ballistaForecast, ballistaTargets } from '../rules/ballista';
-import { crewSpots, holdZone, levelAt, levelStep, moveCost, stepCost, destinations, pathTo, reachable, threatTiles, waitsToJoin, walkPath } from '../rules/movement';
+import { minStepCost, crewSpots, holdZone, levelAt, levelStep, moveCost, stepCost, destinations, pathTo, reachable, threatTiles, waitsToJoin, walkPath } from '../rules/movement';
 import { castSource, castTargets, fireArea } from '../rules/cast';
 import { computeStats } from '../rules/stats';
 import { itemDef } from '../rules/items';
@@ -31,19 +31,20 @@ interface Plan {
 function distanceField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], avoid?: Set<string>): Map<string, number> {
   const out = new Map<string, number>();
   const mt = data.classes[u.classId]!.moveType;
-  // one bucket per cost instead of a sorted list: the frontier of a 30×40 map is too long to sort for every tile
+  // one bucket per half point of cost (index = 2 × cost) instead of a sorted list: the frontier of a 30×40 map is too long to sort for every tile
   const buckets: Pos[][] = [];
   for (const g of goals) {
     if (!inBounds(s, g)) continue;
     out.set(posKey(g), 0);
     (buckets[0] ??= []).push(g);
   }
-  for (let c = 0; c < buckets.length; c++) {
-    for (const p of buckets[c] ?? []) {
+  for (let b = 0; b < buckets.length; b++) {
+    const c = b / 2;
+    for (const p of buckets[b] ?? []) {
       const key = posKey(p);
       if (out.get(key) !== c || (avoid && c > 0 && avoid.has(key))) continue;
       // cost of stepping from n into p (symmetric enough for grids)
-      const enter = c + Math.max(1, moveCost(data, s, u, p) ?? 1);
+      const enter = c + Math.max(minStepCost(data), moveCost(data, s, u, p) ?? 1);
       for (const n of neighbors(p)) {
         if (stepCost(data, s, u, p, n) === null) continue;
         // a climb up or down a ladder costs the same both ways
@@ -51,7 +52,7 @@ function distanceField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos
         const k = posKey(n);
         if ((out.get(k) ?? Infinity) <= total) continue;
         out.set(k, total);
-        (buckets[total] ??= []).push(n);
+        (buckets[total * 2] ??= []).push(n);
       }
     }
   }
@@ -277,8 +278,8 @@ function castPlan(data: GameData, s: BattleState, u: BattleUnit, origins: Pos[])
       const known = impact.get(k);
       if (known !== undefined) return known;
       let out = 0;
-      // a wall only matters on a shortest way: manhattan distance to the tile plus its goal distance cannot beat the unit's own distance
-      const near = live.some((g) => g.field.has(k) && g.units.some((e) => dist(e.u.pos!, p) + g.field.get(k)! <= e.base));
+      // a wall only matters on a shortest way: manhattan distance to the tile (at least the cheapest step per tile) plus its goal distance cannot beat the unit's own distance
+      const near = live.some((g) => g.field.has(k) && g.units.some((e) => dist(e.u.pos!, p) * minStepCost(data) + g.field.get(k)! <= e.base));
       if (near && !goals.some((g) => samePos(g, p)) && terrainAt(s, p) !== 'rockwall') {
         const idx = tileIndex(s, p);
         const was = s.terrain[idx]!;
