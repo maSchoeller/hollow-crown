@@ -225,6 +225,8 @@ export interface RenderDef {
   };
   /** story 16.14: the item stage (weapon view, enchanter, armoury): camera, spin, drag, light and the pose of each model */
   itemStage: ItemStageDef;
+  /** story 16.18: the armoury vault (turntable of stands) and the banners on the keep */
+  armory: ArmoryDef;
   /** epic 13: grid, range tiles, path arrow, danger tiers, target-tile lines, HP bars, whole-map view, double tap */
   legibility: LegibilityDef;
   quality: Record<'high' | 'mid' | 'low', { maxDpr: number; shadowMap: number }>;
@@ -280,6 +282,36 @@ export interface ItemStageDef {
   models: Record<string, { yaw: number; upright?: boolean }>;
   lights: { ambient: { color: string; intensity: number }; key: StageLightDef; rim: StageLightDef };
 }
+/** Story 16.18: the armoury's values (`render.yaml` `armory`); lengths in scene units, angles in degrees, times in ms. */
+export interface ArmoryDef {
+  fov: number;
+  camera: { height: number; distance: number; aimY: number };
+  wheelRadius: number;
+  standRadius: number;
+  standHeight: number;
+  ringWidth: number;
+  pieceSize: number;
+  pieceLift: number;
+  frontScale: number;
+  frontLift: number;
+  spinDegPerSec: number;
+  dragDegPerPx: number;
+  flingSeconds: number;
+  snapMs: number;
+  tapSlopPx: number;
+  plateAnchorY: number;
+  plateReach: number;
+  colors: { ringGold: string; ringEmpty: string; ghost: string; stone: string; wall: string; floor: string; wheel: string };
+  ghostAlpha: number;
+  pillars: number;
+  pillarRadius: number;
+  hall: { radius: number; height: number };
+  lights: { ambient: { color: string; intensity: number }; key: StageLightDef; spot: { color: string; intensity: number; height: number; angleDeg: number; exponent: number } };
+  banners: { gold: string; anchor: [number, number, number]; width: number; height: number; gap: number; perRow: number; rowGap: number; swayDeg: number; periodMs: number };
+  /** height of the armoury stone above the keep's tip */
+  pinLift: number;
+}
+
 export interface StageLightDef {
   color: string;
   intensity: number;

@@ -5,7 +5,7 @@
  * the same frame. Everything it says comes from the rule code (`weaponViewModel.ts`), nothing is worked out here.
  */
 import { useEffect, useState } from 'preact/hooks';
-import { locateItem, runeSlotCount, type EquipSlot } from '../../core';
+import { locateItem, relicCtx, relicStageOf, runeSlotCount, type EquipSlot } from '../../core';
 import { has, t } from '../../i18n';
 import { runeLookOf } from '../../render/shared/runeLook';
 import { ChangeList, ChangeStats } from '../../ui/ChangeList';
@@ -67,7 +67,7 @@ function WeaponViewBody({ item, unitHint, back }: { item: string; unitHint?: str
 
   const slot: EquipSlot | 'bag' = placeOf(data, c, inst);
   const unit = referenceUnit(c, inst, unitHint);
-  const runes = stageRunes(data, inst);
+  const runes = stageRunes(data, inst, relicStageOf(relicCtx(data, c), inst.def));
   const model = weaponStageModel(data, inst);
   const slots = runeSlotCount(data, inst);
   const rarity = rarityOf(data, inst);

@@ -28,6 +28,8 @@ export type Screen =
   | { name: 'options'; back: Screen }
   /** the weapon view (story 16.14): the piece `item` (uid) big on the item stage; `unit`: the figure its changes are worked out for */
   | { name: 'weapon'; item: string; unit?: string; back: Screen }
+  /** the armoury in the keep (story 16.18): a 3D vault; `at`: the uid of the piece in front (back from the weapon view) */
+  | { name: 'armory'; at?: string }
   /** the rules handbook as a full-screen view (title, world map menu; epic 14) */
   | { name: 'handbook'; back: Screen }
   | { name: 'licenses'; back: Screen };

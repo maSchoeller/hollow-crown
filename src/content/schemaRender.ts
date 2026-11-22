@@ -44,6 +44,48 @@ const itemStageSchema = z.object({
   models: z.record(z.string().regex(/^[a-z0-9_]+$/), z.object({ yaw: z.number().min(-360).max(360), upright: z.boolean().optional() })),
   lights: z.object({ ambient: z.object({ color: hex, intensity: z.number().min(0) }), key: stageLight, rim: stageLight }),
 });
+const vec3 = z.tuple([z.number(), z.number(), z.number()]);
+const armorySchema = z.object({
+  fov: z.number().min(5).max(80),
+  camera: z.object({ height: z.number(), distance: z.number().positive(), aimY: z.number() }),
+  wheelRadius: z.number().positive(),
+  standRadius: z.number().positive(),
+  standHeight: z.number().positive(),
+  ringWidth: z.number().positive(),
+  pieceSize: z.number().positive(),
+  pieceLift: z.number().min(0),
+  frontScale: z.number().min(1),
+  frontLift: z.number().min(0),
+  spinDegPerSec: z.number().min(0),
+  dragDegPerPx: z.number().positive(),
+  flingSeconds: z.number().min(0),
+  snapMs: z.number().int().min(0),
+  tapSlopPx: z.number().min(0),
+  plateAnchorY: z.number(),
+  plateReach: z.number().int().min(0),
+  colors: z.object({ ringGold: hex, ringEmpty: hex, ghost: hex, stone: hex, wall: hex, floor: hex, wheel: hex }),
+  ghostAlpha: z.number().min(0.05).max(1),
+  pillars: z.number().int().min(0).max(24),
+  pillarRadius: z.number().positive(),
+  hall: z.object({ radius: z.number().positive(), height: z.number().positive() }),
+  lights: z.object({
+    ambient: z.object({ color: hex, intensity: z.number().min(0) }),
+    key: stageLight,
+    spot: z.object({ color: hex, intensity: z.number().min(0), height: z.number().positive(), angleDeg: z.number().min(5).max(120), exponent: z.number().min(0) }),
+  }),
+  banners: z.object({
+    gold: hex,
+    anchor: vec3,
+    width: z.number().positive(),
+    height: z.number().positive(),
+    gap: z.number().min(0),
+    perRow: z.number().int().min(1),
+    rowGap: z.number().positive(),
+    swayDeg: z.number().min(0),
+    periodMs: z.number().int().min(200),
+  }),
+  pinLift: z.number(),
+});
 const teamLook = z.object({ ui: hex, ramp: z.tuple([hex, hex, hex, hex]) });
 const timeOfDayDef = z.object({
   ambient: z.object({ color: hex, intensity: z.number().min(0) }),
@@ -179,6 +221,7 @@ export const renderSchema = z.object({
   }),
   look: lookSchema,
   itemStage: itemStageSchema,
+  armory: armorySchema,
   gear: z.object({
     weapons: z.partialRecord(weaponType, gearPiece),
     offHand: z.partialRecord(weaponGroup, gearPiece),

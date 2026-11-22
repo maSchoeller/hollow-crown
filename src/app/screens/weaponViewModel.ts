@@ -21,20 +21,27 @@ import {
   type UnitRecord,
 } from '../../core';
 import { chronicleKey, epithetText } from '../../core/rules/chronicle';
-import { gearRunesOf } from '../../render/shared/runeLook';
+import { fixedRuneOf, modelFor } from '../../render/shared/gearModel';
+import { gearRunesOf, runeLookOf } from '../../render/shared/runeLook';
 
 /** The model file of a piece on the item stage (`models/weapons-v2/<model>.glb`), or null: no model, the view shows its image. */
 export function weaponStageModel(data: GameData, inst: ItemInstance): string | null {
-  const d = itemDef(data, inst);
-  const gear = data.render.gear;
-  const piece = (d.weaponType && gear.weapons[d.weaponType]) || (d.group ? gear.offHand[d.group] : undefined);
+  // story 16.18: a signature piece or relic shows its own model (`gear.items`, `sig/<id>`), else the group's
+  const piece = modelFor(itemDef(data, inst), data.render.gear);
   if (!piece || pieceFolder(piece) !== 'weapons-v2') return null;
   return `models/weapons-v2/${piece.model}.glb`;
 }
 
-/** The runes of a piece as the stage and the gems show them (main and small setting; metal from the item). */
-export function stageRunes(data: GameData, inst: ItemInstance): GearRunes {
-  return gearRunesOf(data.runes, inst.runes, runeSlotCount(data, inst), itemDef(data, inst).metal);
+/**
+ * The runes of a piece as the stage and the gems show them (main and small setting; metal from the item). A signature piece or
+ * relic shows its fixed rune (of relic `stage`) in the main setting while slot 0 holds none, as on the board (story 16.8, 16.18);
+ * without `stage` (the enchanter, which edits the real settings) nothing is added.
+ */
+export function stageRunes(data: GameData, inst: ItemInstance, stage?: number): GearRunes {
+  const def = itemDef(data, inst);
+  const r = gearRunesOf(data.runes, inst.runes, runeSlotCount(data, inst), def.metal);
+  const fixed = stage === undefined || inst.runes[0] ? null : runeLookOf(data.runes, fixedRuneOf(def, stage));
+  return fixed ? { ...r, main: fixed } : r;
 }
 
 /** The same piece without its runes (the base of "against no rune"). */

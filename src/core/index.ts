@@ -81,5 +81,6 @@ export * from './campaign/wanted';
 export * from './campaign/memorial';
 export * from './campaign/heritage';
 export * from './campaign/training';
+export * from './campaign/armory';
 export * from './campaign/relics';
 export * from './ai/autoplay';
