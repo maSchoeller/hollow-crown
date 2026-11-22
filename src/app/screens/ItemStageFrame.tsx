@@ -86,6 +86,9 @@ export function ItemStageFrame({ data, quality, item, model, runes, label, setti
       }
       setReady(ok);
       latest.current.onReady?.(ok);
+    }).catch(() => {
+      // the stage chunk did not load (offline, app update): the item picture stays
+      if (!gone) latest.current.onReady?.(false);
     });
     return () => {
       gone = true;

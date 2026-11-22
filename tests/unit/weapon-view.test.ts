@@ -166,7 +166,7 @@ describe('chronicle line', () => {
     const shield = item('iron_shield', { kills: 5 });
     expect(chronicleLine(data, c, t0, shield)).toBeUndefined();
     lang.value = 'en';
-    expect(chronicleLine(data, c, t, item('iron_axe', { kills: 3 }))).toBe('3 foes felled');
+    expect(chronicleLine(data, c, t, item('iron_axe', { kills: 3 }))).toBe('Foes felled: 3');
     lang.value = 'de';
   });
 

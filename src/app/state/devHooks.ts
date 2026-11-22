@@ -246,9 +246,9 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'troop' };
       },
       /**
-       * story 16.14: the weapon view with `itemId` (default: the rare hammer, two settings) in the convoy, `runeId` in its large and
+       * story 16.14: the weapon view with `itemId` (default: the steel axe) in the convoy, `runeId` in its large and
        * `smallId` in its small setting (a rune id, or null for an empty one), twelve kills and an epithet. Unsaved campaign.
-       * `__hc.devWeapon()`, `__hc.devWeapon('iron_shield', 'wind_rune_2')`, `__hc.devWeapon('hammer', 'fire_rune_3', 'edge_rune')`.
+       * `__hc.devWeapon()`, `__hc.devWeapon('iron_shield', 'wind_rune_2')`, `__hc.devWeapon('steel_axe', 'fire_rune_3')`.
        */
       devWeapon: async (itemId = 'steel_axe', runeId: string | null = 'fire_rune_2', smallId: string | null = 'edge_rune') => {
         if (data.releasedActs?.includes(2)) await ensurePack('act2');

@@ -2,7 +2,7 @@
  * Story 16.14: the weapon view. A full screen: the piece big and turnable on the item stage with its rune in the setting, the
  * values as symbol and number, what the rune changes against "no rune", the chronicle line and the keys to the enchanter and the smith.
  * Weapons and shields use the stage; a piece without a model (armour, accessories, groups without a v2 model) shows its image in
- * the same frame. Everything it says comes from the rule code (`weaponView.ts`), nothing is worked out here.
+ * the same frame. Everything it says comes from the rule code (`weaponViewModel.ts`), nothing is worked out here.
  */
 import { useEffect, useState } from 'preact/hooks';
 import { locateItem, runeSlotCount, type EquipSlot } from '../../core';
