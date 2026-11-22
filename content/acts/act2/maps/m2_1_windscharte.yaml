@@ -7,6 +7,7 @@
 # Brakkas Stufe nach der Leutnant-Regel, Jory ohne eigene Stufe/Waffen (Gefährten-Definition).
 # Nach der Abnahme (PO 2026-11-09): Gold 2 000 statt 1 100, zwei Heimsuchungs-Anker (rout, treasure), Niedergestreckte auf Normal bleiben bis Story 11.27.
 # Balancing [C] siehe Abschnitt „Übernahme Story 11.12“ der Abnahme-Datei (pnpm sim m2_1_windscharte --campaign act2 --start expected).
+# Balancing 2026-11-22 (Story 16.2, Straße ½): Der Mittelblock kommt über die Passstraße eine Runde früher an; m6 und m7 stehen nur noch auf Schwer (Normal 80 → 94 % Sieg, Avatar-Ausfälle 10 → 3).
 # Szenen: scn.m2_1.intro vor der Karte (Knoten pre), scn.m2_1.tutorial_ballista (Felsnase), scn.m2_1.jory_talk (Ansprechen), scn.m2_1.dragon_shadow (Runde 8), scn.m2_1.outro nach Runde 10 (Angebote, Haltung).
 id: m2_1_windscharte
 nameKey: map.m2_1_windscharte.name
@@ -100,8 +101,8 @@ units:
   - { id: m3, nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -3, at: [8, 11], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { id: m4, nameKey: unit.free_blade.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [11, 11], items: [{ def: iron_axe }], ai: { profile: aggressive }, difficulty: [hard] }
   - { id: m5, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [9, 9], items: [{ def: iron_bow }], ai: { profile: aggressive } }
-  - { id: m6, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [10, 9], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [normal, hard] }
-  - { id: m7, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [8, 8], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: m6, nameKey: unit.free_blade.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [10, 9], items: [{ def: iron_bow }], ai: { profile: aggressive }, difficulty: [hard] }
+  - { id: m7, nameKey: unit.free_blade.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [8, 8], items: [{ def: iron_sword }], ai: { profile: aggressive }, difficulty: [easy, hard] }
   - { id: m8, nameKey: unit.free_blade.name, team: enemy, class: healer, sprite: cleric, levelOffset: -3, at: [11, 8], items: [{ def: heal_staff }], ai: { profile: support } }
   # Nur Schwer
   - { id: h1, nameKey: unit.free_blade.name, team: enemy, class: vanguard, sprite: soldier, levelOffset: -2, at: [9, 8], items: [{ def: iron_lance }], ai: { profile: aggressive }, difficulty: [hard] }
