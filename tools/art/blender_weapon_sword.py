@@ -3,13 +3,19 @@
 blender -b --factory-startup --python tools/art/blender_weapon_sword.py -- [<out_dir>]
 
 Writes art/models/weapons-v2/sword.glb. Same look, palette, rune setting (rim + four prongs), V-groove technique and glow
-parts (`rune_stone`, `rune_channel` with UV map `fill`) as tools/art/blender_weapons_v2.py (axe); the shared constants and
-helpers are copied here on purpose (importing that module would run the axe build).
+parts (`rune_channel` with UV map `fill`) as tools/art/blender_weapons_v2.py (axe); the shared constants and base helpers are
+copied here on purpose (importing that module would run the axe build), the SETTING KIT (stone nodes, rim and claw builders,
+lifts) is executed from there. Read its docstring for the STONE NODE CONVENTION.
 
 Frame = old public/assets/models/weapons/sword.glb: origin in the fist, grip along +Z (Blender), pommel at z ~ -0.09, blade
 tip at +Z; guard along X, blade width along X, blade face normal along Y (glTF Z). The model is built with the face normal
-on X like the axe and turned by 90 degrees about Z at the end, so the rune stone and the socket (inner radius SOCKET_R,
-depth FACE - FLOOR) are the same geometry as on the axe, only turned about the grip axis.
+on X like the axe and turned by 90 degrees about Z at the end, so the rune socket (inner radius SOCKET_R, depth FACE - FLOOR)
+is the same geometry as on the axe, only turned about the grip axis.
+
+Objects: `sword` (HC_Vertex), `rune_channel`, `rune_socket2` (small setting on the +u guard arm, both faces, HC_Vertex).
+Nodes (empty): socket_rune_a_r / socket_rune_a_l = main setting in the guard centre on the face that was +X / -X before the
+90 degree turn (Blender +Y / -Y, glTF -Z / +Z); socket_rune_b_r / _l = small setting on the guard arm (scale 0.55 on the node).
+The right node is the stone frame turned by 90 degrees about Z, the left one by 270. Triangles: sword 6 890 + rune_channel 312 + rune_socket2 928 = 8 130.
 """
 import math
 import os
@@ -191,6 +197,13 @@ RB = 0.014                       # blade edge rounding radius
 GU = 0.074                       # guard half length
 GR = 0.043                       # guard boss radius
 TG = 0.0132                      # guard arm half thickness
+SOCKET2_C = (0.052, GZ)          # small setting on the +u guard arm (u along the pre-turn Y axis, z)
+
+_AXE = os.path.join(HERE, "blender_weapons_v2.py")
+_src = open(_AXE, encoding="utf-8").read()
+exec(compile(_src[_src.index("# ---------------------------------------------------------------- SETTING KIT"):
+                  _src.index("# ---------------------------------------------------------------- axe" + chr(10) + "# haft")], _AXE, "exec"), globals())
+FINAL = Matrix.Rotation(math.radians(90), 4, "Z")   # pre-turn frame -> game frame
 
 
 def ell(s):
@@ -313,7 +326,7 @@ def guard_fracs(e):
 def guard_t(u, z, e):
     au = abs(u)
     d = max(e - abs(z), 0.0)
-    ts = FACE + (TG - FACE) * smooth((au - 0.034) / 0.030)
+    ts = FACE + (TG - FACE) * smooth((au - 0.034) / 0.010)
     te = (ts + 0.0035) * ell(d / 0.012)
     t = min(ts, te)
     if z > 0.02 and d > 0:
@@ -370,43 +383,24 @@ def build_pommel():
 
 # ---------------------------------------------------------------- rune setting (copied from the axe)
 def build_setting():
-    parts, stones, strips = [], [], []
+    parts, strips, nodes = [], [], []
     path = np.stack([np.zeros(40), np.linspace(GZ + SOCKET_R * 0.9, Z_END - 0.003, 40)], 1)
     gp = path
     fill = np.linspace(0, 1, len(gp))
     for s in (1, -1):
-        arc_pts = [(SOCKET_R + 0.0050 - 0.0055 * math.cos(math.radians(a)), FACE + 0.0010 + 0.0042 * math.sin(math.radians(a)))
-                   for a in (0, 30, 60, 90, 120, 150, 180)]
-        rim = lathe([(SOCKET_R - 0.0005, FACE - 0.0015)] + arc_pts + [(SOCKET_R + 0.0105, FACE - 0.0015)], 24, axis="X",
-                    close_ends=False, loop=True)
-        bmesh.ops.transform(rim, matrix=Matrix.Diagonal((s, 1, 1, 1)), verts=rim.verts)
-        bmesh.ops.recalc_face_normals(rim, faces=rim.faces)
-        bmesh.ops.translate(rim, vec=(0, SOCKET_C[0], SOCKET_C[1]), verts=rim.verts)
-        parts.append(new_obj("rim", mesh_from_bm(rim, "rim")))
-        for k in range(4):
-            a = math.radians(90 * k)
-            bm = box_bm((0, 0, 0), (0.0150, 0.0105, 0.0090), bevel=0.0036, segs=2)
-            bmesh.ops.translate(bm, vec=(FACE + 0.0018, SOCKET_R + 0.0004, 0), verts=bm.verts)
-            bmesh.ops.transform(bm, matrix=Matrix.Diagonal((s, 1, 1, 1)), verts=bm.verts)
-            bmesh.ops.rotate(bm, cent=(0, 0, 0), matrix=Matrix.Rotation(a, 3, "X"), verts=bm.verts)
-            bmesh.ops.translate(bm, vec=(0, SOCKET_C[0], SOCKET_C[1]), verts=bm.verts)
-            parts.append(new_obj("prong", mesh_from_bm(bm, "prong")))
-        h0, h1 = FLOOR, FLOOR + 0.0042
-        cap_h = 0.0075
-        prof = [(0.0, h0), (SOCKET_R - 0.0006, h0), (SOCKET_R - 0.0006, h1)]
-        Rs = ((SOCKET_R - 0.0006) ** 2 + cap_h ** 2) / (2 * cap_h)
-        for i in range(1, 7):
-            prof.append((Rs * math.sin(math.asin((SOCKET_R - 0.0006) / Rs) * (1 - i / 6)),
-                         h1 + Rs * math.cos(math.asin((SOCKET_R - 0.0006) / Rs) * (1 - i / 6)) - (Rs - cap_h)))
-        prof[-1] = (0.0, h1 + cap_h)
-        sb = lathe(prof, 20, axis="X")
-        if s < 0:
-            bmesh.ops.transform(sb, matrix=Matrix.Diagonal((-1, 1, 1, 1)), verts=sb.verts)
-            bmesh.ops.reverse_faces(sb, faces=sb.faces)
-        bmesh.ops.translate(sb, vec=(0, SOCKET_C[0], SOCKET_C[1]), verts=sb.verts)
-        stones.append(new_obj("stone", mesh_from_bm(sb, "stone")))
+        M = local_frame((s * (FLOOR - STONE_SINK), SOCKET_C[0], SOCKET_C[1]), 0.0 if s > 0 else math.pi)
+        rim_o, claws = setting_parts(M, FACE - FLOOR + STONE_SINK)
+        parts += [rim_o] + claws
+        nodes.append(add_node("socket_rune_a_r" if s > 0 else "socket_rune_a_l", FINAL @ M))
         strips.append(channel_strip(gp, fill, s))
-    return parts, stones, strips
+    s2 = []
+    for s in (1, -1):
+        loc = (s * (TG - STONE_SINK), SOCKET2_C[0], SOCKET2_C[1])
+        rot = 0.0 if s > 0 else math.pi
+        rim_o, claws = setting_parts(Matrix.Translation(loc) @ Matrix.Rotation(rot, 4, "Z"), STONE_SINK, SOCKET2_F, 16, 1)
+        s2 += [rim_o] + claws
+        nodes.append(add_node("socket_rune_b_r" if s > 0 else "socket_rune_b_l", FINAL @ local_frame(loc, rot, SOCKET2_F)))
+    return parts, strips, s2
 
 
 def channel_strip(gp, fill, s):
@@ -414,8 +408,8 @@ def channel_strip(gp, fill, s):
     tang = np.gradient(gp, axis=0)
     tang /= np.linalg.norm(tang, axis=1)[:, None]
     hw = GROOVE_HW * 0.82
-    x_e = FACE - GROOVE_DEPTH + GROOVE_DEPTH * (hw / GROOVE_HW) + 0.0003
-    x_a = FACE - GROOVE_DEPTH + 0.0006
+    x_e = FACE - GROOVE_DEPTH + GROOVE_DEPTH * (hw / GROOVE_HW) + CH_LIFT * 0.7
+    x_a = FACE - GROOVE_DEPTH + CH_LIFT
     cols = []
     for p, t in zip(gp, tang):
         n = np.array([-t[1], t[0]])
@@ -491,24 +485,22 @@ def build():
     set_colours(guard, steel_fn(False))
     set_colours(grip, grip_fn)
     set_colours(pommel, pommel_fn)
-    parts, stones, strips = build_setting()
+    parts, strips, s2 = build_setting()
     for p in parts:
         set_colours(p, setting_fn)
+    sock2 = make_socket2(s2, setting_fn)
     metal = join([blade, guard, grip, pommel] + parts, "sword")
     shade(metal, 60)
-    stone = join(stones, "rune_stone")
-    shade(stone, 60)
-    set_colours(stone, lambda co, n: lerp_c(STONE_D, STONE_L, smooth((abs(co.x) - 0.0075) / 0.005)))
     chan = join(strips, "rune_channel")
     set_colours(chan, lambda co, n: GLOW_DIM)
-    for ob in (metal, stone, chan):          # turn the face normal from X to Y (old sword frame)
+    for ob in (metal, chan, sock2):          # turn the face normal from X to Y (old sword frame)
         ob.rotation_euler = (0, 0, math.radians(90))
         select_only(ob)
         bpy.ops.object.transform_apply(location=False, rotation=True, scale=False)
-    return metal, stone, chan
+    return metal, chan, sock2
 
 
-def make_materials(metal, stone, chan):
+def make_materials(metal, chan, sock2):
     m = bpy.data.materials.new("HC_Vertex")
     m.use_nodes = True
     nt = m.node_tree
@@ -520,7 +512,8 @@ def make_materials(metal, stone, chan):
     metal.data.name = "sword"
     metal.data.materials.clear()
     metal.data.materials.append(m)
-    for ob, name in ((stone, "rune_stone"), (chan, "rune_channel")):
+    finish_socket2(sock2)
+    for ob, name in ((chan, "rune_channel"),):
         ob.data.name = name
         mm = bpy.data.materials.new(name)
         mm.use_nodes = True
@@ -535,10 +528,10 @@ def make_materials(metal, stone, chan):
 os.makedirs(OUT, exist_ok=True)
 for o in list(bpy.data.objects):
     bpy.data.objects.remove(o, do_unlink=True)
-metal, stone, chan = build()
-make_materials(metal, stone, chan)
+metal, chan, sock2 = build()
+make_materials(metal, chan, sock2)
 path = os.path.join(OUT, "sword.glb")
 bpy.ops.export_scene.gltf(filepath=path, export_format="GLB", use_selection=False, export_vertex_color="ACTIVE",
                           export_animations=False, export_materials="EXPORT")
-tris = {o.name: sum(len(p.vertices) - 2 for p in o.data.polygons) for o in (metal, stone, chan)}
+tris = {o.name: sum(len(p.vertices) - 2 for p in o.data.polygons) for o in (metal, chan, sock2)}
 print(f"[hc] {path}: {sum(tris.values())} triangles {tris}", flush=True)

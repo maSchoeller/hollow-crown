@@ -39,7 +39,8 @@ describe('pro path parts', () => {
     expect(pieceFolder(proParts.tower_shield!)).toBe('parts');
     expect(socketName(data.render.gear.weapons.sword!)).toBe('socket_r');
     expect(socketName(data.render.gear.weapons.bow!)).toBe('socket_l');
-    expect(pieceFolder(data.render.gear.weapons.sword!)).toBe('weapons');
+    expect(pieceFolder(data.render.gear.weapons.sword!)).toBe('weapons-v2');
+    expect(pieceFolder(data.render.gear.weapons.bow!)).toBe('weapons');
   });
 
   it('fetches the part model of a pro class with the mission, and nothing for a base class', () => {

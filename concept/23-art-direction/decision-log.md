@@ -300,3 +300,12 @@ Ausgangspunkt: Die Vitrine für besondere Waffen war beschlossen, offen waren Or
 - Außen am Bergfried **je Stück ein Banner** in Runenfarbe (ohne Rune gold).
 - Folge: Relikte und Signaturen ohne Waffenmodell (Drachenglut, Letzter Vorhang) brauchen ein Modell; bis dahin Item-Bild auf dem Ständer.
 - Mockup `art/mockups/ausruestung-2026-11/vitrine.html` (echte Modelle aus `art/models/weapons-v2/` und `runes-v2/`).
+
+## 2026-11-22: Runenwaffen v2 im Spiel (Story 16.6, Nachtlauf, Abnahme durch den Produktinhaber offen)
+
+- Axt, Schwert, Lanze und Schild aus `art/models/weapons-v2/` ersetzen die alten Gruppenmodelle; Steine aus `art/models/runes-v2/<runeId>.glb` sitzen an leeren Knoten `socket_rune_a*` (Hauptfassung, je Blattseite) und `socket_rune_b*` (kleine Fassung, Maßstab 0,55 am Knoten). Die Platzhalter-Kuppel `rune_stone` im Waffenmodell entfällt.
+- Abnahmepunkte nachgearbeitet: Schild in Ocker und Umbra statt Beige (Blau, Rot und Grün sind Teamfarben, §2.1, und bleiben vom Schild fern) [ASSUMPTION]; Krallen größer; Axt-Tülle runder; Stein II mit Facettenring und kräftigerem Symbol, von vorn von Stufe I unterscheidbar; Rinne 0,001 über dem Rinnenboden, Steinbasis unter dem Fassungsboden gegen Flimmern.
+- Zweite, kleine Fassung (`rune_socket2`, Selten und besser) [ASSUMPTION Lage]: Axt am Block neben dem Stiel, Schwert am Parierstangenarm, Lanze an einer zweiten Hülse unter der Tülle, Schild unter dem Buckelring. Gewöhnliche Waffen blenden sie aus.
+- Metall je Item im neuen Feld `metal` (iron, steel, silver; ohne Feld Stahl) [ASSUMPTION]; Tönung nur der grauen Flächen, Holz und Leder bleiben.
+- Leuchten in `content/core/render.yaml` `gear.rune`: gedämpft 0,3, voll 1, Stufe III pulsiert. Die Elementrune sitzt in der Hauptfassung und füllt die Rinne, Hilfsrunen in der kleinen Fassung.
+- Befund Sichtprüfung: Auf dem Brett ist die Rinne nur ein bis zwei Pixel breit und wirkt dunkelrot; der Stein trägt das Leuchten. Ob die Rinne breiter werden soll, entscheidet der Produktinhaber am Bild `s4-16-6-brett.png`.

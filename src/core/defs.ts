@@ -85,6 +85,8 @@ export interface ItemDef {
   weaponType?: WeaponType;
   /** weapon group: required for weapons, tomes, staves and shields; foci and lutes are accessories with a group */
   group?: WeaponGroup;
+  /** story 16.6: the metal a weapon or shield is made of; the board tints the model (`render.yaml` `gear.rune.metals`), the form stays. Without: steel */
+  metal?: MetalId;
   damageType?: 'physical' | 'magical';
   element?: Element;
   mt?: number;
@@ -376,14 +378,41 @@ export interface SkillDef {
   target?: { ally?: boolean; adjacent?: boolean; exhausted?: boolean };
 }
 
-/** A weapon library model (art/models/weapons/<model>.glb), the hand it is held in and its attack animation. */
+/** Story 16.6: the metals a rune weapon is told apart by (tint, same form). */
+export const METALS = ['iron', 'steel', 'silver'] as const;
+export type MetalId = (typeof METALS)[number];
+
+/** One rune in a rune weapon's setting: its id (file `models/runes-v2/<id>.glb`), element (`utility`: auxiliary rune) and tier 1-3. */
+export interface RuneLook {
+  id: string;
+  element: Element | 'utility';
+  tier: 1 | 2 | 3;
+}
+
+/**
+ * What a rune weapon shows besides its form (story 16.6, made by the board from the item instance, never from render.yaml):
+ * the metal, the rune in the main setting (it also lights the channel), the rune in the small setting (auxiliary runes) and
+ * whether the item has that second setting (two rune slots, `rarityRuneSlots`).
+ */
+export interface GearRunes {
+  metal: MetalId;
+  main: RuneLook | null;
+  small: RuneLook | null;
+  smallSlot: boolean;
+}
+
+/** A weapon library model (art/models/<folder>/<model>.glb), the hand it is held in and its attack animation. */
 export interface GearPiece {
+  /** `weapons` (default) or `weapons-v2`, the rune weapons of story 16.6 with rune channel and stone sockets */
+  folder?: 'weapons' | 'weapons-v2';
   model: string;
   hand: 'left' | 'right';
   /** the figure plays attack_<motion> instead of attack, if it has it (art-direction §4.5) */
   motion?: string;
   /** degrees about the hand socket's X outside attacks: the model is built in its striking grip */
   hold?: number;
+  /** runtime only (`gearOf` of the board): metal and runes of the item in this hand, for rune weapons */
+  rune?: GearRunes;
 }
 
 /** Story 10.13: the visible part of a pro path, hung on a body socket of the figure (`render.yaml` `gear.proParts`). */
@@ -402,6 +431,6 @@ export function socketName(piece: FigurePiece): string {
 }
 
 /** The folder of a piece's model below `public/assets/models/`. */
-export function pieceFolder(piece: FigurePiece): 'weapons' | 'parts' {
-  return 'socket' in piece ? 'parts' : 'weapons';
+export function pieceFolder(piece: FigurePiece): 'weapons' | 'weapons-v2' | 'parts' {
+  return 'socket' in piece ? 'parts' : (piece.folder ?? 'weapons');
 }

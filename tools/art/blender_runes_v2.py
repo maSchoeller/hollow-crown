@@ -7,17 +7,20 @@ also the preview images fire_tiers.png / all_runes.png / in_axe*.png into <dir>.
 
 Frame in the glb (glTF Y-up, like the weapons): origin = centre of the FLAT BASE of the stone, the dome points along
 +X (the weapon's blade-face axis), the symbol's "up" is +Y (= the haft axis of the weapon, Blender +Z), the symbol is
-readable looking from +X towards -X. Base radius 0.0252 (diameter 0.0504 = socket radius 0.0258 - 0.0006, the same as
-the axe's placeholder stone). Stone on the weapon: place the origin at the socket floor (axe: |x| = 0.0028 on the blade
-face, socket centre y/z); for the opposite blade face rotate 180 degrees about the haft axis (glTF Y).
-The placeholder in the axe is 0.0117 high; tier I 0.0080, tier II 0.0123 (utility runes too), tier III 0.0150.
+readable looking from +X towards -X. Base radius 0.0252 (diameter 0.0504 = socket radius 0.0258 - 0.0006).
+The weapons (tools/art/blender_weapons_v2.py and siblings) export empty nodes `socket_rune_a_*` / `socket_rune_b_*` with
+exactly this frame (origin = base centre, +X out of the metal, +Y symbol up; the left/second face is the same frame turned 180
+degrees about the haft axis, small settings carry scale 0.55): parent the stone's root to the node with an identity local
+transform. The nodes sit STONE_SINK = 0.0004 below the socket floor, so the base is not coplanar with the metal.
+Heights: tier I 0.0080, tier II 0.0140 (utility runes too: the faceted bevel ring is 0.0045 high), tier III 0.0150.
 
 Parts (separate objects/materials so the game can light them):
   rune_stone   body, base colour = element colour (utility: silver-white)
   rune_symbol  the carved symbol's floor, a lighter tint of the element colour (glow it brighter than the body)
   rune_gold    tier III only: thin gold inlay line along the symbol
   rune_core    tier III only: small bright core inside the crystal (hidden unless the stone is made translucent)
-Tier I: smooth low cabochon + shallow carving. Tier II: taller dome, faceted bevel ring, bolder deeper carving.
+Tier I: smooth low cabochon + shallow carving. Tier II: taller dome with a clearly faceted 12-sided bevel ring (a lit band
+seen from the front), bigger, bolder and deeper carving with a brighter symbol floor.
 Tier III: cut crystal dome (facets, flat table) with gold-inlaid symbol. Symbols are real carved pockets (boolean cut),
 the floor mesh follows the dome surface lowered by the carving depth.
 """
@@ -47,9 +50,9 @@ ELEMENT_RUNES = [(f"{e}_rune_{t}", e, t) for e in ("fire", "wind", "earth", "wat
 UTILITY = [("precision_rune", "crosshair"), ("force_rune", "hammer"), ("edge_rune", "blade"), ("feather_rune", "feather")]
 SYMBOL_OF = {"fire": "flame", "wind": "swirl", "earth": "peak", "water": "wave", "light": "star", "dark": "moon"}
 # side height, bevel height, cap height, carving depth, symbol half size, stroke width factor
-TIER = {1: dict(hs=0.0030, hb=0.0, hc=0.0050, d=0.00055, S=0.0098, wf=1.0),
-        2: dict(hs=0.0035, hb=0.0024, hc=0.0064, d=0.00085, S=0.0100, wf=1.2),
-        3: dict(hs=0.0035, hb=0.0, hc=0.0115, d=0.00095, S=0.0088, wf=1.0)}
+TIER = {1: dict(hs=0.0030, hb=0.0, hc=0.0050, d=0.00055, S=0.0098, wf=1.0, tint=0.20),
+        2: dict(hs=0.0035, hb=0.0045, hc=0.0060, d=0.00110, S=0.0112, wf=1.3, tint=0.55),
+        3: dict(hs=0.0035, hb=0.0, hc=0.0115, d=0.00095, S=0.0088, wf=1.0, tint=0.35)}
 
 
 def lin(c):
@@ -207,7 +210,7 @@ def profile(tier, dz=0.0):
         pts = [(0.0, 0.0, 0), (R, 0.0, 0), (R, hs, 0)]
         r0, z0 = R, hs
         if hb:   # faceted bevel ring: zig-zag triangle band
-            r0, z0 = 0.80 * R, hs + hb
+            r0, z0 = 0.76 * R, hs + hb
             pts.append((r0, z0, 0.5))
         n = 6
         for i in range(1, n):
@@ -226,7 +229,7 @@ def dome_height(tier, r):
 
 
 def dome_obj(tier, dz=0.0, name="dome"):
-    return mk(name, lathe(profile(tier, dz), 16 if tier == 3 else SEGS))
+    return mk(name, lathe(profile(tier, dz), {1: SEGS, 2: 12, 3: 16}[tier]))
 
 
 def prism(pts, z0, z1):
@@ -375,7 +378,7 @@ def build(rid, element, tier, sym_name):
     shade(dome, {1: 40, 2: 18, 3: 0}[tier])
     shade(A, 40)
     dome.data.materials.append(mat("rune_stone", base, base, 0.04, rough=0.25 if tier == 3 else 0.4))
-    A.data.materials.append(mat("rune_symbol", tint(COLOURS[element], 0.35), tint(COLOURS[element], 0.45), 0.45))
+    A.data.materials.append(mat("rune_symbol", tint(COLOURS[element], p["tint"]), tint(COLOURS[element], p["tint"] + 0.1), 0.45 + 0.35 * (tier == 2)))
     if tier == 3:
         gold = cutter(sym, S, wf, top - d, top + 0.00012, gold=True, gw=0.0011)
         shade(gold, 0)
@@ -504,15 +507,12 @@ def render_in_axe():
     for o in list(bpy.data.objects):
         bpy.data.objects.remove(o, do_unlink=True)
     bpy.ops.import_scene.gltf(filepath=os.path.join(ROOT, "art", "models", "weapons-v2", "axe.glb"))
-    for o in list(bpy.data.objects):
-        if o.name.startswith("rune_stone"):
-            bpy.data.objects.remove(o, do_unlink=True)
-    for s in (1, -1):
+    nodes = [o for o in bpy.data.objects if o.name.startswith("socket_rune_a")]
+    for nd in nodes:
         before = set(bpy.data.objects)
         bpy.ops.import_scene.gltf(filepath=os.path.join(OUT, "fire_rune_3.glb"))
         for o in [o for o in bpy.data.objects if o not in before and o.parent is None]:
-            o.location = (s * 0.0028, -0.072, 0.284)
-            o.rotation_euler = (0, 0, 0 if s > 0 else math.pi)
+            o.matrix_world = nd.matrix_world
     sc = render_setup(1400, 1400)
     camera(sc, (0.5, -0.12, 0.29), (0, -0.12, 0.29), ortho=0.46)
     shot(os.path.join(RENDER, "in_axe.png"))
