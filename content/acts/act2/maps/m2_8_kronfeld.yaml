@@ -110,11 +110,11 @@ units:
   - { id: n3, nameKey: unit.lance_squire.name, team: enemy, class: knight, sprite: soldier, levelOffset: -2, at: [14, 12], items: [{ def: iron_lance }], ai: { profile: aggressive } }
   - { id: n5, nameKey: unit.lance_squire.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [12, 12], items: [{ def: iron_bow }], ai: { profile: aggressive } }
   # Westen: Grell und seine Kaperfahrer (Maelis)
-  - { id: grell, nameKey: unit.grell.name, team: enemy, class: skirmisher, levelOffset: 1, at: [2, 21], lieutenant: grell, items: [{ def: steel_sword }], ai: { profile: aggressive } }
+  - { id: grell, nameKey: unit.grell.name, team: enemy, class: skirmisher, levelOffset: 1, at: [2, 21], lieutenant: grell, items: [{ def: steel_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
   - { id: w1, nameKey: unit.privateer.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [3, 18], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: w2, nameKey: unit.privateer.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [3, 24], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: w2, nameKey: unit.privateer.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [3, 24], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
   - { id: w3, nameKey: unit.privateer.name, team: enemy, class: brigand, sprite: brigand, levelOffset: -3, at: [7, 16], items: [{ def: iron_axe }], ai: { profile: aggressive } }
-  - { id: w4, nameKey: unit.privateer.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [7, 26], items: [{ def: iron_sword }], ai: { profile: aggressive } }
+  - { id: w4, nameKey: unit.privateer.name, team: enemy, class: skirmisher, sprite: mercenary, levelOffset: -3, at: [7, 26], items: [{ def: iron_sword }], ai: { profile: trigger, radius: 5, then: aggressive } }
   - { id: w5, nameKey: unit.privateer.name, team: enemy, class: marksman, sprite: bandit_archer, levelOffset: -3, at: [2, 15], items: [{ def: iron_bow }], ai: { profile: aggressive } }
   # Osten: Brakka an der Balliste auf der Felsnase (Stufe 2), ihre Freien Klingen darunter
   - { id: brakka, nameKey: unit.brakka.name, team: enemy, class: marksman, levelOffset: 1, at: [23, 13], lieutenant: brakka, items: [{ def: steel_bow }], ai: { profile: hold } }
@@ -137,6 +137,7 @@ units:
   # Schwer ohne eigene Zusatzgegner (Produktinhaber 2026-11-10, Antwort 7 = B, Story 11.27): h1–h6 gestrichen. 2026-11-21 (Abstimmung Normal nach #230):
   # auch die Normal-Zusätze n6, w6, e5, s4, die Leicht/Normal-Figuren n4, n7 und die Wellen in Runde 3 und 5 gestrichen; alle Stufen haben jetzt dieselben
   # 28 Gegner, Schwer wirkt über Werte +15 %, Affixe, Gegner-KI und Sables Sturm. Die verkettete Truppe kommt mit 4–10 Figuren ins Finale.
+# Balancing 2026-11-22 (Story 16.2, Straße ½): Grell, w2 und w4 warten (Weckradius 5) statt sofort zu stürmen; fresh Normal 92 % Sieg, Niedergestreckte 2,62 → 1,66.
 reinforcements:
   # Grenzheer von Süden
   - turn: 7

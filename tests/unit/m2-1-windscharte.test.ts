@@ -47,8 +47,8 @@ describe('map m2_1_windscharte', () => {
     expect(map().deploy.max).toBe(9);
   });
 
-  it('has 20 / 21 / 31 foes with the waves, Brakka among them (story 11.27: m4 and one man each of R3 and R7 on hard only, two more on hard)', () => {
-    for (const [d, n] of [['easy', 20], ['normal', 21], ['hard', 31]] as const) {
+  it('has 20 / 19 / 31 foes with the waves, Brakka among them (story 11.27: m4 and one man each of R3 and R7 on hard only, two more on hard; story 16.2: m6 on hard only, m7 not on normal)', () => {
+    for (const [d, n] of [['easy', 20], ['normal', 19], ['hard', 31]] as const) {
       const s = battle(d);
       const start = s.units.filter((u) => u.team === 'enemy').length;
       const waves = map().reinforcements.flatMap((r) => r.units).filter((u) => !u.difficulty || u.difficulty.includes(d)).length;
