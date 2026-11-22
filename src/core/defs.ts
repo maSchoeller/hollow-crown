@@ -406,6 +406,9 @@ export interface GearRunes {
   smallSlot: boolean;
 }
 
+/** How a hand closes on a held model (story 16.9, Art Direction §4.5): fist round a shaft or hilt, flat hand under a book, bow grip, half fist on a lute neck. */
+export type GripKind = 'fist' | 'flat' | 'bow' | 'lute';
+
 /** A weapon library model (art/models/weapons-v2/<model>.glb, the rune weapons), the hand it is held in and its attack animation. */
 export interface GearPiece {
   model: string;
@@ -414,20 +417,20 @@ export interface GearPiece {
   hand: 'left' | 'right';
   /** the figure plays attack_<motion> instead of attack, if it has it (art-direction §4.5) */
   motion?: string;
-  /** degrees about the hand socket's X outside attacks: the model is built in its striking grip */
-  hold?: number;
+  /** story 16.9: how the hand closes on the model (finger poses `grip_<kind>` of the figure, tools/art/grip_poses.py) */
+  grip: GripKind;
   /** runtime only (`gearOf` of the board): metal and runes of the item in this hand, for rune weapons */
   rune?: GearRunes;
   /** runtime only (`modelFor`, story 16.8): the group model to show when the item's own model is not loaded (on demand, offline) */
   fallback?: string;
 }
 
-/** Story 16.8: the model of one item (`render.yaml` `gear.items`); what it leaves out (hand, motion, hold) the group's piece gives. */
+/** Story 16.8: the model of one item (`render.yaml` `gear.items`); what it leaves out (hand, motion, grip) the group's piece gives. */
 export interface GearItemPiece {
   model: string;
   hand?: 'left' | 'right';
   motion?: string;
-  hold?: number;
+  grip?: GripKind;
 }
 
 /** Story 10.13: the visible part of a pro path, hung on a body socket of the figure (`render.yaml` `gear.proParts`). */
@@ -442,7 +445,7 @@ export type FigurePiece = GearPiece | PartPiece;
 /** The socket a piece hangs on, as `tools/art/prepare_tripo_unit.py` names it. */
 export function socketName(piece: FigurePiece): string {
   if ('socket' in piece) return `socket_${piece.socket}`;
-  return piece.hand === 'right' ? 'socket_r' : 'socket_l';
+  return piece.hand === 'right' ? 'grip_r' : 'grip_l';
 }
 
 /** The folder of a piece's model below `public/assets/models/`. */
