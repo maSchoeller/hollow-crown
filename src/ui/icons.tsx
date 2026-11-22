@@ -96,6 +96,18 @@ const P: Record<string, string> = {
   // the castle of the home (act pill, world map) and the memorial stone (memorial hall), after mockup 04
   castle: 'M4 21V8h3V5h3v3h4V5h3v3h3v13zM10 21v-5h4v5',
   stone: 'M6 21V10a6 6 0 0 1 12 0v11zM4 21h16M12 9v6M9.5 11.5h5',
+  // values of the change list (story 16.13): line shapes in the same grid, no fill
+  move: 'M5 4h5v7l8 2a2 2 0 0 1 2 2v3H5zM5 20h15',
+  weight: 'M8 9h8l3 11H5zM12 3.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
+  range: 'M3 12h18M3 8v8M21 8v8M8 9l-4 3 4 3M16 9l4 3-4 3',
+  crit: 'M12 3l2 6 6 3-6 3-2 6-2-6-6-3 6-3z',
+  resist: 'M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6zM8.5 12c1.2-1.6 2.3-1.6 3.5 0s2.3 1.6 3.5 0',
+  strength: 'M3 10v4M6 8v8M18 8v8M21 10v4M6 12h12',
+  magic: 'M5 19L15 9M14 4l1.2 2.8L18 8l-2.8 1.2L14 12l-1.2-2.8L10 8l2.8-1.2zM19 14l.6 1.4L21 16l-1.4.6L19 18l-.6-1.4L17 16l1.4-.6z',
+  skill: 'M5 19c6 0 12-6 14-14-8 2-14 8-14 14zM5 19l8-8',
+  speed: 'M13 3L5 14h6l-1 7 8-11h-6z',
+  luck: 'M5 5h14v14H5zM9 9h.01M15 9h.01M12 12h.01M9 15h.01M15 15h.01',
+  load: 'M4 8l8-4 8 4v9l-8 4-8-4zM4 8l8 4 8-4M12 12v9',
   // elements
   fire: 'M12 3c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1.5 4 3 4 0-3-1.5-6 0-9z',
   wind: 'M3 9h11a3 3 0 1 0-3-3M3 14h15a3 3 0 1 1-3 3M3 19h7',
@@ -143,4 +155,33 @@ export function TriMark({ v, label }: { v: number; label?: string }) {
 
 export function ElementIcon({ el, size = 16 }: { el: Element; size?: number }) {
   return <Icon name={el} size={size} class={`el-${el}`} />;
+}
+
+/**
+ * Element mark: a disc in the element colour with the line icon in it (story 16.13; 15 and 18 px are used by the change
+ * list, light and dark take dark and cream strokes so the icon stays readable).
+ */
+export function ElementDot({ el, size = 18, label }: { el: Element; size?: number; label?: string }) {
+  const ink = el === 'light' || el === 'wind' ? 'var(--hc-line)' : 'var(--hc-cream)';
+  return (
+    <span
+      class={`el-dot el-dot-${el}`}
+      role={label ? 'img' : undefined}
+      aria-label={label}
+      aria-hidden={label ? undefined : 'true'}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 'none',
+        width: size,
+        height: size,
+        borderRadius: '50%',
+        background: `var(--hc-element-${el})`,
+        color: ink,
+      }}
+    >
+      <Icon name={el} size={Math.round(size * 0.72)} />
+    </span>
+  );
 }
