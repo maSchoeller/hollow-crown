@@ -1,7 +1,7 @@
 import { unitModelPath } from '../../core';
 import { describe, expect, it } from 'vitest';
 import { ON_DEMAND_MUSIC } from '../../packs/cacheName';
-import { BATTLE_MUSIC, LATER_MUSIC, failureStatus, formatBytes, gearModels, installProgress, itemImages, laterMusicAssets, missingAssets, missionAssets, placePath, ratio } from './plan';
+import { BATTLE_MUSIC, LATER_MUSIC, failureStatus, formatBytes, gearModels, gearPieces, installProgress, itemImages, laterMusicAssets, missingAssets, missionAssets, placePath, ratio } from './plan';
 
 const models = ['lucan', 'avatar_a', 'avatar_b', 'brigand', 'mercenary'];
 const classes = { skirmisher: { art: 'mercenary' }, archer: {}, brigand: {} };
@@ -150,6 +150,16 @@ describe('weapon models', () => {
       weaponModels,
     });
     expect(list.filter(noImages)).toEqual([`locations/${defaultPlace}.webp`, 'models/units/brigand.glb', 'models/units/lucan.glb', 'models/weapons/bow.glb', 'models/weapons/shield.glb', 'models/weapons/sword.glb']);
+  });
+  it('the plan fetches a rune weapon from weapons-v2 and the stones of the runes set into the unit, only those the manifest lists', () => {
+    const v2 = { weapons: { sword: { folder: 'weapons-v2', model: 'sword', hand: 'right' }, bow: { model: 'bow', hand: 'left' } }, offHand: {} } as never;
+    const units = [{ classId: 'brigand', gearItems: ['iron_sword', 'iron_bow'], gearRunes: ['fire_rune_2', 'edge_rune', 'ghost_rune'] }];
+    const list = missionAssets({ units, ...base, items, gear: v2, weaponModels: ['sword', 'bow'], weaponModels2: ['sword'], runeModels: ['fire_rune_2', 'fire_rune_3'] }).filter(noImages);
+    // the old `sword` file stays out: the group's piece lives in weapons-v2
+    expect([...list].sort()).toEqual([`locations/${defaultPlace}.webp`, 'models/runes-v2/fire_rune_2.glb', 'models/units/brigand.glb', 'models/weapons-v2/sword.glb', 'models/weapons/bow.glb'].sort());
+    // no rune weapon in the manifest: no stones either
+    expect(missionAssets({ units, ...base, items, gear: v2, weaponModels: ['bow'], runeModels: ['fire_rune_2'] }).filter((p) => p.startsWith('models/runes-v2/'))).toEqual([]);
+    expect(gearPieces(['iron_sword', 'iron_bow', 'iron_sword'], items, v2).map((p) => `${p.folder ?? 'weapons'}/${p.model}`)).toEqual(['weapons-v2/sword', 'weapons/bow']);
   });
   it('a unit without a model file (sprite figure) needs no weapon, and neither does a file the manifest lacks', () => {
     expect(missionAssets({ units: [{ classId: 'archer', gearItems: ['iron_sword'] }], ...base, items, gear, weaponModels }).filter(noImages)).toEqual([`locations/${defaultPlace}.webp`]);

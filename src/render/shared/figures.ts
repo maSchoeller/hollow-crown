@@ -18,6 +18,7 @@ import type { Team } from '../../core';
 import { TILE, type Sheet } from './assets';
 import { giveTint, NO_GLOW, sharedFigureMaterial, takeTint, tintMaterial, type Glow, type UnitModel } from './models';
 import { clipRow, type VatClip } from './vat';
+import type { GlowState } from './runeLook';
 
 export type FigureAnim = 'idle' | 'walk' | 'attack' | 'hit' | 'downed';
 /** Screen-relative direction for sprites; 3D models turn instead. */
@@ -28,6 +29,8 @@ export interface Figure {
   play(anim: FigureAnim, facing: Facing, speed: number): void;
   /** desaturation (acted/downed) 0–1, white flash 0–1, opacity 0–1, colour glow (story 13.6); writes only when a value changed */
   tint(desat: number, flash: number, alpha: number, glow?: Glow): void;
+  /** story 16.6: the rune glow of the figure's weapons, dim on the board or full (chosen figure, forecast); sprites have none */
+  setRuneGlow?(state: GlowState): void;
   /**
    * `now`: the animation clock in ms (it stops while the board freezes a critical hit); `onScreen`: false while the figure is
    * outside the view and switched off, so nothing about its skeleton or its baked row is worked out
@@ -173,7 +176,13 @@ export class ModelFigure implements Figure {
     for (const sk of this.model.skeletons) this.needs.add(sk);
   }
 
+  /** the rune glow state of the figure's weapons (story 16.6) */
+  setRuneGlow(state: GlowState): void {
+    this.model.rune?.setState(state);
+  }
+
   tint(desat: number, flash: number, alpha: number, glow: Glow = NO_GLOW): void {
+    this.model.rune?.setAlpha(alpha);
     if (desat === this.tDesat && flash === this.tFlash && alpha === this.tAlpha && glow === this.tGlow) return;
     this.tDesat = desat;
     this.tFlash = flash;

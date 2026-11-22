@@ -49,7 +49,7 @@ function laterPropStems(root = process.cwd()) {
 export function isFirstMissionFile(p, figures) {
   const prop = /^assets\/models\/props\/([^/]+)\.glb$/.exec(p);
   if (prop && laterPropStems().has(prop[1])) return false;
-  if (/^assets\/models\/(props|weapons)\//.test(p) || /^assets\/audio\/battle_(player|enemy)\.mp3$/.test(p)) return true;
+  if (/^assets\/models\/(props|weapons|weapons-v2|runes-v2)\//.test(p) || /^assets\/audio\/battle_(player|enemy)\.mp3$/.test(p)) return true;
   const m = /^assets\/(?:[^/]+\/)?models\/units\/([^/]+)\.(?:glb|vat)$/.exec(p);
   return m !== null && figures.has(m[1]);
 }

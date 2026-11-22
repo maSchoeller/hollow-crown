@@ -21,6 +21,15 @@ export type Mode =
   /** Falle legen / zurücknehmen (story 10.5): the valid fields are shown as range tiles, a tap on one does it; `item`: the trap set used (story 10.6) */
   | { k: 'tile'; uid: string; to: Pos; action: 'trap' | 'disarm'; item?: string };
 
+/**
+ * Story 16.6: the figures whose rune weapons glow in full (`Overlays.glow`): the chosen one in every mode but idle, and in the
+ * forecast also the target (the attacker is the chosen one). Foes count like own units; everyone else glows dimmed.
+ */
+export function glowUids(mode: Mode): Set<string> {
+  if (mode.k === 'idle') return new Set();
+  return new Set(mode.k === 'forecast' ? [mode.uid, mode.target] : [mode.uid]);
+}
+
 /** The fields of a `tile` mode: those of Falle legen / Zurücknehmen, or (story 10.6) where the chosen trap set can go. */
 export function tileModeTiles(data: GameData, s: BattleState, u: BattleUnit, mode: Extract<Mode, { k: 'tile' }>): Pos[] {
   if (mode.item) return itemTiles(data, s, u, mode.to, mode.item);

@@ -38,6 +38,8 @@ export interface Overlays {
   fogEdge?: Pos[];
   /** places of a tapped side objective (goal marking): a light ring with a dark outline on the field, see `MarkerStyle` */
   mark?: Pos[];
+  /** story 16.6: uids of the figures whose rune weapons glow in full (the chosen figure, attacker and target of the forecast; foes the same), the others glow dimmed */
+  glow?: ReadonlySet<string>;
   /** own traps (story 10.5): a ring with jaws on the field, render.yaml `legibility.trap` */
   traps?: Pos[];
 }
