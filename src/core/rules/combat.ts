@@ -5,8 +5,8 @@ import type { GameEvent } from '../events';
 import { roll1, roll2 } from '../rng';
 import type { BattleState, BattleUnit, ItemInstance } from '../state';
 import { active, clamp, dist, getUnit, inBounds, isAlly, neighbors, pairKey, ruleOn, terrainAt, unitAt } from '../util';
-import { applyStatus, extinguishTile, fleesAtZero, igniteTile, knockOut, setTerrain } from './effects';
-import { itemDef, shieldImmune, weaponProfile, type ShieldGuard, type WeaponProfile } from './items';
+import { applyStatus, burnDamage, extinguishTile, fleesAtZero, igniteTile, knockOut, setTerrain } from './effects';
+import { armorGuard, itemDef, shieldImmune, weaponProfile, type ShieldGuard, type WeaponProfile } from './items';
 import { canStrike, stepCost, weaponRange } from './movement';
 import { combatExp, expPercent, grantExp, grantSp } from './progression';
 import { computeStats, type EffectiveStats } from './stats';
@@ -26,6 +26,12 @@ export interface SideForecast {
   triangle: -1 | 0 | 1;
   element?: Element;
   elementMult: number;
+  /** tier I–III of the weapon's element rune (story 16.12) */
+  elementTier?: number;
+  /** protecting element of the target that decides `elementMult` (armor wins a tie); lies on the attacking side */
+  guard?: { element: Element; tier: number; source: 'armor' | 'shield' };
+  /** duration and, for burning, damage per round of each status with chance > 0 */
+  statusTurns?: Array<{ status: StatusId; rounds: number; perRound?: number }>;
   status: Array<{ status: StatusId; chance: number }>;
   hpBefore: number;
   maxHp: number;
@@ -197,6 +203,24 @@ function calcSide(
       else status.push({ status: x.status, chance });
     }
   }
+  // guard: the protecting element of the target whose factor counts (armor wins a tie, story 16.12)
+  let guard: SideForecast['guard'];
+  if (elements) {
+    const armor = oppStats.affinity ? (armorGuard(data, opp, s) ?? { element: oppStats.affinity, tier: 1 }) : undefined;
+    const shield = oppStats.shield;
+    const against = (g: ShieldGuard, isShield: boolean) =>
+      elementMultiplier(data, wp?.element, isShield ? undefined : g.element, oppTags, isShield ? g : undefined);
+    const pickShield = !!shield && (!armor || (wp?.element === shield.element && against(shield, true) < against(armor, false)));
+    const g = pickShield ? shield : armor;
+    if (g) guard = { element: g.element, tier: g.tier, source: pickShield ? 'shield' : 'armor' };
+  }
+  const statusTurns = status
+    .filter((x) => x.chance > 0 && x.status !== 'knockback')
+    .map((x) => ({
+      status: x.status,
+      rounds: data.balance.status.durationRounds,
+      ...(x.status === 'burning' ? { perRound: burnDamage(data, oppStats.maxHp) } : {}),
+    }));
   const knock = status.some((x) => x.status === 'knockback' && x.chance > 0) ? knockbackTarget(data, s, myPos, opp, oppPos) : undefined;
   return {
     side: {
@@ -211,6 +235,9 @@ function calcSide(
       triangle: tri,
       element: wp?.element,
       elementMult,
+      ...(wp?.elementTier !== undefined ? { elementTier: wp.elementTier } : {}),
+      ...(guard ? { guard } : {}),
+      ...(statusTurns.length ? { statusTurns } : {}),
       status,
       hpBefore: me.hp,
       maxHp: stats.maxHp,
