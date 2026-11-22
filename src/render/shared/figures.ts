@@ -152,7 +152,7 @@ export class ModelFigure implements Figure {
     // the clip starts at the next frame's time, as the engine's animations do (they begin with the next animation step), not at the last one's
     this.clipStart = NaN;
     this.clipSpeed = speed;
-    this.show(clipRow(clip, 0, this.model.vat!.entry.data.fps));
+    this.show(clipRow(clip, 0));
   }
 
   /** shows a row of the model's texture on this figure's body and puts the hand sockets where the file has them for it */
@@ -249,7 +249,7 @@ export class ModelFigure implements Figure {
     this.clock = now;
     if (this.model.vat) {
       if (Number.isNaN(this.clipStart)) this.clipStart = now;
-      if (onScreen && this.clip) this.show(clipRow(this.clip, (now - this.clipStart) / 1000, this.model.vat.entry.data.fps, this.clipSpeed));
+      if (onScreen && this.clip) this.show(clipRow(this.clip, (now - this.clipStart) / 1000, this.clipSpeed));
       return;
     }
     if (!this.slow) return;

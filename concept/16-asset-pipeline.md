@@ -183,6 +183,8 @@ Der **Treffer-Frame** der Angriffsanimation wird im Manifest markiert. Der Rende
 
 Tripo-Brettfiguren (22 Gelenke) bekommen beim Bau (`pnpm art:tripo`, `tools/art/bake_vat.py`) neben der GLB eine `<id>.vat`: alle Clips mit 60 Bildern/s, lokale Pose je Zeile, gzip-komprimiert. Zur Laufzeit erzeugt ein Web Worker per Vorwärtskinematik die Matrix-Textur für Babylons `BakedVertexAnimationManager`; Waffen-Sockets kommen aus derselben Rechnung. Die `.vat` zählt zum Figurenbudget (≤ 0,5 MB Transfer mit Modell, `tools/figure-budget.mjs`) und liegt im selben Paket wie die GLB. Blender-Figuren bleiben auf dem Skelettpfad.
 
+Format Version 2 (Story 16.10): jeder Clip trägt seine eigene Rate (u8 Zeilen/s im Clip-Eintrag), Version 1 liest die Laufzeit weiter. Die Haltungs-Clips je Figur – `rest_<s>` (Schleife, ein Atemzug von 4 s), `gesture_<s>_look|shift|regrip`, `ready_<s>` (Schleife) – laufen mit 30 Zeilen/s, `ready_in_<s>` (0,25 s von Ruhe nach Kampfhaltung) und alle Aktions-Clips mit 60; `idle` teilt sich die Zeilen von `rest_none`. Welche Haltungen eine Figur bekommt, leitet `tools/art/tripo_units.py` aus den Klassen ab, die sie zeigen (Waffengruppen → `stance` in `content/core/render.yaml`); die Posen selbst stehen als Daten in `tools/art/stance_poses.py` und werden in Blender per IK auf die Körpermaße der Figur gelöst und als FK-Keys gebacken. Die ausgelieferte GLB enthält die Haltungs-Clips nicht (sie sind nur in der `.vat`); die Vollversion bleibt mit `pnpm art:tripo <id> --keep-raw` als `<id>.raw.glb` für `tools/art/stance_shots.py` (Abnahmeblatt) erhalten.
+
 ## 8. Qualitätsstufen
 
 Automatisch nach Gerät gewählt (GPU-Tier und Speicher-Heuristik), in den Optionen änderbar.

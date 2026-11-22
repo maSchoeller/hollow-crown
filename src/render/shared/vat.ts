@@ -1,7 +1,7 @@
 /**
  * Baked vertex animation of the board's figures (story 7.8). tools/art/bake_vat.py writes, per image-to-3D figure, a `.vat`
- * file with the local pose of every joint for each of the clips' rows at 60 fps (quaternions as half floats, the root's
- * translation as float) and the rig that goes with it. The file is a gzip stream (the transfer size does not depend on the host).
+ * file with the local pose of every joint for each of the clips' rows (60 rows a second, the slow stance clips of story 16.10 at 30: file
+ * version 2 stores a rate per clip, version 1 one rate for all; quaternions as half floats, the root's translation as float) and the rig that goes with it. The file is a gzip stream (the transfer size does not depend on the host).
  *
  * This module is pure (no Babylon, no DOM): it reads the file, picks the row of a clip at a time, and works out by forward
  * kinematics the skin matrices of every row (the contents of the vertex animation texture) and the placement of the hand
@@ -16,6 +16,8 @@ export interface VatClip {
   first: number;
   rows: number;
   loop: boolean;
+  /** rows per second of this clip (file version 1: the file's rate; version 2: stored per clip, slow clips use fewer rows) */
+  fps: number;
 }
 
 export interface VatSocket {
@@ -99,7 +101,8 @@ function halfTable(): Float32Array {
 export function parseVat(buf: Uint8Array): VatData {
   const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
   if (buf.length < 20 || dv.getUint32(0, true) !== MAGIC) throw new Error('vat: bad magic');
-  if (dv.getUint16(4, true) !== 1) throw new Error(`vat: unsupported version ${dv.getUint16(4, true)}`);
+  const version = dv.getUint16(4, true);
+  if (version !== 1 && version !== 2) throw new Error(`vat: unsupported version ${version}`);
   const fps = dv.getUint16(6, true);
   const J = dv.getUint16(8, true);
   const S = dv.getUint16(10, true);
@@ -149,8 +152,10 @@ export function parseVat(buf: Uint8Array): VatData {
     const rows = dv.getUint32(o + 4, true);
     const flags = dv.getUint8(o + 8);
     o += 9;
-    if (first + rows > R || !rows) throw new Error(`vat: clip ${n} lies outside the rows`);
-    clips.set(n, { name: n, first, rows, loop: (flags & 1) === 1 });
+    let clipFps = fps;
+    if (version === 2) clipFps = dv.getUint8(o++); // version 2: u8 rows per second after the flags
+    if (first + rows > R || !rows || !clipFps) throw new Error(`vat: clip ${n} lies outside the rows`);
+    clips.set(n, { name: n, first, rows, loop: (flags & 1) === 1, fps: clipFps });
   }
   o += -o & 3;
   if (buf.length < o + R * J * 8 + R * 12) throw new Error('vat: truncated');
@@ -189,12 +194,12 @@ export async function inflateVat(bytes: ArrayBuffer): Promise<Uint8Array> {
 }
 
 /**
- * Row of a clip `seconds` after it started (at `speed` times its rate). A loop wraps around, anything else stays on its last row.
- * The same rule serves every figure, so the walk cycle and the idle loop stay in step with the time the board gives them.
+ * Row of a clip `seconds` after it started (at `speed` times its rate, the clip's own `fps`). A loop wraps around, anything else
+ * stays on its last row. The same rule serves every figure, so the walk cycle and the idle loop stay in step with the time the board gives them.
  */
-export function clipRow(clip: VatClip, seconds: number, fps: number, speed = 1): number {
+export function clipRow(clip: VatClip, seconds: number, speed = 1): number {
   // a hair above the product, so that 12 key frames at 5 rows each do not land one row short through rounding
-  const n = Math.floor(seconds * speed * fps + 1e-6);
+  const n = Math.floor(seconds * speed * clip.fps + 1e-6);
   if (clip.loop) return clip.first + (((n % clip.rows) + clip.rows) % clip.rows);
   return clip.first + Math.min(Math.max(n, 0), clip.rows - 1);
 }

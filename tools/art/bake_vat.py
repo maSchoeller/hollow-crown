@@ -2,23 +2,25 @@
 
     python tools/art/bake_vat.py <figure.raw.glb> <figure.vat>
 
-The raw glTF is what tools/art/prepare_tripo_unit.py writes (about 52 joints incl. the finger joints 1-3 since story 16.9, one skin, one animation per board animation, keys at 12 fps).
-Every clip is sampled at 60 frames a second (slerp of the rotations, lerp of the hips' translation, like the glTF loader of the
-board does at runtime) and written as the local pose of each joint per row: J quaternions (half float) plus the hips' translation
+The raw glTF is what tools/art/prepare_tripo_unit.py writes (about 52 joints incl. the finger joints 1-3 since story 16.9, one skin, one animation per
+board animation and per stance clip of story 16.10: rest_*, gesture_*, ready_*, ready_in_*, keys on the 60 fps grid).
+Every clip is sampled at its own rate (60 rows a second, the slow stance clips rest_*, gesture_*, ready_* at 30; tools/art/stance_poses.py clip_fps()):
+slerp of the rotations, lerp of the hips' translation, like the glTF loader of the board does at runtime. `idle` is no clip of its own: it shares
+the rows of rest_none (the calm breathing), and the stance loops (rest_*, ready_*) and idle, walk loop and written as the local pose of each joint per row: J quaternions (half float) plus the hips' translation
 (float). The renderer builds the matrix texture of the vertex animation (src/render/shared/vat.ts) from it by forward kinematics
 when the figure is loaded, and the hand sockets (weapon placement) with it. The file also carries the rig it needs for that
 (joint names, parents, rest pose, inverse bind matrices, the sockets' local transforms), so the loader needs no glTF skeleton data.
 
 File (little endian, then deflated as a gzip stream: the transfer size does not depend on how the host compresses):
-    char[4] 'HCVT'   u16 version(1)   u16 fps   u16 joints J   u16 sockets S   u16 clips C   u16 layout(0)   u32 rows R
+    char[4] 'HCVT'   u16 version(2)   u16 fps   u16 joints J   u16 sockets S   u16 clips C   u16 layout(0)   u32 rows R
     J x   { u8 nameLen, name, i16 parent, f32 t[3], f32 q[4], f32 s[3], f32 inverseBind[16] }   rest pose is the glTF node's, the
                                                                                                    matrix as the glTF accessor holds it
     S x   { u8 nameLen, name, i16 joint, f32 t[3], f32 q[4], f32 s[3] }                          local transform below the joint
-    C x   { u8 nameLen, name, u32 firstRow, u32 rows, u8 flags (1 = loops) }
+    C x   { u8 nameLen, name, u32 firstRow, u32 rows, u8 flags (1 = loops), u8 fps }                     version 1 had no fps here: every clip ran at the header's rate
     pad to 4 bytes
     rotations   f16, planar: for joint j, component c (x y z w): R values over the rows, bytes shuffled (all low bytes, then all high)
     translation f32 x 3 per row (the root joint's local translation)
-Clip rows: a clip of T seconds has round(T x fps) + 1 rows (first to last key); a loop leaves out the last row (it equals the first);
+Clip rows: a clip of T seconds has round(T x clip fps) + 1 rows (first to last key); a loop leaves out the last row (it equals the first);
 `downed` keeps only its last row (the board shows the fallen pose, never the fall). Stats go to stdout as `[hc]` lines.
 """
 import gzip
@@ -29,11 +31,13 @@ import sys
 
 import numpy as np
 
-FPS = 60
-LOOPS = {"idle", "walk"}
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import stance_poses
+
+FPS = 60  # header rate and the rate of every clip but the slow stance clips
 LAST_ROW_ONLY = {"downed"}
 MAGIC = b"HCVT"
-VERSION = 1
+VERSION = 2
 
 
 def read_glb(path):
@@ -168,30 +172,37 @@ def sample_translation(track, rest, t):
 
 
 def bake(raw_path):
-    """-> (rig, clips [(name, first row, rows, loops)], rotations (R, J, 4) float64, translations (R, 3) float64)"""
+    """-> (rig, clips [(name, first row, rows, loops, fps)], rotations (R, J, 4) float64, translations (R, 3) float64)"""
     js, bin_ = read_glb(raw_path)
     rig = Rig(js, bin_)
     clips, rots, trans, row = [], [], [], 0
+    names = {a["name"] for a in js["animations"]}
     for anim in js["animations"]:
         name = anim["name"]
+        if name == "idle" and "rest_none" in names:
+            continue  # shares the rows of rest_none (added below)
         dur, rot_tracks, hips = clip_tracks(js, bin_, rig, anim)
-        last = int(round(dur * FPS))
-        if abs(dur * FPS - last) > 1e-3:
-            raise SystemExit(f"{name}: {dur:.5f} s is not a whole number of frames at {FPS} fps")
-        loop = name in LOOPS
+        fps = stance_poses.clip_fps(name)
+        last = int(round(dur * fps))
+        if abs(dur * fps - last) > 1e-3:
+            raise SystemExit(f"{name}: {dur:.5f} s is not a whole number of frames at {fps} fps")
+        loop = stance_poses.is_loop(name)
         first = last if name in LAST_ROW_ONLY else 0
         stop = last if loop else last + 1  # a loop ends before its first row comes again
         stop = max(stop, first + 1)
         for i in range(first, stop):
-            t = i / FPS
+            t = i / fps
             q = np.array([sample_rotation(rot_tracks[j], rig.rest_q[j], t) for j in range(len(rig.names))])
             rots.append(q)
             trans.append(sample_translation(hips, rig.rest_t[rig.root], t))
-        clips.append((name, row, stop - first, loop))
+        clips.append((name, row, stop - first, loop, fps))
         row += stop - first
+    if "idle" in names and "rest_none" in names:
+        rn = next(c for c in clips if c[0] == "rest_none")
+        clips.append(("idle", rn[1], rn[2], True, rn[4]))
     rots = np.array(rots)
     # keep neighbouring rows in one hemisphere (smaller steps compress better; the rotation is the same)
-    for name, r0, n, _ in clips:
+    for name, r0, n, _, _ in clips:
         for k in range(r0 + 1, r0 + n):
             flip = np.einsum("jc,jc->j", rots[k], rots[k - 1]) < 0
             rots[k][flip] *= -1
@@ -213,8 +224,8 @@ def encode(rig, clips, rots, trans):
         out += np.asarray(rig.ibm[j], dtype="<f4").tobytes()
     for n, joint, t, q, s in rig.sockets:
         out += name(n) + struct.pack("<h", joint) + struct.pack("<3f4f3f", *t, *q, *s)
-    for n, first, count, loop in clips:
-        out += name(n) + struct.pack("<IIB", first, count, 1 if loop else 0)
+    for n, first, count, loop, fps in clips:
+        out += name(n) + struct.pack("<IIBB", first, count, 1 if loop else 0, fps)
     out += b"\0" * (-len(out) % 4)
     half = rots.astype("<f2")  # (R, J, 4)
     for j in range(J):
@@ -290,7 +301,8 @@ def main(raw_path, out_path):
         f.write(packed)
     decoded = rots.astype("<f2").astype(np.float64)
     dev = verify(raw_path, rig, clips, rots, trans, decoded)
-    summary = ", ".join(f"{n} {c}{'*' if lp else ''}" for n, _, c, lp in clips)
+    others = ", ".join(f"{n} {c}{'*' if lp else ''}" for n, _, c, lp, _ in clips if not stance_poses.is_stance_clip(n))
+    summary = f"{others}, {sum(1 for c in clips if stance_poses.is_stance_clip(c[0]))} stance clips"
     print(f"[hc] {out_path}: {len(rots)} rows ({summary}), {len(data) // 1024} KB raw, {len(packed) // 1024} KB packed, "
           f"vertex deviation (half float rows and texture) {dev:.5f}", flush=True)
     if dev > 0.002:

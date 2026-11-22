@@ -6,7 +6,8 @@ import { slugId, weaponGroup, weaponType } from './schemaBase';
 
 const qualityLevel = z.object({ maxDpr: z.number().positive(), shadowMap: z.number().int().min(0) });
 const gripKind = z.enum(['fist', 'flat', 'bow', 'lute']);
-const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), modelOpen: z.string().regex(/^[a-z0-9_]+$/).optional(), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), grip: gripKind });
+const stanceKind = z.enum(['lance', 'staff', 'blade', 'axe', 'bow', 'book', 'lute']);
+const gearPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), modelOpen: z.string().regex(/^[a-z0-9_]+$/).optional(), hand: z.enum(['left', 'right']), motion: z.string().regex(/^[a-z]+$/).optional(), grip: gripKind, stance: stanceKind.optional(), stanceMod: z.literal('shield').optional() });
 const itemPiece = z.object({ model: z.string().regex(/^sig\/[a-z0-9_]+$/), hand: z.enum(['left', 'right']).optional(), motion: z.string().regex(/^[a-z]+$/).optional(), grip: gripKind.optional() });
 const partPiece = z.object({ model: z.string().regex(/^[a-z0-9_]+$/), socket: z.enum(['back', 'head']) });
 const decorSchema = z.object({ model: z.string(), map: z.number().min(0).max(1), scenery: z.number().min(0).max(1), scale: z.tuple([z.number().positive(), z.number().positive()]) });
