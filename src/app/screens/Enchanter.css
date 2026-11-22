@@ -68,7 +68,7 @@
 }
 .en-stage {
   display: flex;
-  height: 240px;
+  height: 200px;
 }
 .en-probe {
   position: absolute;
@@ -136,8 +136,8 @@
 }
 .en-tray {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
-  gap: 6px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px 4px;
 }
 .en-stone {
   position: relative;
@@ -145,34 +145,35 @@
   justify-items: center;
   align-content: start;
   gap: 2px;
-  min-height: 92px;
-  padding: 8px 4px 6px;
-  border: var(--hc-outline-small) solid var(--hc-line);
+  padding: 2px 0;
+  border: 0;
   border-radius: var(--hc-r-chip);
-  background: var(--hc-cream);
+  background: transparent;
   color: var(--hc-line);
   font: inherit;
   text-align: center;
   cursor: pointer;
 }
-.en-stone[aria-pressed='true'] {
-  border-color: var(--hc-ember);
-  background: var(--hc-selection-soft);
-  box-shadow: 0 0 0 2px var(--hc-ember);
+.en-stone[aria-pressed='true'] .is-gem {
+  box-shadow: 0 0 0 3px var(--hc-ember);
+}
+.en-stone[aria-pressed='true'] .en-stone__name {
+  color: var(--hc-ember-dark);
 }
 .en-stone.is-dim {
   opacity: 0.5;
   cursor: default;
 }
-.en-stone.is-offer {
+.en-stone.is-offer .is-gem {
   border-style: dashed;
   background: transparent;
 }
 .en-stone__name {
   font-family: var(--hc-font-label);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.15;
+  overflow-wrap: anywhere;
 }
 .en-stone small {
   font-family: var(--hc-font-label);
