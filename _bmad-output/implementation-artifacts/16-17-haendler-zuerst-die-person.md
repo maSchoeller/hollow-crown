@@ -1,6 +1,6 @@
 # Story 16.17: Händler „zuerst die Person“
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -21,22 +21,22 @@ damit ich nicht zwischen Laden und Figurenblatt wechseln muss.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Kernfunktion „Kauf für Person“ (AC: 2, 3, 4, 7)
-  - [ ] In `src/core/campaign/camp.ts` (neben `usableBy`, `equipCandidates`, `equipPreview`) eine reine Funktion, z. B. `buyPlan(data, c, unitId, defId)`: Zielplatz (Waffe → `mainHand`, Schild/Nebenhand → `offHand`, Kopf/Körper, Schmuck → freier `accessory1/2`, sonst der ohne gleiches Item, Verbrauch/Schlüssel → `bag`), verdrängtes Item (inkl. Zweihänder verdrängt Nebenhand und umgekehrt, wie `equipInto`), `error` aus `canEquip` bzw. `bagIsFull`. Namen offen; `equipInto` aus `gear.ts` wiederverwenden, nichts kopieren.
-  - [ ] Änderungen gegenüber dem Getragenen über die reine Kernfunktion „Item A gegen Item B für Figur X“ aus 16.13 (nicht `equipPreview` neu schreiben; ist 16.13 anders gebaut, daran anpassen). Chips = die ein bis zwei wichtigsten Zeilen; Reihenfolge der Wichtigkeit in `balance.yaml` oder als Konstante in der Kernfunktion festlegen, nicht in der UI.
-  - [ ] „Nicht tragbar“-Grund als Fehlercode → Textschlüssel (`weapon_group`, `heavy_armor`, `monster_only`, `wrong_slot` …).
-- [ ] Task 2: Command (AC: 7)
-  - [ ] `buy` und `buyOffer` um optionales `for?: { unit: string; slot: EquipSlot | 'bag'; replace?: string }` erweitern (`commands.ts`), `validateCampaign` (Prüfreihenfolge §8.1: Id → Verfügbarkeit → Platz/Gold; Gold, `cannot_equip`, `bag_full`, `convoy_full` per Trockenlauf auf Kopie wie bei `applyGearTemplate`: das Verdrängte braucht einen Konvoi-Platz, das Gekaufte nicht), `applyCampaign` (Gold abziehen, `newItem`, `equipInto`, Events `itemGained` + `equipped`), `history.ts` `campArg` ergänzen. `buyEmberSpark` bleibt nur Konvoi.
-  - [ ] Unit-Tests in `tests/unit/` (neben `campaign-equip.test.ts`, `merchant-levels.test.ts`): gültig, jeder Fehlercode, Verdrängtes im Konvoi, Zweihänder, Beutel-Tausch, Schmuck-Platzwahl, Events, Determinismus, Replay über Journal, Altjournal ohne `for`.
-- [ ] Task 3: Oberfläche (AC: 1–6, 8)
-  - [ ] `MerchantRoom` in `src/app/screens/Rooms.tsx` (nur Zeilen ca. 228–400 per `grep -n`/Ausschnitt lesen; Datei ist groß) in eine neue Datei `src/app/screens/Merchant.tsx` mit `Merchant.css` herauslösen (Vorbild: `Workshop.tsx`/`Workshop.css`); `Rooms.tsx` ruft sie nur noch (`case 'merchant'`).
-  - [ ] `PersonBar` als Baustein (DESIGN `person-bar`; 16.16 Verzauberer nutzt dasselbe, gemeinsame Komponente in `src/ui/` anlegen bzw. die aus 16.16 nutzen, falls schon da). Zuletzt gewählte Person als Modul-State in `src/app/state/` (Modul „session“ oder eigenes, kein Sammel-Modul, keine Zyklen).
-  - [ ] Zeilen, Chips, Aufklappen, Haupttaste mit `Amount`, Konvoi-Taste, Hinweis „X geht in den Konvoi“, eingeklappter Abschnitt mit Gründen, Konvoi-Modus mit Köpfen; Info-Stein/Langdruck öffnet weiter die Item-Details.
-  - [ ] `Who`, `ui.room.merchant.who/nobody` löschen; neue Schlüssel in `de.yaml` und `en.yaml` (Parität prüft `content:check`).
-  - [ ] Altes CSS in `src/ui/camp.css` entfernen, soweit nur der Händler es nutzt.
-- [ ] Task 4: Prüfung (AC: alle)
-  - [ ] Komponententest (Preact) für Personenleiste, Gruppen, Chips, nicht Tragbares, Konvoi-Modus; Test, dass „Für wen?“ nicht mehr vorkommt.
-  - [ ] `pnpm check`; Sichtprüfung im Browser bei 375 × 812 (Spiel stumm, alle Lautstärken 0), Bild neben dem Mockup.
+- [x] Task 1: Kernfunktion „Kauf für Person“ (AC: 2, 3, 4, 7)
+  - [x] In `src/core/campaign/camp.ts` (neben `usableBy`, `equipCandidates`, `equipPreview`) eine reine Funktion, z. B. `buyPlan(data, c, unitId, defId)`: Zielplatz (Waffe → `mainHand`, Schild/Nebenhand → `offHand`, Kopf/Körper, Schmuck → freier `accessory1/2`, sonst der ohne gleiches Item, Verbrauch/Schlüssel → `bag`), verdrängtes Item (inkl. Zweihänder verdrängt Nebenhand und umgekehrt, wie `equipInto`), `error` aus `canEquip` bzw. `bagIsFull`. Namen offen; `equipInto` aus `gear.ts` wiederverwenden, nichts kopieren.
+  - [x] Änderungen gegenüber dem Getragenen über die reine Kernfunktion „Item A gegen Item B für Figur X“ aus 16.13 (nicht `equipPreview` neu schreiben; ist 16.13 anders gebaut, daran anpassen). Chips = die ein bis zwei wichtigsten Zeilen; Reihenfolge der Wichtigkeit in `balance.yaml` oder als Konstante in der Kernfunktion festlegen, nicht in der UI.
+  - [x] „Nicht tragbar“-Grund als Fehlercode → Textschlüssel (`weapon_group`, `heavy_armor`, `monster_only`, `wrong_slot` …).
+- [x] Task 2: Command (AC: 7)
+  - [x] `buy` und `buyOffer` um optionales `for?: { unit: string; slot: EquipSlot | 'bag'; replace?: string }` erweitern (`commands.ts`), `validateCampaign` (Prüfreihenfolge §8.1: Id → Verfügbarkeit → Platz/Gold; Gold, `cannot_equip`, `bag_full`, `convoy_full` per Trockenlauf auf Kopie wie bei `applyGearTemplate`: das Verdrängte braucht einen Konvoi-Platz, das Gekaufte nicht), `applyCampaign` (Gold abziehen, `newItem`, `equipInto`, Events `itemGained` + `equipped`), `history.ts` `campArg` ergänzen. `buyEmberSpark` bleibt nur Konvoi.
+  - [x] Unit-Tests in `tests/unit/` (neben `campaign-equip.test.ts`, `merchant-levels.test.ts`): gültig, jeder Fehlercode, Verdrängtes im Konvoi, Zweihänder, Beutel-Tausch, Schmuck-Platzwahl, Events, Determinismus, Replay über Journal, Altjournal ohne `for`.
+- [x] Task 3: Oberfläche (AC: 1–6, 8)
+  - [x] `MerchantRoom` in `src/app/screens/Rooms.tsx` (nur Zeilen ca. 228–400 per `grep -n`/Ausschnitt lesen; Datei ist groß) in eine neue Datei `src/app/screens/Merchant.tsx` mit `Merchant.css` herauslösen (Vorbild: `Workshop.tsx`/`Workshop.css`); `Rooms.tsx` ruft sie nur noch (`case 'merchant'`).
+  - [x] `PersonBar` als Baustein (DESIGN `person-bar`; 16.16 Verzauberer nutzt dasselbe, gemeinsame Komponente in `src/ui/` anlegen bzw. die aus 16.16 nutzen, falls schon da). Zuletzt gewählte Person als Modul-State in `src/app/state/` (Modul „session“ oder eigenes, kein Sammel-Modul, keine Zyklen).
+  - [x] Zeilen, Chips, Aufklappen, Haupttaste mit `Amount`, Konvoi-Taste, Hinweis „X geht in den Konvoi“, eingeklappter Abschnitt mit Gründen, Konvoi-Modus mit Köpfen; Info-Stein/Langdruck öffnet weiter die Item-Details.
+  - [x] `Who`, `ui.room.merchant.who/nobody` löschen; neue Schlüssel in `de.yaml` und `en.yaml` (Parität prüft `content:check`).
+  - [x] Altes CSS in `src/ui/camp.css` entfernen, soweit nur der Händler es nutzt.
+- [x] Task 4: Prüfung (AC: alle)
+  - [x] Komponententest (Preact) für Personenleiste, Gruppen, Chips, nicht Tragbares, Konvoi-Modus; Test, dass „Für wen?“ nicht mehr vorkommt.
+  - [x] `pnpm check`; Sichtprüfung im Browser bei 375 × 812 (Spiel stumm, alle Lautstärken 0), Bild neben dem Mockup.
 
 ## Dev Notes
 
@@ -78,10 +78,27 @@ damit ich nicht zwischen Laden und Figurenblatt wechseln muss.
 
 ### Agent Model Used
 
+Claude Sonnet 5.5
+
 ### Debug Log References
 
 ### Completion Notes List
 
-Ultimate context engine analysis completed - comprehensive developer guide created
+- Command: `buy` and `buyOffer` got the optional field `for?: { unit, slot, replace? }` (no new type; old journals and saves stay valid, no migration). One pure plan `buyPlan` (`src/core/campaign/buyFor.ts`) gives place, displaced items (they go to the convoy, the bought item never does) and error; `validateCampaign` (order: unit, availability, place `cannot_equip`/`bag_full`, gold, `convoy_full`), `applyCampaign` (events `itemGained` + `equipped`) and the list all call it. `buyEmberSpark` stays convoy only.
+- List: `merchantList` (`src/core/campaign/merchantView.ts`) builds groups, rows (price, plan, change list from 16.13, "same"), the "cannot wear" part (equip code) and, for the convoy, the figures that can hold the item. Chips are the first lines of `changeList` (the importance order is the line order of 16.13).
+- UI: `Merchant.tsx` + `Merchant.css` taken out of `Rooms.tsx` (`ConvoyList` exported for the sell tab), `PersonBar.tsx` + `.css` (sticky strip; also meant for 16.16), last shopper in `src/app/state/shopper.ts`. `Who`, the keys `ui.room.merchant.who/nobody` and the old merchant CSS (`.hm-who*`, `.hm-merchant*`) are gone; `reason` of `Equip.tsx` is exported and reused for the reasons.
+- [ASSUMPTION] `PersonBar` lives in `src/app/screens/` (not `src/ui/`) because it uses `UnitHead` from `unitArt`; `src/ui` imports nothing from `app`.
+- [ASSUMPTION] Deals of the day are rows of the list like the range (tag "Deal"); the ember spark has its own section in both modes and offers only "To the convoy".
+- [ASSUMPTION] After a purchase the row closes. With a bought item that is already worn (same def) the plan replaces the worn one (the list says "already wearing it", the change list is empty).
+- [ASSUMPTION] Accessory place: free place first (unless the other place holds the same item), else the place of the same item, else the first. A convoy that is full only blocks when something has to leave.
+- Not done: no picture proof (no dev server on request; see the click path in the hand-over).
 
 ### File List
+
+- src/core/campaign/buyFor.ts (new), merchantView.ts (new), commands.ts, apply.ts, history.ts, index.ts
+- src/app/screens/Merchant.tsx, Merchant.css, PersonBar.tsx, PersonBar.css (new); Rooms.tsx, Equip.tsx (`reason` exported)
+- src/app/state/shopper.ts (new)
+- src/ui/camp.css (merchant and `.hm-who` removed)
+- content/core/locales/de.yaml, en.yaml
+- tests/unit/buy-for.test.ts, merchant-person.test.ts (new)
+- _bmad-output/implementation-artifacts/sprint-status.yaml

@@ -1,0 +1,110 @@
+/* Merchant (story 16.17): the panel holds the ember moment, the total discount stands as a mark beside the tabs; the person bar
+   (PersonBar.css) sticks on top of the list, rows open with the change list and the buttons, what cannot be worn sits collapsed. */
+.hm-merchant {
+  position: relative;
+  display: grid;
+  gap: 4px;
+}
+.hm-merchant__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hm-merchant__head > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+.hm-discount {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--hc-positive-soft);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 12px;
+}
+.mc-group {
+  display: grid;
+  gap: 2px;
+}
+.mc-open {
+  display: grid;
+  gap: 6px;
+  margin: -2px 2px 6px;
+  padding: 6px 8px 8px;
+  border: var(--hc-outline-small) solid var(--hc-ember);
+  border-top: 0;
+  border-radius: 0 0 var(--hc-r-card-inner) var(--hc-r-card-inner);
+  background: var(--hc-selection-soft);
+}
+.mc-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--hc-soft);
+}
+.mc-note.is-warn {
+  color: var(--hc-ember-dark);
+}
+.mc-btns {
+  display: flex;
+  gap: 8px;
+}
+.mc-btns > * {
+  flex: 1;
+}
+.mc-same,
+.mc-why {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: 700 11px var(--hc-font-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hc-soft);
+}
+.mc-heads {
+  display: inline-flex;
+  align-items: center;
+}
+.mc-heads .trp-head {
+  margin-left: -5px;
+  border-radius: 50%;
+  border: 1.5px solid var(--hc-line);
+  overflow: hidden;
+}
+.mc-heads .trp-head:first-child {
+  margin-left: 0;
+}
+.mc-more {
+  margin-left: 4px;
+  font: 700 11px var(--hc-font-label);
+  color: var(--hc-soft);
+}
+.mc-cannot {
+  margin-top: 12px;
+  padding-top: 6px;
+  border-top: 2px dashed color-mix(in srgb, var(--hc-line) 30%, transparent);
+}
+.mc-offhead {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 4px;
+  border: 0;
+  background: none;
+  color: var(--hc-soft);
+  font: 700 12px var(--hc-font-label);
+  letter-spacing: 0.04em;
+  text-align: left;
+  cursor: pointer;
+}
+.mc-offhead > span {
+  flex: 1;
+}
+.mc-chev {
+  transition: transform 0.15s;
+}
+.mc-offhead[aria-expanded='true'] .mc-chev {
+  transform: rotate(90deg);
+}
