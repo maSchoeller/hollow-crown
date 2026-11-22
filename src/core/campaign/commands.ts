@@ -41,7 +41,10 @@ export type CampaignCommand =
   /** story 10.11: strengthen the healing potion `item` at the smith (+5 healing per step, at most two steps, from act 2) */
   | { type: 'upgradePotion'; item: string }
   | { type: 'reroll'; uid: string; index: number }
-  | { type: 'insertRune'; item: string; rune: string }
+  /** `index`: the setting (0 large, 1 small); a taken setting is swapped and its old rune goes to the convoy (story 16.16); left out: the first empty one */
+  | { type: 'insertRune'; item: string; rune: string; index?: number }
+  /** story 16.16: buy a rune I from the enchanter and set it into setting `index` of `item` at once (`buyRuneError`) */
+  | { type: 'buyRune'; rune: string; item: string; index: number }
   | { type: 'removeRune'; item: string; index: number }
   | { type: 'mergeRunes'; rune: string }
   /** make the item of workshop recipe `recipe` from materials and gold (story 10.6, `craftCost`) */

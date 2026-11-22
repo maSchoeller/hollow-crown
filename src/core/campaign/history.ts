@@ -104,7 +104,7 @@ export function companyLevel(data: GameData, c: Pick<CampaignState, 'roster'>): 
 /** Commands that are camp actions (the rest is bookkeeping, story choices or battle flow). */
 const CAMP = new Set<CampaignCommand['type']>([
   'buy', 'buyOffer', 'buyEmberSpark', 'sell', 'equip', 'unequip', 'saveGearTemplate', 'applyGearTemplate', 'equipBest', 'upgrade',
-  'upgradePotion', 'reroll', 'insertRune', 'removeRune', 'mergeRunes', 'craft', 'inheritHeritage', 'healScar', 'unlockSupport',
+  'upgradePotion', 'reroll', 'insertRune', 'buyRune', 'removeRune', 'mergeRunes', 'craft', 'inheritHeritage', 'healScar', 'unlockSupport',
   'setLoadout', 'promote', 'changeProPath', 'learnSecondPath', 'buildRoom', 'hire', 'setTavernWish', 'dismiss',
 ]);
 
@@ -128,6 +128,8 @@ function campArg(c: CampaignState, after: CampaignState, cmd: CampaignCommand): 
     case 'equip':
       return `${cmd.unit}:${itemDefOf(c, cmd.uid)}`;
     case 'insertRune':
+      return `${itemDefOf(c, cmd.item)}:${cmd.rune}`;
+    case 'buyRune':
       return `${itemDefOf(c, cmd.item)}:${cmd.rune}`;
     case 'removeRune':
       return itemDefOf(c, cmd.item);
