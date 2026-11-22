@@ -13,6 +13,7 @@
  * level: 6                     # optional: the company's level (default: the node's expectedLevel)
  * flags: { e02: protect }      # campaign flags before the battle (units with `requires`)
  * turn: 4
+ * locked: []                    # optional: mechanics still locked (default: those of the node; `[]` plays with everything introduced)
  * units:                       # changes to units already on the board, by id or uid
  *   liora: { at: [10, 3], hp: 9, items: [shine], status: [burning] }
  *   osric: { hp: 12, stats: { spd: 9 }, level: 7 }
@@ -90,6 +91,7 @@ export const labScenarioSchema = z
     level: z.number().int().min(1).optional(),
     flags: z.record(z.string(), z.union([z.string(), z.number(), z.literal(true)])).default({}),
     turn: z.number().int().min(1).default(1),
+    locked: z.array(z.string()).optional(),
     units: z.record(z.string(), unitPatchSchema).default({}),
     add: z.array(z.unknown()).default([]),
     remove: z.array(z.string()).default([]),
@@ -248,6 +250,7 @@ export function buildLab(data: GameData, raw: unknown, fixtures?: FixtureMapSour
   // a list deploys exactly those (and the avatar, who leads the army); `expected` everyone who has joined
   const deploy = sc.company === 'none' ? [] : c.roster.map((u) => u.id).filter((id) => !Array.isArray(sc.company) || id === c.roster[0]!.id || sc.company.includes(id));
   const s = beginBattle(data, c, nodeId, deploy).state;
+  if (sc.locked) s.locked = [...sc.locked] as typeof s.locked;
   s.lockedRoles = []; // every role's class action works, as on a fixture map
   if (sc.company === 'none') s.units = s.units.filter((u) => !u.fromRoster);
 

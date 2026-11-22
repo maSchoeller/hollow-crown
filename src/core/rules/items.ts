@@ -98,8 +98,35 @@ export function runeSlotCount(data: GameData, inst: ItemInstance): number {
   if (d.runeSlots !== undefined) return d.runeSlots;
   const cat = itemCategory(d);
   if (cat === 'weapon') return data.balance.economy.rarityRuneSlots[d.rarity];
-  if (d.slot === 'body') return 1;
+  if (d.slot === 'body' || d.kind === 'shield') return 1;
   return 0;
+}
+
+/** Whether a rune fits an item: body armor and shields take element runes only, a shield no light or dark (story 16.4). */
+export function runeFits(data: GameData, d: ItemDef, r: RuneDef): boolean {
+  if (d.kind === 'shield') return !!r.element && r.element in data.balance.element.statusOf;
+  if (d.slot === 'body') return !!r.element;
+  return true;
+}
+
+export interface ShieldGuard {
+  element: Element;
+  tier: number;
+}
+
+/** Element rune in the off hand shield: protects against that element and never makes weaker (story 16.4). */
+export function shieldGuard(data: GameData, unit: UnitRecord, s?: RuleCtx): ShieldGuard | undefined {
+  const sh = unit.equip.offHand;
+  if (!sh || itemDef(data, sh).kind !== 'shield') return undefined;
+  const r = runes(data, sh, s).find((x) => x.element && x.element in data.balance.element.statusOf);
+  return r?.element ? { element: r.element, tier: r.tier ?? 1 } : undefined;
+}
+
+/** Shield immunity against the status (tier II) or the terrain effect (tier III) of `element`. */
+export function shieldImmune(data: GameData, guard: ShieldGuard | undefined, element: Element | undefined, kind: 'status' | 'terrain'): boolean {
+  if (!guard || !element || guard.element !== element) return false;
+  const sr = data.balance.element.shieldRune;
+  return guard.tier >= (kind === 'status' ? sr.statusImmuneTier : sr.terrainImmuneTier);
 }
 
 /** Element of the weapon: built-in element or element rune. */
@@ -118,6 +145,8 @@ export interface WeaponProfile {
   weight: number;
   range: [number, number];
   element?: Element;
+  /** tier I–III of the element rune that gives `element` (story 16.12); absent for a built-in element */
+  elementTier?: number;
   effectiveVs: string[];
   statusOnHit: Array<{ status: StatusId; chance: number }>;
   terrainOnHit?: 'ignite' | 'extinguish';
@@ -151,6 +180,7 @@ export function weaponProfile(data: GameData, inst: ItemInstance, s?: RuleCtx): 
     if (a.mods.damageVsTag) damageVsTag.push(a.mods.damageVsTag);
   }
   let element = d.element;
+  let elementTier: number | undefined;
   for (const r of runes(data, inst, s)) {
     if (r.utility) {
       might += r.mods?.might ?? 0;
@@ -162,6 +192,7 @@ export function weaponProfile(data: GameData, inst: ItemInstance, s?: RuleCtx): 
     if (!r.element || element) continue;
     element = r.element;
     const tier = r.tier ?? 1;
+    elementTier = tier;
     const status = b.element.statusOf[r.element];
     if (status && tier >= 2) {
       statusOnHit.push({ status, chance: tier >= 3 ? b.status.rune3StatusChance : b.status.rune2StatusChance });
@@ -180,6 +211,7 @@ export function weaponProfile(data: GameData, inst: ItemInstance, s?: RuleCtx): 
     weight: Math.max(0, weight),
     range: d.rng ?? [1, 1],
     element,
+    ...(elementTier !== undefined ? { elementTier } : {}),
     effectiveVs,
     statusOnHit,
     terrainOnHit,
@@ -231,6 +263,15 @@ export function armorAffinity(data: GameData, unit: UnitRecord, s?: RuleCtx): El
   const body = unit.equip.body;
   if (!body) return undefined;
   return itemElement(data, body, s);
+}
+
+/** Element and rune tier of the body armor (tier 1 for a built-in element); the forecast shows it as a rune stone (story 16.12). */
+export function armorGuard(data: GameData, unit: UnitRecord, s?: RuleCtx): ShieldGuard | undefined {
+  const el = armorAffinity(data, unit, s);
+  const body = unit.equip.body;
+  if (!el || !body) return undefined;
+  const r = runes(data, body, s).find((x) => x.element === el);
+  return { element: el, tier: r?.tier ?? 1 };
 }
 
 export type EquipError =

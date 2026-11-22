@@ -19,6 +19,7 @@ export * from './rules/skills';
 export * from './rules/stats';
 export * from './rules/movement';
 export * from './rules/combat';
+export * from './rules/changes';
 export * from './rules/effects';
 export * from './rules/cast';
 export * from './rules/heal';

@@ -104,3 +104,21 @@ describe('lab questions', () => {
     expect(runs[0]!.side).toHaveProperty('s_chests');
   });
 });
+
+describe('lab scenario kampfvorschau-element (story 16.12)', () => {
+  it('shows the four cases of the element band with the factors of the balance', () => {
+    const { state: s } = labState(data, 'kampfvorschau-element');
+    const e = data.balance.element;
+    const mult = (a: string, d: string) => labAttack(data, s, a, d, { seeds: 1 }).forecast.attacker;
+    expect(mult('lab_axe', 'lab_windlaeufer')).toMatchObject({ elementMult: e.advantage, elementTier: 2, guard: { element: 'wind', source: 'armor' } });
+    expect(mult('lab_axe', 'lab_kahl')).toMatchObject({ elementMult: 1, element: 'fire' });
+    expect(mult('lab_axe', 'lab_schild')).toMatchObject({ elementMult: e.shieldRune.factor, guard: { element: 'fire', source: 'shield' } });
+    expect(mult('lab_axe', 'lab_wasser')).toMatchObject({ elementMult: e.disadvantage, guard: { element: 'water', tier: 2 } });
+    expect(mult('lab_axe', 'lab_windlaeufer').statusTurns?.[0]).toMatchObject({ status: 'burning', rounds: data.balance.status.durationRounds });
+    // without a rune the band is gone: no element, no factor, no status
+    const bare = mult('lab_blank', 'lab_kahl');
+    expect(bare.element).toBeUndefined();
+    expect(bare.elementMult).toBe(1);
+    expect(bare.status).toEqual([]);
+  });
+});

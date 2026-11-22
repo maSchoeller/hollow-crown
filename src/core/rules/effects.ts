@@ -4,7 +4,7 @@ import type { GameEvent } from '../events';
 import { nextInt, roll1 } from '../rng';
 import type { BattleState, BattleUnit } from '../state';
 import { inBounds, neighbors, onMap, posKey, ruleOn, samePos, terrainAt, tileIndex, unitAt } from '../util';
-import { allItems, itemDef } from './items';
+import { allItems, itemDef, shieldImmune } from './items';
 import { computeStats } from './stats';
 import { activeSkillIds } from './skills';
 
@@ -19,8 +19,9 @@ export function applyStatus(data: GameData, s: BattleState, u: BattleUnit, id: S
   if (!onMap(u) || u.downed || !ruleOn(s, 'status')) return false;
   // Starkes Gegengift (story 10.6): immune to new conditions until its buff runs out
   if (u.buffs.some((b) => b.statusImmune)) return false;
-  const aff = computeStats(data, u, { state: s }).affinity;
+  const { affinity: aff, shield } = computeStats(data, u, { state: s });
   if (aff && aff === STATUS_ELEMENT[id]) return false;
+  if (shieldImmune(data, shield, STATUS_ELEMENT[id], 'status')) return false;
   if (id === 'burning' && hasStatus(u, 'wet')) return false;
   if (id === 'wet' && hasStatus(u, 'burning')) {
     u.status = u.status.filter((x) => x.id !== 'burning');
@@ -232,6 +233,7 @@ export function dropLoot(s: BattleState, u: BattleUnit, events: GameEvent[]): vo
 export function burningTileHit(data: GameData, s: BattleState, u: BattleUnit, events: GameEvent[]): void {
   if (!u.pos || terrainAt(s, u.pos) !== 'burning') return;
   if (data.classes[u.classId]?.moveType === 'flier') return;
+  if (shieldImmune(data, computeStats(data, u, { state: s }).shield, 'fire', 'terrain')) return;
   applyStatus(data, s, u, 'burning', events);
   damageUnit(data, s, u, data.balance.terrainEffects.burningEnterDamage, 'fire', events);
 }
@@ -284,6 +286,11 @@ function bleedOut(data: GameData, s: BattleState, team: Team, events: GameEvent[
   }
 }
 
+/** Burn damage of one round (start of phase and forecast share it, story 16.12). */
+export function burnDamage(data: GameData, maxHp: number): number {
+  return Math.max(1, Math.floor((maxHp * data.balance.status.burnPercentMaxHp) / 100));
+}
+
 /** Start of a team's phase: burn damage, terrain healing, renewal, standing in fire. */
 export function startOfPhase(data: GameData, s: BattleState, team: Team, events: GameEvent[]): void {
   bleedOut(data, s, team, events);
@@ -291,7 +298,7 @@ export function startOfPhase(data: GameData, s: BattleState, team: Team, events:
     if (u.team !== team || !onMap(u) || u.downed) continue;
     const st = computeStats(data, u, { state: s });
     if (hasStatus(u, 'burning')) {
-      const dmg = Math.max(1, Math.floor((st.maxHp * data.balance.status.burnPercentMaxHp) / 100));
+      const dmg = burnDamage(data, st.maxHp);
       if (damageUnit(data, s, u, dmg, 'burn', events)) continue;
     }
     if (u.pos && terrainAt(s, u.pos) === 'burning') {

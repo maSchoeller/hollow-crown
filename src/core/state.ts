@@ -11,7 +11,16 @@ export interface ItemInstance {
   affixes: string[];
   runes: Array<string | null>;
   charges?: number;
+  /** weapon chronicle (story 16.5): blows that felled a foe; missing = 0 (older saves) */
+  kills?: number;
+  /** kills per unit id; the unit with the most gives the epithet its name */
+  killsBy?: Record<string, number>;
+  /** earned once, kept for ever; missing = none */
+  epithet?: Epithet;
 }
+
+/** An epithet as data (the text comes from the locale at display time, story 16.5). */
+export type Epithet = { kind: 'holder'; by: string; word: number } | { kind: 'lieutenant'; lt: string };
 
 /** A member of the company (persists between missions). */
 export interface UnitRecord {

@@ -38,6 +38,7 @@ import {
   mergeError,
   mergeLevelFor,
   runeMerge,
+  runeFits,
   runeSlotCount,
   sellPrice,
   tavernWishOpen,
@@ -401,7 +402,8 @@ function Who({ defId }: { defId: string }) {
 
 // ---------------------------------------------------------------- smith
 
-const GEAR_STAT_LABEL: Record<string, string> = { mt: 'ui.mt', hit: 'ui.hit', def: 'ui.stat.def', res: 'ui.stat.res' };
+/** Smith list: label keys of the upgrade preview (the written-out names of the change list). */
+const GEAR_STAT_LABEL: Record<string, string> = { mt: 'ui.change.stat.attack', hit: 'ui.change.stat.hit', def: 'ui.change.stat.defense', res: 'ui.change.stat.resistance' };
 
 function ownerOf(uid: string): UnitRecord | undefined {
   return locateItem(campaign.value!, uid)?.owner;
@@ -790,7 +792,7 @@ export function EnchanterRoom({ room, apply, onClose }: { room: RoomDef; apply: 
               </SecondaryButton>
             ) : null,
           )}
-          {runes.map((r) => (
+          {runes.filter((r) => runeFits(data, itemDef(data, selInst), data.runes[r.def]!)).map((r) => (
             <SecondaryButton key={r.uid} onClick={() => apply({ type: 'insertRune', item: selInst.uid, rune: r.uid }, t('ui.camp.enchanted'))}>
               <ItemImage data={data} item={r} size={24} /> {t(`item.${r.def}.name`)}
             </SecondaryButton>

@@ -219,7 +219,7 @@ export const skillEffect = z
     damageTakenPercent: z.number(),
     statusChanceBonus: z.number(),
     healBonus: z.number(),
-    terrainCost: z.record(z.string(), z.number()),
+    terrainCost: z.record(z.string(), z.number().multipleOf(0.5)),
     rangeBonus: z.number(),
     lifestealPercent: z.number(),
     ignoreDefPercent: z.number(),

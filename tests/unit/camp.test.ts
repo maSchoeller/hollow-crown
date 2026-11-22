@@ -7,7 +7,7 @@ import {
   canPromote,
   clone,
   equipCandidates,
-  equipPreview,
+  changeList,
   expProgress,
   hireCost,
   homeRooms,
@@ -116,13 +116,13 @@ describe('equip list and comparison (story 6.2)', () => {
     const c = clone(base);
     const brenna = unit(c, 'brenna');
     const javelin = newItem(c, 'hand_axe', data);
-    const d = equipPreview(data, brenna, javelin, 'mainHand');
-    const by = Object.fromEntries(d.map((x) => [x.key, x]));
-    expect(by.mt!.delta).toBeLessThan(0);
-    expect(by.mt!.better).toBe(false);
-    expect(by.rng!.delta).toBeGreaterThan(0);
-    expect(by.rng!.better).toBe(true);
-    if (by.wt) expect(by.wt.better).toBe(by.wt.delta < 0);
+    const d = changeList(data, brenna, javelin, { slot: 'mainHand' }).lines;
+    const by = Object.fromEntries(d.map((x) => [x.key, x])) as Record<string, { delta: number; better: boolean }>;
+    expect(by.attack!.delta).toBeLessThan(0);
+    expect(by.attack!.better).toBe(false);
+    expect(by.range!.delta).toBeGreaterThan(0);
+    expect(by.range!.better).toBe(true);
+    if (by.weight) expect(by.weight.better).toBe(by.weight.delta < 0);
     // a preview never changes the unit
     expect(brenna.equip.mainHand!.def).toBe('iron_axe');
   });
@@ -131,9 +131,9 @@ describe('equip list and comparison (story 6.2)', () => {
     const c = clone(base);
     const tobin = unit(c, 'tobin');
     const mail = newItem(c, 'chainmail', data);
-    const keys = equipPreview(data, tobin, mail, 'body').map((x) => x.key);
-    expect(keys).toContain('def');
-    expect(equipPreview(data, tobin, mail, 'bag')).toEqual([]);
+    const keys = changeList(data, tobin, mail, { slot: 'body' }).lines.map((x) => x.key);
+    expect(keys).toContain('defense');
+    expect(changeList(data, tobin, mail, { slot: 'bag' }).lines).toEqual([]);
   });
 
   it('equipping from the list runs the equip command and the displaced item returns to the convoy', () => {

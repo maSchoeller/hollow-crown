@@ -7,7 +7,7 @@ import { chestHuntPending, chestProgress } from '../battle/objectives';
 import { applyCommand } from '../battle/apply';
 import type { Command } from '../battle/commands';
 import { itemDef } from '../rules/items';
-import { destinations, levelStep, levelsLink, moveCost, reachable, stepCost, threatTiles } from '../rules/movement';
+import { minStepCost, destinations, levelStep, levelsLink, moveCost, reachable, stepCost, threatTiles } from '../rules/movement';
 import { isScout } from '../rules/scout';
 import { computeStats } from '../rules/stats';
 import type { BattleState, BattleUnit } from '../state';
@@ -59,10 +59,11 @@ function walkField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], 
     out.set(posKey(g), 0);
     (buckets[0] ??= []).push(g);
   }
-  for (let c = 0; c < buckets.length; c++) {
-    for (const p of buckets[c] ?? []) {
+  for (let b = 0; b < buckets.length; b++) {
+    const c = b / 2;
+    for (const p of buckets[b] ?? []) {
       if (out.get(posKey(p)) !== c) continue;
-      const enter = c + Math.max(1, moveCost(data, s, u, p, over) ?? 1);
+      const enter = c + Math.max(minStepCost(data), moveCost(data, s, u, p, over) ?? 1);
       for (const n of neighbors(p)) {
         if (stepCost(data, s, u, p, n, over) === null) continue;
         // a climb up or down a ladder costs the same both ways
@@ -70,7 +71,7 @@ function walkField(data: GameData, s: BattleState, u: BattleUnit, goals: Pos[], 
         const k = posKey(n);
         if (blocked?.has(k) || (out.get(k) ?? Infinity) <= total) continue;
         out.set(k, total);
-        (buckets[total] ??= []).push(n);
+        (buckets[total * 2] ??= []).push(n);
       }
     }
   }

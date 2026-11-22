@@ -5,13 +5,14 @@ import type { GameEvent } from '../events';
 import { roll1, roll2 } from '../rng';
 import type { BattleState, BattleUnit, ItemInstance } from '../state';
 import { active, clamp, dist, getUnit, inBounds, isAlly, neighbors, pairKey, ruleOn, terrainAt, unitAt } from '../util';
-import { applyStatus, extinguishTile, fleesAtZero, igniteTile, knockOut, setTerrain } from './effects';
-import { itemDef, weaponProfile, type WeaponProfile } from './items';
+import { applyStatus, burnDamage, extinguishTile, fleesAtZero, igniteTile, knockOut, setTerrain } from './effects';
+import { armorGuard, itemDef, shieldImmune, weaponProfile, type ShieldGuard, type WeaponProfile } from './items';
 import { canStrike, stepCost, weaponRange } from './movement';
 import { combatExp, expPercent, grantExp, grantSp } from './progression';
 import { computeStats, type EffectiveStats } from './stats';
 import { adjacencyBonus, adjacentPartners, addSupportPoints, rankIndex } from './supports';
 import { setBonuses } from './skills';
+import { recordKill } from './chronicle';
 
 export interface SideForecast {
   uid: string;
@@ -25,6 +26,12 @@ export interface SideForecast {
   triangle: -1 | 0 | 1;
   element?: Element;
   elementMult: number;
+  /** tier I–III of the weapon's element rune (story 16.12) */
+  elementTier?: number;
+  /** protecting element of the target that decides `elementMult` (armor wins a tie); lies on the attacking side */
+  guard?: { element: Element; tier: number; source: 'armor' | 'shield' };
+  /** duration and, for burning, damage per round of each status with chance > 0 */
+  statusTurns?: Array<{ status: StatusId; rounds: number; perRound?: number }>;
   status: Array<{ status: StatusId; chance: number }>;
   hpBefore: number;
   maxHp: number;
@@ -73,7 +80,7 @@ export function triangleOf(data: GameData, a?: WeaponProfile, d?: WeaponProfile)
 }
 
 /** Element multiplier of an attack element against the defender's affinity (concept/03 §6). */
-export function elementMultiplier(data: GameData, el: Element | undefined, aff: Element | undefined, defTags: string[]): number {
+export function elementMultiplier(data: GameData, el: Element | undefined, aff: Element | undefined, defTags: string[], guard?: ShieldGuard): number {
   const e = data.balance.element;
   let m = 1;
   if (el) {
@@ -84,8 +91,20 @@ export function elementMultiplier(data: GameData, el: Element | undefined, aff: 
       else if (e.opposed.some(([x, y]) => (x === el && y === aff) || (y === el && x === aff))) m = e.advantage;
     }
     if (el === 'dark' && defTags.some((t) => e.darkBonusVs.includes(t))) m = Math.max(m, e.advantage);
+    // shield rune (story 16.4): never weaker; with the body of the same element only the better factor counts
+    if (guard && guard.element === el) m = Math.min(m, e.shieldRune.factor);
   }
   return m;
+}
+
+/** Damage core of one hit before skills: (attack - defence + triangle) x element multiplier, capped by the element bonus. Shared by `calcSide` and the change list. */
+export function hitDamage(data: GameData, atk: number, def: number, triangle: number, elementMult: number): number {
+  const b = data.balance;
+  const base = atk - def;
+  let dmg = Math.floor((base + triangle * b.triangle.damage) * elementMult);
+  const cap = Math.floor(Math.max(0, base) * (1 + b.element.maxBonusPercent / 100));
+  if (base > 0 && dmg > cap) dmg = cap;
+  return dmg;
 }
 
 function equippedWeapon(u: BattleUnit): ItemInstance | undefined {
@@ -154,12 +173,8 @@ function calcSide(
     const might = effective ? wp.might * b.combat.effectiveMightMultiplier : wp.might;
     const tagBonus = wp.damageVsTag.filter((x) => oppTags.includes(x.tag)).reduce((t, x) => t + x.bonus, 0);
     atk = (magic ? stats.stats.mag : stats.stats.str) + might + stats.skills.damage + buffDamage + tagBonus;
-    elementMult = elements ? elementMultiplier(data, wp.element, oppStats.affinity, oppTags) : 1;
-    const base = atk - def;
-    const triDmg = tri * b.triangle.damage;
-    let dmg = Math.floor((base + triDmg) * elementMult);
-    const cap = Math.floor(Math.max(0, base) * (1 + b.element.maxBonusPercent / 100));
-    if (base > 0 && dmg > cap) dmg = cap;
+    elementMult = elements ? elementMultiplier(data, wp.element, oppStats.affinity, oppTags, oppStats.shield) : 1;
+    let dmg = hitDamage(data, atk, def, tri, elementMult);
     dmg = Math.floor((Math.max(0, dmg) * oppStats.skills.damageTakenPercent) / 100);
     damage = Math.max(0, dmg);
     const hitRaw =
@@ -182,7 +197,7 @@ function calcSide(
   const status = (elements && ruleOn(s, 'status') ? (wp?.statusOnHit ?? []) : []).map((x) => {
     const el = Object.entries(b.element.statusOf).find(([, st]) => st === x.status)?.[0];
     const setB = setStatus.filter((sb) => sb.element === el).reduce((t, sb) => t + sb.value, 0);
-    const immune = oppStats.affinity && el === oppStats.affinity;
+    const immune = (oppStats.affinity && el === oppStats.affinity) || shieldImmune(data, oppStats.shield, el as Element | undefined, 'status');
     return { status: x.status, chance: immune ? 0 : clamp(x.chance + statusChanceBonus + setB, 0, 100) };
   });
   // statuses of on_hit skills (Sturmbrecher, story 10.4): no element, so no immunity; the higher chance counts
@@ -194,6 +209,24 @@ function calcSide(
       else status.push({ status: x.status, chance });
     }
   }
+  // guard: the protecting element of the target whose factor counts (armor wins a tie, story 16.12)
+  let guard: SideForecast['guard'];
+  if (elements) {
+    const armor = oppStats.affinity ? (armorGuard(data, opp, s) ?? { element: oppStats.affinity, tier: 1 }) : undefined;
+    const shield = oppStats.shield;
+    const against = (g: ShieldGuard, isShield: boolean) =>
+      elementMultiplier(data, wp?.element, isShield ? undefined : g.element, oppTags, isShield ? g : undefined);
+    const pickShield = !!shield && (!armor || (wp?.element === shield.element && against(shield, true) < against(armor, false)));
+    const g = pickShield ? shield : armor;
+    if (g) guard = { element: g.element, tier: g.tier, source: pickShield ? 'shield' : 'armor' };
+  }
+  const statusTurns = status
+    .filter((x) => x.chance > 0 && x.status !== 'knockback')
+    .map((x) => ({
+      status: x.status,
+      rounds: data.balance.status.durationRounds,
+      ...(x.status === 'burning' ? { perRound: burnDamage(data, oppStats.maxHp) } : {}),
+    }));
   const knock = status.some((x) => x.status === 'knockback' && x.chance > 0) ? knockbackTarget(data, s, myPos, opp, oppPos) : undefined;
   return {
     side: {
@@ -208,6 +241,9 @@ function calcSide(
       triangle: tri,
       element: wp?.element,
       elementMult,
+      ...(wp?.elementTier !== undefined ? { elementTier: wp.elementTier } : {}),
+      ...(guard ? { guard } : {}),
+      ...(statusTurns.length ? { statusTurns } : {}),
       status,
       hpBefore: me.hp,
       maxHp: stats.maxHp,
@@ -512,6 +548,7 @@ export function resolveAttack(
     if (wasDowned) break;
   }
   // tandem: partner strikes once, 50 % damage, no crit, no counter
+  let tandemFelled = false;
   if (f.tandem && active(a) && active(d)) {
     const p = getUnit(s, f.tandem.uid);
     const hit = data.balance.combat.twoRnHit ? roll2(s.rng, f.tandem.hit) : roll1(s.rng, f.tandem.hit);
@@ -532,7 +569,12 @@ export function resolveAttack(
     const key = pairKey(a.id, p.id);
     const gained = addSupportPoints(data, s.supports, key, data.balance.supports.pointsTandemHealRescue);
     if (gained) events.push({ t: 'support', a: a.uid, b: p.uid, points: gained });
-    if (d.hp <= 0) knockOut(data, s, d, events, p.uid);
+    if (d.hp <= 0) {
+      knockOut(data, s, d, events, p.uid);
+      // weapon chronicle (story 16.5): the tandem partner's blow felled the foe, so it counts for the partner's weapon
+      tandemFelled = true;
+      if (p.team !== 'enemy' && d.team === 'enemy' && (d.gone === 'dead' || d.gone === 'fled') && p.equip.mainHand) recordKill(data, p, d, p.equip.mainHand, events);
+    }
   }
   if (landed.a && active(d)) applyOnHitEffects(data, s, a, d, f.attacker, aWp, events);
   if (landed.d && active(a)) applyOnHitEffects(data, s, d, a, f.defender, dWp, events);
@@ -549,6 +591,11 @@ export function resolveAttack(
     [d, a],
   ] as const) {
     grantSp(data, me, sp, events);
+    // weapon chronicle (story 16.5): the blow that felled the foe (dead or fled, not just downed) counts for the weapon in the slot
+    if (!(me === a && tandemFelled) && me.team !== 'enemy' && foe.team === 'enemy' && (foe.gone === 'dead' || foe.gone === 'fled') && active(me)) {
+      const used = me === a ? aInst : me.equip.mainHand;
+      if (used) recordKill(data, me, foe, used, events);
+    }
     if (me.team !== 'player' || !active(me)) continue;
     const killed = foe.gone === 'dead' || foe.gone === 'fled' || (!wasDowned && foe.downed);
     const used = me === a ? aInst : me.equip.mainHand;

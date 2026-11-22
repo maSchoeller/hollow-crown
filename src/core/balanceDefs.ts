@@ -66,6 +66,7 @@ export interface Balance {
     lightEffectiveVs: string[];
     darkBonusVs: string[];
     statusOf: Record<string, StatusId>;
+    shieldRune: { factor: number; statusImmuneTier: number; terrainImmuneTier: number };
   };
   status: {
     durationRounds: number;
@@ -184,6 +185,8 @@ export interface Balance {
      */
     sealed: Array<{ flag: string; act: number; readFlag?: string }>;
   };
+  /** weapon chronicle (story 16.5): kills that earn a weapon its epithet; `words` = word list length per weapon type (`chronicle.word.<type>.<n>`), types without an entry keep no chronicle */
+  weaponChronicle: { epithetKills: number; words: Record<string, number> };
   /** farewell card after a death (story 6.7): the button stays locked this long */
   farewell: { lockMs: number };
   /** targets of the chained act simulation (story 6.8, `pnpm sim --campaign`): NFR12 corridors, GDD gold curve */

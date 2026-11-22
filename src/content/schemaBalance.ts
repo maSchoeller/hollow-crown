@@ -43,6 +43,7 @@ export const balanceSchema = z.object({
     lightEffectiveVs: z.array(z.string()),
     darkBonusVs: z.array(z.string()),
     statusOf: z.record(z.string(), statusId),
+    shieldRune: z.object({ factor: z.number(), statusImmuneTier: z.number(), terrainImmuneTier: z.number() }),
   }),
   status: z.record(z.string(), z.number()),
   terrainEffects: z.record(z.string(), z.number()),
@@ -102,6 +103,7 @@ export const balanceSchema = z.object({
     seasonPages: z.number().int().min(1),
     sealed: z.array(z.strictObject({ flag: z.string().min(1), act: z.number().int().min(1), readFlag: z.string().min(1).optional() })).default([]),
   }),
+  weaponChronicle: z.strictObject({ epithetKills: z.number().int().min(1), words: z.record(z.string(), z.number().int().min(1)) }),
   farewell: z.object({ lockMs: z.number().int().min(0) }),
   simulation: z.object({
     armySize: z.number().int().min(1),
