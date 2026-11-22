@@ -1,6 +1,6 @@
 # Story 16.12: Kampfvorschau mit Element-Band
 
-Status: review
+Status: done
 
 ## Story
 
