@@ -8,6 +8,7 @@ import {
   homeRooms,
   itemDef,
   locateItem,
+  pieceFolder,
   runeSlotCount,
   upgradable,
   type CampaignState,
@@ -27,7 +28,7 @@ export function weaponStageModel(data: GameData, inst: ItemInstance): string | n
   const d = itemDef(data, inst);
   const gear = data.render.gear;
   const piece = (d.weaponType && gear.weapons[d.weaponType]) || (d.group ? gear.offHand[d.group] : undefined);
-  if (!piece || piece.folder !== 'weapons-v2') return null;
+  if (!piece || pieceFolder(piece) !== 'weapons-v2') return null;
   return `models/weapons-v2/${piece.model}.glb`;
 }
 

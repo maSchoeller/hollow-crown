@@ -93,7 +93,8 @@ describe('model of a piece', () => {
     expect(weaponStageModel(data, item('plate_armor'))).toBeNull();
     expect(weaponStageModel(data, item('vulnerary'))).toBeNull();
     const bow = Object.values(data.items).find((d) => d.weaponType === 'bow');
-    if (bow) expect(weaponStageModel(data, item(bow.id))).toBeNull();
+    // story 16.7: the other weapon groups have v2 models too
+    if (bow) expect(weaponStageModel(data, item(bow.id))).toBe('models/weapons-v2/bow.glb');
   });
 
   it('every model the view names exists in the art folder', () => {
