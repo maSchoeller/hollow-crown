@@ -1,6 +1,6 @@
 # Story 16.16: Verzauberer als Werkbank
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -20,11 +20,11 @@ damit Verzaubern kein Rätselraten ist.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Kern (AC: 2, 3, 6) – `src/core/campaign/enchant.ts` (`runeSetError`, `runesAfterSet`, `runeStones`, `mergeStatus`, `runeOffers`, `buyRuneError`), `insertRune.index` mit Tausch, Command `buyRune` (`commands.ts`, `apply.ts`, `history.ts`), Tests.
-- [ ] Task 2: Bühne (AC: 4) – `ItemStage.fuse(element)`: drei Lichtpunkte fliegen zur Mitte, Lichtblitz in Elementfarbe; Dauer aus `render.yaml itemStage.fuseMs`.
-- [ ] Task 3: Modell (AC: 1, 2, 5) – `enchanterModel.ts` (Person → Items, Fassungen, Probe-Item, Tastenzustand), Test.
-- [ ] Task 4: Oberfläche (AC: 1–5, 7) – `Enchanter.tsx` + `Enchanter.css`, `EnchanterRoom` aus `Rooms.tsx` lösen, Schlüssel DE/EN, alter CSS-Teil weg.
-- [ ] Task 5: Dev-Hook `devEnchanter`, `pnpm check`.
+- [x] Task 1: Kern (AC: 2, 3, 6) – `src/core/campaign/enchant.ts` (`runeSetError`, `runesAfterSet`, `runeStones`, `mergeStatus`, `runeOffers`, `buyRuneError`), `insertRune.index` mit Tausch, Command `buyRune` (`commands.ts`, `apply.ts`, `history.ts`), Tests.
+- [x] Task 2: Bühne (AC: 4) – `ItemStage.fuse(element)`: drei Lichtpunkte fliegen zur Mitte, Lichtblitz in Elementfarbe; Dauer aus `render.yaml itemStage.fuseMs`.
+- [x] Task 3: Modell (AC: 1, 2, 5) – `enchanterModel.ts` (Person → Items, Fassungen, Probe-Item, Tastenzustand), Test.
+- [x] Task 4: Oberfläche (AC: 1–5, 7) – `Enchanter.tsx` + `Enchanter.css`, `EnchanterRoom` aus `Rooms.tsx` lösen, Schlüssel DE/EN, alter CSS-Teil weg.
+- [x] Task 5: Dev-Hook `devEnchanter`, `pnpm check`.
 
 ## Dev Notes
 
@@ -49,6 +49,20 @@ damit Verzaubern kein Rätselraten ist.
 
 ### Agent Model Used
 
+Claude Sonnet 5.5
+
 ### Completion Notes List
 
+- Commands: `insertRune` got the optional `index` (swap on a taken setting, old rune to the convoy), new `buyRune { rune, item, index }` (rune I from the shop, set at once, `shopPrice`); `removeRune` and `mergeRunes` stay. One pure `runeSetError` / `buyRuneError` / `mergeStatus` (`src/core/campaign/enchant.ts`) serves validation, apply and the screen (dimmed stones, main button). Old journals without `index` replay as before (tested).
+- Screen: `Enchanter.tsx` + `Enchanter.css` + `enchanterModel.ts`; `PersonBar` (convoy medallion for pieces in the convoy), `ItemStageFrame` got `stageRef`, `ItemStage.fuse(colour)` (new, `render.yaml itemStage.fuseMs`) flies three lights together with a flash in the element colour of the next tier; pieces without a stage show a CSS flash. Armour shows its image with the stone at the chest. `EnchanterRoom` and its CSS/keys are removed from `Rooms.tsx`/`camp.css`/locales.
+- Dev: `__hc.devEnchanter(itemId = 'hammer', stoneId = null)`; the second parameter lays a rune in as a probe (`camp` screen field `stone`).
+- [ASSUMPTION] The default dev piece is the hammer (rare, two settings) because the steel axe is common and has one setting.
+- Not done: no picture proof from this session (no dev server by request).
+
 ### File List
+
+- src/core/campaign/enchant.ts (new), commands.ts, apply.ts, history.ts; src/core/index.ts
+- src/app/screens/Enchanter.tsx, Enchanter.css, enchanterModel.ts (new); Rooms.tsx, Camp.tsx, ItemStageFrame.tsx; src/app/App.tsx, state/screen.ts, state/devHooks.ts
+- src/render/items/itemStage.ts (`fuse`), src/content/schemaRender.ts, src/core/renderDefs.ts, content/core/render.yaml (`fuseMs`)
+- src/ui/camp.css, content/core/locales/de.yaml, en.yaml
+- tests/unit/enchanter.test.ts (new)
