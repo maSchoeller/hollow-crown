@@ -3,6 +3,7 @@ import type { HauntVariant } from '../mapDefs';
 import type { Effect } from '../storyDefs';
 import type { Command } from '../battle/commands';
 import type { BattleState, CampaignState } from '../state';
+import type { BuyTarget } from './buyFor';
 import type { BattleResult } from './campaign';
 import type { RestartScope } from './restart';
 
@@ -21,8 +22,9 @@ export interface QueuedEffects {
  * Plain JSON: every applied command goes into the journal, start state + journal replays the campaign.
  */
 export type CampaignCommand =
-  | { type: 'buy'; item: string }
-  | { type: 'buyOffer'; uid: string }
+  /** story 16.17: `for` buys it straight onto a figure (the worn item goes to the convoy); without it the item goes to the convoy */
+  | { type: 'buy'; item: string; for?: BuyTarget }
+  | { type: 'buyOffer'; uid: string; for?: BuyTarget }
   /** story 10.9: the merchant's ember spark (from level 3, at most 3, one per story mission), fixed price */
   | { type: 'buyEmberSpark' }
   | { type: 'sell'; uid: string }

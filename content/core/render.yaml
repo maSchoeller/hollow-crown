@@ -329,6 +329,32 @@ gear:
     general_cloak: { model: general_cloak, socket: back }    # Großstratege
     standard: { model: standard, socket: back }              # Bannerherr
 
+# Story 16.14: die Item-Bühne (Waffenansicht, später Verzauberer und Waffenkammer): ein Gegenstand groß auf warmem Grund, drehbar
+# per Ziehen. Das Rinnen-Leuchten nach Stufe, die Steine und das Pulsieren kommen aus `gear.rune`, nicht von hier.
+itemStage:
+  fov: 26                    # senkrechter Blickwinkel in Grad
+  margin: 1.2                # Abstand der Kamera als Vielfaches des knappen Einpassens
+  startPitchDeg: 10          # Anfangsneigung
+  tiltLimitDeg: 69           # Neigung höchstens so weit nach oben und unten (±1,2 rad)
+  spinDegPerSec: 22          # Eigendrehgang, bis der Spieler zieht
+  dragDegPerPx: 0.55         # Drehung je Pixel Ziehen
+  dampingPerSec: 3.2         # Auslaufen nach dem Loslassen (e^-d*t), Schwung in Grad je Sekunde
+  restDegPerSec: 2           # darunter bleibt die Bühne stehen und fällt auf fpsIdle
+  doubleTapMs: 320           # Doppeltippen setzt die Ansicht zurück
+  tapSlopPx: 10
+  resetMs: 380               # Rückfahrt der Ansicht
+  growMs: 450                # ein neuer Stein wächst von 0 auf 1
+  # Lage der Modelle (Grad Gier um die Hochachse); upright = die Längsachse wird aufgerichtet (die Lanze ist im Griff schräg gebaut)
+  models:
+    sword: { yaw: 0 }
+    axe: { yaw: 90 }
+    lance: { yaw: 90, upright: true }
+    shield: { yaw: -90 }
+  lights:
+    ambient: { color: "#FFE9CC", intensity: 0.75 }
+    key: { color: "#FFF3DD", intensity: 1.1, direction: [-0.5, -0.8, 0.6] }
+    rim: { color: "#FFB27A", intensity: 0.6, direction: [0.7, -0.2, -0.7] }
+
 # D8: Qualitätsstufen. maxDpr = höchste Pixeldichte der Render-Auflösung, shadowMap = Kantenlänge der Schattenkarte (0 = keine Schatten)
 quality:
   high: { maxDpr: 2.5, shadowMap: 2048 }

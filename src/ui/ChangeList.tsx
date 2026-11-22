@@ -158,3 +158,28 @@ export function ChangeChips({ result, max = 2 }: { result: ChangeResult; max?: n
     </span>
   );
 }
+
+/**
+ * Compact state of an item (story 16.14, "values as symbol + number"): the stat lines as small tiles of symbol and value, the name
+ * only for screen readers and as a tooltip; other lines (element, damage per element, effects) stay with the change list.
+ */
+export function ChangeStats({ result }: { result: ChangeResult }) {
+  const stats = result.lines.filter((l): l is Extract<ChangeLine, { kind: 'stat' }> => l.kind === 'stat');
+  if (stats.length === 0) return null;
+  return (
+    <ul class="chg-stats" aria-label={t('ui.change.list')}>
+      {stats.map((line) => {
+        const label = t(`ui.change.stat.${line.key}`);
+        return (
+          <li key={line.key} class="chg-stat" title={label} aria-label={`${label} ${fmtNum(line.value)}`}>
+            <Symbol line={line} size={18} />
+            <span class="chg-stat__v">{fmtNum(line.value)}</span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** A number with a real minus sign. */
+const fmtNum = (n: number): string => (n < 0 ? `−${Math.abs(n)}` : String(n));

@@ -26,6 +26,23 @@ const runeGlowSchema = z.object({
   stone: z.object({ body: unit, symbolLift: unit, coreLift: unit, selfLit: unit }),
   metals: z.object({ satLimit: z.number().positive().max(1), iron: metalTint, steel: metalTint, silver: metalTint }),
 });
+const stageLight = z.object({ color: hex, intensity: z.number().min(0), direction: z.tuple([z.number(), z.number(), z.number()]) });
+const itemStageSchema = z.object({
+  fov: z.number().min(5).max(80),
+  margin: z.number().min(1).max(4),
+  startPitchDeg: z.number().min(-80).max(80),
+  tiltLimitDeg: z.number().min(10).max(89),
+  spinDegPerSec: z.number().min(0),
+  dragDegPerPx: z.number().positive(),
+  dampingPerSec: z.number().positive(),
+  restDegPerSec: z.number().min(0),
+  doubleTapMs: z.number().int().min(100),
+  tapSlopPx: z.number().min(0),
+  resetMs: z.number().int().min(0),
+  growMs: z.number().int().min(0),
+  models: z.record(z.string().regex(/^[a-z0-9_]+$/), z.object({ yaw: z.number().min(-360).max(360), upright: z.boolean().optional() })),
+  lights: z.object({ ambient: z.object({ color: hex, intensity: z.number().min(0) }), key: stageLight, rim: stageLight }),
+});
 const teamLook = z.object({ ui: hex, ramp: z.tuple([hex, hex, hex, hex]) });
 const timeOfDayDef = z.object({
   ambient: z.object({ color: hex, intensity: z.number().min(0) }),
@@ -150,6 +167,7 @@ export const renderSchema = z.object({
     decorOn: z.record(z.string(), z.array(decorSchema)),
   }),
   look: lookSchema,
+  itemStage: itemStageSchema,
   gear: z.object({
     weapons: z.partialRecord(weaponType, gearPiece),
     offHand: z.partialRecord(weaponGroup, gearPiece),
