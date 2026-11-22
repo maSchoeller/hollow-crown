@@ -116,8 +116,9 @@ function itemDefOf(c: CampaignState, uid: string): string {
 function campArg(c: CampaignState, after: CampaignState, cmd: CampaignCommand): string | undefined {
   switch (cmd.type) {
     case 'buy':
-      return cmd.item;
+      return cmd.for ? `${cmd.for.unit}:${cmd.item}` : cmd.item;
     case 'buyOffer':
+      return cmd.for ? `${cmd.for.unit}:${itemDefOf(c, cmd.uid)}` : itemDefOf(c, cmd.uid);
     case 'sell':
     case 'upgrade':
     case 'unequip':
