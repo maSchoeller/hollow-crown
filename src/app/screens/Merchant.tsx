@@ -113,7 +113,7 @@ export function MerchantRoom({ room, apply, onClose }: { room: RoomDef; apply: A
             )}
             {why && <p class="mc-note is-warn">{why}</p>}
             <div class="mc-btns">
-              {list.unit && plan && (
+              {list.unit && plan && !row.same && (
                 <PrimaryButton disabled={short || !!plan.error} onClick={() => buyRow(row, false)}>
                   {plan.slot === 'bag' ? t('ui.room.merchant.buyBag') : t('ui.room.merchant.buyEquip')} · {priceSide(row.price)}
                 </PrimaryButton>
@@ -123,8 +123,14 @@ export function MerchantRoom({ room, apply, onClose }: { room: RoomDef; apply: A
                   {t('ui.room.merchant.buyConvoy')} · {priceSide(row.price)}
                 </PrimaryButton>
               ) : (
-                <SecondaryButton disabled={short || convoyFull} onClick={() => buyRow(row, true)}>
-                  {t('ui.room.merchant.buyConvoy')}
+                <SecondaryButton
+                  class={row.same ? undefined : 'mc-convoy'}
+                  aria-label={t('ui.room.merchant.buyConvoy')}
+                  title={t('ui.room.merchant.buyConvoy')}
+                  disabled={short || convoyFull}
+                  onClick={() => buyRow(row, true)}
+                >
+                  {row.same ? t('ui.room.merchant.buyConvoy') : <Icon name="convoy" size={22} />}
                 </SecondaryButton>
               )}
             </div>

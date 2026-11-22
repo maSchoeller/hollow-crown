@@ -51,6 +51,13 @@
 }
 .mc-btns > * {
   flex: 1;
+  white-space: nowrap;
+}
+.mc-btns > .mc-convoy {
+  flex: 0 0 auto;
+  width: 52px;
+  padding-inline: 0;
+  border-radius: 50%;
 }
 .mc-same,
 .mc-why {
