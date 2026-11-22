@@ -250,7 +250,7 @@ if (import.meta.env.DEV) {
        * `smallId` in its small setting (a rune id, or null for an empty one), twelve kills and an epithet. Unsaved campaign.
        * `__hc.devWeapon()`, `__hc.devWeapon('iron_shield', 'wind_rune_2')`, `__hc.devWeapon('hammer', 'fire_rune_3', 'edge_rune')`.
        */
-      devWeapon: async (itemId = 'hammer', runeId: string | null = 'fire_rune_2', smallId: string | null = 'edge_rune') => {
+      devWeapon: async (itemId = 'steel_axe', runeId: string | null = 'fire_rune_2', smallId: string | null = 'edge_rune') => {
         if (data.releasedActs?.includes(2)) await ensurePack('act2');
         const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
         c.completed = data.acts[1]!.nodes.map((n) => n.id);

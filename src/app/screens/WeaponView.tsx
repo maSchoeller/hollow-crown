@@ -8,7 +8,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { locateItem, runeSlotCount, type EquipSlot } from '../../core';
 import { has, t } from '../../i18n';
 import { runeLookOf } from '../../render/shared/runeLook';
-import { ChangeList } from '../../ui/ChangeList';
+import { ChangeList, ChangeStats } from '../../ui/ChangeList';
 import { itemName, rarityOf, unitName } from '../../ui/components';
 import { Icon } from '../../ui/icons';
 import { ItemStageFrame, type GemSetting } from './ItemStageFrame';
@@ -133,7 +133,7 @@ function WeaponViewBody({ item, unitHint, back }: { item: string; unitHint?: str
             {t('ui.weaponView.values')}
             {unit && <small>{t('ui.weaponView.forUnit', { name: unitName(unit) })}</small>}
           </h2>
-          {values ? <ChangeList result={values} empty="ui.weaponView.noValues" /> : <div class="chg-empty">{t('ui.weaponView.noValues')}</div>}
+          {values && values.lines.some((l) => l.kind === 'stat') ? <ChangeStats result={values} /> : <div class="chg-empty">{t('ui.weaponView.noValues')}</div>}
         </section>
         {slots > 0 && (
           <section aria-label={t('ui.weaponView.runeChange')}>
