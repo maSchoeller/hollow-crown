@@ -7,6 +7,7 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { loadContentFromDisk } from '../../src/content/node';
 import { pieceFolder } from '../../src/core';
+import { fixedRuneOf, modelFor } from '../../src/render/shared/gearModel';
 
 const { data } = loadContentFromDisk();
 const WEAPONS = 'art/models/weapons-v2';
@@ -96,6 +97,58 @@ describe('rune weapon files', () => {
       expect(b, `${id}: socket_rune_b`).toBeLessThanOrEqual(2);
       expect(named(g, /^rune_socket2/).length, `${id}: rune_socket2`).toBe(1);
       expect(named(g, /^rune_stone/).length, `${id}: placeholder rune_stone`).toBe(0);
+    }
+  });
+});
+
+/** Story 16.8: the signature weapons and relics (art/models/weapons-v2/sig/<itemId>.glb, `render.yaml` `gear.items`, fixed runes on the items). */
+describe('signature piece files', () => {
+  const SIG = `${WEAPONS}/sig`;
+  const sigFiles = files(SIG);
+  const maybe = present(sigFiles) ? it : it.skip;
+  const SIGNATURES = ['tinder', 'bounty', 'wolf_fang', 'little_hands', 'rowenas_lance', 'wasp_sting', 'gold_hook', 'dravns_oath', 'magpie', 'white_wolf', 'heirloom', 'final_curtain', 'pact_warden_shield', 'dragon_ember'];
+
+  it('every signature weapon and relic has an entry in gear.items and a fixed rune; every entry is an item with a sig/ model', () => {
+    const entries = data.render.gear.items;
+    expect(Object.keys(entries).sort()).toEqual([...SIGNATURES].sort());
+    for (const id of SIGNATURES) {
+      expect(data.items[id], `${id}: item`).toBeDefined();
+      expect(entries[id]!.model, id).toBe(`sig/${id}`);
+      const fixed = [data.items[id]!.fixedRune ?? []].flat();
+      expect(fixed.length, `${id}: fixedRune`).toBeGreaterThan(0);
+      for (const r of fixed) expect(data.runes[r], `${id}: rune ${r}`).toBeDefined();
+      if (present(sigFiles)) expect(sigFiles, id).toContain(`${SIG}/${id}.glb`);
+    }
+    expect([data.items.pact_warden_shield!.fixedRune, data.items.dragon_ember!.fixedRune].map((f) => [f].flat().length)).toEqual([3, 2]);
+  });
+
+  it('resolve to the same piece for the board and the screens (one source), with the hand of the group', () => {
+    const gear = data.render.gear;
+    expect(modelFor(data.items.bounty!, gear)).toEqual({ ...gear.weapons.bow, model: 'sig/bounty', fallback: gear.weapons.bow!.model });
+    expect(modelFor(data.items.final_curtain!, gear)).toEqual({ ...gear.offHand.lute, model: 'sig/final_curtain', fallback: gear.offHand.lute!.model });
+    expect(modelFor(data.items.iron_sword!, gear)).toBe(gear.weapons.sword);
+    expect(modelFor(data.items.dragon_ember!, gear)?.model).toBe('sig/dragon_ember');
+    expect(fixedRuneOf(data.items.pact_warden_shield!, 1)).toBe('earth_rune_1');
+    expect(fixedRuneOf(data.items.pact_warden_shield!, 3)).toBe('earth_rune_3');
+    expect(fixedRuneOf(data.items.dragon_ember!, 3)).toBe('fire_rune_2');
+    expect(fixedRuneOf(data.items.iron_sword!)).toBeUndefined();
+  });
+
+  maybe('hold the metal mesh, the channel with its fill on UV1, the setting nodes and stay within the triangle budget', () => {
+    for (const f of sigFiles) {
+      const g = read(f);
+      const id = f.slice(SIG.length + 1, -4);
+      const channel = g.nodes.find((n) => n.name === 'rune_channel');
+      expect(channel, `${id}: rune_channel`).toBeDefined();
+      expect(Object.keys(g.meshes[channel!.mesh!]!.primitives[0]!.attributes), `${id}: fill`).toContain('TEXCOORD_1');
+      expect(total(g), `${id}: triangles`).toBeLessThanOrEqual(WEAPON_BUDGET);
+      expect(total(g), `${id}: triangles`).toBeGreaterThan(0);
+      expect(named(g, /^socket_rune_a/).length, `${id}: socket_rune_a*`).toBeGreaterThanOrEqual(1);
+      expect(named(g, /^rune_stone/).length, `${id}: placeholder rune_stone`).toBe(0);
+      if (id !== 'dragon_ember') {
+        expect(named(g, /^socket_rune_b/).length, `${id}: socket_rune_b`).toBeGreaterThanOrEqual(1);
+        expect(named(g, /^rune_socket2/).length, `${id}: rune_socket2`).toBe(1);
+      }
     }
   });
 });

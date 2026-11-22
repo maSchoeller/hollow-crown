@@ -130,8 +130,11 @@ describe('weapon models', () => {
     travel_lute: { kind: 'accessory', group: 'lute' },
     ember_focus: { kind: 'accessory', group: 'focus' },
     vulnerary: { kind: 'consumable' },
+    wolf_fang: { weaponType: 'bow', group: 'bow', kind: 'weapon', fixedRune: 'wind_rune_2' },
+    dragon_ember: { kind: 'accessory' },
   } as never;
   const gear = {
+    items: { wolf_fang: { model: 'sig/wolf_fang' }, dragon_ember: { model: 'sig/dragon_ember' } },
     weapons: { sword: { model: 'sword', hand: 'right' }, bow: { model: 'bow', hand: 'left' } },
     offHand: { shield: { model: 'shield', hand: 'left' }, lute: { model: 'lute', hand: 'left' } },
   } as never;
@@ -158,6 +161,12 @@ describe('weapon models', () => {
     // no weapon file in the manifest: no stones either
     expect(missionAssets({ units, ...base, items, gear, runeModels: ['fire_rune_2'] }).filter((p) => p.startsWith('models/runes-v2/'))).toEqual([]);
     expect(gearPieces(['iron_sword', 'iron_bow', 'iron_sword'], items, gear).map((p) => p.model)).toEqual(['sword', 'bow']);
+  });
+  it('a signature piece shows its own model and fixed rune stone; an accessory model is never planned for the board', () => {
+    expect(gearModels(['wolf_fang', 'iron_bow', 'dragon_ember'], items, gear).sort()).toEqual(['bow', 'sig/wolf_fang']);
+    expect(gearPieces(['wolf_fang'], items, gear)).toMatchObject([{ model: 'sig/wolf_fang', hand: 'left' }]);
+    const list = missionAssets({ units: [{ classId: 'brigand', gearItems: ['wolf_fang'] }], ...base, items, gear, weaponModels: ['bow', 'sig/wolf_fang'], runeModels: ['wind_rune_2'] }).filter(noImages);
+    expect(list).toEqual([`locations/${defaultPlace}.webp`, 'models/runes-v2/wind_rune_2.glb', 'models/units/brigand.glb', 'models/weapons-v2/sig/wolf_fang.glb']);
   });
   it('a unit without a model file (sprite figure) needs no weapon, and neither does a file the manifest lacks', () => {
     expect(missionAssets({ units: [{ classId: 'archer', gearItems: ['iron_sword'] }], ...base, items, gear, weaponModels }).filter(noImages)).toEqual([`locations/${defaultPlace}.webp`]);

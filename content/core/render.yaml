@@ -268,6 +268,24 @@ gear:
     shield: { model: shield, hand: left }
     lute: { model: lute, hand: left }   # nach Waffengruppe des Gegenstands (Nebenhand), nicht nach kind: Laute und Fokus sind beide Zubehör
     focus: { model: focus, hand: left }
+  # Story 16.8: Signaturwaffen und Relikte mit eigenem Modell (art/models/weapons-v2/sig/<id>.glb, tools/art/blender_weapon_signatures.py), Schlüssel = Item-Id.
+  # Hand, Bewegung und Haltung kommen von der Gruppe des Items (Armbrüste: Bogen); `modelFor` (src/render/shared/gearModel.ts) löst auf, Brett und
+  # alle Ansichten lesen dieselbe Quelle. dragon_ember ist ein Schmuckstück: nur für Ansichten, nie am Brett.
+  items:
+    tinder: { model: sig/tinder }
+    bounty: { model: sig/bounty }
+    wolf_fang: { model: sig/wolf_fang }
+    little_hands: { model: sig/little_hands }
+    rowenas_lance: { model: sig/rowenas_lance }
+    wasp_sting: { model: sig/wasp_sting }
+    gold_hook: { model: sig/gold_hook }
+    dravns_oath: { model: sig/dravns_oath }
+    magpie: { model: sig/magpie }
+    white_wolf: { model: sig/white_wolf }
+    heirloom: { model: sig/heirloom }
+    final_curtain: { model: sig/final_curtain }
+    pact_warden_shield: { model: sig/pact_warden_shield }
+    dragon_ember: { model: sig/dragon_ember }
   # Story 10.13 (§4.2): sichtbares Anhängeteil je Profi-Weg, `proPart` der Klasse in content/core/classes.yaml.
   # model = art/models/parts/<model>.glb (tools/art/blender_proparts.py), socket = Körper-Sockel der Figur
   # (`socket_back` am oberen Brustwirbel, `socket_head` am Scheitel; tools/art/prepare_tripo_unit.py). Nur

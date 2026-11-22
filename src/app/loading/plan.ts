@@ -3,6 +3,7 @@
  * and the numbers the stones show. No DOM, no cache access: `state/loading.ts` and `state/prepare.ts` do the I/O.
  */
 
+import { modelFor } from '../../render/shared/gearModel';
 import { modelId, unitFigureId, unitModelPath, unitVatPath, type FigureSource, type GameData, type GearPiece } from '../../core';
 
 /** Classes' figure fields, as `GameData.classes` has them. */
@@ -19,7 +20,7 @@ export type MissionUnit = ModelSource & {
 };
 
 /** `GameData.items` as far as the gear rules read it. */
-type GearItems = Record<string, Pick<GameData['items'][string], 'weaponType' | 'kind' | 'group' | 'image' | 'stages'>>;
+type GearItems = Record<string, Pick<GameData['items'][string], 'weaponType' | 'kind' | 'group' | 'image' | 'stages' | 'fixedRune'>>;
 type Gear = GameData['render']['gear'];
 
 export interface MissionAssetInput {
@@ -88,10 +89,9 @@ export function gearModels(itemIds: readonly string[], items: GearItems, gear: G
   for (const id of itemIds) {
     const d = items[id];
     if (!d) continue;
-    const weapon = d.weaponType && gear.weapons[d.weaponType];
-    const off = d.group && gear.offHand[d.group];
-    if (weapon) out.add(weapon.model);
-    if (off) out.add(off.model);
+    // story 16.8: the piece of an item (own signature model or its group's); dragon_ember has neither weapon type nor group: its model is for the screens, never the board
+    const piece = (d.weaponType || d.group) && modelFor({ ...d, id } as never, gear);
+    if (piece) out.add(piece.model);
   }
   return [...out];
 }
@@ -102,9 +102,8 @@ export function gearPieces(itemIds: readonly string[], items: GearItems, gear: G
   for (const id of itemIds) {
     const d = items[id];
     if (!d) continue;
-    const weapon = d.weaponType && gear.weapons[d.weaponType];
-    const off = d.group && gear.offHand[d.group];
-    for (const p of [weapon, off]) if (p) out.set(p.model, p);
+    const piece = (d.weaponType || d.group) && modelFor({ ...d, id } as never, gear);
+    if (piece) out.set(piece.model, piece);
   }
   return [...out.values()];
 }
@@ -132,7 +131,11 @@ export function missionAssets({ units, models, unitPacks, vatModels, classes, pl
           }
         }
         // the stones of the runes set into the unit's items hang on its rune weapons (story 16.6)
-        if (runeWeapon && runeModels) for (const r of u.gearRunes ?? []) if (runeModels.includes(r)) out.add(`models/runes-v2/${r}.glb`);
+        if (runeWeapon && runeModels) {
+          // the fixed runes of signature pieces and relics (story 16.8): every stage of the list, the stage is only known on the board
+          const fixed = (u.gearItems ?? []).flatMap((id) => [items[id]?.fixedRune ?? []].flat());
+          for (const r of [...(u.gearRunes ?? []), ...fixed]) if (runeModels.includes(r)) out.add(`models/runes-v2/${r}.glb`);
+        }
       }
       // the attached part of the unit's pro path (story 10.13): one model per pro class, on a body socket
       const part = u.classId ? classes[u.classId]?.proPart : undefined;
