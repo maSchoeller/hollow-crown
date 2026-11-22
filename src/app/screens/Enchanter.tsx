@@ -7,7 +7,7 @@
  * price. "Merge" shows every stone's state; three stones fly together on the stage and the next tier lies in the convoy. All of it is
  * campaign commands; the checks are the ones `applyCampaign` makes (`enchanterModel.ts`, `core/campaign/enchant.ts`).
  */
-import { useRef, useState } from 'preact/hooks';
+import { useEffect, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { changeList, mergeStatus, runeOffers, runeSlots, runeStones, type ItemInstance, type RoomDef, type RuneDef } from '../../core';
 import { has, t } from '../../i18n';
@@ -69,6 +69,9 @@ export function EnchanterRoom({ room, apply, onClose, item, stone }: { room: Roo
   const [mode, setMode] = useState<'set' | 'merge'>('set');
   const [choice, setChoice] = useState<StoneChoice | null>(stone ? { kind: c.convoy.some((i) => i.def === stone) ? 'stone' : 'offer', id: stone } : null);
   const [busy, setBusy] = useState(false);
+  /** false once the room is closed: a fusion that ends afterwards does not merge any more */
+  const alive = useRef(true);
+  useEffect(() => () => void (alive.current = false), []);
   const [flash, setFlash] = useState<string | null>(null);
   const stage = useRef<ItemStage | null>(null);
 
@@ -82,12 +85,14 @@ export function EnchanterRoom({ room, apply, onClose, item, stone }: { room: Roo
   const offers = runeOffers(data, c);
 
   const pickPerson = (id: string) => {
+    if (busy) return;
     setPerson(id);
     setUid(enchantables(data, c, id)[0]?.uid ?? null);
     setGem('main');
     setChoice(null);
   };
   const pickPiece = (id: string) => {
+    if (busy) return;
     setUid(id);
     setGem('main');
     setChoice(null);
@@ -122,12 +127,14 @@ export function EnchanterRoom({ room, apply, onClose, item, stone }: { room: Roo
       if (st.error) return;
       const colour = data.render.gear.rune.colors[st.next?.element ?? 'fire'] ?? '#ffffff';
       setBusy(true);
-      if (stage.current) await stage.current.fuse(colour);
+      // a stage that stops drawing (tab hidden) must not leave the button blocked: the fusion ends by time at the latest
+      if (stage.current) await Promise.race([stage.current.fuse(colour), new Promise((r) => setTimeout(r, data.render.itemStage.fuseMs + 500))]);
       else {
         setFlash(colour);
         await new Promise((r) => setTimeout(r, 700));
         setFlash(null);
       }
+      if (!alive.current) return;
       apply({ type: 'mergeRunes', rune: choice.id }, t('ui.camp.merged'));
       setBusy(false);
       setChoice(null);

@@ -79,7 +79,12 @@ export interface MainAction {
 
 export function mainAction(data: GameData, c: CampaignState, inst: ItemInstance, index: number, choice: StoneChoice | null): MainAction {
   const taken = !!runeSlots(data, inst)[index];
-  if (!choice) return taken ? { kind: 'remove', cmd: { type: 'removeRune', item: inst.uid, index } } : { kind: 'none' };
+  if (!choice) {
+    if (!taken) return { kind: 'none' };
+    // the removed rune goes into the convoy: a full convoy dims the button (the command itself stays as before for old journals)
+    const full = c.convoy.length >= data.balance.economy.convoySize;
+    return { kind: 'remove', cmd: { type: 'removeRune', item: inst.uid, index }, ...(full ? { why: 'convoyFull' } : {}) };
+  }
   const why = stoneWhy(data, inst, choice.id, index);
   if (choice.kind === 'stone') {
     const stone = c.convoy.find((i) => i.def === choice.id);
