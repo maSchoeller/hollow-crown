@@ -1,5 +1,5 @@
 /** Board overlays of the battle screen (Battle.tsx). */
-import { type BattleUnit, type Pos, type ReachNode, availableActions, classPreview, forecast, healTiles, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, terrainWarnings, visibleTiles, trapsOf, trapTeam, isHostile } from '../../core';
+import { type BattleUnit, type Pos, type ReachNode, availableActions, costMarks, lensPresent, lensTiles, restMovement, classPreview, forecast, healTiles, combinedRange, destinations, strikeTiles, fogBands, holdZone, onDifficulty, passivePreview, pathTo, posKey, pursueReach, reachNow, samePos, threatMap, tileThreats, tilesInRange, terrainWarnings, visibleTiles, trapsOf, trapTeam, isHostile } from '../../core';
 import { data } from '../state/session';
 import { glowUids, tileModeTiles } from './battleMode';
 import { goalMarkTiles, markedGoal } from '../state/goalMarks';
@@ -10,7 +10,7 @@ import type { BattleScreen } from './useBattleScreen';
 
 /** Overlays of the board (danger zone, reach, goals, fog, marks) and the target-tile check. */
 export function useBoardOverlays(b: BattleScreen) {
-  const { boardRef, busy, chipRef, danger, fogged, full, hover, mode, s, tileInfo, unit, watch } = b;
+  const { boardRef, busy, chipRef, danger, fogged, full, hover, lens, mode, restRef, s, tileInfo, unit, watch } = b;
   const reachCache = useMemo(() => new Map<string, Map<string, ReachNode>>(), [s]);
   const reachOf = (u: BattleUnit) => {
     let r = reachCache.get(u.uid);
@@ -20,10 +20,14 @@ export function useBoardOverlays(b: BattleScreen) {
   const toPos = (k: string) => k.split(',').map(Number) as Pos;
   /** the danger zone in tiers (story 13.5): attackers per field, the fields only sleeping foes reach */
   const threat = useMemo(() => {
-    if (!danger) return null;
+    // the lens replaces the danger zone where it is drawn (idle); with a chosen figure the danger zone shows as before
+    if (!danger || (lens && mode.k === 'idle')) return null;
     const m = threatMap(data, s, 'player');
     return { tiles: [...m.byTile].map(([k, l]) => [toPos(k), l.length] as [Pos, number]), sleeping: [...m.sleeping].map(toPos) };
-  }, [s, danger]);
+  }, [s, danger, lens, mode.k]);
+  /** the terrain lens (story 16.11): every field with its effects for walking, and the effects the legend names */
+  const lensList = useMemo(() => (lens ? lensTiles(data, s) : null), [s, lens]);
+  const lensKindsShown = useMemo(() => (lensList ? lensPresent(lensList) : []), [lensList]);
   /** the zone of single foes (tap, long press, wanted poster) as their outer edge */
   const watchTiles = useMemo(() => {
     if (!watch.length) return [] as Pos[];
@@ -41,6 +45,12 @@ export function useBoardOverlays(b: BattleScreen) {
     return destinations(s, u, reachOf(u)).some((d) => samePos(d, hover)) ? hover : null;
   })();
   const checkKey = checkTile && selUid ? `${selUid}@${posKey(checkTile)}` : '';
+  // story 16.11: "noch n" = movement left at the end of the path (core `restMovement`, the cost of the path search); none while the figure stays where it is
+  const rest = (() => {
+    if (!checkTile || !selUid) return null;
+    const u = unit(selUid);
+    return samePos(checkTile, u.pos) ? null : restMovement(data, s, u, reachOf(u), checkTile);
+  })();
   const checkFoes = useMemo(() => (checkTile && selUid ? tileThreats(data, s, unit(selUid), checkTile) : []), [s, checkKey]);
   // the foes that reach the field glow reddish; the terrain chip below the field rides on the board (pinned, moved with the camera)
   useEffect(() => {
@@ -48,7 +58,9 @@ export function useBoardOverlays(b: BattleScreen) {
     if (!board) return;
     board.setReach(checkTile ? checkFoes : []);
     board.pin('chip', chipRef.current, checkTile, { south: 0.5 });
-  }, [checkKey, checkFoes]);
+    // story 16.11: what is left of the movement at the end of the path, as a pill right of the field
+    board.pin('rest', restRef.current, rest === null ? null : checkTile, { east: 0.55 });
+  }, [checkKey, checkFoes, rest]);
 
   /** the fields under fog (story 2.6) and the lighter fringe where the fog fades out over one field */
   const fogTiles = useMemo(() => (fogged ? fogBands(full, visibleTiles(data, full, 'player')) : { fog: [], edge: [] }), [full]);
@@ -79,7 +91,7 @@ export function useBoardOverlays(b: BattleScreen) {
       .reinforcements.filter((r, i) => r.announce && !s.reinforcementsDone.includes(i) && !(r.unlessFlag && s.flags.includes(r.unlessFlag)) && r.turn === s.turn + (r.phase === 'player' ? 1 : 0))
       .flatMap((r) => onDifficulty(r.units, s.settings.difficulty).map((u) => u.at));
     // hold zones of hostile vanguards in danger mode (hatched)
-    const hold = danger || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];
+    const hold = (danger && !(lens && mode.k === 'idle')) || watch.length ? [...holdZone(data, s, 'player')].map((k) => k.split(',').map(Number) as Pos) : [];
     const base = {
       // story 16.6: the rune weapons of the chosen figure and of the forecast's attacker and target glow in full
       glow: glowUids(mode),
@@ -96,14 +108,14 @@ export function useBoardOverlays(b: BattleScreen) {
       // own traps (story 10.5); the foes' traps the player does not know
       traps: trapsOf(s).filter((t) => !isHostile(trapTeam(s, t), 'player')).map((t) => t.at),
     };
-    if (mode.k === 'idle') return board.setOverlays({ ...base, cursor: tileInfo });
+    if (mode.k === 'idle') return board.setOverlays({ ...base, lens: lensList ?? undefined, cursor: tileInfo });
     const u = unit(mode.uid);
     if (mode.k === 'pursue') {
       const rest = pursueReach(data, s, u);
       if (!rest) return board.setOverlays({ ...base, cursor: tileInfo });
       const to = mode.to;
       const tiles = destinations(s, u, rest).filter((d) => !samePos(d, u.pos));
-      return board.setOverlays({ ...base, move: tiles, path: to ? pathTo(rest, to) : [], ghost: to ? { uid: u.uid, pos: to } : null, cursor: to ?? u.pos });
+      return board.setOverlays({ ...base, move: tiles, costMarks: costMarks(data, s, u, tiles), path: to ? pathTo(rest, to) : [], ghost: to ? { uid: u.uid, pos: to } : null, cursor: to ?? u.pos });
     }
     const reach = reachOf(u);
     const dests = destinations(s, u, reach);
@@ -117,7 +129,7 @@ export function useBoardOverlays(b: BattleScreen) {
       for (const o of s.units) if (o.pos && o.team !== 'enemy' && !o.gone) atk.delete(posKey(o.pos));
       const attack = [...atk].map((k) => k.split(',').map(Number) as Pos);
       const staves = !!combinedRange(data, s, u, true) && !combinedRange(data, s, u);
-      return board.setOverlays({ ...base, move: dests, attack: staves ? [] : attack, heal: staves ? attack : [], path: hoverPath, cursor: checkTile ?? u.pos });
+      return board.setOverlays({ ...base, move: dests, costMarks: costMarks(data, s, u, dests), attack: staves ? [] : attack, heal: staves ? attack : [], path: hoverPath, cursor: checkTile ?? tileInfo ?? u.pos });
     }
     const to = mode.to;
     const ghost = samePos(to, u.pos) ? null : { uid: u.uid, pos: to };
@@ -127,7 +139,7 @@ export function useBoardOverlays(b: BattleScreen) {
       // the foes an attack or a ballista beside the tile reaches (story 11.6)
       const ids = new Set(opts.filter((o) => o.kind === 'attack' || o.kind === 'ballista').flatMap((o) => o.targets ?? []));
       const targets = [...ids].map((id) => unit(id).pos!).filter(Boolean);
-      return board.setOverlays({ ...base, move: dests, path, ghost, targets, cursor: to });
+      return board.setOverlays({ ...base, move: dests, costMarks: costMarks(data, s, u, dests), path, ghost, targets, cursor: to });
     }
     if (mode.k === 'target') {
       // staff healing that reaches further allies (Bischof, story 10.4): their fields as heal tiles
@@ -162,7 +174,7 @@ export function useBoardOverlays(b: BattleScreen) {
       return board.setOverlays({ ...base, path, ghost, targets: more.map((id) => unit(id).pos!).filter(Boolean), cursor: unit(mode.target).pos });
     }
     return board.setOverlays({ ...base, path, ghost, targets: [unit(mode.target).pos!], cursor: unit(mode.target).pos });
-  }, [mode, s, threat, watchTiles, tileInfo, markTiles, checkKey]);
+  }, [mode, s, threat, lensList, watchTiles, tileInfo, markTiles, checkKey]);
 
   // the HUD grows when a unit is selected; bring the unit (or the chosen tile) out from under it
   const focus = mode.k === 'idle' ? null : mode.k === 'selected' ? unit(mode.uid).pos : mode.k === 'pursue' ? (mode.to ?? unit(mode.uid).pos) : mode.to;
@@ -175,7 +187,7 @@ export function useBoardOverlays(b: BattleScreen) {
     }, 60);
     return () => clearTimeout(id);
   }, [focusKey]);
-  return { reachOf, selUid, checkTile, checkFoes };
+  return { reachOf, selUid, checkTile, checkFoes, rest, lensKindsShown };
 }
 
 export type BoardOverlays = ReturnType<typeof useBoardOverlays>;

@@ -7,9 +7,9 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { VertexData } from '@babylonjs/core/Meshes/mesh.vertexData';
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
-import type { LegibilityDef, Pos } from '../../core';
+import type { LegibilityDef, LensKind, Pos } from '../../core';
 import type { TileShape } from '../shared/terrain3d';
-import { arrow, dashes, edgeRibbons, geo, gridTile, outerEdges, ribbon, roundedTile, type Geo } from './shapes';
+import { LENS_SHAPES, arrow, dashes, edgeRibbons, geo, gridTile, lensShapes, outerEdges, ribbon, roundedTile, type Geo } from './shapes';
 
 export interface Overlays {
   /** story 13.2: single range tiles; `move` also gets the shared outer edge */
@@ -42,6 +42,10 @@ export interface Overlays {
   glow?: ReadonlySet<string>;
   /** own traps (story 10.5): a ring with jaws on the field, render.yaml `legibility.trap` */
   traps?: Pos[];
+  /** story 16.11: the terrain lens, every field of the map with its effects (none = neutral, slightly darkened), render.yaml `legibility.terrainLens` */
+  lens?: ReadonlyArray<readonly [Pos, readonly LensKind[]]>;
+  /** story 16.11: cost marks on fields of the move range (dots from cost 2, a "½" pill below 1); DOM over the board, see `setCostMarks` */
+  costMarks?: ReadonlyArray<{ at: Pos; pips: number; label: string | null }>;
 }
 
 /** Look of the goal marking (render.yaml `look.marker`): light ring, dark outline, opacity and its pulse. Unlit, never ember orange nor a team colour. */
@@ -86,6 +90,7 @@ const OVERLAY: Record<string, { color: string; alpha: number; inset: number; pul
  * sorted by distance): zone fills, edges, range tiles, path, targets; the goal marking and the cursor on top.
  */
 const LAYER = {
+  lens: 0.5,
   grid: 1,
   fog: 2,
   fogEdge: 3,
@@ -250,6 +255,15 @@ export function addChevron(p: number[], idx: number[], tile: Pos, base: number, 
 }
 
 /**
+ * The terrain lens (story 16.11): one mesh per effect, flat over the terrain and under the other markings. A solid tint per effect;
+ * `fast` (cream) as vertical stripes and `blocked` as 45° hatching, cut to their half where a field has two effects; neutral fields get a faint dark tint.
+ */
+function lensMeshes(scene: Scene, out: OverlayMesh[], lens: NonNullable<Overlays['lens']>, top: (p: Pos) => number, look: LegibilityDef['terrainLens']): void {
+  const geos = lensShapes(lens, top, look);
+  LENS_SHAPES.forEach((k, i) => shapeMesh(scene, out, `overlay:lens-${k}`, geos[k], look[k].color, look[k].alpha, LAYER.lens + i * 0.01));
+}
+
+/**
  * Builds the meshes for `o`; `top` gives the height a marking lies on; `marker` styles `o.mark` (its arrow stands tilted by
  * `tiltDeg`, the camera's); `leg` styles the range tiles, path arrow and danger zone (render.yaml `legibility`); `shapeOf` gives
  * the terrain block the fog lies on (without it, the fog is a flat square at `top`).
@@ -267,6 +281,7 @@ export function buildOverlayMeshes(scene: Scene, o: Overlays, top: (p: Pos) => n
     cast: o.cast ?? [],
     targets: o.targets ?? [],
   };
+  if (o.lens?.length) lensMeshes(scene, out, o.lens, top, leg.terrainLens);
   // the danger zone (story 13.5): fill in three tiers, red edge on cream round all of it, dashed edge of sleeping foes
   const threat = o.threat;
   if (threat?.tiles.length) {

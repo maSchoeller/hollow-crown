@@ -1,0 +1,90 @@
+/* Tile card (story 16.11, DESIGN.md tile-card). */
+.tile-card {
+  display: grid;
+  gap: 6px;
+  padding: 8px 12px;
+}
+.tile-card__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tile-card__img {
+  flex: none;
+  display: grid;
+  border: var(--hc-outline) solid var(--hc-line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.tile-card__img .lens-sw {
+  border: 0;
+  border-radius: 0;
+}
+.tile-card__body {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.tile-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.tile-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 8px;
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream-2);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 13px;
+}
+.tile-chip.is-good {
+  background: var(--hc-positive-soft);
+  color: var(--hc-positive);
+}
+.tile-chip.is-bad {
+  background: var(--hc-team-enemy-soft);
+  color: var(--hc-team-enemy);
+}
+.tile-card__move {
+  display: grid;
+  gap: 3px;
+}
+/* the cost for the figure: a pill with an ember rim */
+.tile-card__cost {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 11px;
+  border: 2px solid var(--hc-ember);
+  border-radius: var(--hc-r-pill);
+  background: var(--hc-cream);
+  font-family: var(--hc-font-label);
+  font-weight: 700;
+  font-size: 14px;
+}
+.tile-card__cost.is-blocked {
+  border-color: var(--hc-team-enemy);
+  color: var(--hc-team-enemy);
+}
+.tile-card__others {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--hc-soft);
+}
+.tile-card__others > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.tile-card__others > .is-blocked {
+  opacity: 0.7;
+}

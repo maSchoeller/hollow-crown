@@ -109,6 +109,11 @@ const P: Record<string, string> = {
   speed: 'M13 3L5 14h6l-1 7 8-11h-6z',
   luck: 'M5 5h14v14H5zM9 9h.01M15 9h.01M12 12h.01M9 15h.01M15 15h.01',
   load: 'M4 8l8-4 8 4v9l-8 4-8-4zM4 8l8 4 8-4M12 12v9',
+  // movement types and the terrain lens (story 16.11)
+  boot: 'M8 3h5v9l5 2.5a2 2 0 0 1 1.5 2V20H6V9z',
+  mounted: 'M5 20l2-6-3-3 4-6 6 2 4 5-2 3-3-1-1 6z',
+  flier: 'M3 13c4-6 10-8 18-9-2 6-6 10-12 11l3 4c-4 0-7-2-9-6z',
+  lens: 'M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM15.5 15.5L20 20M10.5 7.5v6M7.5 10.5h6',
   // elements
   fire: 'M12 3c3 4 6 6 6 11a6 6 0 0 1-12 0c0-3 2-5 3-6 0 3 1.5 4 3 4 0-3-1.5-6 0-9z',
   wind: 'M3 9h11a3 3 0 1 0-3-3M3 14h15a3 3 0 1 1-3 3M3 19h7',

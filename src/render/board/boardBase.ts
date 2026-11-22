@@ -220,6 +220,9 @@ export abstract class BoardBase implements HostedView {
   protected gridMesh: OverlayMesh | null = null;
   /** DOM elements the UI pins to a field (story 13.6 terrain chip, 13.9 back stone): placed each frame */
   protected pins = new Map<string, { el: HTMLElement; tile: Pos; at: PinOffset; x: number; y: number }>();
+  /** story 16.11: the cost marks of the move range (DOM, each pinned to its field in `pins`), and what they were built from */
+  protected costEls = new Map<string, HTMLElement>();
+  protected costSig = '';
   /** a tap on a figure waiting for a second one (double tap, story 13.9) */
   protected pendingTap: { tile: Pos; timer: number } | null = null;
   protected hoverKey = '';
@@ -374,6 +377,7 @@ export abstract class BoardBase implements HostedView {
     this.gridMesh?.mesh.dispose();
     this.gridMesh?.mat.dispose();
     for (const el of this.pennants.values()) el.remove();
+    for (const el of this.costEls.values()) el.remove();
     this.statusIcons.dispose();
     this.weather.dispose();
     this.ash?.dispose();

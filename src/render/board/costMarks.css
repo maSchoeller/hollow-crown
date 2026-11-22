@@ -1,0 +1,33 @@
+/* Cost marks of the move range (story 16.11, DESIGN.md cost-pips): dots per movement point or a cream "½" pill at the lower right of the field.
+   The board writes the transform of .hc-cost each frame (a pinned element); the mark itself hangs left and above that point. */
+.hc-cost {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.hc-cost > span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  gap: 2px;
+}
+.hc-cost__pips i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--hc-line, #3b2a20);
+  box-shadow: 0 0 0 1px var(--hc-cream, #fff8ec);
+}
+.hc-cost__half {
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--hc-cream, #fff8ec);
+  box-shadow: 0 0 0 1.5px var(--hc-line, #3b2a20);
+  color: var(--hc-line, #3b2a20);
+  font: 700 11px/14px var(--hc-font-label, inherit);
+}

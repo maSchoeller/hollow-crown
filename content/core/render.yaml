@@ -241,6 +241,18 @@ legibility:
   reach: { color: "#E0473A", strength: 0.38 }
   # Story 11.10: Warnung vor einem Geländewechsel (set_terrain mit warn): Streifen auf dem Brett und Kante der HUD-Zeile, eine Farbe
   terrainWarn: { color: "#E8A317", alpha: 0.75, pulse: 0.2 }
+  # Story 16.11: Gelände-Linse (DESIGN.md terrain-lens). Fläche je Feld nach Wirkung für „zu Fuß“: Schutz grün, langsam gold, Schaden rot, schnell Creme-Streifen,
+  # gesperrt dunkle Schraffur 45°, neutrale Felder leicht abgedunkelt; zwei Wirkungen teilen das Feld diagonal. stripe/gap = Streifenbreite und Abstand in Feldern.
+  # holdMs = Haltedauer am Knopf „Gefahr“, bis die Linse an- oder ausgeht; hintMs = so lange steht der Einmal-Hinweis
+  terrainLens:
+    cover: { color: "#2F8A4C", alpha: 0.55 }
+    slow: { color: "#D9A931", alpha: 0.6 }
+    harm: { color: "#B83A2E", alpha: 0.6 }
+    fast: { color: "#FFF8EC", alpha: 0.8, stripe: 0.11, gap: 0.11 }
+    blocked: { color: "#3C3228", alpha: 0.6, stripe: 0.09, gap: 0.2 }
+    neutral: { color: "#281E14", alpha: 0.22 }
+    holdMs: 400
+    hintMs: 7000
   # Story 10.5: eigene Falle auf Feldhöhe (nur die Spielerseite sieht sie): dunkle Kontur, rostfarbener Ring, Zähne nach innen (jaw = Länge)
   trap: { color: "#C0703A", outline: "#2B1E16", alpha: 0.95, radius: 0.3, width: 0.06, jaw: 0.1 }
   # Story 13.3: Lebensleiste über dem Kopf. tick = Teilstrich je so viele TP, ab wideFrom max. TP je tickWide; critical = Anteil der max. TP,

@@ -298,7 +298,7 @@ development_status:
   16-8-modelle-fuer-signaturwaffen-und-relikte: review  # Modelle für Signaturwaffen und Relikte
   16-9-griff-rig-und-fingerknochen-fuer-alle-brettfiguren: review  # Griff-Rig und Fingerknochen für alle Brettfiguren
   16-10-ruhe-haltung-je-waffenart-und-kampfhaltung-bei-auswahl: review  # Ruhe, Haltung je Waffenart und Kampfhaltung bei Auswahl
-  16-11-brett-erklaert-gelaende-und-bewegungskosten: backlog  # Brett erklärt Gelände und Bewegungskosten
+  16-11-brett-erklaert-gelaende-und-bewegungskosten: done  # Brett erklärt Gelände und Bewegungskosten
   16-12-kampfvorschau-mit-element-band: done  # Kampfvorschau mit Element-Band
   16-13-aenderungsliste-und-linien-icons-als-gemeinsame-bausteine: done  # Änderungsliste und Linien-Icons als gemeinsame Bausteine
   16-14-waffenansicht: done  # Waffenansicht

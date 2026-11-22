@@ -180,3 +180,80 @@ export function gridTile(g: Geo, t: Pos, h: number, level: 'subtle' | 'strong', 
     quad(g, h, [cx, cz + sz * hw], [cx + sx * hw, cz + sz * hw], [cx + sx * hw, cz + sz * arm], [cx, cz + sz * arm]);
   }
 }
+
+// ------------------------------------------------------------------ terrain lens (story 16.11)
+
+type Plane = readonly [number, number, number];
+type Pt = readonly [number, number];
+
+/** The polygon `poly` (u east, v south, both 0..1 over a tile) cut to the half-plane a*u + b*v <= c. */
+function clipHalf(poly: readonly Pt[], [a, b, c]: Plane): Pt[] {
+  const out: Pt[] = [];
+  for (let i = 0; i < poly.length; i++) {
+    const p = poly[i]!;
+    const q = poly[(i + 1) % poly.length]!;
+    const dp = a * p[0] + b * p[1] - c;
+    const dq = a * q[0] + b * q[1] - c;
+    if (dp <= 0) out.push(p);
+    if (dp * dq < 0) {
+      const k = dp / (dp - dq);
+      out.push([p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k]);
+    }
+  }
+  return out;
+}
+
+const clipAll = (poly: readonly Pt[], planes: readonly Plane[]): Pt[] => planes.reduce<Pt[]>((acc, pl) => (acc.length ? clipHalf(acc, pl) : acc), [...poly]);
+
+/** A flat convex polygon over tile `t` at height `h` as a triangle fan. */
+function addPoly(g: Geo, t: Pos, h: number, poly: readonly Pt[]): void {
+  if (poly.length < 3) return;
+  const k = g.p.length / 3;
+  for (const [u, v] of poly) g.p.push(t[0] + u, h, -t[1] - v);
+  for (let i = 1; i < poly.length - 1; i++) g.idx.push(k, k + i, k + i + 1);
+}
+
+const SQUARE: readonly Pt[] = [[0, 0], [1, 0], [1, 1], [0, 1]];
+/** The part of a tile a lens effect owns: all of it, or with two effects the upper left or lower right half (split along the diagonal from lower left to upper right). */
+const LENS_WHOLE: readonly Plane[] = [];
+const LENS_FIRST: readonly Plane[] = [[1, 1, 1]];
+const LENS_SECOND: readonly Plane[] = [[-1, -1, -1]];
+
+/** The shapes of the lens, in the order the board draws them (neutral first). */
+export const LENS_SHAPES = ['neutral', 'cover', 'slow', 'fast', 'harm', 'blocked'] as const;
+export type LensShape = (typeof LENS_SHAPES)[number];
+
+/**
+ * The shapes of the terrain lens: per effect the geometry of all fields. A solid tint for protection, slow and damage; `fast` as vertical
+ * stripes and `blocked` as 45° hatching (`stripe` wide, `gap` apart, in tiles), cut to their half where a field has two effects; fields
+ * without an effect get the neutral tint. `top(t)` gives the height of a field.
+ */
+export function lensShapes(
+  lens: ReadonlyArray<readonly [Pos, readonly string[]]>,
+  top: (p: Pos) => number,
+  look: { fast: { stripe: number; gap: number }; blocked: { stripe: number; gap: number } },
+): Record<LensShape, Geo> {
+  const geos = Object.fromEntries(LENS_SHAPES.map((k) => [k, geo()])) as Record<LensShape, Geo>;
+  const stripes = (g: Geo, t: Pos, h: number, region: readonly Plane[], spec: { stripe: number; gap: number }, diagonal: boolean) => {
+    const period = spec.stripe + spec.gap;
+    const span = diagonal ? 2 : 1;
+    for (let c = 0; c < span; c += period) {
+      const band: Plane[] = diagonal ? [[1, 1, c + spec.stripe], [-1, -1, -c]] : [[1, 0, c + spec.stripe], [-1, 0, -c]];
+      addPoly(g, t, h, clipAll(SQUARE, [...region, ...band]));
+    }
+  };
+  for (const [t, list] of lens) {
+    const h = top(t) + 0.015;
+    if (!list.length) {
+      addPoly(geos.neutral, t, h, SQUARE);
+      continue;
+    }
+    list.forEach((kind, i) => {
+      const region = list.length === 1 ? LENS_WHOLE : i === 0 ? LENS_FIRST : LENS_SECOND;
+      if (kind === 'fast') stripes(geos.fast, t, h, region, look.fast, false);
+      else if (kind === 'blocked') stripes(geos.blocked, t, h, region, look.blocked, true);
+      else if (kind === 'cover' || kind === 'slow' || kind === 'harm') addPoly(geos[kind], t, h, clipAll(SQUARE, region));
+    });
+  }
+  return geos;
+}

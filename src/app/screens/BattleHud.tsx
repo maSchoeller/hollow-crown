@@ -17,7 +17,6 @@ import {
   type ItemInstance,
   type SideObjectiveDef,
   type Team,
-  levelAt,
 } from '../../core';
 import { mapOf, sideObjectiveDone, sideObjectiveProgress, sideObjectiveSpots, sideSubject } from '../../core/battle/objectives';
 import { bleedsOut } from '../../core/rules/effects';
@@ -28,6 +27,8 @@ import { sideLine } from '../../ui/goalText';
 import { asset } from '../../ui/asset';
 import { ItemChip } from '../../ui/pieces';
 import { artId } from './unitArt';
+import { useHoldPress } from './holdPress';
+import './TerrainLens.css';
 import { HelpStone } from './HelpStone';
 import { ElementBand, ElementFactor, GuardChip, RuneStone, StatusLine } from './ElementBand';
 import '../../ui/hud.css';
@@ -258,32 +259,6 @@ function WeaponChip({ data, item, rune }: { data: GameData; item?: ItemInstance;
   );
 }
 
-/** Terrain of an empty tile as a small stone. */
-export function TerrainCard({ data, s, p }: { data: GameData; s: BattleState; p: [number, number] }) {
-  const terr = data.terrain[s.terrain[p[1] * s.width + p[0]]!];
-  if (!terr) return null;
-  return (
-    <div class="hc-piece hud-terrain">
-      <b class="hud-name hud-name--small">{t(`terrain.${terr.id}`)}</b>
-      <span class="hud-chips">
-        {levelAt(data, s, p) > 0 ? <span class="hud-chip">{t('ui.heightLevel', { n: levelAt(data, s, p) })}</span> : null}
-        <span class="hud-chip">
-          {t('ui.stat.def')} {terr.def}
-        </span>
-        <span class="hud-chip">
-          {t('ui.avoid')} {terr.avoid}
-        </span>
-        {terr.heal ? (
-          <span class="hud-chip">
-            {t('ui.heal')} {terr.heal}%
-          </span>
-        ) : null}
-      </span>
-      <HelpStone anchor={`terrain.${terr.id}`} />
-    </div>
-  );
-}
-
 // ------------------------------------------------------------------ context band
 
 /** Hint key on PC: F runs the front band (EXPERIENCE.md). */
@@ -414,29 +389,57 @@ export function DockAction({
   on,
   state,
   onClick,
+  onHold,
+  holdMs = 400,
+  holdLabel,
 }: {
   icon: string;
   label: string;
   sub?: ComponentChildren;
-  variant?: 'primary' | 'class' | 'ink';
+  variant?: 'primary' | 'class' | 'ink' | 'lens';
   /** impossible right now: dimmed, never hidden; a tap still answers with the reason */
   dim?: boolean;
   on?: boolean;
   /** passive role: the symbol shows a state (`ready` / `active`) instead of a button; a tap explains the rule */
   state?: 'ready' | 'active';
   onClick: () => void;
+  /** held for `holdMs`: fires once (a fill ring runs, three small dots on the corner hint at it); the tap still calls `onClick` (story 16.11) */
+  onHold?: () => void;
+  holdMs?: number;
+  /** spoken name of the button when it can be held */
+  holdLabel?: string;
 }) {
+  const hold = useHoldPress(holdMs, onHold);
   return (
     <button
       type="button"
       class={`hud-act ${variant ? `is-${variant}` : ''} ${dim ? 'is-dim' : ''} ${on ? 'is-on' : ''} ${state ? `is-state ${state === 'active' ? 'is-active' : ''}` : ''}`}
       aria-disabled={dim || undefined}
       aria-pressed={on}
-      onClick={onClick}
+      aria-label={hold ? holdLabel : undefined}
+      onClick={() => {
+        if (hold?.swallowClick()) return;
+        onClick();
+      }}
+      {...hold?.bind}
     >
       <Icon name={icon} size={26} />
       <span>{label}</span>
       {sub !== undefined && <small>{sub}</small>}
+      {hold && (
+        <>
+          <span class="hud-act__dots" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          {hold.holding && (
+            <svg class="hud-act__ring" viewBox="0 0 36 36" aria-hidden="true" style={{ '--hold-ms': `${holdMs}ms` }}>
+              <circle cx="18" cy="18" r="16" pathLength="100" />
+            </svg>
+          )}
+        </>
+      )}
     </button>
   );
 }
