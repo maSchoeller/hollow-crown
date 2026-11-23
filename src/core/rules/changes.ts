@@ -13,8 +13,8 @@
 import { ELEMENTS, type Element, type EquipSlot } from '../defs';
 import type { GameData } from '../gameData';
 import type { ItemInstance, UnitRecord } from '../state';
-import { clone } from '../util';
-import { elementMultiplier, hitDamage } from './combat';
+import { clamp, clone } from '../util';
+import { avoidRating, critRating, elementMultiplier, hitDamage, hitRating } from './combat';
 import { armorAffinity, isWeapon, itemDef, itemElement, slotFits, weaponProfile, type WeaponProfile } from './items';
 import { computeStats, type EffectiveStats } from './stats';
 
@@ -208,4 +208,39 @@ export function changeList(data: GameData, unit: UnitRecord, probe: ItemInstance
   for (const [key, e] of eb) if (!diff || !ea.has(key)) lines.push({ kind: 'effect', key, effect: e.effect, id: e.id, appears: true, better: true });
   if (diff) for (const [key, e] of ea) if (!eb.has(key)) lines.push({ kind: 'effect', key, effect: e.effect, id: e.id, appears: false, better: false });
   return { mode, lines };
+}
+
+/** The figure sheet's performance values (story 16.15). `null`: the figure carries no weapon in the main hand. */
+export interface Performance {
+  hp: number;
+  attack: number | null;
+  hit: number | null;
+  crit: number | null;
+  avoid: number;
+  defense: number;
+  move: number;
+  /** near and far reach of the main hand */
+  range: [number, number] | null;
+}
+
+/**
+ * What the figure can do now, against a neutral enemy (no tags, 0 defence and resistance, no triangle, no terrain; the same reference
+ * as the change list): the damage kernel, hit, crit and avoid ratings are those of the combat forecast (`hitDamage`, `hitRating`,
+ * `critRating`, `avoidRating`), never a copy.
+ */
+export function unitPerformance(data: GameData, unit: UnitRecord, ctx: Parameters<typeof computeStats>[2] = {}): Performance {
+  const st = computeStats(data, unit, ctx);
+  const main = unit.equip.mainHand;
+  const wp = main && isWeapon(itemDef(data, main)) ? weaponProfile(data, main) : null;
+  const atk = wp ? (wp.damageType === 'magical' ? st.stats.mag : st.stats.str) + wp.might + st.skills.damage : 0;
+  return {
+    hp: st.maxHp,
+    attack: wp ? Math.max(0, hitDamage(data, atk, 0, 0, 1)) : null,
+    hit: wp ? clamp(hitRating(data, wp, st), 0, 100) : null,
+    crit: wp ? clamp(critRating(data, wp, st), 0, 100) : null,
+    avoid: avoidRating(data, st),
+    defense: st.stats.def,
+    move: st.mov,
+    range: wp ? [wp.range[0], wp.range[1]] : null,
+  };
 }

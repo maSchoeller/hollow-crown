@@ -107,6 +107,22 @@ export function hitDamage(data: GameData, atk: number, def: number, triangle: nu
   return dmg;
 }
 
+/** Hit rating of an attacker before the target's avoid (weapon, skill, luck, own bonuses; `extra`: triangle, adjacency, tandem). Shared by `calcSide` and the figure sheet. */
+export function hitRating(data: GameData, wp: Pick<WeaponProfile, 'hit'>, stats: EffectiveStats, extra = 0): number {
+  const c = data.balance.combat;
+  return wp.hit + c.hitPerSkl * stats.stats.skl + Math.floor(stats.stats.lck / c.hitPerLckDivisor) + stats.hit + extra;
+}
+
+/** Avoid rating of a defender before the attacker's hit (attack speed, luck, own bonuses; `extra`: terrain, adjacency). Shared by `calcSide` and the figure sheet. */
+export function avoidRating(data: GameData, stats: EffectiveStats, extra = 0): number {
+  return data.balance.combat.avoidPerAs * stats.as + stats.stats.lck + stats.avoid + extra;
+}
+
+/** Crit rating of an attacker before the target's luck. Shared by `calcSide` and the figure sheet. */
+export function critRating(data: GameData, wp: Pick<WeaponProfile, 'crit'>, stats: EffectiveStats, extra = 0): number {
+  return wp.crit + Math.floor(stats.stats.skl / data.balance.combat.critPerSklDivisor) + stats.crit + extra;
+}
+
 function equippedWeapon(u: BattleUnit): ItemInstance | undefined {
   return u.equip.mainHand;
 }
@@ -177,17 +193,10 @@ function calcSide(
     let dmg = hitDamage(data, atk, def, tri, elementMult);
     dmg = Math.floor((Math.max(0, dmg) * oppStats.skills.damageTakenPercent) / 100);
     damage = Math.max(0, dmg);
-    const hitRaw =
-      wp.hit +
-      b.combat.hitPerSkl * stats.stats.skl +
-      Math.floor(stats.stats.lck / b.combat.hitPerLckDivisor) +
-      tri * b.triangle.hit +
-      stats.hit +
-      myBonus.hit +
-      extraHit;
-    const avoid = b.combat.avoidPerAs * oppStats.as + oppStats.stats.lck + terrAvoid + oppStats.avoid + oppBonus.avoid;
+    const hitRaw = hitRating(data, wp, stats, tri * b.triangle.hit + myBonus.hit + extraHit);
+    const avoid = avoidRating(data, oppStats, terrAvoid + oppBonus.avoid);
     hit = clamp(hitRaw - avoid, 0, 100);
-    const critRaw = wp.crit + Math.floor(stats.stats.skl / b.combat.critPerSklDivisor) + stats.crit + myBonus.crit;
+    const critRaw = critRating(data, wp, stats, myBonus.crit);
     crit = clamp(critRaw - oppStats.stats.lck, 0, 100);
   }
   const statusChanceBonus = stats.skills.statusChance;

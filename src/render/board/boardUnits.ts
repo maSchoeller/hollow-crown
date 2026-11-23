@@ -5,13 +5,12 @@
 import { timerLook } from './aiPacing';
 import './costMarks.css';
 import { Vector3 } from '@babylonjs/core/Maths/math.vector';
-import type { BattleState, BattleUnit, FigurePiece, GearPiece, PartPiece, Pos, StatusId } from '../../core';
-import { bleedsOut, itemDef, maxHpOf, modelId, runeSlotCount, shadowHidden, unitFigureId, unitVatPath } from '../../core';
+import type { BattleState, BattleUnit, FigurePiece, GearPiece, Pos, StatusId } from '../../core';
+import { bleedsOut, itemDef, maxHpOf, modelId, shadowHidden, unitFigureId, unitVatPath } from '../../core';
 import { loadManifest, loadUnitSheet } from '../shared/assets';
 import { loadUnitModel } from '../shared/models';
-import { fixedRuneOf, modelFor } from '../shared/gearModel';
-import { gearRunesOf, glowState, runeKey, runeLookOf } from '../shared/runeLook';
-import { stanceKeyOf } from '../shared/stance';
+import { gearOf, unitStanceKey, weaponOf } from '../shared/unitGear';
+import { glowState, runeKey } from '../shared/runeLook';
 import { ModelFigure, SpriteFigure, type Figure, type FigureAnim } from '../shared/figures';
 import { buildGridMesh, buildOverlayMeshes, type Overlays } from './overlays';
 import type { HpBarMode, KillKind } from './badges';
@@ -31,46 +30,17 @@ export abstract class BoardUnits extends BoardProps {
 
   /** Weapon model of the equipped weapon group (GA9); its motion picks the figure's attack animation. */
   protected weaponOf(u: BattleUnit): GearPiece | undefined {
-    const def = u.equip.mainHand && itemDef(this.data, u.equip.mainHand);
-    return def && def.weaponType ? modelFor(def, this.data.render.gear) : undefined;
+    return weaponOf(this.data, u);
   }
 
-  /** Attached part of the unit's pro path (story 10.13); undefined for a class without one or an unknown part. */
-  protected proPartOf(u: BattleUnit): PartPiece | undefined {
-    const part = this.data.classes[u.classId]?.proPart;
-    return part ? this.data.render.gear.proParts[part] : undefined;
-  }
-
-  /**
-   * What hangs on the figure: the weapon of the equipped weapon group and the off-hand item (GA9, one piece per hand,
-   * the weapon first) and the attached part of the pro path (story 10.13).
-   */
+  /** What hangs on the figure (the shared dressing of `unitGear.ts`; a signature piece shows the stage of its awakened relic). */
   protected gearOf(u: BattleUnit): FigurePiece[] {
-    const out: GearPiece[] = [];
-    const w = this.weaponOf(u);
-    if (w) out.push(this.withRunes(w, u.equip.mainHand));
-    const offDef = u.equip.offHand && itemDef(this.data, u.equip.offHand);
-    const off = offDef && offDef.group ? modelFor(offDef, this.data.render.gear) : undefined;
-    if (off && !out.some((p) => p.hand === off.hand)) out.push(this.withRunes(off, u.equip.offHand));
-    const part = this.proPartOf(u);
-    return part ? [...out, part] : out;
+    return gearOf(this.data, u, this.state?.relicStages);
   }
 
-  /** Story 16.10: the stance key of the unit's clips: main weapon, off-hand piece (a shield adds, a lute or focus replaces), `none` unarmed. */
+  /** Story 16.10: the stance key of the unit's clips. */
   protected stanceKeyOf(u: BattleUnit): string {
-    const offDef = u.equip.offHand && itemDef(this.data, u.equip.offHand);
-    const off = offDef && offDef.group ? modelFor(offDef, this.data.render.gear) : undefined;
-    return stanceKeyOf(this.weaponOf(u), off);
-  }
-
-  /** Story 16.6: a weapon piece carries the metal and runes of the item in that hand. */
-  private withRunes(piece: GearPiece, item: BattleUnit['equip'][keyof BattleUnit['equip']]): GearPiece {
-    if (!item) return piece;
-    const def = itemDef(this.data, item);
-    const rune = gearRunesOf(this.data.runes, item.runes, runeSlotCount(this.data, item), def.metal);
-    // story 16.8: a signature piece shows its fixed rune in the main setting while slot 0 holds none (display only; the relic stage comes from the battle)
-    const fixed = item.runes[0] ? null : runeLookOf(this.data.runes, fixedRuneOf(def, this.state?.relicStages?.[def.id] ?? 1));
-    return { ...piece, rune: fixed ? { ...rune, main: fixed } : rune };
+    return unitStanceKey(this.data, u);
   }
 
   /** The figure's rebuild key: models, hands, and the metal and runes of rune weapons (a changed rune builds the figure anew, story 16.6). */

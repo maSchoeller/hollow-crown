@@ -246,6 +246,38 @@ if (import.meta.env.DEV) {
         screen.value = { name: 'troop' };
       },
       /**
+       * story 16.15: the figure sheet (dress-up doll) of `unitId` (default: the avatar) with an axe and a shield, a fire and a wind rune in them,
+       * armour and a few things in the bag, and the convoy of `devConvoy` (act 2, convoy level 3). Unsaved campaign. `__hc.devDoll()`,
+       * `__hc.devDoll('tobin')`; tap a place over the picture for the item details, pull the grip up for the base stats.
+       */
+      devDoll: async (unitId?: string) => {
+        if (data.releasedActs?.includes(2)) await ensurePack('act2');
+        const c = newCampaign(data, 1, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+        c.completed = data.acts[1]!.nodes.map((n) => n.id);
+        c.home = { kind: 'castle', rooms: { convoy: 3 } };
+        c.act = 2;
+        c.actTitleSeen = 2;
+        for (const id of ['steel_sword', 'steel_lance', 'plate_armor', 'leather_vest', 'vulnerary', 'vulnerary'])
+          if (data.items[id]) c.convoy.push(newItem(c, id, data));
+        const unit = c.roster.find((u) => u.id === unitId) ?? c.roster[0]!;
+        const gear: Array<['mainHand' | 'offHand' | 'body', string, Array<string | null>]> = [
+          ['mainHand', 'iron_axe', ['fire_rune_2', 'edge_rune']],
+          ['offHand', 'iron_shield', ['wind_rune_2']],
+          ['body', 'leather_vest', []],
+        ];
+        for (const [slot, id, runes] of gear) {
+          if (!data.items[id]) continue;
+          const inst = newItem(c, id, data);
+          inst.runes = runes.filter((r) => !r || data.runes[r]);
+          unit.equip[slot] = inst;
+        }
+        if (data.items.vulnerary) unit.bag.push(newItem(c, 'vulnerary', data));
+        devSaveFailure.on = true;
+        campaign.value = c;
+        battle.value = null;
+        screen.value = { name: 'troop', unit: unit.id };
+      },
+      /**
        * story 16.14: the weapon view with `itemId` (default: the steel axe) in the convoy, `runeId` in its large and
        * `smallId` in its small setting (a rune id, or null for an empty one), twelve kills and an epithet. Unsaved campaign.
        * `__hc.devWeapon()`, `__hc.devWeapon('iron_shield', 'wind_rune_2')`, `__hc.devWeapon('steel_axe', 'fire_rune_3')`.

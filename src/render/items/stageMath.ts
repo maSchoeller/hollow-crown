@@ -3,7 +3,7 @@
  * reset), the fit distance of the camera and the angle that stands a model's long axis up. All numbers come from
  * `render.yaml` `itemStage` (`ItemStageDef`).
  */
-import type { ItemStageDef } from '../../core/renderDefs';
+import type { StageMotionDef } from '../../core/renderDefs';
 
 const RAD = Math.PI / 180;
 const TAU = Math.PI * 2;
@@ -31,7 +31,7 @@ export class StageMotion {
   private glide: { fromYaw: number; fromPitch: number; t: number } | null = null;
 
   constructor(
-    private def: ItemStageDef,
+    private def: StageMotionDef,
     yawDeg: number,
   ) {
     this.startYaw = yawDeg * RAD;
