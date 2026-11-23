@@ -290,7 +290,7 @@ function ItemHead({ data, item }: { data: GameData; item: ItemInstance }) {
       {info.facts.length > 0 && (
         <dl class="doll__facts">
           {info.facts.map((f) => (
-            <div key={f.key} class="doll__fact">
+            <div key={f.key} class={/^[-+−]?\d/.test(String(f.value)) ? 'doll__fact' : 'doll__fact doll__fact--wide'}>
               <Icon name={FACT_ICON[f.key] ?? 'star'} size={16} />
               <dt>{f.label}</dt>
               <dd class={f.tone === 'up' ? 'hc-up' : f.tone === 'down' ? 'hc-down' : ''}>{f.value}</dd>

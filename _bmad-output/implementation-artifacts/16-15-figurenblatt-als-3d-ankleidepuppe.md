@@ -1,6 +1,6 @@
 # Story 16.15: Figurenblatt als 3D-Ankleidepuppe
 
-Status: review
+Status: done
 
 ## Story
 

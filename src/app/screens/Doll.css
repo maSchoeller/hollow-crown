@@ -549,6 +549,10 @@
   font-family: var(--hc-font-label);
   font-size: 14px;
 }
+/* a value in words (damage type) takes the whole row, so it never runs into its label */
+.doll__fact--wide {
+  grid-column: 1 / -1;
+}
 .doll__fact dt {
   flex: 1;
   min-width: 0;
