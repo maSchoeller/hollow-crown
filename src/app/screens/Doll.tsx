@@ -97,7 +97,7 @@ export function Doll({ unit, units, onSelect, onBack, readOnly, stage3d = false,
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  });
+  }, [pos, units, onSelect]);
   const st = computeStats(data, unit, { relics: campaignRelics.value });
   const exp = expProgress(data, unit);
   const promotable = canPromote(data, c, unit);

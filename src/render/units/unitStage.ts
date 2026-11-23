@@ -127,6 +127,7 @@ export class UnitStageView implements HostedView, UnitStage {
       return false;
     }
     this.figure?.dispose();
+    this.figure = null;
     model.root.scaling.setAll(board.figureScale);
     const { switchS, gestureEveryS } = board.stance;
     const fig = new ModelFigure(model, weaponOf(this.data, unit)?.motion, board.idleHz, board.tintPool, { key: unitStanceKey(this.data, unit), switchS, gestureEveryS });

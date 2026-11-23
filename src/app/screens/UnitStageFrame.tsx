@@ -66,7 +66,7 @@ export function UnitStageFrame({ data, quality, unit, enabled, children }: UnitS
       shownKey.current = '';
       setReady(false);
     };
-  }, [enabled]);
+  }, [enabled, quality]);
 
   // another figure, or another dressing (a changed rune): the stage builds the new model and gives the old one up
   useEffect(() => {
