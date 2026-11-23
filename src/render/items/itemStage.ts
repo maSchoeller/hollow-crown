@@ -24,6 +24,7 @@ import { renderHost, type AssetStore, type HostedView, type Quality, type Render
 import { dressRuneWeapon, RuneKit } from '../shared/runeGlow';
 import { figureMaterial, instantiate, stoneLoader, teamColours } from '../shared/models';
 import { fitDistance, StageMotion, uprightAngle } from './stageMath';
+import { listenTurntable } from './stageInput';
 
 /** The stage as the UI and the other stories use it. */
 export interface ItemStage {
@@ -128,49 +129,7 @@ export class ItemStageView implements HostedView, ItemStage {
 
   /** Drag turns the model, a quick second tap resets. Listeners go with `input.abort()`. */
   private listen(): void {
-    const def = this.data.render.itemStage;
-    const sig = { signal: this.input.signal };
-    let down: { id: number; x: number; y: number; t: number; moved: number } | null = null;
-    let lastTap = -Infinity;
-    this.slot.addEventListener(
-      'pointerdown',
-      (e) => {
-        if (down || e.button > 0) return;
-        down = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now(), moved: 0 };
-        this.slot.setPointerCapture?.(e.pointerId);
-        this.motion.press();
-      },
-      sig,
-    );
-    this.slot.addEventListener(
-      'pointermove',
-      (e) => {
-        if (!down || e.pointerId !== down.id) return;
-        const now = performance.now();
-        const dx = e.clientX - down.x;
-        const dy = e.clientY - down.y;
-        down.moved += Math.abs(dx) + Math.abs(dy);
-        this.motion.drag(dx, dy, now - down.t);
-        down.x = e.clientX;
-        down.y = e.clientY;
-        down.t = now;
-      },
-      sig,
-    );
-    const up = (e: PointerEvent): void => {
-      if (!down || e.pointerId !== down.id) return;
-      const tap = down.moved <= def.tapSlopPx;
-      down = null;
-      this.motion.release();
-      if (!tap) return;
-      const now = performance.now();
-      if (now - lastTap <= def.doubleTapMs) {
-        lastTap = -Infinity;
-        this.motion.reset();
-      } else lastTap = now;
-    };
-    this.slot.addEventListener('pointerup', up, sig);
-    this.slot.addEventListener('pointercancel', up, sig);
+    listenTurntable(this.slot, this.data.render.itemStage, () => this.motion, this.input.signal);
   }
 
   // ------------------------------------------------------------------ item

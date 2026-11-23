@@ -45,6 +45,21 @@ const itemStageSchema = z.object({
   models: z.record(z.string().regex(/^[a-z0-9_]+$/), z.object({ yaw: z.number().min(-360).max(360), upright: z.boolean().optional() })),
   lights: z.object({ ambient: z.object({ color: hex, intensity: z.number().min(0) }), key: stageLight, rim: stageLight }),
 });
+const unitStageSchema = z.object({
+  fov: z.number().min(5).max(80),
+  margin: z.number().min(1).max(4),
+  aimFraction: z.number().min(0.1).max(0.9),
+  fallbackHeight: z.number().positive().max(10),
+  startYawDeg: z.number().min(-360).max(360),
+  spinDegPerSec: z.number().min(0),
+  dragDegPerPx: z.number().positive(),
+  dampingPerSec: z.number().positive(),
+  restDegPerSec: z.number().min(0),
+  doubleTapMs: z.number().int().min(100),
+  tapSlopPx: z.number().min(0),
+  resetMs: z.number().int().min(0),
+  lights: z.object({ ambient: z.object({ color: hex, intensity: z.number().min(0) }), key: stageLight, rim: stageLight }),
+});
 const vec3 = z.tuple([z.number(), z.number(), z.number()]);
 const armorySchema = z.object({
   fov: z.number().min(5).max(80),
@@ -223,6 +238,7 @@ export const renderSchema = z.object({
   }),
   look: lookSchema,
   itemStage: itemStageSchema,
+  unitStage: unitStageSchema,
   armory: armorySchema,
   gear: z.object({
     weapons: z.partialRecord(weaponType, gearPiece),

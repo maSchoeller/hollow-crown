@@ -1,46 +1,21 @@
-/** Troop (medallion grid) and figure view (concept/25-ux/EXPERIENCE.md "Truppe", mockup 06). */
-import { useEffect, useRef, useState } from 'preact/hooks';
-import {
-  availableSupportTalks,
-  canPromote,
-  clone,
-  computeStats,
-  EQUIP_SLOTS,
-  equipBestOpen,
-  expProgress,
-  gearTemplatesOpen,
-  heritageStone,
-  isMercenary,
-  itemDef,
-  loadoutSlots,
-  ROLE_GROUPS,
-  runEquipBest,
-  runGearTemplate,
-  supportTalksOf,
-  type CampaignCommand,
-  type EquipSlot,
-  type GearRun,
-  type RoleGroup,
-  type UnitRecord,
-} from '../../core';
-import { activeSkillIds } from '../../core/rules/skills';
-import { isKey } from '../../core/rules/items';
+/** Troop (medallion grid) and the figure sheet's flow (concept/25-ux/EXPERIENCE.md "Truppe", mockup 06; the sheet itself is `Doll.tsx`). */
+import { useEffect, useState } from 'preact/hooks';
+import { availableSupportTalks, canPromote, isMercenary, itemDef, ROLE_GROUPS, supportTalksOf, type EquipSlot, type RoleGroup, type UnitRecord } from '../../core';
 import { t } from '../../i18n';
-import { Toast, TraitChips, unitName } from '../../ui/components';
-import { Icon } from '../../ui/icons';
-import { Amount, Backdrop, ItemImage, Piece, PrimaryButton, ScreenHead, Tabs } from '../../ui/pieces';
+import { unitName } from '../../ui/components';
+import { Backdrop, Piece, ScreenHead, Tabs } from '../../ui/pieces';
 import { audio } from '../audio';
-import { campaign, campaignCommand, campaignRelics, data } from '../state/session';
+import { campaign, data } from '../state/session';
 import { homeBackdrop } from '../campaignInfo';
 import { screen, type From } from '../state/screen';
+import { Doll } from './Doll';
+import type { DollPick } from './dollViewModel';
 import { EquipView } from './Equip';
-import { openWeapon } from '../state/weaponView';
-import { UnitBust, UnitHead } from './unitArt';
+import { UnitHead } from './unitArt';
 import '../../ui/troop.css';
 
 type Filter = 'all' | RoleGroup;
 
-const ROLE_ICON: Record<RoleGroup, string> = { melee: 'blade', ranged: 'bow', support: 'healer' };
 const roleOf = (u: UnitRecord): RoleGroup => data.classes[u.classId]?.roleGroup ?? 'melee';
 
 /** The troop: every companion and mercenary (the fallen rest in the hall of memory, not here). */
@@ -53,7 +28,7 @@ export function Troop({ from = 'worldmap' }: { from?: From }) {
   const back = () => (screen.value = { name: from });
   const shown = c.roster.filter((u) => filter === 'all' || roleOf(u) === filter);
   const unit = sel ? c.roster.find((u) => u.id === sel) : undefined;
-  if (unit) return <FigureFlow unit={unit} units={shown.some((u) => u.id === unit.id) ? shown.map((u) => u.id) : c.roster.map((u) => u.id)} onSelect={setSel} onBack={() => setSel(null)} />;
+  if (unit) return <FigureFlow stage3d unit={unit} units={shown.some((u) => u.id === unit.id) ? shown.map((u) => u.id) : c.roster.map((u) => u.id)} onSelect={setSel} onBack={() => setSel(null)} />;
   const mercs = c.roster.filter(isMercenary).length;
   return (
     <div class="hc-view">
@@ -127,298 +102,43 @@ function Mate({ unit, onOpen }: { unit: UnitRecord; onOpen: () => void }) {
   );
 }
 
-/** The figure view with its equip list: a tap on a place opens the list for it (not in `readOnly`). */
-export function FigureFlow({ unit, units, onSelect, onBack, readOnly }: { unit: UnitRecord; units: string[]; onSelect: (id: string) => void; onBack: () => void; readOnly?: boolean }) {
-  const [eq, setEq] = useState<{ slot: EquipSlot | 'bag'; index: number; key: string } | null>(null);
-  if (eq && !readOnly) return <EquipView unit={unit} slot={eq.slot} index={eq.index} onBack={() => setEq(null)} />;
-  return <Figure unit={unit} units={units} onSelect={onSelect} onBack={onBack} readOnly={readOnly} onSlot={(slot, index) => setEq({ slot, index, key: slot === 'bag' ? `bag${index}` : slot })} />;
-}
-
-const SWIPE_PX = 56;
-
 /**
- * Figure view: half figure, role, level, EXP, ten values, the equipment places, load and mastery. Swiping (or the
- * arrows) moves to the next figure of `units`; `readOnly` shows the same without changing anything (battle).
+ * The figure sheet (the dress-up doll, story 16.15) with its equip list: "Change" / "Equip" on a chosen place opens the list for it
+ * (not in `readOnly`). `stage3d`: the 3D figure, only where the doll is a screen of its own (the preparation keeps the picture).
  */
-export function Figure({
+export function FigureFlow({
   unit,
   units,
   onSelect,
   onBack,
   readOnly,
-  onSlot,
-  selectedSlot,
+  stage3d,
 }: {
   unit: UnitRecord;
   units: string[];
   onSelect: (id: string) => void;
   onBack: () => void;
   readOnly?: boolean;
-  /** an equipment place was tapped (the equip list opens); without it the places are not tappable */
-  onSlot?: (slot: EquipSlot | 'bag', index: number) => void;
-  selectedSlot?: string | null;
+  stage3d?: boolean;
 }) {
-  const c = campaign.value!;
-  const [toast, setToast] = useState<string | null>(null);
-  const start = useRef<{ x: number; y: number } | null>(null);
-  const pos = units.indexOf(unit.id);
-  const step = (d: number) => {
-    if (units.length < 2) return;
-    onSelect(units[(pos + d + units.length) % units.length]!);
-  };
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') step(-1);
-      else if (e.key === 'ArrowRight') step(1);
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  });
-  const st = computeStats(data, unit, { relics: campaignRelics.value });
-  const exp = expProgress(data, unit);
-  const promotable = canPromote(data, c, unit);
-  const academy = Object.values(data.rooms).find((r) => r.function === 'academy');
-  const second = unit.secondPath ? data.classes[unit.secondPath] : undefined;
-  // the lesson of the memorial hall (story 10.7), with the stone it came from
-  const heritage = unit.heritage ? { skill: unit.heritage.skill, from: heritageStone(data, c, unit.heritage.from) } : null;
-  const apply = (cmd: CampaignCommand) => {
-    const r = campaignCommand(cmd);
-    if (r.ok) audio.sfx('confirm');
-    else {
-      audio.sfx('error');
-      setToast(t(`ui.camp.err.${r.error}`));
-    }
-    return r.ok;
-  };
-  const name = unitName(unit);
-  const group = roleOf(unit);
-  // convoy of levels 2 and 3 (story 10.10): gear template and "equip the best" for a figure of the company
-  const gearOpen = !readOnly && c.roster.some((r) => r.id === unit.id) && gearTemplatesOpen(data, c);
-  /** What the toast says after a template or "equip the best": what happened, then every item that stayed where it was. */
-  const gearToast = (run: GearRun, done: string): string => {
-    const lines = run.skipped.map((sk) => {
-      const owner = sk.unit ? c.roster.find((r) => r.id === sk.unit) : undefined;
-      const item = t(`item.${sk.def}.name`);
-      return owner ? t('ui.figure.gearSkippedAt', { unit: unitName(owner), item }) : t('ui.figure.gearSkipped', { item });
-    });
-    return [run.equipped.length ? done : t('ui.figure.gearNothing'), ...lines].join(' · ');
-  };
-  const loadCap = Math.max(1, st.carry);
-  const slots: Array<{ key: string; slot: EquipSlot | 'bag'; index: number; label: string; item?: (typeof unit.bag)[number]; fixed?: boolean }> = [
-    ...EQUIP_SLOTS.map((s, i) => ({ key: s, slot: s as EquipSlot | 'bag', index: i, label: t(`ui.slot.${s}`), item: unit.equip[s] })),
-    ...Array.from({ length: data.balance.bag.size }, (_, i) => ({ key: `bag${i}`, slot: 'bag' as const, index: i, label: t('ui.slot.bag'), item: unit.bag.filter((b) => !isKey(data, b))[i] })),
-    // keys take no bag place (key ring): their stack sits in a slot of its own
-    ...unit.bag.filter((b) => isKey(data, b)).map((item, i) => ({ key: `keys${i}`, slot: 'bag' as const, index: data.balance.bag.size + i, label: t('ui.slot.keys'), item, fixed: true })),
-  ];
-  const statCells: Array<[string, number]> = [
-    ['hp', st.maxHp],
-    ['str', st.stats.str],
-    ['mag', st.stats.mag],
-    ['skl', st.stats.skl],
-    ['spd', st.stats.spd],
-    ['lck', st.stats.lck],
-    ['def', st.stats.def],
-    ['res', st.stats.res],
-    ['mov', st.mov],
-    ['carry', st.carry],
-  ];
-  const sp = Object.entries(unit.sp);
+  const [eq, setEq] = useState<{ slot: EquipSlot | 'bag'; index: number } | null>(null);
+  const [pick, setPick] = useState<DollPick | null>(null);
+  if (eq && !readOnly) return <EquipView unit={unit} slot={eq.slot} index={eq.index} onBack={() => setEq(null)} />;
   return (
-    <div class="hc-view">
-      <Backdrop image={homeBackdrop()} />
-      <ScreenHead
-        title={name}
-        onBack={onBack}
-        aside={
-          units.length > 1 ? (
-            <span class="row" style={{ gap: 4 }}>
-              <button type="button" class="hc-head__back" style={{ width: 32, height: 32, boxShadow: 'none' }} onClick={() => step(-1)} aria-label={t('ui.figure.prev')}>
-                <Icon name="back" size={16} />
-              </button>
-              {pos + 1} / {units.length}
-              <button type="button" class="hc-head__back" style={{ width: 32, height: 32, boxShadow: 'none' }} onClick={() => step(1)} aria-label={t('ui.figure.next')}>
-                <Icon name="forward" size={16} />
-              </button>
-            </span>
-          ) : undefined
-        }
-      />
-      <Piece
-        class="trp-fig hc-view__scroll"
-        onPointerDown={(e: PointerEvent) => (start.current = { x: e.clientX, y: e.clientY })}
-        onPointerUp={(e: PointerEvent) => {
-          const s = start.current;
-          start.current = null;
-          if (s && Math.abs(e.clientX - s.x) > SWIPE_PX && Math.abs(e.clientY - s.y) < 40) step(e.clientX < s.x ? 1 : -1);
-        }}
-        onPointerCancel={() => (start.current = null)}
-      >
-        <div class="trp-fig__top">
-          <UnitBust portrait={unit.portrait} classId={unit.classId} name={name} />
-          <div>
-            <h2 class="trp-fig__name">{name}</h2>
-            <span class="trp-role">
-              <Icon name={ROLE_ICON[group]} size={15} />
-              {t(`class.${unit.classId}.name`)} · {t('ui.lv')} {unit.level}
-            </span>
-            <div class="trp-exp">
-              <div class="trp-exp__row">
-                <span>{exp.capped ? t('ui.figure.levelCapped', { level: exp.cap, act: exp.act }) : exp.full ? t('ui.figure.maxLevel') : promotable ? t('ui.figure.promoteReady') : t('ui.figure.exp')}</span>
-                {!exp.full && (
-                  <span>
-                    <Amount resource="exp" value={exp.exp} /> / {exp.need}
-                  </span>
-                )}
-              </div>
-              <div class="trp-bar" role="progressbar" aria-valuemin={0} aria-valuemax={exp.need} aria-valuenow={exp.exp}>
-                <i style={{ width: `${exp.full ? 100 : Math.min(100, (exp.exp / exp.need) * 100)}%` }} />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="trp-stats">
-          {statCells.map(([k, v]) => (
-            <div key={k} class="trp-stat">
-              <small>{t(`ui.stat.${k}`)}</small>
-              <span>{v}</span>
-            </div>
-          ))}
-        </div>
-        <div class="trp-slots">
-          {slots.map((s) => (
-            <button
-              key={s.key}
-              type="button"
-              class={`trp-slot ${selectedSlot === s.key ? 'is-sel' : ''}`}
-              disabled={!onSlot || readOnly || s.fixed}
-              onClick={() => onSlot?.(s.slot, s.index)}
-              aria-label={s.item ? `${s.label}: ${t(`item.${s.item.def}.name`)}` : `${s.label}: ${t('ui.figure.empty')}`}
-            >
-              {s.item ? <ItemImage data={data} item={s.item} size={52} /> : <span class="hc-item-image is-empty" style={{ '--hc-item-size': '52px' }} aria-hidden="true" />}
-              {s.label}
-            </button>
-          ))}
-        </div>
-        {!readOnly && onSlot && (
-          <div class="trp-chips">
-            {slots
-              .filter((s) => s.item && (s.slot === 'mainHand' || s.slot === 'offHand'))
-              .map((s) => (
-                <button key={s.key} type="button" class="hc-tab" onClick={() => openWeapon(s.item!.uid, { unit: unit.id })}>
-                  <Icon name="eye" size={16} /> {t('ui.weaponView.openNamed', { item: t(`item.${s.item!.def}.name`) })}
-                </button>
-              ))}
-          </div>
-        )}
-        {gearOpen && (
-          <div class="trp-chips trp-gear">
-            <button type="button" class="hc-tab" onClick={() => apply({ type: 'saveGearTemplate', unit: unit.id }) && setToast(t('ui.figure.gearTemplateSaved'))}>
-              {t('ui.figure.gearTemplateSave')}
-            </button>
-            <button
-              type="button"
-              class="hc-tab"
-              disabled={!unit.gearTemplate}
-              onClick={() => {
-                const run = runGearTemplate(data, clone(c), unit.id);
-                if (apply({ type: 'applyGearTemplate', unit: unit.id })) setToast(gearToast(run, t('ui.figure.gearApplied')));
-              }}
-            >
-              {t('ui.figure.gearTemplateApply')}
-            </button>
-            {equipBestOpen(data, c) && (
-              <button
-                type="button"
-                class="hc-tab"
-                onClick={() => {
-                  const run = runEquipBest(data, clone(c), unit.id);
-                  if (apply({ type: 'equipBest', unit: unit.id })) setToast(gearToast(run, t('ui.figure.gearBest')));
-                }}
-              >
-                {t('ui.figure.equipBest')}
-              </button>
-            )}
-          </div>
-        )}
-        <div class="trp-load">
-          <span>{t('ui.stat.load')}</span>
-          <div class={`trp-bar trp-bar--load ${st.overload > 0 ? 'is-over' : ''}`}>
-            <i style={{ width: `${Math.min(100, (st.load / loadCap) * 100)}%` }} />
-          </div>
-          <span class={st.overload > 0 ? 'is-over' : ''}>
-            {st.load} / {st.carry}
-          </span>
-        </div>
-        {unit.scars.length > 0 && (
-          <div class="trp-chips">
-            {unit.scars.map((sc) => (
-              <span key={sc} class="trp-scar">
-                <Icon name="scar" size={13} />
-                {t(`scar.${sc}`)}
-              </span>
-            ))}
-          </div>
-        )}
-        {sp.map(([sk, points]) => {
-          const cost = Object.values(data.items).find((d) => d.grantsSkill?.skill === sk)?.grantsSkill?.masteryCost ?? 0;
-          const done = unit.mastered.includes(sk);
-          return (
-            <div key={sk} class="trp-skill">
-              <b>{t(`skill.${sk}.name`)}</b>
-              <div class="trp-bar trp-bar--skill">
-                <i style={{ width: `${done || !cost ? 100 : Math.min(100, (points / cost) * 100)}%` }} />
-              </div>
-              <span>{done ? t('ui.mastered') : `${points} / ${cost} ${t('ui.sp')}`}</span>
-            </div>
-          );
-        })}
-        {unit.mastered.length > 0 && (
-          <div class="trp-chips">
-            <span>
-              {t('ui.loadout')} {unit.loadout.length}/{loadoutSlots(data, unit)}
-            </span>
-            {unit.mastered.map((sk) => {
-              const on = unit.loadout.includes(sk);
-              return (
-                <button
-                  key={sk}
-                  type="button"
-                  class={`hc-tab ${on ? 'is-on' : ''}`}
-                  disabled={readOnly}
-                  onClick={() => apply({ type: 'setLoadout', unit: unit.id, skills: on ? unit.loadout.filter((x) => x !== sk) : [...unit.loadout, sk] })}
-                >
-                  {t(`skill.${sk}.name`)}
-                </button>
-              );
-            })}
-          </div>
-        )}
-        <span class="trp-chips" style={{ color: 'var(--hc-soft)' }}>
-          {activeSkillIds(data, unit, campaignRelics.value)
-            .filter((id) => id !== heritage?.skill)
-            .map((id) => t(`skill.${id}.name`))
-            .join(' · ')}
-        </span>
-        {/* story 10.12: the traits of a hired mercenary */}
-        {(unit.traits ?? []).length > 0 && (
-          <span class="trp-chips">
-            <TraitChips data={data} traits={unit.traits} />
-          </span>
-        )}
-        {second && <span class="trp-chips">{t('ui.figure.also', { effect: t(`class.${second.id}.effect`) })}</span>}
-        {heritage && (
-          <span class="trp-chips" title={t(`skill.${heritage.skill}.desc`)}>
-            {t('ui.figure.heritage', { skill: t(`skill.${heritage.skill}.name`), from: heritage.from ? unitName({ name: heritage.from.name, nameKey: heritage.from.nameKey }) : '' })}
-          </span>
-        )}
-      </Piece>
-      {promotable && !readOnly && c.roster.some((u) => u.id === unit.id) && (
-        <div class="hc-btns">
-          <PrimaryButton onClick={() => (screen.value = { name: 'camp', tab: academy?.id, unit: unit.id })}>{t('ui.figure.promote')}</PrimaryButton>
-        </div>
-      )}
-      {toast && <Toast text={toast} onDone={() => setToast(null)} />}
-    </div>
+    <Doll
+      unit={unit}
+      units={units}
+      onSelect={(id) => {
+        setPick(null);
+        onSelect(id);
+      }}
+      onBack={onBack}
+      readOnly={readOnly}
+      stage3d={stage3d}
+      pick={pick}
+      onPick={setPick}
+      onSwap={(slot, index) => setEq({ slot, index })}
+    />
   );
 }
 

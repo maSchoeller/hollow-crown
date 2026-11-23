@@ -227,6 +227,8 @@ export interface RenderDef {
   };
   /** story 16.14: the item stage (weapon view, enchanter, armoury): camera, spin, drag, light and the pose of each model */
   itemStage: ItemStageDef;
+  /** story 16.15: the dress-up doll's stage (figure sheet): the board model in the ready stance, turnable about the vertical axis */
+  unitStage: UnitStageDef;
   /** story 16.18: the armoury vault (turntable of stands) and the banners on the keep */
   armory: ArmoryDef;
   /** epic 13: grid, range tiles, path arrow, danger tiers, target-tile lines, HP bars, whole-map view, double tap */
@@ -282,6 +284,28 @@ export interface ItemStageDef {
   fuseMs: number;
   /** pose per weapon model file name: yaw about the vertical axis, `upright` stands the long axis up */
   models: Record<string, { yaw: number; upright?: boolean }>;
+  lights: { ambient: { color: string; intensity: number }; key: StageLightDef; rim: StageLightDef };
+}
+/** The values the turntable's motion (`StageMotion`) reads: both stages (item, unit) supply them. */
+export type StageMotionDef = Pick<ItemStageDef, 'startPitchDeg' | 'tiltLimitDeg' | 'spinDegPerSec' | 'dragDegPerPx' | 'dampingPerSec' | 'restDegPerSec' | 'resetMs'>;
+
+/** Story 16.15: the dress-up doll's values (`render.yaml` `unitStage`); angles in degrees, times in ms. Only the yaw turns, the pitch stays at 0. */
+export interface UnitStageDef {
+  fov: number;
+  /** camera distance as a multiple of the tight fit of the figure's height */
+  margin: number;
+  /** where the camera aims: fraction of the figure's height above its feet (below 0.5 lifts the figure, away from the sheet) */
+  aimFraction: number;
+  /** height of the figure (scene units) when its bounds cannot be measured */
+  fallbackHeight: number;
+  startYawDeg: number;
+  spinDegPerSec: number;
+  dragDegPerPx: number;
+  dampingPerSec: number;
+  restDegPerSec: number;
+  doubleTapMs: number;
+  tapSlopPx: number;
+  resetMs: number;
   lights: { ambient: { color: string; intensity: number }; key: StageLightDef; rim: StageLightDef };
 }
 /** Story 16.18: the armoury's values (`render.yaml` `armory`); lengths in scene units, angles in degrees, times in ms. */

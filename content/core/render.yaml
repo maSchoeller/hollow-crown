@@ -374,6 +374,27 @@ itemStage:
     key: { color: "#FFF3DD", intensity: 1.1, direction: [-0.5, -0.8, 0.6] }
     rim: { color: "#FFB27A", intensity: 0.6, direction: [0.7, -0.2, -0.7] }
 
+# Story 16.15: die Ankleidepuppe des Figurenblatts: das Brettmodell der Figur in leichter Kampfhaltung über das ganze Handy, nur um die
+# Hochachse drehbar (Neigung bleibt 0, kein Eigendrehgang). Die Kamera schaut auf `aimFraction` der Figurenhöhe; Rinnen-Leuchten und Haltung kommen
+# aus `gear.rune` und `board.stance`, nicht von hier.
+unitStage:
+  fov: 24                    # senkrechter Blickwinkel in Grad
+  margin: 1.55               # Abstand der Kamera als Vielfaches des knappen Einpassens (Luft für Plätze und Kopfpille)
+  aimFraction: 0.34          # die Kamera zielt so hoch über den Füßen (unter 0,5 steht die Figur höher im Bild, über dem hellen Bereich)
+  fallbackHeight: 2.0        # Figurenhöhe in Szeneneinheiten, wenn sich die Hülle nicht messen lässt
+  startYawDeg: -22           # Anfangsdrehung (leicht schräg)
+  spinDegPerSec: 0           # kein Eigendrehgang: die Figur atmet und gestikuliert ohnehin
+  dragDegPerPx: 0.6          # Drehung je Pixel Ziehen
+  dampingPerSec: 3.2         # Auslaufen nach dem Loslassen
+  restDegPerSec: 2           # darunter bleibt die Bühne stehen und fällt auf fpsIdle
+  doubleTapMs: 320           # Doppeltippen setzt die Ansicht zurück
+  tapSlopPx: 10
+  resetMs: 380
+  lights:
+    ambient: { color: "#FFE9CC", intensity: 0.8 }
+    key: { color: "#FFF3DD", intensity: 1.15, direction: [-0.5, -0.7, 0.6] }
+    rim: { color: "#FFB27A", intensity: 0.65, direction: [0.7, -0.2, -0.7] }
+
 # Story 16.18: die Waffenkammer im Bergfried (3D-Gewölbe mit Drehscheibe) und die Banner am Bergfried. Längen in Szeneneinheiten
 # (Meter), Winkel in Grad, Zeiten in ms. Kamera, Licht und Modelllage der Ständer; Modelllage der Stücke aus `itemStage.models`.
 armory:

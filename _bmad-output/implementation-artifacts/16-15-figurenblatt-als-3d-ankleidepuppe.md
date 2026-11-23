@@ -1,6 +1,6 @@
 # Story 16.15: Figurenblatt als 3D-Ankleidepuppe
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -31,19 +31,19 @@ Quelle: Epic 16, Story 16.15; EXPERIENCE „Figurenblatt (Ankleidepuppe)“ (Z. 
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Ausrüstungs-Bausteine aus `BoardUnits` lösen (AC 1)
-  - [ ] 1.1 `gearOf`/`withRunes`/`stanceKeyOf`/`weaponOf` (heute `protected` in `src/render/board/boardUnits.ts`, auf `BattleUnit`) in ein gemeinsames Modul ziehen (z. B. `src/render/shared/unitGear.ts`), das nur `equip`/`classId`/`team` braucht, damit `UnitRecord` und `BattleUnit` es nutzen; `BoardUnits` ruft es auf (Verhalten unverändert, bestehende Tests grün)
-- [ ] Task 2: `UnitStage` (AC 1)
-  - [ ] 2.1 `src/render/units/unitStage.ts`: `HostedView`, Kamera/Lichter (Fit nach Bounding-Box), `StageMotion` (Neigung 0, Grenze 0), Pointer-Listener mit `AbortController`, `show(unit…) : Promise<boolean>`, `dispose()`
-  - [ ] 2.2 `ModelFigure` mit `stanceSetup`, `setStance(true)`, `setRuneGlow` voll, `tick(now)` je Frame; `busy()` wahr bei Eingabe/Auslauf/Haltungswechsel/Gesten, sonst `fpsIdle`
-  - [ ] 2.3 `render.yaml` `unitStage` (fov, margin, startYawDeg, dragDegPerPx, dampingPerSec, spinDegPerSec 0, doubleTapMs, tapSlopPx, resetMs, Lichter, Bodenhöhe/Blickhöhe) + Schema
-- [ ] Task 3: Oberfläche (AC 2–5, 7)
-  - [ ] 3.1 Hülle `UnitStageFrame` (lazy, Fallback `UnitBust`), Prop `stage3d`
-  - [ ] 3.2 Neue Komponente `Doll` (`src/app/screens/Doll.tsx` + `Doll.css`) ersetzt `Figure` in `FigureFlow`; reine Logik (Platzliste, Leistungswerte, Element-Chips, Beutel-Aktionen als Commands) in `src/app/screens/dollViewModel.ts`
-  - [ ] 3.3 Kopfpille, Plätze, Bereich zu/hoch/Details, Beutel aus dem Konvoi, Übernahme der übrigen Blatt-Funktionen in den hochgezogenen Bereich
-  - [ ] 3.4 Locales DE/EN
-- [ ] Task 4: Aufräumen (AC 6) — `troop.css`-Block löschen, `styles.css` prüfen, `Troop.tsx` verschlanken
-- [ ] Task 5: Tests, Beleg, Abschluss (AC 8, 9)
+- [x] Task 1: Ausrüstungs-Bausteine aus `BoardUnits` lösen (AC 1)
+  - [x] 1.1 `gearOf`/`withRunes`/`stanceKeyOf`/`weaponOf` (heute `protected` in `src/render/board/boardUnits.ts`, auf `BattleUnit`) in ein gemeinsames Modul ziehen (z. B. `src/render/shared/unitGear.ts`), das nur `equip`/`classId`/`team` braucht, damit `UnitRecord` und `BattleUnit` es nutzen; `BoardUnits` ruft es auf (Verhalten unverändert, bestehende Tests grün)
+- [x] Task 2: `UnitStage` (AC 1)
+  - [x] 2.1 `src/render/units/unitStage.ts`: `HostedView`, Kamera/Lichter (Fit nach Bounding-Box), `StageMotion` (Neigung 0, Grenze 0), Pointer-Listener mit `AbortController`, `show(unit…) : Promise<boolean>`, `dispose()`
+  - [x] 2.2 `ModelFigure` mit `stanceSetup`, `setStance(true)`, `setRuneGlow` voll, `tick(now)` je Frame; `busy()` wahr bei Eingabe/Auslauf/Haltungswechsel/Gesten, sonst `fpsIdle`
+  - [x] 2.3 `render.yaml` `unitStage` (fov, margin, startYawDeg, dragDegPerPx, dampingPerSec, spinDegPerSec 0, doubleTapMs, tapSlopPx, resetMs, Lichter, Bodenhöhe/Blickhöhe) + Schema
+- [x] Task 3: Oberfläche (AC 2–5, 7)
+  - [x] 3.1 Hülle `UnitStageFrame` (lazy, Fallback `UnitBust`), Prop `stage3d`
+  - [x] 3.2 Neue Komponente `Doll` (`src/app/screens/Doll.tsx` + `Doll.css`) ersetzt `Figure` in `FigureFlow`; reine Logik (Platzliste, Leistungswerte, Element-Chips, Beutel-Aktionen als Commands) in `src/app/screens/dollViewModel.ts`
+  - [x] 3.3 Kopfpille, Plätze, Bereich zu/hoch/Details, Beutel aus dem Konvoi, Übernahme der übrigen Blatt-Funktionen in den hochgezogenen Bereich
+  - [x] 3.4 Locales DE/EN
+- [x] Task 4: Aufräumen (AC 6) — `troop.css`-Block löschen, `styles.css` prüfen, `Troop.tsx` verschlanken
+- [x] Task 5: Tests, Beleg, Abschluss (AC 8, 9)
 
 ## Dev Notes
 
@@ -86,10 +86,21 @@ Quelle: Epic 16, Story 16.15; EXPERIENCE „Figurenblatt (Ankleidepuppe)“ (Z. 
 
 ### Agent Model Used
 
-### Debug Log References
+Claude Opus 5.5 (Sonnet-Subagent-Umsetzung)
 
 ### Completion Notes List
 
-- Ultimate context engine analysis completed - comprehensive developer guide created
+- Task 1: `src/render/shared/unitGear.ts` (`gearOf`, `weaponOf`, `offHandOf`, `proPartOf`, `withRunes`, `unitStanceKey`) arbeitet auf `{classId, equip}`; `BoardUnits` ruft es auf (Verhalten unverändert, Reliktstufen der Signaturwaffen weiter aus `state.relicStages`).
+- Task 2: `UnitStageView` (`src/render/units/unitStage.ts`): Brettmodell über `modelId`/`unitVatPath`/`loadUnitModel`, `ModelFigure` mit `stanceSetup`, `setStance(true)`, `setRuneGlow('full')`, `tick(now)` je Frame; `StageMotion` nur Gier (Neigung 0, Grenze 0, vertikaler Zug wird nicht weitergegeben). Pointer-Eingabe aus `ItemStageView` nach `src/render/items/stageInput.ts` gezogen und von beiden Bühnen genutzt (Item-Bühne unverändert im Verhalten). `StageMotion` nimmt jetzt `StageMotionDef` (Teilmenge von `ItemStageDef`). `render.yaml` `unitStage` + Zod-Schema + `UnitStageDef`.
+- Task 3: `Doll.tsx`/`Doll.css`/`UnitStageFrame.tsx`/`dollViewModel.ts`; `FigureFlow` hält Auswahl und `EquipView`, `stage3d` nur im `troop`-Screen (A1). Leistungswerte aus dem Kern: neue `unitPerformance` in `rules/changes.ts`; Treffer-, Ausweich- und Krit-Wertung als `hitRating`/`avoidRating`/`critRating` aus `calcSide` herausgezogen (Vorschau und Blatt rechnen mit demselben Code). Item-Details über neuen `ItemBody` (aus `ItemSheet` gelöst, kein Doppel). Locales `ui.doll.*` DE/EN.
+- Task 4: Figurenblatt-Block aus `troop.css` gelöscht (nur `.trp-bust` bleibt, weil Farewell und die Fallback-Büste ihn nutzen; `.trp-pick` war ungenutzt); `styles.css` unberührt; `Figure` aus `Troop.tsx` entfernt.
+- Task 5: `tests/unit/doll-view.test.ts` (Plätze, Runenpunkt, Leistungswerte gegen `forecast`, Beutel-Commands, Bühnenwerte, nur Gier, Locales) und `tests/unit/unit-gear.test.ts`; keine GLB-/VAT-Inhalte nötig. Dev-Hook `__hc.devDoll(unitId?)` (Axt + Schild mit Runen, Konvoi Stufe 3). Kein Bildbeleg (kein Dev-Server/Browser in dieser Session): Abnahme per `__hc.devDoll()` bei 375 x 812 offen.
+- `pnpm check` grün (Lint, 2673 Tests in 210 Dateien, content:check, Build). Haupt-Chunk `index-*.js` vorher 2.334,99 kB (gzip 654,53 kB), nachher 2.339,08 kB (gzip 655,90 kB), also +4,1 kB (+1,4 kB gzip); `unitStage` ist ein eigener Chunk von 3,6 kB (gzip 1,7 kB) und lädt erst im Figurenblatt. Erstdownload 14,42 MB (Budget 30 MB), unverändert über dem Zielwert 12 MB wie zuvor.
+- [ASSUMPTION A6] Wischen links/rechts wechselt die Figur nur auf Kopfpille und hellem Bereich, nicht auf der Bühne, weil Ziehen dort dreht. Pfeile und Pfeiltasten gehen überall.
+- [ASSUMPTION A7] Höhe und Kamerahöhe der Figur kommen aus ihren Hüllkörpergrenzen (`render.yaml` `unitStage.fallbackHeight` als Rückfall, `aimFraction` für die Blickhöhe); das Bild unterhalb der Kopfpille ist nicht auf einem echten Gerät geprüft, `margin`, `aimFraction` und `startYawDeg` können nach der Sichtabnahme nachjustiert werden.
+- [ASSUMPTION A8] Die Bühne zeichnet im Ruhezustand mit `fpsIdle` (busy nur bei Eingabe, Auslauf und kurz nach dem Aufbau); die Haltungsgesten laufen dann mit der niedrigen Rate.
 
 ### File List
+
+- neu: `src/app/screens/Doll.tsx`, `Doll.css`, `UnitStageFrame.tsx`, `dollViewModel.ts`; `src/render/units/unitStage.ts`; `src/render/items/stageInput.ts`; `src/render/shared/unitGear.ts`; `tests/unit/doll-view.test.ts`, `tests/unit/unit-gear.test.ts`
+- geändert: `src/app/screens/Troop.tsx`, `src/app/state/devHooks.ts`, `src/render/board/boardUnits.ts`, `src/render/items/itemStage.ts`, `src/render/items/stageMath.ts`, `src/core/rules/changes.ts`, `src/core/rules/combat.ts`, `src/core/renderDefs.ts`, `src/content/schemaRender.ts`, `src/ui/ItemSheet.tsx`, `src/ui/troop.css`, `content/core/render.yaml`, `content/core/locales/de.yaml`, `en.yaml`, diese Story, `sprint-status.yaml`
