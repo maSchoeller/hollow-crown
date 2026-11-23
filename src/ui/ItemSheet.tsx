@@ -28,24 +28,10 @@ export function ItemSheet({
   onClose: () => void;
 }) {
   const inst = asInstance(item);
-  return (
-    <Sheet title={itemName(data, inst)} onClose={onClose} class="its">
-      <ItemBody data={data} item={inst} />
-    </Sheet>
-  );
-}
-
-/**
- * The content of the sheet without its frame: picture, type and rarity, description, values, effects, skill, set, runes and price.
- * The figure sheet's dress-up doll (16.15) shows it under a chosen place, "as when buying".
- */
-export function ItemBody({ data, item }: { data: GameData; item: ItemInstance | string }) {
-  const inst = asInstance(item);
   const info = itemInfo(data, inst, shownRelics.value);
   const rarity = rarityOf(data, inst);
   return (
-    <>
-
+    <Sheet title={itemName(data, inst)} onClose={onClose} class="its">
       <div class="its__top">
         <ItemImage data={data} item={inst} size={72} />
         <div class="its__id">
@@ -143,7 +129,7 @@ export function ItemBody({ data, item }: { data: GameData; item: ItemInstance | 
           )}
         </div>
       )}
-    </>
+    </Sheet>
   );
 }
 

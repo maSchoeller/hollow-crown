@@ -23,6 +23,7 @@ import {
   type CampaignCommand,
   type EquipSlot,
   type GearRun,
+  type GameData,
   type ItemInstance,
   type UnitRecord,
 } from '../../core';
@@ -31,7 +32,8 @@ import { t } from '../../i18n';
 import { ChangeList, STAT_ICON } from '../../ui/ChangeList';
 import { ItemLine, Toast, TraitChips, unitName } from '../../ui/components';
 import { ElementDot, Icon } from '../../ui/icons';
-import { ItemBody } from '../../ui/ItemSheet';
+import { asInstance, itemInfo, itemName, rarityOf } from '../../ui/itemInfo';
+import { shownRelics } from '../../ui/relicView';
 import { Amount, ItemImage, PrimaryButton, SecondaryButton } from '../../ui/pieces';
 import { audio } from '../audio';
 import { campaign, campaignCommand, campaignRelics, data } from '../state/session';
@@ -260,6 +262,54 @@ export function Doll({ unit, units, onSelect, onBack, readOnly, stage3d = false,
 }
 
 /** One of the six places over the picture: 46 px stone with the item, the rune dot at the bottom right and the label under it. */
+const FACT_ICON: Record<string, string> = {
+  mt: 'attack', hit: 'target', crit: 'crit', rng: 'range', wt: 'weight', str: 'strength', mag: 'magic', skl: 'skill',
+  spd: 'speed', lck: 'luck', def: 'shield', res: 'resist', mov: 'move', hp: 'hp', damageType: 'attack', heal: 'hp',
+};
+
+/** The chosen item as when buying, compact: picture and name, description, values in two columns, effects and set. */
+function ItemHead({ data, item }: { data: GameData; item: ItemInstance }) {
+  const inst = asInstance(item);
+  const info = itemInfo(data, inst, shownRelics.value);
+  const rarity = t(`ui.itemInfo.rarity.${rarityOf(data, inst)}`);
+  return (
+    <>
+      <div class="doll__ihead">
+        <ItemImage data={data} item={inst} size={52} />
+        <div class="doll__iname">
+          <b>{itemName(data, inst)}</b>
+          <span>{[info.type, rarity].join(' · ')}</span>
+        </div>
+        {info.buy > 0 && (
+          <span class="doll__price">
+            <Amount resource="gold" value={info.buy} />
+          </span>
+        )}
+      </div>
+      <p class="doll__desc">{info.desc}</p>
+      {info.facts.length > 0 && (
+        <dl class="doll__facts">
+          {info.facts.map((f) => (
+            <div key={f.key} class="doll__fact">
+              <Icon name={FACT_ICON[f.key] ?? 'star'} size={16} />
+              <dt>{f.label}</dt>
+              <dd class={f.tone === 'up' ? 'hc-up' : f.tone === 'down' ? 'hc-down' : ''}>{f.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {info.effects.map((e) => (
+        <p key={e} class="doll__desc">{e}</p>
+      ))}
+      {info.set && (
+        <p class="doll__desc">
+          <b>{t('ui.itemInfo.setTitle', { name: info.set.name })}</b> {info.set.pieces.join(' · ')}
+        </p>
+      )}
+    </>
+  );
+}
+
 function SlotStone({ s, selected, onTap }: { s: DollSlot; selected: boolean; onTap: () => void }) {
   const label = t(`ui.slot.${s.slot}`);
   return (
@@ -338,16 +388,18 @@ function PickView({
   const def = itemDef(data, item);
   const bare: ItemInstance = { ...item, runes: item.runes.map(() => null) };
   const hasRune = !!slot && (item.runes.some(Boolean) || !!def.fixedRune);
+  const runeId = [item.runes.find(Boolean), ...[def.fixedRune ?? []].flat()].find(Boolean);
+  const runeName = runeId ? t(`item.${runeId}.name`) : '';
   const skill = def.grantsSkill;
   const points = skill ? (unit.sp[skill.skill] ?? 0) : 0;
   const done = !!skill && unit.mastered.includes(skill.skill);
   const full = pick.kind === 'bag' && convoyIsFull(data, c);
   return (
     <div class="doll__card">
-      <ItemBody data={data} item={item} />
+      <ItemHead data={data} item={item} />
       {hasRune && slot && (
-        <section class="its__sec">
-          <h3>{t('ui.doll.runeChange')}</h3>
+        <section class="doll__sec">
+          <h4 class="doll__cap">{t('ui.doll.runeChange', { name: runeName })}</h4>
           <ChangeList result={changeList(data, unit, item, { slot, base: bare })} />
         </section>
       )}
@@ -362,9 +414,7 @@ function PickView({
       <div class="doll__btns">
         {!readOnly && slot && <SecondaryButton onClick={() => onSwap(slot, 0)}>{t('ui.doll.swap')}</SecondaryButton>}
         {slot && (slot === 'mainHand' || slot === 'offHand') && (
-          <button type="button" class="hc-tab" onClick={() => openWeapon(item.uid, { unit: unit.id })}>
-            <Icon name="eye" size={16} /> {t('ui.weaponView.open')}
-          </button>
+          <PrimaryButton onClick={() => openWeapon(item.uid, { unit: unit.id })}>{t('ui.weaponView.open')}</PrimaryButton>
         )}
         {!readOnly && pick.kind === 'bag' && (
           <SecondaryButton

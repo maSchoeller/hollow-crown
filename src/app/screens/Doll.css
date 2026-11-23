@@ -504,3 +504,74 @@
 .doll__btns > .hc-btn {
   flex: 1 1 auto;
 }
+
+/* compact item head (as when buying) */
+.doll__ihead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.doll__iname {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+}
+.doll__iname b {
+  font-family: var(--hc-font-name);
+  font-size: 20px;
+  line-height: 1.1;
+}
+.doll__iname span {
+  color: var(--hc-soft);
+  font-size: 13px;
+}
+.doll__price {
+  padding: 3px 10px;
+  border-radius: var(--hc-r-pill);
+  background: rgba(0, 0, 0, 0.06);
+}
+.doll__desc {
+  margin: 0;
+  color: var(--hc-soft);
+  font-size: 14px;
+  line-height: 1.35;
+}
+.doll__facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 18px;
+  margin: 0;
+}
+.doll__fact {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--hc-font-label);
+  font-size: 14px;
+}
+.doll__fact dt {
+  flex: 1;
+  min-width: 0;
+}
+.doll__fact dd {
+  margin: 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.doll__sec {
+  display: grid;
+  gap: 4px;
+}
+.doll__cap {
+  margin: 0;
+  color: var(--hc-soft);
+  font-family: var(--hc-font-label);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* the drag hint only in the collapsed state, so it never covers the slot column */
+.doll--half .doll__hint,
+.doll--detail .doll__hint {
+  display: none;
+}
