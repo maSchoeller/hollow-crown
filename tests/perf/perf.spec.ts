@@ -360,8 +360,8 @@ test('enemy phase of a saved battle (story 15.11)', async ({ page }, info) => {
  * Story 16.19 (AC 3): `PERF_VIEWS=1 pnpm perf` measures the 3D views of epic 16 on the bench page at each throttling level: the load
  * time until the model is on the stage (figure sheet doll 16.15, weapon view 16.14, armoury of the keep 16.18), their frame rate while
  * they idle for 5 s, and the battle board with the chosen figure changing every 0.7 s (combat stance of 16.10, `stance.ts`) against the
- * same board with nothing chosen. Medians over `PERF_RUNS` runs, max over all runs. Idle views draw at `board.fpsIdle` (30), the
- * armoury (turning stands) and the battle at the active rate (60): the FPS target of a level is capped at that rate. The frame
+ * same board with nothing chosen. Medians over `PERF_RUNS` runs, max over all runs. The doll idles at `board.fpsIdle` (30), the
+ * weapon view, the armoury (turning stands) and the battle draw at the active rate (60): the FPS target of a level is capped at that rate. The frame
  * ms are the distances between two drawn frames (`draws`); the longest page frame (`raf`) is held to the 100 ms of story 7.8.
  * Writes `test-results/perf/views-<device>.json` and `.md`. Desktop throttling stands in for the phone; the reference devices stay a
  * release check.
@@ -373,7 +373,7 @@ test('3D views of epic 16 and the battle stance (story 16.19)', async ({ page },
   const cdp = await throttle(page);
   const views = [
     { id: 'doll', label: 'Figurenblatt (Puppe)', cap: 30 },
-    { id: 'weapon', label: 'Waffenansicht', cap: 30 },
+    { id: 'weapon', label: 'Waffenansicht', cap: 60 },
     { id: 'armory', label: 'Waffenkammer', cap: 60 },
   ] as const;
   interface Row { scenario: string; cpuSlowdown: number; loadMs: number | null; avgFps: number; p95Ms: number; maxMs: number; maxRafMs: number; renderMs: number; drawCalls: number; target: number | null; pass: boolean | null }

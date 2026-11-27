@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import {
+  costLabel,
   cycleOrder,
   entryAnchors,
   entryByAnchor,
@@ -63,6 +64,9 @@ describe('handbook value paths (story 14.1)', () => {
     expect(formatHandbookValue(15, 'signed', 'de-DE')).toBe('+15');
     expect(formatHandbookValue(-1, 'signed', 'de-DE')).toBe('−1');
     expect(formatHandbookValue(0, 'signed', 'de-DE')).toBe('0');
+    expect(formatHandbookValue(0.5, 'cost', 'de-DE')).toBe('½');
+    expect(formatHandbookValue(2.5, 'cost', 'en-US')).toBe('2½');
+    expect(formatHandbookValue(1, 'cost', 'de-DE')).toBe('1');
     expect(formatHandbookValue(20, 'percent', 'de-DE')).toBe('20%');
     expect(formatHandbookValue(40, 'signedPercent', 'de-DE')).toBe('+40%');
     expect(formatHandbookValue(1.2, 'factor', 'de-DE')).toBe('×1,2');
@@ -87,8 +91,8 @@ describe('handbook value paths (story 14.1)', () => {
     const entry = (id: string) => data.handbook!.entries.find((e) => e.id === id)!;
     const sr = data.balance.element.shieldRune;
     expect(handbookParams(data, entry('road_half'), 'de-DE')).toEqual({
-      road: String(data.terrain.road!.cost.foot).replace('.', ','),
-      bridge: String(data.terrain.bridge!.cost.foot).replace('.', ','),
+      road: costLabel(data.terrain.road!.cost.foot!),
+      bridge: costLabel(data.terrain.bridge!.cost.foot!),
     });
     expect(handbookParams(data, entry('shield_runes'), 'en-US')).toEqual({
       factor: `×${sr.factor}`,

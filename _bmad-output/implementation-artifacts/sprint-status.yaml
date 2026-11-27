@@ -306,7 +306,8 @@ development_status:
   16-16-verzauberer-als-werkbank: done  # Verzauberer als Werkbank
   16-17-haendler-zuerst-die-person: done  # Händler „zuerst die Person“
   16-18-waffenkammer-im-bergfried: done  # Waffenkammer im Bergfried
-  16-19-handbuch-leistung-und-abnahme: in-progress  # Handbuch, Leistung und Abnahme (dazu Lücken aus 16.7 und 16.10, Review 2026-11-27)
+  16-19-handbuch-leistung-und-abnahme: review  # Handbuch, Leistung und Abnahme (dazu Lücken aus 16.7 und 16.10); offen beim Produktinhaber: Handy-Durchlauf Akt 1 und Messung auf dem Referenzgerät
+  16-20-brett-unter-drosselung-fluessig-halten: backlog  # Brett unter Drosselung flüssig halten (aus der Messung von 16.19, 2026-11-27)
   epic-16-retrospective: optional
 
   # Epic 17: Filmszenen (grob, Entwurf aus PR #118, eingeplant 2026-11-27; vor der Umsetzung verfeinern)

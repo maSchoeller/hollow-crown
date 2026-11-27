@@ -13,7 +13,7 @@
   font-size: 13px;
 }
 .lens-legend__help {
-  /* the stone sits at the end of the pill; its own left margin keeps the tap area off the last item */
+  /* the stone sits at the end of the pill; its left margin comes from HelpStone.css, this rule only centers it */
   align-self: center;
 }
 .lens-legend__item {

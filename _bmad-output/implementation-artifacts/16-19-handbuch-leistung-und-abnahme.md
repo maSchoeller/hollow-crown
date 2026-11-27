@@ -1,6 +1,6 @@
 # Story 16.19: Handbuch, Leistung und Abnahme
 
-Status: in-progress
+Status: review
 
 ## Story
 
@@ -39,6 +39,8 @@ damit das Epic vor dem Release rund ist.
 ## Dev Agent Record
 
 ### Completion Notes List
+
+- **Review-Fixes 2026-11-27:** Handbuch-Texte korrigiert (Gegner-Schild-Runen-Satz entfernt, Waffen-Chronik: nur Kompanie-Waffen, Leutnant-Name nur ohne Beinamen, Beiname bleibt; „Schaden durch das Element“; EN „tier“/US-Schreibweise; „nie anfälliger“, „unter dem Band“). Neues Handbuch-Format `cost` (über `costLabel`, „½“) für Straße und Brücke und die Gelände-Kostentabelle, Test in `handbook.test.ts`. Perf: Deckel der Waffenansicht 60 statt 30, Kommentar angepasst; Wiederholungsmessung siehe unter der Messtabelle.
 
 - T3 (2026-11-27): Befund bestätigt. Gemessen mit `stance_shots.py` (neue Ausgabe `floor ...: lowest weapon point z`, Füße bei 0): Lanzenende in Ruhe z = 0,056, Stabende 0,037 über dem Boden. Hebel ist der Griffursprung im Waffenmodell: `GRIP_SHIFT` in `blender_weapon_lance.py` (0,059) und `blender_weapon_staff.py` (0,040) verschiebt die Geometrie samt Fassungs-Nodes um dieses Maß entlang des Schafts zum Ende hin (Ursprung liegt damit näher am Kopf); danach Lanzenende z = -0,003, Stabende -0,003 (berührt, 3 mm Bodenkontakt). Kein Figuren-Rebake nötig (Posen unverändert, die Waffe hängt am `grip_r`-Sockel). In der Kampfhaltung sitzt die Waffe um den Betrag weiter vorn in der Hand (Schaftmitte statt Schaftansatz), Sicht geprüft, wirkt unauffällig. Neu gebaut: `lance.glb`, `staff.glb`, Signatur-Lanzen `sig/wolf_fang|rowenas_lance|heirloom.glb` (erben das Lanzen-Skript; keine Signatur-Stäbe vorhanden), danach `weapon_grip_nodes.py`. Miras Bogen: `POSE["bow"]["rest"]["l"]` jetzt `hand((1.40, 0.12, -0.84), (0,0,1), (0.6,-0.8,0), W_BOW)` (Sehne senkrecht, Bauch nach außen/hinten, die Sehnenseite liegt vor dem Oberschenkel; vorher Bauch nach vorn, Bogen verschwand hinter dem Bein). Gilt für alle Bogenträger; neu gebacken (Clips + VAT + Pack): mira, mercenary, bandit_archer, fenn, ilka, nell, morra, brakka, temple_guard. Bogenende in Ruhe z = 0,038 (Bogen darf schweben, ist kürzer als der Arm reicht). [ASSUMPTION] Bodenkontakt 3 mm statt exakt 0, damit nichts schwebt; Bogen-Ruhehaltung nach Augenmaß aus vier Ansichten (Vorher/Nachher-Bilder in der Session, `stance-16-19/`). Die T4-Vorschau `staff_v2_preview.png` bleibt gültig (Form unverändert, nur der Ursprung wanderte).
 - T1: neue Einträge `road_half` (Gelände, Werte `terrain.road.cost.foot`/`terrain.bridge.cost.foot`; verlinkt aus `movement` und `terrain_open`, damit „eine Seite je Gelände“ bleibt), `terrain_lens` (Anker `terrainLens`), `weapon_chronicle` (Waffen, `balance.weaponChronicle.epithetKills`), `shield_runes` (Items, ab Akt 2, `balance.element.shieldRune.*`); Eintrag `elements` um das Element-Band und die Schild-Rune erweitert (Text und Fundort DE/EN). Kein Resolver-Umbau: `terrain.<id>.cost.foot` löst schon auf.
@@ -84,12 +86,24 @@ Deutung:
 
 - Die drei neuen Ansichten liegen mit GPU bis 4× im Budget: Puppe und Waffenansicht kosten 3 bzw. 2 Draw Calls und 0,2–5 ms je Bild; die Ladezeiten 0,3–0,9 s bei 1×/2× und 0,6–1,4 s bei 4× sind klein gegen den Kaltstart. Die Waffenkammer ist mit 118 Draw Calls bei vollem Tresor (jedes Relikt und Signaturstück im Besitz, Worst Case) die teuerste: 17,7 ms je Bild bei 4×, aber 47 FPS und kein Bild über 87 ms; Laden 1,1–2,4 s.
 - Die Kampfhaltung bei Auswahl hebt das Brett vom Ruhetakt (30 FPS) auf den aktiven Takt (55–56 statt 30 FPS, Renderzeit je Bild gleich), also etwa doppelte Arbeit je Sekunde, solange eine Figur ihre Haltung wechselt. Bei 2× fehlen dem 60-FPS-Ziel 5 FPS (55,3, kein Bild über 56 ms); bei 4× reicht es (32,3 FPS, schlechtester Wert 60 ms). Auffällig ist stattdessen die Ruhe-Zeile bei 4×: ein Bild von 137 ms in einem der 3 Läufe (Seitenbild 133 ms, Renderzeit 27 ms je Bild, das ist die Streuung des Rechners wie bei den schon bekannten Ausreißern der Gegnerphase), nicht die Haltung selbst.
+- **Wiederholung 2026-11-27** (gleicher Rechner, `PERF_GPU=1 PERF_VIEWS=1 PERF_STAGES=2,4 PERF_RUNS=3 pnpm perf --project=pixel6a`, Test nicht auf die Brett-Zeilen einschränkbar, daher ganz gelaufen; die Stufe 1× entfiel):
+
+  | Szenario | Drossel | Ø FPS | Ziel | p95 ms | max ms (Seitenbild) | Render ms/Bild |
+  |---|---|---|---|---|---|---|
+  | Brett, nichts gewählt | 2× | 29,9 | 30 | 37,4 | 69,2 (67) | 9,1 |
+  | Brett, Wahl wechselt | 2× | 54,9 | 60 | 32,6 | 62,2 (33) | 9,6 |
+  | Brett, nichts gewählt | 4× | 26,9 | 30 | 49,5 | **129,6 (133)** | 28,1 |
+  | Brett, Wahl wechselt | 4× | **24,1** | 30 | 53,0 | **151,1 (117)** | 33,4 |
+  | Waffenansicht (Deckel jetzt 60) | 4× | 58,4 | 60 | 20,8 | 36,8 (17) | 2,9 |
+
+  Die Haltung bei 2× reproduziert sich: 54,9 FPS (92 % von 60), kein Bild über 62 ms. Der Ruhe-Ausreißer bei 4× reproduziert sich ebenfalls (129,6 ms, Seitenbild 133 ms; zuvor 137,4 ms), ist also kein einmaliges Rauschen. Zusätzlich fiel diesmal die Haltung bei 4× unter das Ziel (24,1 statt 32,3 FPS, ein Bild 151 ms); das Brett kostet bei 4× 28–33 ms je Bild und hat damit wenig Spielraum, die Werte streuen von Lauf zu Lauf stark. Bei 4× sind beide Brett-Zeilen demnach nicht verlässlich im Budget; Referenzgerät entscheidet. Nichts getunt.
 - Nichts davon wurde getunt; Messwerte nur berichtet. Unter SwiftShader (ohne `PERF_GPU=1`) sind die Werte nicht verwertbar (Waffenkammer 8 FPS, Bild bis 150 ms).
 - **Offen für den Produktinhaber:** Messung auf dem Referenzgerät (Pixel 6a / iPhone 12): Ladezeit von Figurenblatt, Waffenansicht und Waffenkammer, Bildrate der Waffenkammer und im Kampf beim Wechsel der gewählten Figur; Befehle wie oben, auf dem Gerät per `pnpm perf` mit `PERF_STRICT=1` bzw. von Hand (Architektur §10, Story 9.14).
 
 
 ### File List
 
+- Review-Fixes 2026-11-27: `src/core/renderDefs.ts` (Format `cost`), `src/core/handbook.ts`, `src/app/screens/Handbook.tsx` (Kostentabelle über `costLabel`), `tests/perf/perf.spec.ts`, `src/app/screens/TerrainLens.css` (Kommentar)
 - `content/core/handbook.yaml`, `content/core/locales/de.handbook.yaml`, `content/core/locales/en.handbook.yaml`
 - `src/app/screens/TerrainLens.tsx`, `src/app/screens/TerrainLens.css`
 - `tests/unit/handbook.test.ts`

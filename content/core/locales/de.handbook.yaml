@@ -198,7 +198,7 @@ handbook:
     road: "Straße kostet"
     bridge: "Brücke kostet"
     kills: "Beiname ab Kill"
-    factor: "Schaden gegen das Element"
+    factor: "Schaden durch das Element"
     statusTier: "Immun gegen Zustand ab Stufe"
     terrainTier: "Immun gegen Brandfeld ab Stufe"
   entry:
@@ -262,12 +262,12 @@ handbook:
       keywords: "Dreieck, Waffendreieck, Schwert, Axt, Lanze, Vorteil, Nachteil"
     elements:
       title: "Elemente"
-      text: "Jedes Element schlägt das nächste im Kreislauf, Licht und Dunkel schlagen einander. Mit Vorteil gibt es {adv} Schaden, mit Nachteil {dis}, gegen das gleiche Element {same}. Element und Waffendreieck bringen zusammen höchstens {elemMax}. Jedes Element kann einen Zustand auslösen. Das Band über der Kampfvorschau nennt beide Elemente und den Faktor: grün bei Vorteil, rot bei Nachteil. Ein Schild mit Rune hält sein Element ab und macht nie schwächer; darunter steht die Chance auf den Zustand."
+      text: "Jedes Element schlägt das nächste im Kreislauf, Licht und Dunkel schlagen einander. Mit Vorteil gibt es {adv} Schaden, mit Nachteil {dis}, gegen das gleiche Element {same}. Element und Waffendreieck bringen zusammen höchstens {elemMax}. Jedes Element kann einen Zustand auslösen. Das Band über der Kampfvorschau nennt beide Elemente und den Faktor: grün bei Vorteil, rot bei Nachteil. Ein Schild mit Rune hält sein Element ab und macht nie anfälliger; unter dem Band steht die Chance auf den Zustand."
       where: "Das Element-Symbol steht an Waffe und Affinität; die Vorschau zeigt das Band und den Bonus in Prozent."
       keywords: "Element, Feuer, Wasser, Erde, Wind, Licht, Dunkel, Affinität, Kreislauf"
     weapon_chronicle:
       title: "Waffen-Chronik"
-      text: "Jede Waffe zählt mit, wie viele Gegner sie gefällt hat; ein vertriebener Leutnant zählt mit. Beim {kills}. Kill bekommt sie einen Beinamen aus dem Namen der Figur mit den meisten Kills und einem Wort ihrer Waffengruppe. Fällt oder vertreibt sie einen Leutnant, trägt sie sofort seinen Namen. Zähler und Beiname bleiben an der Waffe, auch wenn sie weitergegeben wird, und ändern keinen Wert."
+      text: "Jede Waffe der Kompanie zählt mit, wie viele Gegner sie gefällt hat; ein vertriebener Leutnant zählt mit. Beim {kills}. Kill bekommt sie einen Beinamen aus dem Namen der Figur mit den meisten Kills und einem Wort ihrer Waffengruppe. Hat sie noch keinen Beinamen und fällt oder vertreibt sie einen Leutnant, trägt sie sofort seinen Namen. Ein Beiname bleibt für immer. Zähler und Beiname bleiben an der Waffe, auch wenn sie weitergegeben wird, und ändern keinen Wert."
       where: "Im Item-Blatt der Waffe und in der Waffenansicht."
       keywords: "Chronik, Kills, Beiname, Waffe, Zähler, Leutnant, Ruhm"
     magic:
@@ -483,7 +483,7 @@ handbook:
       keywords: "Rune, Runen, Verzauberer, Element, verschmelzen"
     shield_runes:
       title: "Schild-Runen"
-      text: "Jeder Schild hat einen Runen-Platz für Element-Runen: Feuer, Wasser, Erde und Wind. Licht, Dunkel und Hilfs-Runen passen nicht. Stufe eins senkt den Schaden dieses Elements auf {factor}. Ab Stufe {statusTier} schützt der Schild auch vor dem Zustand des Elements, ab Stufe {terrainTier} bei Feuer vor dem Brandfeld. Ein Schild macht nie anfälliger; trägt auch die Rüstung das Element, gilt nur der bessere Schutz. Gegner tragen keine Schild-Runen."
+      text: "Jeder Schild hat einen Runen-Platz für Element-Runen: Feuer, Wasser, Erde und Wind. Licht, Dunkel und Hilfs-Runen passen nicht. Stufe eins senkt den Schaden dieses Elements auf {factor}. Ab Stufe {statusTier} schützt der Schild auch vor dem Zustand des Elements, ab Stufe {terrainTier} bei Feuer vor dem Brandfeld. Ein Schild macht nie anfälliger; trägt auch die Rüstung das Element, gilt nur der bessere Schutz."
       where: "Im Verzauberer der Burg; der Schild-Platz steht im Item-Blatt."
       keywords: "Schild, Rune, Schutz, Element, immun, Brandfeld, Feuer, Wasser, Erde, Wind"
     sets:

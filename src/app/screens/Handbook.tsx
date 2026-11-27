@@ -7,6 +7,7 @@
 import { useEffect, useId, useState } from 'preact/hooks';
 import {
   categoryEntries,
+  costLabel,
   cycleOrder,
   formatHandbookValue,
   handbookCategoryKey,
@@ -378,7 +379,7 @@ const MOVE_TYPES = ['foot', 'armored', 'mounted', 'flier', 'monster'] as const;
 
 function TerrainTables({ d, ids }: { d: GameData; ids: string[] }) {
   const list = ids.map((id) => d.terrain[id]).filter((x) => !!x);
-  const num = (v: number | null) => (v === null ? t('handbook.ui.impassable') : String(v));
+  const num = (v: number | null) => (v === null ? t('handbook.ui.impassable') : costLabel(v));
   return (
     <div class="hb-tables">
       <table class="hb-table">

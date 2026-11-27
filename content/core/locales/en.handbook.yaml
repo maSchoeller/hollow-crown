@@ -199,8 +199,8 @@ handbook:
     bridge: "Bridge costs"
     kills: "Epithet at kill"
     factor: "Damage from the element"
-    statusTier: "Immune to condition from level"
-    terrainTier: "Immune to burning ground from level"
+    statusTier: "Immune to condition from tier"
+    terrainTier: "Immune to burning ground from tier"
   entry:
     # ------------------------------------------------------------ Basics
     phases:
@@ -262,12 +262,12 @@ handbook:
       keywords: "triangle, weapon triangle, sword, axe, lance, advantage, disadvantage"
     elements:
       title: "Elements"
-      text: "Each element beats the next one in the cycle; light and dark beat each other. With the advantage you deal {adv} damage, with the disadvantage {dis}, against the same element {same}. Element and weapon triangle together add at most {elemMax}. Every element can cause a condition. The band above the forecast names both elements and the factor: green for the advantage, red for the disadvantage. A shield with a rune holds off its element and never makes a unit weaker; below it stands the chance of the condition."
+      text: "Each element beats the next one in the cycle; light and dark beat each other. With the advantage you deal {adv} damage, with the disadvantage {dis}, against the same element {same}. Element and weapon triangle together add at most {elemMax}. Every element can cause a condition. The band above the forecast names both elements and the factor: green for the advantage, red for the disadvantage. A shield with a rune holds off its element and never makes a unit more vulnerable; below the band stands the chance of the condition."
       where: "The element symbol sits on weapon and affinity; the forecast shows the band and the bonus in percent."
       keywords: "element, fire, water, earth, wind, light, dark, affinity, cycle"
     weapon_chronicle:
       title: "Weapon chronicle"
-      text: "Every weapon counts how many enemies it has felled; a lieutenant driven off counts too. At kill {kills} it earns an epithet from the name of the unit with the most kills and a word of its weapon group. If it fells or drives off a lieutenant, it carries his name at once. Counter and epithet stay with the weapon when it is passed on and change no stat."
+      text: "Every company weapon counts how many enemies it has felled; a lieutenant driven off counts too. At kill {kills} it earns an epithet from the name of the unit with the most kills and a word of its weapon group. If it has no epithet yet and fells or drives off a lieutenant, it carries his name at once. An epithet stays forever. Counter and epithet stay with the weapon when it is passed on and change no stat."
       where: "On the item sheet of the weapon and in the weapon view."
       keywords: "chronicle, kills, epithet, weapon, counter, lieutenant, fame"
     magic:
@@ -288,7 +288,7 @@ handbook:
       keywords: "road, bridge, path, cost, half step, fast, movement"
     terrain_lens:
       title: "Terrain lens"
-      text: "The lens tints every tile by its effect: cover, slow, fast, harm and blocked. The pattern is in the legend under the top bar, so you can read it without colour. A tile with two effects shows both. Tap a tile and the tile card names the cost for every movement type."
+      text: "The lens tints every tile by its effect: cover, slow, fast, harm and blocked. The pattern is in the legend under the top bar, so you can read it without color. A tile with two effects shows both. Tap a tile and the tile card names the cost for every movement type."
       where: "Hold \"Danger\" in the dock, on PC press G. A hint shows it the first time."
       keywords: "lens, terrain, legend, pattern, tile card, cost, slow, fast, cover"
     terrain_cover:
@@ -483,7 +483,7 @@ handbook:
       keywords: "rune, runes, enchanter, element, merge"
     shield_runes:
       title: "Shield runes"
-      text: "Every shield has a rune slot for element runes: fire, water, earth and wind. Light, dark and utility runes do not fit. Level one cuts damage of that element to {factor}. From level {statusTier} the shield also protects against the condition of the element, from level {terrainTier} fire also against burning ground. A shield never makes a unit more vulnerable; if the armour carries the element too, only the better protection counts. Enemies carry no shield runes."
+      text: "Every shield has a rune slot for element runes: fire, water, earth and wind. Light, dark and utility runes do not fit. Tier one cuts damage of that element to {factor}. From tier {statusTier} the shield also protects against the condition of the element, from tier {terrainTier} fire also against burning ground. A shield never makes a unit more vulnerable; if the armor carries the element too, only the better protection counts."
       where: "At the castle enchanter; the shield slot is on the item sheet."
       keywords: "shield, rune, protection, element, immune, burning ground, fire, water, earth, wind"
     sets:

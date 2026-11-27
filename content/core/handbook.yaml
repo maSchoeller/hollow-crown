@@ -5,7 +5,7 @@
 # classes.vanguard.mov), die Texte setzen sie als {id} ein. content:check prüft Schlüssel, Pfade, Querverweise und Anker.
 # graphic: icon (großes Symbol), triangle (Waffendreieck aus balance), elements (Kreislauf aus balance), terrain (Tabelle der
 # Gelände aus terrain.yaml), class (Steckbrief aus classes.yaml), lesson (Zeilen der Lektions-Szene), rarity (Tabelle aus balance).
-# format: plain 15 · signed +15 · percent 15% · signedPercent +15% · factor ×3 · factorPercent 1.2 → +20% · share 0.1 → 10%.
+# format: plain 15 · signed +15 · percent 15% · signedPercent +15% · factor ×3 · factorPercent 1.2 → +20% · share 0.1 → 10% · cost 0.5 → ½ (as the tile card writes movement costs).
 # anchor: Kontext-„?“ im Spiel (forecast, elements, status.<id>); Gelände, Klassen und Lektionen bekommen terrain.<id>, class.<id>, lesson.<szene>.
 # fromAct: die Regel kommt erst mit diesem Akt (Epic 10) und steht als „ab Akt n“ da.
 
@@ -130,8 +130,8 @@ entries:
     category: terrain
     icon: boot
     values:
-      - { id: road, ref: terrain.road.cost.foot, format: plain, icon: boot }
-      - { id: bridge, ref: terrain.bridge.cost.foot, format: plain, icon: boot }
+      - { id: road, ref: terrain.road.cost.foot, format: cost, icon: boot }
+      - { id: bridge, ref: terrain.bridge.cost.foot, format: cost, icon: boot }
     see: [movement, terrain_open, terrain_lens]
   # Story 16.11: die Gelände-Linse (Kontext-„?“ an der Legende)
   - id: terrain_lens
