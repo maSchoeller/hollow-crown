@@ -1,6 +1,6 @@
 # Story 1.6: Verbluten im Modus Standard
 
-Status: review
+Status: done
 
 ## Story
 

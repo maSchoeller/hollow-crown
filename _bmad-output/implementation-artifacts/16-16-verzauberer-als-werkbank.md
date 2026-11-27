@@ -1,6 +1,6 @@
 # Story 16.16: Verzauberer als Werkbank
 
-Status: review
+Status: done
 
 ## Story
 

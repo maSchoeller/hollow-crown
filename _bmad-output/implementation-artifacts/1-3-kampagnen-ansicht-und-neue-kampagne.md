@@ -1,6 +1,6 @@
 # Story 1.3: Kampagnen-Ansicht und Neue Kampagne
 
-Status: review
+Status: done
 
 ## Story
 

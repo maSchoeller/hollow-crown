@@ -1,6 +1,6 @@
 # Story 2.10: Kampf-Overlays im Stil B
 
-Status: review
+Status: done
 
 ## Story
 

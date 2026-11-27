@@ -1,6 +1,6 @@
 # Story 1.7: Fehlerbericht und Speicherschutz
 
-Status: review
+Status: done
 
 ## Story
 

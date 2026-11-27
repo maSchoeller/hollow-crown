@@ -235,3 +235,8 @@ Claude Opus 5.5 (Nachtbetrieb, Subagent der orchestrierenden Session)
 ### Change Log
 
 - 2026-11-10: Story umgesetzt (Karte, Szenen, E7, Chronik, Trigger-Aktion `ignite`, Tests, Lab, Abnahme); Status review.
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** Map `m2_4_brandschneise.yaml` (fire front via `ignite` with `warn`, firebreak R3/R6, Brann defend, Sable on the clearing), E7 in `scn.m2_4.outro.yaml:75-83` (warn: recruit Sable; obey: priceMod −10), `burnt_slope_burnt` variant in `content/world/valmora.yaml:51`; `tests/unit/m2-4-brandschneise.test.ts` 18/18 green.
+Still open: in-game picture 375 × 812 and E7 consequence card (PO phone run); the unticked F1 = B task is obsolete (F1 = A).

@@ -2,7 +2,7 @@
 
 # Story 10.5: Fallensteller und Schatten
 
-Status: review
+Status: done
 
 ## Story
 
@@ -83,3 +83,11 @@ Claude Opus 5.5 (Subagent)
 ### Change Log
 
 - 2026-11-13: Story umgesetzt, Status `review`.
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- `rules/traps.ts`, `rules/stealth.ts` (`revealedUntil`), `ai/enemyView.ts`; Events `trapSet`/`trapRemoved`/`trapTriggered` (`src/core/events.ts:31-35`); `balance.classActions.trap`, `shadow.revealDistance: 3`.
+- Autoplay `trapSpot` (`ai/autoplay.ts:566`), Sim zählt Fallen (`tools/simMap.ts:168`), Architektur §5.7 „Stand (Story 10.5)“, Steckbriefe `class_shadow`/`class_trapper`.
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.

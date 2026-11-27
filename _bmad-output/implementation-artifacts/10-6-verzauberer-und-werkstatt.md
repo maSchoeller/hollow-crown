@@ -1,6 +1,6 @@
 # Story 10.6: Verzauberer und Werkstatt
 
-Status: review
+Status: done
 
 ## Story
 
@@ -78,3 +78,11 @@ Claude Opus 5.5 (Subagent)
 ### Change Log
 
 - 2026-11-13: Story umgesetzt (Verschmelzen je Verzauberer-Stufe, Werkstatt mit Rezepten und `craft`, Starkes Gegengift, Fallen-Set, Sim, Handbuch).
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- `economy.enchanterMergeMaxTier: [1, 2, 3]`, `recipes.yaml` mit Prüfung (`validateUnits.ts:100-104`), `craftOnly` nicht beim Händler (`validateCampaign.ts:135`).
+- `strong_remedy`/`trap_kit` (`items.yaml:119-120`), Immunität (`battle/act.ts:263`), `Workshop.tsx`/`.css`, Sim `craftBombs` (`tools/simCampaign.ts:257`), Handbuch `runes`/`workshop`.
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.

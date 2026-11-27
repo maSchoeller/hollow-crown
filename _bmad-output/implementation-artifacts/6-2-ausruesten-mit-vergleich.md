@@ -1,6 +1,6 @@
 # Story 6.2: Ausrüsten mit Vergleich
 
-Status: review
+Status: done
 
 ## Story
 

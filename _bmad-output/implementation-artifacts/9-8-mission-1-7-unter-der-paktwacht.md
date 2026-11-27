@@ -27,14 +27,14 @@ damit ich die Gräber junger Könige und die versiegelte Chronik finde.
 
 ## Tasks / Subtasks
 
-- [ ] T1 Karte `m1_7_gewoelbe.yaml`: Ziel `treasure` (Truhen, `turns 14`), Platzhalter `rout`/`turn_limit`/`s_chests` entfernen, Chronik-Truhe ohne Gold, Kommentare „PLATZHALTER bis 4.8“ entfernen (AC 1, 2)
-- [ ] T2 Flag `wardens_chronicle` in `flags.yaml`; Knoten `m1_7`, `node.m1_7.title` in `content/core/locales/{de,en}.names.yaml`, `node: m1_7` in `valmora.yaml` (AC 2, 4)
-- [ ] T3 Chronik-Eintrag „Versiegelte Chronik im Burgarchiv“ (Kern: Chronik-Ansicht; UI: `Chronicle.tsx`; Texte DE + EN; zählt nicht zu den 12) (AC 3)
-- [ ] T4 Szenen `intro`, `reliefs` (je Kammer oder eine Szene mit Varianten), `chronicle`, `collapse`, `outro` in DE; Englisch im Locale; Auslöser als Karten-Trigger (`unit_enters` auf den Relief-Feldern, Truhe, `turn_start`) (AC 5)
-- [ ] T5 Schlüssel- und Späher-Regel prüfen, Lösbarkeit ohne Fenn (AC 6)
-- [ ] T6 Heimsuchungs-Anker (AC 7)
-- [ ] T7 Sim-Abstimmung auf Leicht/Normal/Schwer, mit und ohne Fenn (AC 8)
-- [ ] T8 Unit-Tests und E2E (AC 9)
+- [x] T1 Karte `m1_7_gewoelbe.yaml`: Ziel `treasure` (Truhen, `turns 14`), Platzhalter `rout`/`turn_limit`/`s_chests` entfernen, Chronik-Truhe ohne Gold, Kommentare „PLATZHALTER bis 4.8“ entfernen (AC 1, 2)
+- [x] T2 Flag `wardens_chronicle` in `flags.yaml`; Knoten `m1_7`, `node.m1_7.title` in `content/core/locales/{de,en}.names.yaml`, `node: m1_7` in `valmora.yaml` (AC 2, 4)
+- [x] T3 Chronik-Eintrag „Versiegelte Chronik im Burgarchiv“ (Kern: Chronik-Ansicht; UI: `Chronicle.tsx`; Texte DE + EN; zählt nicht zu den 12) (AC 3)
+- [x] T4 Szenen `intro`, `reliefs` (je Kammer oder eine Szene mit Varianten), `chronicle`, `collapse`, `outro` in DE; Englisch im Locale; Auslöser als Karten-Trigger (`unit_enters` auf den Relief-Feldern, Truhe, `turn_start`) (AC 5)
+- [x] T5 Schlüssel- und Späher-Regel prüfen, Lösbarkeit ohne Fenn (AC 6)
+- [x] T6 Heimsuchungs-Anker (AC 7)
+- [x] T7 Sim-Abstimmung auf Leicht/Normal/Schwer, mit und ohne Fenn (AC 8)
+- [x] T8 Unit-Tests und E2E (AC 9)
 - [ ] T9 Screenshots (AC 10)
 
 ## Dev Notes
@@ -135,3 +135,9 @@ m1_6 (Stufe br1 und Wolfsreiter auf 5): Normal 200 Läufe 1,20 Niedergestreckte 
 ## Abnahme 2026-10-27
 
 Abgenommen (Status done). Verdacht geklärt: der Simulator (kein Bergen, volle Taschen, Leerlauf), nicht die Karte. Simulator und Schlüsselbund behoben (PR #71); verkettet Leicht 100 %, Normal 90 %. E2E `tests/e2e/m1-7.spec.ts`, Chronik-Eintrag gesehen. Offen beim Produktinhaber: Niedergestreckte Normal 0,14 (Korridor ab 0,4). Gesamtbefund: `acceptance-2026-10-27.md`.
+
+## Review 2026-11-27
+
+**Urteil: DONE (ein Beleg offen).** T1–T8 auf `main`: Karte (`treasure`, seit Story 15.10 nur Chronik in 12 Runden), Flag `wardens_chronicle` (`content/acts/act1/flags.yaml:13`, Knotenwirkung `campaign.yaml:47`), versiegelter Chronik-Eintrag (`balance.yaml:164`, Locale `chronicle.sealed.wardens_chronicle.*`), sechs Szenen `scn.m1_7.*`, `node: m1_7` in `content/world/valmora.yaml:55`; `tests/unit/m1-7.test.ts` (11 Tests) grün, E2E `tests/e2e/m1-7.spec.ts`.
+- Heimsuchungs-Anker (T6) später durch `noHaunts: true` abgelöst (`m1_7_gewoelbe.yaml:70`). Niedergestreckte Normal 0,14 liegt beim Produktinhaber (`acceptance-2026-10-27.md:94`).
+- Wirklich offen: T9 Screenshots (AC 10), nie im Repo abgelegt.

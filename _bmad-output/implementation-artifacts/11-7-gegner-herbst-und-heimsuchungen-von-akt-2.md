@@ -76,3 +76,10 @@ Claude Opus 5.5
 ### Change Log
 
 - 2026-11-09: Story angelegt und umgesetzt (Gegner, Herbst nach Kampagnen-Akt, Heimsuchungs-Pools von Akt 2).
+
+## Review 2026-11-27
+
+**Verdict:** VERIFIED (waits for PO act-2 run)
+
+- `battleSeason`/`boardAct` in `src/content/season.ts`; Pools `iron_march`, `silver_lance`, `silver_sea`, `free_blades`, `civilian` in `acts/act2/haunts.yaml`; Namen DE/EN der generischen Gegner.
+- `validateFoeClasses` (`src/content/validateHaunts.ts:130`) prüft `season2` und Flieger/Reiter ab Akt 2 auf Karten, in Pools und bei Leutnants; Platzhalter-Modelle in `art/README.md:54`. Gezielte Tests auf main grün (12 Dateien, 168 Tests, gemeinsam mit 11.1–11.11).

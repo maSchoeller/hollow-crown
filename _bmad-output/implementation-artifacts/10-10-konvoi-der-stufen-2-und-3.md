@@ -1,6 +1,6 @@
 # Story 10.10: Konvoi der Stufen 2 und 3
 
-Status: review
+Status: done
 
 ## Story
 
@@ -68,3 +68,11 @@ Claude Opus 5 (Subagent)
 ### Change Log
 
 - 2026-11-14: Story umgesetzt (Vorlage speichern und anlegen, „Bestes anlegen“, Stufen-Schwellen, Handbuch, Tests).
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- `gearTemplateFromConvoyLevel: 2`, `equipBestFromConvoyLevel: 3`; `core/campaign/gear.ts`, Commands `saveGearTemplate`/`applyGearTemplate`/`equipBest` (`commands.ts:35-39`), gemeinsamer Kern `slotsOf` (`battle/create.ts:36`).
+- UI seit Story 16.15 in der Figur-Ansicht `Doll.tsx:522-545` mit Toast der übersprungenen Items (`Doll.tsx:455`); Handbuch `rooms_upgrade` mit Verweisen (`handbook.yaml:320-322`).
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.

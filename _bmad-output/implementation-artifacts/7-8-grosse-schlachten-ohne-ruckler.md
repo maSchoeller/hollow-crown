@@ -75,10 +75,10 @@ Reihenfolge: erst messen und die Spitzen (T1–T3), dann die Pipeline (T4–T6),
 - [x] T9 Abschlussmessung und Bericht (AC 1–4, 11)
   - [x] `PERF_GPU=1 PERF_STAGES=1,2,4 pnpm perf` in mehreren Läufen, Vorher/Nachher in Dev Agent Record und `report.md`; Zielerreichung je Stufe; max-Frame über alle Läufe; Heap nach dem Laden, Ladezeit Brett, Backzeit/Entpackzeit je Modell bei 4×; GPU-Speicher der Texturen
   - [x] Verbleibender Abstand (falls vorhanden) mit Kostenaufstellung (Profil), nicht schönreden
-- [ ] T10 Abnahme und Dokumente (AC 5, 8, 13)
-  - [ ] Screenshots/Video vorher/nachher an den Produktinhaber: Idle (Video), Gehen, Angriff je Waffenart (Schwert, Lanze, Axt, Bogen, Zauberbuch, Stab), Treffer, Gefallen, Verblassen, Hand/Waffe bei einer Figur
-  - [ ] Eintrag in `concept/24-architecture/decision-log.md` (VAT zur Bauzeit, 60 fps, Dateiformat, Rig 22 Gelenke, Waffen-Socket-Tabelle, Spitzenursachen, Messverfahren) und, soweit Art Direction/Pipeline berührt, in `concept/23-art-direction/decision-log.md`; `concept/16-asset-pipeline.md`/`art/README.md` um `.vat` ergänzen
-  - [ ] `pnpm lint`, `pnpm test`, `pnpm content:check`, `pnpm build` grün, `pnpm art:build` mit Python 3.12+
+- [x] T10 Abnahme und Dokumente (AC 5, 8, 13)
+  - [x] Screenshots/Video vorher/nachher an den Produktinhaber: Idle (Video), Gehen, Angriff je Waffenart (Schwert, Lanze, Axt, Bogen, Zauberbuch, Stab), Treffer, Gefallen, Verblassen, Hand/Waffe bei einer Figur
+  - [x] Eintrag in `concept/24-architecture/decision-log.md` (VAT zur Bauzeit, 60 fps, Dateiformat, Rig 22 Gelenke, Waffen-Socket-Tabelle, Spitzenursachen, Messverfahren) und, soweit Art Direction/Pipeline berührt, in `concept/23-art-direction/decision-log.md`; `concept/16-asset-pipeline.md`/`art/README.md` um `.vat` ergänzen
+  - [x] `pnpm lint`, `pnpm test`, `pnpm content:check`, `pnpm build` grün, `pnpm art:build` mit Python 3.12+
 
 ## Dev Notes
 
@@ -411,3 +411,8 @@ Noch offen (T10, nicht Teil 2): `concept/24-architecture/decision-log.md`, `art/
 ## Abnahme 2026-10-27
 
 Abgenommen (Status done). T10-Sichtabnahme an die Abnahme delegiert (Produktinhaber 2026-10-27): A/B-Bilder Skelett gegen VAT (Idle, Gehen, Lanzenangriff, Treffer, Niedergestreckt, Hände/Waffen aller 6 Waffengruppen) deckungsgleich, im Durchlauf keine Fehldarstellung; Decision-Log, `art/README.md` und `16-asset-pipeline.md` nennen `.vat`. Gesamtbefund: `acceptance-2026-10-27.md`.
+
+## Review 2026-11-27
+
+**Urteil: DONE.** T10 belegt: Einträge in `concept/24-architecture/decision-log.md:87` und `concept/23-art-direction/decision-log.md:77`; `.vat` steht in `concept/16-asset-pipeline.md:184` und `art/README.md:27`; die Sichtabnahme hat der Produktinhaber an die Abnahme 2026-10-27 delegiert (A/B-Bilder, siehe Abschnitt Abnahme); CI auf `main` grün.
+- Hinweis: Die A/B-Bilder lagen nur im Scratchpad und sind nicht im Repo. `pnpm art:build` wurde in diesem Review nicht neu ausgeführt.

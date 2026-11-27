@@ -147,3 +147,8 @@ Claude Opus 5.5 (gds-dev-story), autonom; Szenentext selbst geschrieben (Vorschl
 ### Change Log
 
 - 2026-11-09: Story 11.20 umgesetzt (Karte, Sicht je Höhe, Weißwolf, Szenen DE/EN, Knoten, Sim-Option, Tests, Lab, Abnahme); Annahmen F1–F5; Status review.
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** Map `n4_clanlager.yaml` (fog, `season: winter`, `weather: snow`, `forced: [avatar, lucan, ilka]`, elder as civilian), `fog.levelBonus: 2` in `balance.yaml:276`, `white_wolf` in `items.yaml:140`, node n4 with memorial and both rewards; `tests/unit/n4-clanlager.test.ts` 8/8 green.
+Node requires were widened by the PO on 2026-11-14 (opens also without Ilka recruited), elder re-tuned in 11.27; not gaps.

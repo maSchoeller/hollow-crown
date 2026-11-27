@@ -1,6 +1,6 @@
 # Story 10.11: Taverne, Heiler und Schmied der Stufen 2 und 3
 
-Status: review
+Status: done
 
 ## Story
 
@@ -71,3 +71,11 @@ Claude Opus 5 (Subagent)
 ### Change Log
 
 - 2026-11-14: Story umgesetzt (Wunschrolle der Taverne, Trauer je Heiler-Stufe, Trank verstärken, Handbuch, Tests).
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- `wishRoleFromLevel: 3`, `potionUpgrade`/`potionUpgradeFromAct: 2`, `griefMissionsByHealerLevel: [3, 3, 2]` in `balance.yaml`; Commands `setTavernWish`/`upgradePotion` (`commands.ts:42,68`), `griefMissions(data, c)` in `finishBattle` (`campaign.ts:398`).
+- UI: Wunschrollen-Marken (`Rooms.tsx:438`), „Trank verstärken“ (`Rooms.tsx:249`); Handbuch `rooms_upgrade` mit Verweisen (`handbook.yaml:324-326`).
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.

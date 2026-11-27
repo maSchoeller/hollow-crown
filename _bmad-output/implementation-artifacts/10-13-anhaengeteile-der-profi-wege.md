@@ -66,3 +66,10 @@ Claude Opus 5
 
 - Neu: `tools/art/blender_proparts.py`, `tools/art/part-one.html`, `tools/art/part-one.ts`, `tools/art/part-shots.mjs`, `tests/unit/pro-parts.test.ts`, `art/models/parts/*.glb` (16), `art/models/parts/README.md`, `art/models/parts/shots/*.png` (16)
 - Geändert: `tools/art/prepare_tripo_unit.py`, `tools/art/build.py`, `tools/figure-budget.mjs`, `tools/check-bundle-size.mjs`, `content/core/render.yaml`, `content/core/classes.yaml`, `content/core/locales/{de,en}.yaml`, `content/packs.yaml`, `src/core/{defs,renderDefs,figure}.ts`, `src/content/{packs,schemaRender,schemaUnits,validateUnits,validateLocales}.ts`, `src/render/shared/{models,assets}.ts`, `src/render/board/boardUnits.ts`, `src/app/loading/plan.ts`, `src/app/state/flow.ts`, `tests/unit/vat.test.ts`, `art/README.md`, `concept/23-art-direction/{art-direction.md,decision-log.md}`, `concept/24-architecture/decision-log.md`, alle `art/models/units/*.glb` und `*.vat` (neu gebaut)
+
+## Review 2026-11-27
+
+Verdict: PO
+
+- Erfüllt: 16 GLB-Teile in `art/models/parts/` plus 16 Abnahmebilder in `shots/` und `README.md`; `gear.proParts` (`content/core/render.yaml:332`), `proPart` an allen 16 Profiklassen, Prüfung in `src/content/validateUnits.ts:22-26`; Sockel `socket_back`/`socket_head` in `tools/art/prepare_tripo_unit.py`, `partBudget` in `content/packs.yaml:27`; `tests/unit/pro-parts.test.ts` grün (154/154 in den 13 Story-Testdateien von Epic 10).
+- Offen: Für AC 5 („die Bildrate bleibt über den Zielen aus Story 7.8“) ist keine Messung belegt; das braucht eine Geräteprüfung. Außerdem fehlt noch die Sichtabnahme der 16 Bilder durch den Product Owner.

@@ -146,3 +146,10 @@ Claude Opus 5.5
 - 2026-11-07: Review-Befunde behoben (14 Punkte), Tests ergänzt; Status bleibt review.
 
 - 2026-11-07: Story 11.6 umgesetzt (Regel, KI, Autoplay, Gefahrenzone, UI, Lektion, Tests); Status review.
+
+## Review 2026-11-27
+
+**Verdict:** VERIFIED (waits for PO act-2 run)
+
+- `src/core/rules/ballista.ts`, `AttackMods.siege` (`combat.ts:51`), Command `ballista`, `ballistaPlans` (`ai.ts:204`), Gelände `ballista` unbetretbar, Lektion und Handbuch `ballista`/`lesson_ballista` (`fromAct: 2`).
+- Reichweite `ballista_bolt` steht auf `[3,6]` statt `[3,10]`: bewusst geändert in Story 11.27 (GDD-Log 2026-11-14, Commit 4e8085cd), kein Mangel. Gezielte Tests auf main grün (12 Dateien, 168 Tests, gemeinsam mit 11.1–11.11).

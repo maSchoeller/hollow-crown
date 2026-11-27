@@ -112,3 +112,7 @@ Claude Opus 5.5 (Texte in vier parallelen Subagenten nach einem gemeinsamen Schr
 ### Change Log
 
 - 2026-11-10: Story angelegt und umgesetzt (Status review).
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** `content/acts/act2/supports.yaml` with 26 conversations (8 pairs C/B/A, both core pairs S), 7 `scn.bark.*` and 7 `scn.farewell.*`, `homeScenes` with `scn.castle.chronicle` (`completed m2_4` + `wardens_chronicle`, sets `chronicle_read`); `act2-supports` 9/9, `act2-chronicle-scene` 4/4, `barks` 7/7 green.

@@ -89,3 +89,10 @@ Geändert: `tools/simCampaign.ts`, `tools/simulate.ts`, `tools/simWorker.ts`, `c
 
 - 2026-11-09: Story angelegt (gds-create-story).
 - 2026-11-09: Umgesetzt (Simulation über Akte, neue Optionen, Messung beim Eintritt), Status review.
+
+## Review 2026-11-27
+
+**Verdict:** VERIFIED (waits for PO act-2 run)
+
+- `--campaign act2`, `--start expected`, `--position`, `--order`, `--flags`, `--map-file` im Kopf von `tools/simulate.ts`; `prepareActData` in `tools/simCampaign.ts`; `simulation.startExpected` in `balance.yaml:193`.
+- Messung und `positionLevel.base: 12` im GDD-Log (`concept/21-gdd/decision-log.md:160`); `tests/unit/sim-acts.test.ts` (6 Fälle). Gezielte Tests auf main grün (12 Dateien, 168 Tests, gemeinsam mit 11.1–11.11).

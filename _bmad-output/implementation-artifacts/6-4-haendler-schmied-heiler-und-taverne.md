@@ -1,6 +1,6 @@
 # Story 6.4: Händler, Schmied, Heiler und Taverne
 
-Status: review
+Status: done
 
 ## Story
 

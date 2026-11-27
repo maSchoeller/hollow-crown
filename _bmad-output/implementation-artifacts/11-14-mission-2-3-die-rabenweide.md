@@ -227,3 +227,8 @@ Claude Opus 5.5 (Subagent der orchestrierenden Session, gds-dev-story), 2026-11-
 ### Change Log
 
 - 2026-11-10: Story 11.14 umgesetzt (Karte, Szenen, Koppel-/Stallmodelle, Ortsbild, Tests, Sim); Status review, Spielbild offen.
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** Map `m2_3_rabenweide.yaml`, scenes intro/outro/ilka_talk/water_hint, node with `place: rabenweide`; `tests/unit/m2-3-rabenweide.test.ts` 15/15 green.
+Still open: in-game picture at 375 × 812 incl. paddock/stable models (T5, `levels/abnahme/s2_2_3_rabenweide.md:67`), part of the PO phone run.

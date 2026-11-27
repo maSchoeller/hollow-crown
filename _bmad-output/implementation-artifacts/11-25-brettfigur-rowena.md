@@ -74,3 +74,7 @@ Claude Opus 5.5
 - `art/prompts/rowena_board_turnaround.md`, `rowena.md`, `brakka.md`, `brakka_board_turnaround.md`
 - `concept/23-art-direction/figuren-bestand.md`, `decision-log.md`; `art/README.md`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`, `11-25-brettfigur-rowena.md`
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** ACs as adjusted by the PO on 2026-11-11: old `rowena.glb` kept and accepted, `model: rowena` in `content/acts/act2/lieutenants.yaml`, reference turnaround in `art/turnarounds/rowena_board/` and `art/prompts/rowena_board_turnaround.md`, art decision log entries 2026-11-11 (`concept/23-art-direction/decision-log.md:206-207`).

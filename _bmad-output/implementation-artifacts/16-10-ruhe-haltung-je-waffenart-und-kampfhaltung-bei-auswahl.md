@@ -71,16 +71,16 @@ damit das Brett lebendig wirkt, ohne zu taumeln.
 ## Tasks / Subtasks
 
 ### (A) Bake-Pipeline (Blender, kein Tripo)
-- [ ] A1 `tools/art/stance_poses.py` (Daten + Doku), Haltungsliste je Figur aus `content/` ableiten (`tripo_units.py` gibt sie an `prepare_tripo_unit.py` weiter).
-- [ ] A2 `prepare_tripo_unit.py`: Clips `rest_*`, `gesture_*`, `ready_*`, `ready_in_*` per IK erzeugen und backen; `idle` = `rest_none` ohne Taumeln; Finger in alle Clips; `grip_*` entfernen.
-- [ ] A3 `bake_vat.py`: Version 2 mit Rate je Clip, Schleifen-Flag für `rest_*`/`ready_*`; `vat.ts` liest 1 und 2.
-- [ ] A4 alle 42 Figuren neu bauen (`pnpm art:tripo`), Budget je Figur und Pakete messen (`pnpm build`-Ausgabe).
+- [x] A1 `tools/art/stance_poses.py` (Daten + Doku), Haltungsliste je Figur aus `content/` ableiten (`tripo_units.py` gibt sie an `prepare_tripo_unit.py` weiter).
+- [x] A2 `prepare_tripo_unit.py`: Clips `rest_*`, `gesture_*`, `ready_*`, `ready_in_*` per IK erzeugen und backen; `idle` = `rest_none` ohne Taumeln; Finger in alle Clips; `grip_*` entfernen.
+- [x] A3 `bake_vat.py`: Version 2 mit Rate je Clip, Schleifen-Flag für `rest_*`/`ready_*`; `vat.ts` liest 1 und 2.
+- [x] A4 alle 42 Figuren neu bauen (`pnpm art:tripo`), Budget je Figur und Pakete messen (`pnpm build`-Ausgabe).
 
 ### (B) Laufzeit und Daten
-- [ ] B1 `render.yaml` `stance`/`stanceMod` je Gruppe, `board.stance`; Schema.
-- [ ] B2 `stance.ts` (reine Funktionen) + Unit-Tests.
-- [ ] B3 `ModelFigure.setStance`, Ruhe-Schleife mit Gesten, Wechsel 0,25 s; Buch auf/zu.
-- [ ] B4 `boardUnits.ts` an `Overlays.glow` koppeln.
+- [x] B1 `render.yaml` `stance`/`stanceMod` je Gruppe, `board.stance`; Schema.
+- [x] B2 `stance.ts` (reine Funktionen) + Unit-Tests.
+- [x] B3 `ModelFigure.setStance`, Ruhe-Schleife mit Gesten, Wechsel 0,25 s; Buch auf/zu.
+- [x] B4 `boardUnits.ts` an `Overlays.glow` koppeln.
 
 ### (C) Abnahme
 - [ ] C1 Haltungsblatt aller Haltungsarten (Ruhe und Kampfhaltung) aus Blender (`tools/art/grip_shots.py`/`grip_sheet.py` erweitern).
@@ -127,3 +127,10 @@ Claude Sonnet (Umsetzung A/B, Review), gelenkt von Claude Opus 5.5.
 - Review-Befunde behoben: Buch ohne geladenes offenes Modell bleibt sichtbar; jede Ruhephase mit eigenem Versatz.
 - Bildrate auf dem Referenzgerät nicht gemessen (kein Gerät im Nachtlauf); die Laufzeit wählt weiter nur eine Zeile je Figur und Bild, ohne Mehrkosten gegenüber `idle`.
 - Bekannt: Lanzen- und Stabende schweben in Ruhe etwa 0,1 über dem Boden (Armlänge der Chibi-Figuren); Mira hält den Bogen in Ruhe fast hinter dem Bein; Wechsel beginnt in Bild 0 der Ruhe (kleiner Sprung möglich, Atmen ist klein).
+
+## Review 2026-11-27
+
+**Urteil: GAPS.** Haltungs-Clips, `.vat` v2 (`src/render/shared/vat.ts:105,156`), `stance.ts`, `ModelFigure.setStance` (`figures.ts:219`), Kopplung an `Overlays.glow` (`boardUnits.ts:60,168`), `board.stance` (`render.yaml:122`) und Buch auf/zu sind auf `main`; `stance.test.ts`, `figure-stance.test.ts`, `vat.test.ts` grün. Offen:
+- AC 5: Bildrate nicht gemessen, auch nicht am Desktop, obwohl die AC das ohne Referenzgerät verlangt (Completion Notes 2026-11-22).
+- C1/C2: Haltungsblatt und Dev-Preview liegen nicht im Repo (Werkzeuge `tools/art/stance_sheet.py`/`stance_shots.py` vorhanden).
+- AC 2, Sichtprüfung durch den Produktinhaber: bekannte Mängel sind Lanzen- und Stabende schweben etwa 0,1 über dem Boden, Miras Bogen in Ruhe hinter dem Bein.

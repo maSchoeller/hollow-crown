@@ -1,6 +1,6 @@
 # Story 16.17: Händler „zuerst die Person“
 
-Status: review
+Status: done
 
 ## Story
 

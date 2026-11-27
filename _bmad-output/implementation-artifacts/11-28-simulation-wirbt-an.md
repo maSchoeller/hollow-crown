@@ -1,6 +1,6 @@
 # Story 11.28: Die Simulation wirbt an
 
-Status: review
+Status: done
 
 ## Story
 
@@ -127,3 +127,7 @@ Claude Opus 5.5
 - `tests/fixtures/saves/generate-act1-finale.ts`
 - `concept/26-epics/epics/epic-11.md`, `concept/26-epics/decision-log.md`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
+
+## Review 2026-11-27
+
+**DONE.** `hireMercenaries` in `tools/simCampaign.ts:228` (limit = min(deploy.max, slots), highest level first, keeps `simulation.hire.reserve` = 500 from `balance.yaml:201`), called after scars and before potions/upgrades (`tools/simCampaign.ts:349`); report fields `hire`/`hiredPerRun` in `tools/simulate.ts`; `tests/unit/sim-campaign.test.ts` 6/6 green (limit, reserve, seed determinism). Measurement table with comparison to 11.27 is in this file.

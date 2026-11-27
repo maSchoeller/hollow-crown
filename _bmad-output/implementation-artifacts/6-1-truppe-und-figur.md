@@ -1,6 +1,6 @@
 # Story 6.1: Truppe und Figur
 
-Status: review
+Status: done
 
 ## Story
 

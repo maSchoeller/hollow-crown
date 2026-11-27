@@ -1,6 +1,6 @@
 # Story 2.1: Kampf-HUD in Stil B
 
-Status: review
+Status: done
 
 ## Story
 

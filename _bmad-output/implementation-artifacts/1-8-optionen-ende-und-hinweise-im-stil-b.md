@@ -1,6 +1,6 @@
 # Story 1.8: Optionen, Ende und Hinweise im Stil B
 
-Status: review
+Status: done
 
 ## Story
 

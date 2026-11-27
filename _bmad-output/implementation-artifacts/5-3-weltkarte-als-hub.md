@@ -1,6 +1,6 @@
 # Story 5.3: Weltkarte als Hub
 
-Status: review
+Status: done
 
 ## Story
 
