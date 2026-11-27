@@ -12,6 +12,10 @@
   font-weight: 700;
   font-size: 13px;
 }
+.lens-legend__help {
+  /* the stone sits at the end of the pill; its own left margin keeps the tap area off the last item */
+  align-self: center;
+}
 .lens-legend__item {
   display: inline-flex;
   align-items: center;

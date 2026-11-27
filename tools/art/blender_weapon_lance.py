@@ -8,7 +8,7 @@ its definitions are executed, not its axe export), so socket diameter and depth 
 tools/art/blender_weapons_v2_sheet.py.
 
 Frame = the old public/assets/models/weapons/lance.glb (tools/art/blender_weapons.py `lance`): built along Blender +Z with
-the grip origin at z = 0 (fist), then tilted 55 deg about X (thrust grip) and moved to x = -0.03, so `hold: -125` in
+the grip origin at z = 0 (fist; story 16.19: GRIP_SHIFT toward the head, the model is built that much lower), then tilted 55 deg about X (thrust grip) and moved to x = -0.03, so `hold: -125` in
 content/core/render.yaml keeps working. Like the old blade the head is wide along X and flat towards +/-Y (rune faces on
 +/-Y in the grip frame). Units: 1 = one board tile before figureScale.
 
@@ -55,9 +55,10 @@ EDGE = 0.002
 Z_G_START = ZC + SOCKET_R * 0.97
 Z_G_END = ZR + S_GROOVE_END * L_HEAD
 TILT_X, OFFSET_X = 55.0, -0.03       # old lance frame
+GRIP_SHIFT = 0.059                   # story 16.19: the grip origin sits this much nearer the head, so the butt reaches the floor in rest (the arm cannot reach lower)
 ZSL = ZC - 0.125                     # lower sleeve centre (small settings)
 CX2 = 0.0245                         # sleeve face height
-GAME = Matrix.Translation((OFFSET_X, 0, 0)) @ Matrix.Rotation(math.radians(TILT_X), 4, "X") @ Matrix.Rotation(math.radians(90), 4, "Z")
+GAME = Matrix.Translation((OFFSET_X, 0, 0)) @ Matrix.Rotation(math.radians(TILT_X), 4, "X") @ Matrix.Rotation(math.radians(90), 4, "Z") @ Matrix.Translation((0, 0, -GRIP_SHIFT))
 
 
 _LW = None

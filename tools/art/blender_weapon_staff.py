@@ -5,7 +5,7 @@ blender -b --factory-startup --python tools/art/blender_weapon_staff.py -- [<out
 Writes art/models/weapons-v2/staff.glb. Executes blender_weapons_v2.py (up to its build loop) and blender_weapons_v2_kit.py.
 Built from the painted item icons (heal_staff, star_staff); no ChatGPT blueprint yet.
 
-Frame (like the old staff): origin in the right fist, the staff is tilted 60 degrees from the grip axis Z towards Y (mostly upright
+Frame (like the old staff): origin in the right fist (GRIP_SHIFT toward the head, story 16.19), the staff is tilted 60 degrees from the grip axis Z towards Y (mostly upright
 along the forearm), the broad faces of the head point to +X / -X. Built straight along Z (z -0.27 .. 0.575) and turned by TILT.
 Parts: staff (HC_Vertex: wooden shaft with leather grip, iron butt, collar block, neck, disc head with two horns and a finial),
   rune_channel (V strip + iron beads as two helices (180 degrees apart) winding down the shaft from the collar, UV 1 `fill` 0 .. 1),
@@ -25,7 +25,8 @@ for _f, _cut in (("blender_weapons_v2.py", "os.makedirs(OUT"), ("blender_weapons
     exec(compile(_s, _f, "exec"), _ns)
 globals().update({k: v for k, v in _ns.items() if not k.startswith("__")})
 
-TILT = Matrix.Rotation(-math.radians(60), 4, "X")
+GRIP_SHIFT = 0.040                        # story 16.19: the grip origin sits this much nearer the head, so the butt reaches the floor in rest
+TILT = Matrix.Rotation(-math.radians(60), 4, "X") @ Matrix.Translation((0, 0, -GRIP_SHIFT))
 R_SHAFT = 0.0175
 Z_BUTT, Z_TOPSHAFT = -0.26, 0.345
 Z_COL0, Z_COL1 = 0.335, 0.388             # collar block (small settings)
