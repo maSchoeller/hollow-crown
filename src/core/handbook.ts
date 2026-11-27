@@ -3,6 +3,7 @@
  * GameData, so the handbook says what the rules do after every balancing pass. Pure; the UI only draws the result.
  */
 import type { GameData } from './gameData';
+import { costLabel } from './rules/terrainLens';
 import type { HandbookDef, HandbookEntryDef, HandbookFormat, HandbookValueDef } from './renderDefs';
 
 /** Locale key of a part of an entry: `title`, `text`, `where`, `keywords`, class lines `strong.1` … */
@@ -56,6 +57,8 @@ export function formatHandbookValue(v: number | null | undefined, format: Handbo
       const pct = Math.round((v - 1) * 100);
       return `${sign(pct)}${num(pct)}%`;
     }
+    case 'cost':
+      return costLabel(v);
     case 'share':
       return `${num(Math.round(v * 100))}%`;
   }

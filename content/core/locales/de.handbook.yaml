@@ -195,6 +195,12 @@ handbook:
     over2: "Überlast Stufe II"
     mov2: "BEW weniger"
     bag: "Beutel-Plätze"
+    road: "Straße kostet"
+    bridge: "Brücke kostet"
+    kills: "Beiname ab Kill"
+    factor: "Schaden durch das Element"
+    statusTier: "Immun gegen Zustand ab Stufe"
+    terrainTier: "Immun gegen Brandfeld ab Stufe"
   entry:
     # ------------------------------------------------------------ Grundlagen
     phases:
@@ -256,9 +262,14 @@ handbook:
       keywords: "Dreieck, Waffendreieck, Schwert, Axt, Lanze, Vorteil, Nachteil"
     elements:
       title: "Elemente"
-      text: "Jedes Element schlägt das nächste im Kreislauf, Licht und Dunkel schlagen einander. Mit Vorteil gibt es {adv} Schaden, mit Nachteil {dis}, gegen das gleiche Element {same}. Element und Waffendreieck bringen zusammen höchstens {elemMax}. Jedes Element kann einen Zustand auslösen."
-      where: "Das Element-Symbol steht an Waffe und Affinität; die Vorschau zeigt den Bonus in Prozent."
+      text: "Jedes Element schlägt das nächste im Kreislauf, Licht und Dunkel schlagen einander. Mit Vorteil gibt es {adv} Schaden, mit Nachteil {dis}, gegen das gleiche Element {same}. Element und Waffendreieck bringen zusammen höchstens {elemMax}. Jedes Element kann einen Zustand auslösen. Das Band über der Kampfvorschau nennt beide Elemente und den Faktor: grün bei Vorteil, rot bei Nachteil. Ein Schild mit Rune hält sein Element ab und macht nie anfälliger; unter dem Band steht die Chance auf den Zustand."
+      where: "Das Element-Symbol steht an Waffe und Affinität; die Vorschau zeigt das Band und den Bonus in Prozent."
       keywords: "Element, Feuer, Wasser, Erde, Wind, Licht, Dunkel, Affinität, Kreislauf"
+    weapon_chronicle:
+      title: "Waffen-Chronik"
+      text: "Jede Waffe der Kompanie zählt mit, wie viele Gegner sie gefällt hat; ein vertriebener Leutnant zählt mit. Beim {kills}. Kill bekommt sie einen Beinamen aus dem Namen der Figur mit den meisten Kills und einem Wort ihrer Waffengruppe. Hat sie noch keinen Beinamen und fällt oder vertreibt sie einen Leutnant, trägt sie sofort seinen Namen. Ein Beiname bleibt für immer. Zähler und Beiname bleiben an der Waffe, auch wenn sie weitergegeben wird, und ändern keinen Wert."
+      where: "Im Item-Blatt der Waffe und in der Waffenansicht."
+      keywords: "Chronik, Kills, Beiname, Waffe, Zähler, Leutnant, Ruhm"
     magic:
       title: "Zauber und Wirken"
       text: "Zauberwaffen greifen mit MAG gegen die RES des Ziels an und tragen ein Element. Elementaristen wirken ihr Element zusätzlich aufs Feld: Feuer setzt in Brand, Wasser löscht und macht nass, Erde zieht einen Felswall hoch, Wind lichtet den Nebel. Die Körperrüstung bestimmt die Affinität einer Figur."
@@ -270,6 +281,16 @@ handbook:
       text: "Ebene, Gras, Straße, Brücke und Feld geben keine Deckung, dafür kommt hier jeder gleich schnell voran. Gras und Felder brennen."
       where: "Der Gelände-Chip am Zielfeld nennt das Gelände mit seinen Werten."
       keywords: "Ebene, Gras, Straße, Brücke, Feld, offen"
+    road_half:
+      title: "Straße und Brücken"
+      text: "Straßen und Brücken kosten nur einen halben Schritt: Auf der Straße zieht jede Figur für {road} Bewegung ein Feld weiter, auf der Brücke für {bridge}. So kommst du auf einem Weg weiter als im Gelände. Ein Rest von einem halben Schritt bleibt stehen und zählt weiter."
+      where: "Die Gelände-Linse zeigt schnelle Felder als Streifen; die Feldkarte nennt die Kosten."
+      keywords: "Straße, Brücke, Weg, Kosten, halber Schritt, schnell, Bewegung"
+    terrain_lens:
+      title: "Gelände-Linse"
+      text: "Die Linse färbt jedes Feld nach seiner Wirkung: Schutz, langsam, schnell, Schaden und gesperrt. Das Muster steht in der Legende unter der Kopfleiste, damit du es auch ohne Farbe erkennst. Ein Feld mit zwei Wirkungen zeigt beide. Tippst du ein Feld an, nennt die Feldkarte die Kosten für jede Gangart."
+      where: "„Gefahr“ im Dock gedrückt halten, am PC die Taste G. Ein Hinweis zeigt es beim ersten Mal."
+      keywords: "Linse, Gelände, Legende, Muster, Feldkarte, Kosten, langsam, schnell, Schutz"
     terrain_cover:
       title: "Deckung: Wald, Ruinen, Häuser"
       text: "Wald, Ruinen und Häuser geben Deckung: mehr Verteidigung und Ausweichen. Wald und Sand kosten mehr Bewegung, vor allem gepanzerte und berittene Figuren. Ein Haus lässt sich besuchen, bevor Plünderer es zerstören."
@@ -460,6 +481,11 @@ handbook:
       text: "Im ersten Akt sind Runen nur Beute. Ab dem zweiten Akt setzt der Verzauberer der Burg sie in die Runen-Plätze und baut sie wieder aus, auf jeder Stufe und jede Rune: eine Element-Rune je Waffe, dazu Hilfs-Runen. Element-Runen geben das Element, ab Stufe zwei eine Zustands-Chance von {two}, auf Stufe drei {three}. Aus {merge} gleichen Runen und {mergeGold} Gold je Stufe der Rune wird die nächste Stufe; der Verzauberer der ersten Stufe verschmilzt nicht, auf seiner zweiten Stufe bis Rune {limit2}, auf der dritten bis Rune {limit3}."
       where: "Im Verzauberer der Burg; eingesetzte Runen stehen im Item-Blatt. Runen der ersten Stufe stellt auch die Werkstatt her."
       keywords: "Rune, Runen, Verzauberer, Element, verschmelzen"
+    shield_runes:
+      title: "Schild-Runen"
+      text: "Jeder Schild hat einen Runen-Platz für Element-Runen: Feuer, Wasser, Erde und Wind. Licht, Dunkel und Hilfs-Runen passen nicht. Stufe eins senkt den Schaden dieses Elements auf {factor}. Ab Stufe {statusTier} schützt der Schild auch vor dem Zustand des Elements, ab Stufe {terrainTier} bei Feuer vor dem Brandfeld. Ein Schild macht nie anfälliger; trägt auch die Rüstung das Element, gilt nur der bessere Schutz."
+      where: "Im Verzauberer der Burg; der Schild-Platz steht im Item-Blatt."
+      keywords: "Schild, Rune, Schutz, Element, immun, Brandfeld, Feuer, Wasser, Erde, Wind"
     sets:
       title: "Sets"
       text: "Einige Rüstungsteile gehören zu einem Set. Trägt eine Figur mehrere Teile desselben Sets, gibt es Bonus-Werte oder eine Fähigkeit dazu."

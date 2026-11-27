@@ -5,6 +5,7 @@ import { type GameData, type LensKind, costLabel } from '../../core';
 import { t } from '../../i18n';
 import { Icon } from '../../ui/icons';
 import { coachSeen, markCoachSeen } from '../state/coachHints';
+import { HelpStone } from './HelpStone';
 import './TerrainLens.css';
 
 /** Colour of a lens tint as the board draws it (colour at its opacity), from render.yaml `legibility.terrainLens`. */
@@ -39,6 +40,7 @@ export function LensLegend({ data, kinds }: { data: GameData; kinds: readonly Le
           {t(`ui.lens.kind.${k}`)}
         </span>
       ))}
+      <HelpStone anchor="terrainLens" class="lens-legend__help" />
     </div>
   );
 }

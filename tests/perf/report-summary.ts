@@ -12,8 +12,8 @@ export default function summary(): void {
   const dir = join(process.cwd(), 'test-results', 'perf');
   if (!existsSync(dir)) return;
   const reports = readdirSync(dir)
-    // the large-map files of story 15.11 have their own table (large-<device>.md)
-    .filter((f) => f.endsWith('.json') && !f.startsWith('large-'))
+    // the large-map files of story 15.11 and the view files of story 16.19 have their own tables (large-<device>.md, views-<device>.md)
+    .filter((f) => f.endsWith('.json') && !f.startsWith('large-') && !f.startsWith('views-'))
     .map((f) => JSON.parse(readFileSync(join(dir, f), 'utf8')) as DeviceReport);
   if (!reports.length) return;
   const baselineFile = join(process.cwd(), 'tests', 'perf', 'baseline.json');

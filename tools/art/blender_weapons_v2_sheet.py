@@ -9,6 +9,10 @@ side row, --cols=N sets the columns.
 --set=rest (story 16.7): one sheet for bow, dagger, staff, book, book_open, lute, focus: row 1 front, row 2 side (fire tier II main,
 tier I small), rows 3-5 close-ups of the main setting with fire tier I / II / III, row 6 close-ups of the small setting.
 
+--set=iso (story 16.19 T4): per-group ISO preview of the three fire tiers: --group=bow|dagger|staff|book|lute|focus (book also shows
+book_open), --out=<png>. Per piece one row: iso view of the whole weapon with fire tier I / II / III in the main setting (left to
+right), below it an iso close-up of the main setting per tier. 1200 px wide.
+
 Imports art/models/weapons-v2/{axe,sword,lance,shield}.glb and art/models/runes-v2/*.glb, parents the stones to the
 `socket_rune_*` nodes exactly like the game does (stone root takes the node's world matrix, identity local transform) and
 renders a grey sheet of 1600 x about 1060 px (EEVEE, vertex colours visible), stitched from tiles:
@@ -46,6 +50,7 @@ STONES = [f"{e}_rune_{t}" for e in ("fire", "wind", "earth", "water", "light") f
     + ["precision_rune", "force_rune", "edge_rune", "feather_rune"]
 
 W = 1600
+W2 = 1200
 ROW_FRONT, ROW_SIDE, ROW_CLOSE, ROW_STONE = 300, 200, 170, 110
 
 
@@ -218,6 +223,39 @@ def main_rest():
     print(f"[hc] sheet {OUT} {W}x{rows}", flush=True)
 
 
+def main_iso():
+    group = arg("group", "bow")
+    pieces = {"book": ["book", "book_open"]}.get(group, [group])
+    tw, fh, ch = W2 // 3, 480, 240
+    rh = fh + ch
+    canvas = np.zeros((rh * len(pieces), W2, 4), np.float32)
+    canvas[...] = (0.30, 0.30, 0.31, 1.0)
+    az, el = math.radians(38), math.radians(24)
+    for r, wid in enumerate(pieces):
+        for t in (1, 2, 3):
+            objs, metal, stones, node = weapon_scene(wid, f"fire_rune_{t}", None)
+            n, ys, up = node_axes(node)
+            side = n.cross(up)
+            vdir = (n * math.cos(az) + side * math.sin(az)) * math.cos(el) + up * math.sin(el)
+            vdir.normalize()
+            right = up.cross(vdir).normalized()
+            cup = vdir.cross(right).normalized()
+            sc = setup_render(tw, fh)
+            cr, cu, ortho = frame(metal + stones, right, cup, tw, fh)
+            look(sc, right * cr + cup * cu + vdir * 3.0, right, cup, vdir, ortho)
+            paste(canvas, shot(f"{wid}_iso{t}", tw, fh), (t - 1) * tw, r * rh, tw, fh)
+            sc = setup_render(tw, ch)
+            look(sc, node.matrix_world.translation + vdir * 3.0, right, cup, vdir, 0.15)
+            paste(canvas, shot(f"{wid}_isoc{t}", tw, ch), (t - 1) * tw, r * rh + fh, tw, ch)
+    img = bpy.data.images.new("sheet", W2, rh * len(pieces), alpha=False)
+    img.pixels.foreach_set(canvas.ravel())
+    img.filepath_raw = OUT
+    img.file_format = "PNG"
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    img.save()
+    print(f"[hc] sheet {OUT} {W2}x{rh * len(pieces)}", flush=True)
+
+
 def main_sig():
     ids = arg("ids", ",".join(SIG_RUNES)).split(",")
     cols = int(arg("cols", "7"))
@@ -302,4 +340,4 @@ def main():
     print(f"[hc] sheet {OUT} {W}x{rows}", flush=True)
 
 
-main_sig() if SET == "sig" else main_rest() if SET == "rest" else main()
+main_iso() if SET == "iso" else main_sig() if SET == "sig" else main_rest() if SET == "rest" else main()

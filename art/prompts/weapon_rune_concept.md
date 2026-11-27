@@ -53,3 +53,11 @@ ChatGPT war im Nachtlauf nicht erreichbar. Bogen, Dolch, Stab, Buch (zu und offe
 | Fokus | Mitte der Halterscheibe | vom Zentrum einmal als Ring um den Kristallhalter | Ohr unten vorn an der Scheibe |
 
 Abnahme: offen (Produktinhaber). Blatt: `s4-16-7-modelle.png` (Vorderansicht, Seite, Fassung Stufe I/II/III, kleine Fassung).
+
+## ISO-Vorschauen Bogen, Dolch, Stab, Buch, Laute, Fokus (Story 16.19 T4)
+
+Entscheidung Produktinhaber 2026-11-27: nur Blender-Vorschauen aus den echten v2-GLBs, keine ChatGPT-Blaupausen. Je Gruppe `art/mockups/weapons-2026-11/<gruppe>_v2_preview.png` (1200 px breit): oben ISO-Ansicht der ganzen Waffe mit Feuerstein Stufe I / II / III in der Hauptfassung, darunter ISO-Nahaufnahme der Fassung je Stufe; das Buch hat eine zweite Zeile für „aufgeschlagen“. Erzeugt mit
+
+`BLENDER="C:/Program Files/Blender Foundation/Blender 5.2/blender.exe"; "$BLENDER" -b --factory-startup --python tools/art/blender_weapons_v2_sheet.py -- --set=iso --group=<bow|dagger|staff|book|lute|focus> --out=art/mockups/weapons-2026-11/<gruppe>_v2_preview.png`
+
+(`--out` absolut angeben; das Skript legt `_tiles/` neben der Ausgabe an, danach löschen.) Staff wurde nach dem Neuaufbau von `staff.glb` zuletzt gerendert; bei erneutem Umbau die Vorschau neu erzeugen.

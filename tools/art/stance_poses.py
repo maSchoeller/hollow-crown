@@ -88,8 +88,10 @@ BODY_READY_OF = {
 TURN_SIGN = {"bow": -1.0}
 
 # stance -> {"rest": {"r": hand, "l": hand}, "ready": {...}}; a missing hand = HANG; the ready table may leave a hand out to keep it as in rest.
-# A planted lance or staff cannot touch the floor: the figure's arm (0.15) reaches down to 0.32 above it, the shaft ends 0.18 / 0.16 below its grip node
-# (art/models/weapons-v2/lance.glb, staff.glb); the hand hangs as low as the arm allows.
+# A planted lance or staff: the figure's arm (0.15) reaches down to 0.32 above the floor only, so the models' grip origin (art/models/weapons-v2/lance.glb,
+# staff.glb) sits GRIP_SHIFT toward the head (blender_weapon_lance.py / _staff.py, story 16.19): the butt ends 0.24 / 0.20 below the grip node and
+# touches the floor in rest (tools/art/stance_shots.py prints the lowest weapon point). The bow hangs by the left leg: the chord vertical, the belly
+# turned outwards and to the back, so the string side shows in front of the thigh (before 16.19 the belly pointed forwards and the bow hid behind the leg).
 POSE = {
     "lance": {
         "rest": {"r": hand((1.60, 0.0, -0.84), (0.0, 0.0, 1.0), (-1.0, 0.0, 0.0), W_LANCE)},
@@ -108,7 +110,7 @@ POSE = {
         "ready": {"r": hand((0.80, 0.58, -0.16), (0.1, 0.35, 1.0), (0.0, 1.0, 0.0), W_AXE)},
     },
     "bow": {
-        "rest": {"l": hand((1.25, 0.06, -0.84), (0.0, 0.0, 1.0), (0.0, 1.0, 0.0), W_BOW)},
+        "rest": {"l": hand((1.40, 0.12, -0.84), (0.0, 0.0, 1.0), (0.6, -0.8, 0.0), W_BOW)},
         "ready": {"l": hand((0.72, 0.84, -0.18), (0.0, 0.0, 1.0), (0.0, 1.0, 0.0), W_BOW)},
     },
     "book": {

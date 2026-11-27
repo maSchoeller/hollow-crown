@@ -56,7 +56,7 @@ export interface LegibilityDef {
 export const HANDBOOK_GRAPHICS = ['icon', 'triangle', 'elements', 'terrain', 'class', 'lesson', 'rarity'] as const;
 export type HandbookGraphic = (typeof HANDBOOK_GRAPHICS)[number];
 /** How the UI writes a resolved value: 15, +15, 15 %, +15 %, ×1.2, a factor as percent change (1.2 → +20 %), a share as percent (0.1 → 10 %). */
-export const HANDBOOK_FORMATS = ['plain', 'signed', 'percent', 'signedPercent', 'factor', 'factorPercent', 'share'] as const;
+export const HANDBOOK_FORMATS = ['plain', 'signed', 'percent', 'signedPercent', 'factor', 'factorPercent', 'share', 'cost'] as const;
 export type HandbookFormat = (typeof HANDBOOK_FORMATS)[number];
 
 /** One number of an entry: a path into the content (`balance.triangle.hit`, `terrain.forest.avoid`), never a typed value. */

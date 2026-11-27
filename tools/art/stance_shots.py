@@ -1,6 +1,6 @@
 """Hollow Crown – acceptance renders of the stances (story 16.10): every stance of a figure in rest and in the fighting stance, with the real weapon models.
 
-blender -b --factory-startup --python tools/art/stance_shots.py -- <out_dir> [--figs lucan,hask] [--only blade,lance_shield] [--clip rest|ready|both] [--view front|side|both]
+blender -b --factory-startup --python tools/art/stance_shots.py -- <out_dir> [--figs lucan,hask] [--only blade,lance_shield] [--clip rest|ready|both] [--view front|side|face|left|both]  (face = straight from the front, left = from the figure's left side, where the left hand's weapon hangs)
 python tools/art/stance_sheet.py <out_dir> <out.png> [--figs lucan,hask]
 
 Needs art/models/units/<fig>.raw.glb: `python tools/art/tripo_units.py <fig> --keep-raw` leaves it (the model with every clip; the board's .glb has none of the
@@ -95,6 +95,14 @@ def hang(model, side):
     if grip:
         grip.parent = sock
         grip.matrix_parent_inverse = Matrix.Identity(4)
+    return new
+
+
+def weapon_floor(objs):
+    """Lowest world z of the weapon meshes (the figure stands on z = 0): a planted lance or staff should end at ~0 in rest."""
+    bpy.context.view_layer.update()
+    low = [(o.matrix_world @ v.co).z for o in objs if o.type == "MESH" for v in o.data.vertices]
+    return min(low) if low else None
 
 
 def render_cell(fig, stance, pose, view):
@@ -112,11 +120,14 @@ def render_cell(fig, stance, pose, view):
         return False
     frame = act.frame_range[0] if pose == "rest" else act.frame_range[1]
     apply(arm, act, frame)
+    hung = []
     for model, side in STANCES[base][pose]:
-        hang(model, side)
+        hung += hang(model, side)
     if stance.endswith("_shield"):
         hang("shield", "l")
     apply(arm, act, frame)
+    if hung:
+        print(f"[hc] floor {fig} {stance} {pose}: lowest weapon point z = {weapon_floor(hung):.3f} (feet at 0)", flush=True)
     for o in bpy.data.objects:
         if o.type == "MESH" and o.data.materials:
             for m in o.data.materials:
@@ -129,7 +140,7 @@ def render_cell(fig, stance, pose, view):
     sc.collection.objects.link(cam)
     cam.data.type = "ORTHO"
     cam.data.ortho_scale = 1.0
-    d = Vector((-0.55, -1.0, 0.25)).normalized() if view == "front" else Vector((-1.0, -0.05, 0.15)).normalized()
+    d = Vector({"front": (-0.55, -1.0, 0.25), "face": (0.0, -1.0, 0.1), "left": (1.0, -0.05, 0.15)}.get(view, (-1.0, -0.05, 0.15))).normalized()
     cam.location = centre + d * 4
     cam.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
     sc.camera = cam
@@ -148,7 +159,7 @@ for fig in figs:
         if only and stance not in only:
             continue
         for pose in (("rest", "ready") if clips == "both" else (clips,)):
-            for view in (("front", "side") if views == "both" else (views,)):
+            for view in (("front", "side") if views == "both" else views.split(",")):
                 if not render_cell(fig, stance, pose, view):
                     print(f"[hc] {fig} {stance}: no clip", flush=True)
 print("[hc] stance shots done", flush=True)

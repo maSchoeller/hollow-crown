@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from 'vitest';
 import {
+  costLabel,
   cycleOrder,
   entryAnchors,
   entryByAnchor,
@@ -63,6 +64,9 @@ describe('handbook value paths (story 14.1)', () => {
     expect(formatHandbookValue(15, 'signed', 'de-DE')).toBe('+15');
     expect(formatHandbookValue(-1, 'signed', 'de-DE')).toBe('−1');
     expect(formatHandbookValue(0, 'signed', 'de-DE')).toBe('0');
+    expect(formatHandbookValue(0.5, 'cost', 'de-DE')).toBe('½');
+    expect(formatHandbookValue(2.5, 'cost', 'en-US')).toBe('2½');
+    expect(formatHandbookValue(1, 'cost', 'de-DE')).toBe('1');
     expect(formatHandbookValue(20, 'percent', 'de-DE')).toBe('20%');
     expect(formatHandbookValue(40, 'signedPercent', 'de-DE')).toBe('+40%');
     expect(formatHandbookValue(1.2, 'factor', 'de-DE')).toBe('×1,2');
@@ -81,6 +85,21 @@ describe('handbook value paths (story 14.1)', () => {
       hit: `+${data.balance.triangle.hit}`,
       dmg: `+${data.balance.triangle.damage}`,
     });
+  });
+
+  it('resolves the values of the rules of epic 16 from the data (road, shield runes, chronicle)', () => {
+    const entry = (id: string) => data.handbook!.entries.find((e) => e.id === id)!;
+    const sr = data.balance.element.shieldRune;
+    expect(handbookParams(data, entry('road_half'), 'de-DE')).toEqual({
+      road: costLabel(data.terrain.road!.cost.foot!),
+      bridge: costLabel(data.terrain.bridge!.cost.foot!),
+    });
+    expect(handbookParams(data, entry('shield_runes'), 'en-US')).toEqual({
+      factor: `×${sr.factor}`,
+      statusTier: String(sr.statusImmuneTier),
+      terrainTier: String(sr.terrainImmuneTier),
+    });
+    expect(handbookParams(data, entry('weapon_chronicle'), 'en-US')).toEqual({ kills: String(data.balance.weaponChronicle.epithetKills) });
   });
 
   it('orders a beats map as a cycle', () => {
@@ -102,6 +121,9 @@ describe('handbook anchors and search', () => {
     const hb = data.handbook;
     expect(entryByAnchor(hb, 'forecast')?.id).toBe('forecast');
     for (const s of ['burning', 'wet', 'slowed', 'knockback']) expect(entryByAnchor(hb, `status.${s}`)).toBeDefined();
+    // the terrain lens legend (story 16.19) and the element band of the forecast (16.12)
+    expect(entryByAnchor(hb, 'terrainLens')?.id).toBe('terrain_lens');
+    expect(entryByAnchor(hb, 'elements')?.id).toBe('elements');
     // a legacy terrain (the old ladder tile) stands on no map and needs no entry
     for (const [id, t] of Object.entries(data.terrain)) if (!t.legacy) expect(entryByAnchor(hb, `terrain.${id}`), id).toBeDefined();
     for (const scene of [

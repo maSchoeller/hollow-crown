@@ -293,3 +293,19 @@ damit das Epic vor dem Release rund ist.
 - Miras Bogen liegt in der Ruhe hinter dem Bein (16.10).
 - Bildrate der Kampfhaltung bei Auswahl messen (16.10 AK 5), zusammen mit den übrigen Messungen dieser Story.
 - Fehlende Vorlagen und Vorschauen von 16.7 nachziehen: Blaupausen für Bogen, Dolch, Stab, Buch, Laute und Fokus sowie `<gruppe>_v2_preview.png` in `art/mockups/weapons-2026-11/`, als Grundlage der Abnahme je Waffengruppe.
+
+### Story 16.20: Brett unter Drosselung flüssig halten (aus 16.19)
+
+Als Spieler auf einem schwächeren Handy
+möchte ich, dass das Brett mit Kampfhaltung bei Auswahl und im Leerlauf flüssig bleibt,
+damit die Neuerungen aus Epic 16 nicht ruckeln.
+
+Angelegt am 2026-11-27 aus der Messung von 16.19 (Desktop-Ersatz nach NFR1, Intel UHD 630, Profil pixel6a, zweimal gemessen): Kampfhaltung bei Auswahl 55 statt 60 FPS bei 2×, 24–32 statt 30 FPS bei 4× mit Frames bis 151 ms; Brett im Leerlauf bei 4× Frames von 130–137 ms. Die Messung auf dem Referenzgerät (Produktinhaber, 16.19) entscheidet, ob die Story vor 9.14 nötig ist.
+
+**Akzeptanzkriterien:**
+
+**Angenommen** `PERF_GPU=1 PERF_VIEWS=1 PERF_STAGES=1,2,4 pnpm perf --project=pixel6a` (Zeilen „Brett Leerlauf“ und „Brett Kampfhaltung“)
+**Wenn** die Kosten von Kampfhaltung (Clip-Wechsel, Leuchten) und Leerlauf-Bild gesenkt sind (Werte in `render.yaml`, keine Regeländerung)
+**Dann** erreicht das Brett mit Kampfhaltung 60 FPS bei 2× und 30 FPS bei 4×, und kein Frame liegt über 100 ms (NFR1)
+**Und** die übrigen Perf-Zeilen (Gegnerphase, große Karten, Burg, 3D-Ansichten) werden nicht schlechter.
+
