@@ -171,7 +171,7 @@ development_status:
   9-12-nebenquest-n3-das-erbe: done  # Nebenquest N3 „Das Erbe“
   9-13-supports-und-barks-von-akt-1: done  # Supports und Barks von Akt 1
   9-14-akt-1-abstimmen-und-veroeffentlichen: ready-for-dev  # Akt 1 abstimmen und veröffentlichen (am 2026-11-05 umgeschrieben: Release nach Epic 15)
-  9-15-akt-1-auf-schwer-abstimmen: backlog  # Akt 1 auf Schwer abstimmen (nach dem Release, aus 15.10, 2026-11-07)
+  9-15-akt-1-und-2-auf-schwer-abstimmen: backlog  # Akt 1 und 2 auf Schwer abstimmen (nach dem Release, aus 15.10, 2026-11-07; Akt 2 ergänzt 2026-11-27)
   epic-9-retrospective: optional
 
   # Epic 10: Die Burg ausbauen (ab Akt 2) – verfeinert 2026-10-31, neu geschnitten nach Readiness 2026-10-31
@@ -306,7 +306,7 @@ development_status:
   16-16-verzauberer-als-werkbank: done  # Verzauberer als Werkbank
   16-17-haendler-zuerst-die-person: done  # Händler „zuerst die Person“
   16-18-waffenkammer-im-bergfried: done  # Waffenkammer im Bergfried
-  16-19-handbuch-leistung-und-abnahme: backlog  # Handbuch, Leistung und Abnahme
+  16-19-handbuch-leistung-und-abnahme: backlog  # Handbuch, Leistung und Abnahme (dazu Lücken aus 16.7 und 16.10, Review 2026-11-27)
   epic-16-retrospective: optional
 
   # Epic 17: Filmszenen (grob, Entwurf aus PR #118, eingeplant 2026-11-27; vor der Umsetzung verfeinern)

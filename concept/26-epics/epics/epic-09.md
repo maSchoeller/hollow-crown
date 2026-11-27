@@ -186,13 +186,15 @@ Umgeschrieben am 2026-11-05: Das Release folgt jetzt auf den Umbau von Akt 1 (Ep
 **Dann** läuft `pnpm content:lock` erst jetzt (nach der Umbenennung `kael` → `lucan`), und ein Fixture-Spielstand für spätere Migrationen liegt unter `tests/fixtures/saves/`
 **Und** ein Playtest-Plan (5–10 Tester, Erfolgskriterien aus dem GDD, dazu Burg in 3D, neue Karten und Höhenregel) liegt vor (`gds-playtest-plan`); er misst die Spielzeit von Akt 1 je Tester (Messpunkt aus Story 15.10, Produktinhaber 2026-11-07); Musik und Vertonung (8.8, 8.9) blockieren das Release nicht.
 
-### Story 9.15: Akt 1 auf Schwer abstimmen (nach dem Release)
+### Story 9.15: Akt 1 und 2 auf Schwer abstimmen (nach dem Release)
 
 Als Spieler auf Schwer
-möchte ich Akt 1 als harte, aber faire Probe erleben,
+möchte ich Akt 1 und Akt 2 als harte, aber faire Probe erleben,
 damit keine Mission an einem einzelnen Zufall hängt und das Finale fordert.
 
 Angelegt am 2026-11-07 aus Story 15.10: Der Produktinhaber stellt Schwer bis nach dem Release von Akt 1 (Story 9.14) zurück. Gemessen mit Normal-Kette lagen N3 bei 13–21 % Siegen (der Vater, ein Zivilist, fällt fast immer) und 1-8 bei 76–84 % (zu leicht; die Niederlagen sind Verwalter-Tode, Verstärkungen aus dem Süden kommen vor Runde 12 kaum an). 1-4 und 1-5 sind auf Schwer nicht fair gemessen, weil verkettet nur 12–18 von 50 Läufen ankommen.
+
+Am 2026-11-27 auf Akt 2 erweitert (Produktinhaber: „Schwer für Akt 1/2“ als eine Story statt einer eigenen 11.x).
 
 **Akzeptanzkriterien:**
 
@@ -200,3 +202,4 @@ Angelegt am 2026-11-07 aus Story 15.10: Der Produktinhaber stellt Schwer bis nac
 **Wenn** N3, 1-4, 1-5 und 1-8 auf Schwer abgestimmt sind (Werte in YAML; eine Regeländerung für Schutzmissionen nur nach Entscheidung des Produktinhabers)
 **Dann** liegen alle Story-Missionen und N3 auf Schwer im Korridor (NFR12: 30–70 % Siege), gemessen mit Normal-Kette und je mindestens 50 Läufen
 **Und** Leicht und Normal bleiben in ihren Korridoren; geänderte gesperrte IDs laufen über `content/renames.yaml` und eine Migration (Akt-Release in `AGENTS.md`).
+**Und** dasselbe gilt für Akt 2: alle Story-Missionen und N4–N6 auf Schwer im Korridor, gemessen mit `pnpm sim --campaign act2 --difficulty hard` und je Karte mit Normal-Kette über mindestens 50 Läufe.
