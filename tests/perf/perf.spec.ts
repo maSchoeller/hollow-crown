@@ -8,6 +8,7 @@
  * `PERF_VATWORKER=0` keeps the baked animations' work on the main thread (compare with the workers).
  * `PERF_VAT=0|1` overrides `board.vat`: 0 = every figure plays its skeleton (the path before the baked animation of story 7.8).
  * `PERF_STAGES=1,2,4` overrides the throttling levels (levels without a target are only reported).
+ * `PERF_VIEWS=1` (story 16.19) runs only the test of the 3D views of epic 16 at the end of this file (doll, weapon view, armoury, battle stance).
  */
 import { SEASONS, type Season } from '../../src/core/defs';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -15,7 +16,7 @@ import { join } from 'node:path';
 import { expect, test, type CDPSession, type Page } from '@playwright/test';
 import { PROFILE } from './profile';
 import { exceedances, frameStats, median, type DeviceReport, type PhaseRun, type StageReport } from './report';
-import type { CastleResult, EnemyPhaseResult, PreparedBattle } from './bench';
+import type { CastleResult, EnemyPhaseResult, PreparedBattle, StanceResult, ViewResult } from './bench';
 
 const OUT = join(process.cwd(), 'test-results', 'perf');
 const RUNS = Math.max(1, Number(process.env.PERF_RUNS) || 3);
@@ -60,6 +61,8 @@ type Bench = {
   startEnemyPhase(): Promise<{ aiMs: number }>;
   enemyPhase(): Promise<EnemyPhaseResult>;
   castle(o: object): Promise<CastleResult>;
+  view(kind: 'doll' | 'weapon' | 'armory', o: object): Promise<ViewResult>;
+  stance(o: object): Promise<StanceResult>;
 };
 
 /**
@@ -122,7 +125,7 @@ async function untilTitle(page: Page, timeout: number): Promise<number> {
 
 /** `PERF_LARGE=1` (story 15.11) runs only the large-map test below, not this one. */
 test('enemy phase of the large battle and cold start', async ({ page, context }, info) => {
-  test.skip(process.env.PERF_LARGE === '1' || !!process.env.PERF_PHASE, 'PERF_LARGE=1 or PERF_PHASE measure the large maps, the castle or saved phases only');
+  test.skip(process.env.PERF_LARGE === '1' || !!process.env.PERF_PHASE || process.env.PERF_VIEWS === '1', 'PERF_LARGE=1, PERF_PHASE or PERF_VIEWS measure the large maps, the castle, saved phases or the 3D views only');
   test.setTimeout(3_600_000);
   const device = info.project.name;
 
@@ -214,7 +217,7 @@ interface LargeRow {
 const SEASON = process.env.PERF_SEASON as Season | undefined;
 if (SEASON && !SEASONS.includes(SEASON)) throw new Error(`PERF_SEASON=${SEASON}: no season (${SEASONS.join(', ')})`);
 test('large maps and the castle (story 15.11)', async ({ page }, info) => {
-  test.skip(process.env.PERF_LARGE !== '1', 'set PERF_LARGE=1');
+  test.skip(process.env.PERF_LARGE !== '1' || process.env.PERF_VIEWS === '1', 'set PERF_LARGE=1');
   test.setTimeout(3_600_000);
   const device = info.project.name;
   const cdp = await throttle(page);
@@ -351,4 +354,97 @@ test('enemy phase of a saved battle (story 15.11)', async ({ page }, info) => {
     ...lines,
   ].join('\n');
   writeFileSync(join(OUT, `phase-${device}.md`), md + '\n');
+});
+
+/**
+ * Story 16.19 (AC 3): `PERF_VIEWS=1 pnpm perf` measures the 3D views of epic 16 on the bench page at each throttling level: the load
+ * time until the model is on the stage (figure sheet doll 16.15, weapon view 16.14, armoury of the keep 16.18), their frame rate while
+ * they idle for 5 s, and the battle board with the chosen figure changing every 0.7 s (combat stance of 16.10, `stance.ts`) against the
+ * same board with nothing chosen. Medians over `PERF_RUNS` runs, max over all runs. Idle views draw at `board.fpsIdle` (30), the
+ * armoury (turning stands) and the battle at the active rate (60): the FPS target of a level is capped at that rate. The frame
+ * ms are the distances between two drawn frames (`draws`); the longest page frame (`raf`) is held to the 100 ms of story 7.8.
+ * Writes `test-results/perf/views-<device>.json` and `.md`. Desktop throttling stands in for the phone; the reference devices stay a
+ * release check.
+ */
+test('3D views of epic 16 and the battle stance (story 16.19)', async ({ page }, info) => {
+  test.skip(process.env.PERF_VIEWS !== '1', 'set PERF_VIEWS=1');
+  test.setTimeout(3_600_000);
+  const device = info.project.name;
+  const cdp = await throttle(page);
+  const views = [
+    { id: 'doll', label: 'Figurenblatt (Puppe)', cap: 30 },
+    { id: 'weapon', label: 'Waffenansicht', cap: 30 },
+    { id: 'armory', label: 'Waffenkammer', cap: 60 },
+  ] as const;
+  interface Row { scenario: string; cpuSlowdown: number; loadMs: number | null; avgFps: number; p95Ms: number; maxMs: number; maxRafMs: number; renderMs: number; drawCalls: number; target: number | null; pass: boolean | null }
+  const rows: Row[] = [];
+  let renderer = '';
+  const rowOf = (scenario: string, cpuSlowdown: number, samples: Array<{ draws: number[]; raf: number[]; renderMs: number[]; drawCalls: number[] }>, loads: number[] | null, cap: number, fps: number | null): Row => {
+    const stats = samples.map((x) => frameStats(x.draws));
+    const avgFps = median(stats.map((x) => x.avgFps));
+    const maxRafMs = Math.round(Math.max(...samples.map((x) => Math.max(...x.raf))));
+    const target = fps === null ? null : Math.min(fps, cap);
+    return {
+      scenario,
+      cpuSlowdown,
+      loadMs: loads ? Math.round(median(loads)) : null,
+      avgFps,
+      p95Ms: median(stats.map((x) => x.p95Ms)),
+      maxMs: Math.max(...stats.map((x) => x.maxMs)),
+      maxRafMs,
+      renderMs: Math.round(median(samples.map((x) => x.renderMs.reduce((a, b) => a + b, 0) / Math.max(1, x.renderMs.length))) * 10) / 10,
+      drawCalls: median(samples.map((x) => median(x.drawCalls))),
+      target,
+      // a stage without a target (1x) is only reported; the frame limit of 100 ms holds at every level
+      pass: target === null ? null : avgFps >= target * 0.95 && maxRafMs <= 100,
+    };
+  };
+  for (const stage of stages()) {
+    for (const v of views) {
+      const samples: ViewResult[] = [];
+      for (let i = 0; i < RUNS; i++) {
+        await setCpu(cdp, stage.cpuSlowdown);
+        await page.goto('./tests/perf/bench.html');
+        await page.waitForFunction(() => document.body.dataset.ready === '1');
+        samples.push((await page.evaluate(([k, o]) => (window as unknown as { __bench: Bench }).__bench.view(k as 'doll', o as object), [v.id, { quality: 'mid' }])) as ViewResult);
+        await setCpu(cdp, 1);
+        renderer = samples[i]!.renderer;
+      }
+      const row = rowOf(v.label, stage.cpuSlowdown, samples, samples.map((x) => x.loadMs), v.cap, stage.fps);
+      rows.push(row);
+      console.log(`${device} ${stage.cpuSlowdown}x ${row.scenario}: load ${row.loadMs} ms, ${row.avgFps} FPS, p95 ${row.p95Ms} ms, max ${row.maxMs} ms (page ${row.maxRafMs} ms), render ${row.renderMs} ms, ${row.drawCalls} draw calls`);
+    }
+    const idle: StanceResult['idle'][] = [];
+    const select: StanceResult['select'][] = [];
+    for (let i = 0; i < RUNS; i++) {
+      await setCpu(cdp, stage.cpuSlowdown);
+      await page.goto('./tests/perf/bench.html');
+      await page.waitForFunction(() => document.body.dataset.ready === '1');
+      const prepared = (await page.evaluate((o) => (window as unknown as { __bench: Bench }).__bench.prepare(o), BENCH_OPTIONS)) as PreparedBattle;
+      const r = (await page.evaluate(() => (window as unknown as { __bench: Bench }).__bench.stance({}))) as StanceResult;
+      await setCpu(cdp, 1);
+      idle.push(r.idle);
+      select.push(r.select);
+      renderer = prepared.renderer;
+    }
+    // nothing chosen: the board idles at `board.fpsIdle` (30); a chosen figure plays its stance and the board draws at the active rate (60)
+    for (const [label, list, cap] of [['Brett, nichts gewählt', idle, 30], ['Brett, Wahl wechselt (Kampfhaltung)', select, 60]] as const) {
+      const row = rowOf(label, stage.cpuSlowdown, list, null, cap, stage.fps);
+      rows.push(row);
+      console.log(`${device} ${stage.cpuSlowdown}x ${row.scenario}: ${row.avgFps} FPS, p95 ${row.p95Ms} ms, max ${row.maxMs} ms (page ${row.maxRafMs} ms), render ${row.renderMs} ms, ${row.drawCalls} draw calls`);
+    }
+  }
+  mkdirSync(OUT, { recursive: true });
+  writeFileSync(join(OUT, `views-${device}.json`), JSON.stringify({ device, renderer, runs: RUNS, rows }, null, 1));
+  const md = [
+    `# 3D-Ansichten von Epic 16 – ${device}`,
+    '',
+    `Renderer: ${renderer}; ${RUNS} Läufe je Zeile (Median, max = über alle Läufe); Qualität mid. Bildabstand = zwischen zwei gezeichneten Bildern.`,
+    '',
+    '| Szenario | Drosselung | Laden ms | Ø FPS | Ziel FPS | p95 ms | max ms | max Seitenbild ms | Render ms/Bild | Draw Calls | Urteil |',
+    '|---|---|---|---|---|---|---|---|---|---|---|',
+    ...rows.map((r) => `| ${r.scenario} | ${r.cpuSlowdown}× | ${r.loadMs ?? '–'} | ${r.avgFps} | ${r.target ?? '–'} | ${r.p95Ms} | ${r.maxMs} | ${r.maxRafMs} | ${r.renderMs} | ${r.drawCalls} | ${r.pass === null ? '–' : r.pass ? 'ok' : 'über'} |`),
+  ].join('\n');
+  writeFileSync(join(OUT, `views-${device}.md`), md + '\n');
+  if (process.env.PERF_STRICT === '1') expect(rows.filter((r) => r.pass === false).map((r) => `${r.scenario} ${r.cpuSlowdown}x`)).toEqual([]);
 });

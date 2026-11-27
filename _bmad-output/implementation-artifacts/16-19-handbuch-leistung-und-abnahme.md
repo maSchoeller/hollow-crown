@@ -22,7 +22,7 @@ damit das Epic vor dem Release rund ist.
 - [x] T2 `HelpStone` in `TerrainLens.tsx` mit eigenem Anker, Test-Abdeckung (AK 2)
 - [x] T3 Griffpunkt Lanze/Stab, Miras Bogen (AK 4)
 - [x] T4 Vorschauen der übrigen Waffengruppen (AK 4); Blaupausen entfallen per Entscheidung Produktinhaber 2026-11-27, nur Blender-Vorschauen
-- [ ] T5 Messungen und Tabelle unten (AK 3)
+- [x] T5 Messungen und Tabelle unten (AK 3); Referenzgerät offen beim Produktinhaber
 - [ ] T6 Handy-Durchlauf durch den Produktinhaber (AK 5)
 
 ## Dev Notes
@@ -45,12 +45,55 @@ damit das Epic vor dem Release rund ist.
 - T2: `HelpStone anchor="terrainLens"` am Ende der `LensLegend`; Test „finds the entry of every ?“ prüft `terrainLens` und `elements`; neuer Test für die Werte von Straße, Schild-Runen und Chronik.
 - [ASSUMPTION] Straße ½ hat keinen eigenen „?“-Anker: das „?“ der Feldkarte öffnet `terrain_open`, das auf `road_half` verweist.
 - `pnpm content:check`, `vitest tests/unit/handbook.test.ts`, `pnpm lint` grün (nur Altwarnungen in fremden Tests).
+- T5 (2026-11-27): neuer Messlauf `PERF_VIEWS=1` in `tests/perf/perf.spec.ts` (Opt-in, CI-Lauf von `pnpm perf` unverändert: der Test ist ohne die Variable übersprungen, die beiden anderen Tests bei gesetzter Variable). Messfunktionen `view` (Puppe, Waffenansicht, Waffenkammer) und `stance` (Brett ohne/mit wechselnder Wahl) in `tests/perf/bench.ts`; Auswertung mit `frameStats`/`median` aus `report.ts`; `report-summary.ts` überspringt die neuen `views-*.json`. Befehl und Ergebnis siehe „Messung 2026-11-27“ unten. Es wurde kein Code getunt.
+
+### Messung 2026-11-27
+
+Desktop-Ersatz nach NFR1/NFR2, **nicht** das Referenzgerät. Rechner: Intel UHD Graphics 630 (ANGLE/D3D11), Chromium über Playwright, Profil `pixel6a` (412 × 915, DPR 2,625), `PERF_GPU=1` (wie die Messungen 11.26 und 15.11; ohne GPU rendert SwiftShader und die Waffenkammer fiel auf 8 FPS, das ist kein Handy-Ersatz), Qualität `mid`, je Zeile Median aus 3 Läufen, „max“ über alle Läufe. Befehl: `PERF_GPU=1 PERF_VIEWS=1 PERF_STAGES=1,2,4 PERF_RUNS=3 pnpm perf --project=pixel6a`. Gemessen werden gezeichnete Bilder (Abstand zweier Zeichnungen); Ruhebilder laufen mit `board.fpsIdle` = 30, bewegte Ansichten mit 60. Ziel je Stufe nach NFR1 (60 bei 2×, 30 bei 4×), gedeckelt auf die Bildrate der Ansicht; 1× ohne Ziel. Grenze: kein Seitenbild über 100 ms. „Laden“ = Konstruktor bis Modell auf der Bühne plus zwei Bilder. Auswahl im Brett = die Figuren des Bretts (12 eigene) wechseln alle 0,7 s als gewählte Figur (Glow-Menge der Overlays, die die Kampfhaltung 16.10 auslöst; ohne Reichweitenfelder und Vorschau).
+
+| Szenario | Drossel | Laden ms | Ø FPS | Ziel FPS | p95 ms | max ms (Seitenbild) | Render ms/Bild | Draw Calls | Urteil |
+|---|---|---|---|---|---|---|---|---|---|
+| Figurenblatt (Puppe) | 1× | 703 | 30 | – | 34,7 | 48,6 (17) | 0,3 | 3 | – |
+| Waffenansicht | 1× | 321 | 60 | – | 18,0 | 32,7 (17) | 0,2 | 2 | – |
+| Waffenkammer (alle Relikte und Signaturstücke) | 1× | 1 085 | 60 | – | 18,1 | 32,0 (17) | 1,5 | 118 | – |
+| Brett, nichts gewählt | 1× | – | 29,9 | – | 34,9 | 51,5 (17) | 1,9 | 77 | – |
+| Brett, Wahl wechselt | 1× | – | 55,7 | – | 33,2 | 50,2 (33) | 2,6 | 77 | – |
+| Figurenblatt (Puppe) | 2× | 916 | 30 | 30 | 34,9 | 48,8 (17) | 1,5 | 3 | ok |
+| Waffenansicht | 2× | 381 | 60 | 30 | 18,1 | 18,7 (17) | 0,9 | 2 | ok |
+| Waffenkammer | 2× | 1 223 | 59,6 | 60 | 19,2 | 33,9 (17) | 5,4 | 118 | ok |
+| Brett, nichts gewählt | 2× | – | 29,8 | 30 | 36,6 | 73,8 (67) | 7,8 | 77 | ok |
+| Brett, Wahl wechselt | 2× | – | 55,3 | 60 | 32,4 | 55,6 (50) | 8,0 | 77 | **knapp unter Ziel** (92 %) |
+| Figurenblatt (Puppe) | 4× | 1 369 | 29,1 | 30 | 43,0 | 54,1 (33) | 5,1 | 3 | ok |
+| Waffenansicht | 4× | 599 | 55,4 | 30 | 30,7 | 36,3 (17) | 3,5 | 2 | ok |
+| Waffenkammer | 4× | 2 424 | 47,3 | 30 | 35,6 | 86,4 (67) | 17,7 | 118 | ok |
+| Brett, nichts gewählt | 4× | – | 27,1 | 30 | 47,6 | **137,4 (133)** | 27,4 | 77 | **über** (Ø FPS 90 %, ein Bild über 100 ms) |
+| Brett, Wahl wechselt | 4× | – | 32,3 | 30 | 42,2 | 60,4 (67) | 24,5 | 77 | ok |
+
+Vergleich Standardmessung (`PERF_GPU=1 PERF_RUNS=3 pnpm perf --project=pixel6a`, Gegnerphase der Referenzschlacht mit 40 Figuren, gleicher Rechner):
+
+| Szenario | Drossel | Ø FPS | Ziel | p95 ms | max ms | Draw Calls | Urteil |
+|---|---|---|---|---|---|---|---|
+| Gegnerphase 24×32 | 2× | 60 | 60 | 16,7 | 33,4 (alle Läufe 66,7) | 69 | ok |
+| Gegnerphase 24×32 | 4× | 36,4 | 30 | 50 | 100 (alle Läufe **116,6**) | 68 | Ø FPS ok, ein Bild über 100 ms (schon vorher so: Baseline 216,6) |
+| Kaltstart (installierte App bis Titel, 4×) | – | – | < 5 s | – | 3 191 ms | – | ok |
+| Erstbesuch bis Titel (4×) | – | – | – | – | 8 064 ms | – | ohne Budget |
+
+Pakete (`pnpm build`, `check-bundle-size.mjs`): erster Download **14,43 MB** (Budget 30, Ziel 12 → Warnung „über dem Ziel“, unverändert zum Stand `pnpm check`); Paket act1 **39,25 MB** von 40 (554 Dateien); Paket act2 **2,41 MB** von 40; Figurenmodelle 45 geprüft, 0 über Budget (7 000 Dreiecke, 512², 0,5 MB gz); Berufspfad-Teile 16 geprüft, 0 über Budget; Waffenmodelle v2 1,23 MB (14 Dateien, nur bei Bedarf geladen, zählen nicht zum ersten Download).
+
+Deutung:
+
+- Die drei neuen Ansichten liegen mit GPU bis 4× im Budget: Puppe und Waffenansicht kosten 3 bzw. 2 Draw Calls und 0,2–5 ms je Bild; die Ladezeiten 0,3–0,9 s bei 1×/2× und 0,6–1,4 s bei 4× sind klein gegen den Kaltstart. Die Waffenkammer ist mit 118 Draw Calls bei vollem Tresor (jedes Relikt und Signaturstück im Besitz, Worst Case) die teuerste: 17,7 ms je Bild bei 4×, aber 47 FPS und kein Bild über 87 ms; Laden 1,1–2,4 s.
+- Die Kampfhaltung bei Auswahl hebt das Brett vom Ruhetakt (30 FPS) auf den aktiven Takt (55–56 statt 30 FPS, Renderzeit je Bild gleich), also etwa doppelte Arbeit je Sekunde, solange eine Figur ihre Haltung wechselt. Bei 2× fehlen dem 60-FPS-Ziel 5 FPS (55,3, kein Bild über 56 ms); bei 4× reicht es (32,3 FPS, schlechtester Wert 60 ms). Auffällig ist stattdessen die Ruhe-Zeile bei 4×: ein Bild von 137 ms in einem der 3 Läufe (Seitenbild 133 ms, Renderzeit 27 ms je Bild, das ist die Streuung des Rechners wie bei den schon bekannten Ausreißern der Gegnerphase), nicht die Haltung selbst.
+- Nichts davon wurde getunt; Messwerte nur berichtet. Unter SwiftShader (ohne `PERF_GPU=1`) sind die Werte nicht verwertbar (Waffenkammer 8 FPS, Bild bis 150 ms).
+- **Offen für den Produktinhaber:** Messung auf dem Referenzgerät (Pixel 6a / iPhone 12): Ladezeit von Figurenblatt, Waffenansicht und Waffenkammer, Bildrate der Waffenkammer und im Kampf beim Wechsel der gewählten Figur; Befehle wie oben, auf dem Gerät per `pnpm perf` mit `PERF_STRICT=1` bzw. von Hand (Architektur §10, Story 9.14).
+
 
 ### File List
 
 - `content/core/handbook.yaml`, `content/core/locales/de.handbook.yaml`, `content/core/locales/en.handbook.yaml`
 - `src/app/screens/TerrainLens.tsx`, `src/app/screens/TerrainLens.css`
 - `tests/unit/handbook.test.ts`
+- T5: `tests/perf/bench.ts` (`view`, `stance`), `tests/perf/perf.spec.ts` (Test `PERF_VIEWS=1`), `tests/perf/report-summary.ts`
 - `art/mockups/weapons-2026-11/{bow,dagger,staff,book,lute,focus}_v2_preview.png` (T4), `tools/art/blender_weapons_v2_sheet.py` (neue Option `--set=iso`), `art/prompts/weapon_rune_concept.md` (Abschnitt ISO-Vorschauen)
 
 ### Abschluss T4

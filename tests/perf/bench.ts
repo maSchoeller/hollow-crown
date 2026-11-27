@@ -8,7 +8,7 @@
  */
 import { SceneInstrumentation } from '@babylonjs/core/Instrumentation/sceneInstrumentation';
 import { loadContent } from '../../src/content/browser';
-import { addToRoster, applyCommand, createBattle, levelUp, newCampaign, nodeLevel, startBattle, type BattleState, type GameData, type MapDef } from '../../src/core';
+import { addToRoster, applyCommand, createBattle, levelUp, newCampaign, newItem, nodeLevel, startBattle, type BattleState, type GameData, type MapDef } from '../../src/core';
 import { mapSchema } from '../../src/content/schemaMap';
 import type { Season } from '../../src/core/defs';
 import { setLocales } from '../../src/i18n';
@@ -450,5 +450,153 @@ async function terrainRebuild(opts: { full?: boolean } = {}): Promise<{ ms: numb
   return { ms: Math.round(performance.now() - t0), builds: Object.fromEntries(Object.entries(builds).map(([k, v]) => [k, { n: v.n, ms: Math.round(v.ms) }])) };
 }
 
-(window as unknown as { __bench: { prepare: typeof prepare; startEnemyPhase: typeof startEnemyPhase; enemyPhase: typeof enemyPhase; castle: typeof castle; terrainRebuild: typeof terrainRebuild; board: () => BoardView | undefined } }).__bench = { prepare, startEnemyPhase, enemyPhase, castle, terrainRebuild, board: () => prepared?.board };
+/** Story 16.19: frames of a view for `ms`: the page's animation frames (`raf`) and the frames the host really drew (`draws`: distance between two draws, the idle rate caps it at `fpsIdle`), plus the time of each draw's render call. */
+export interface ViewSample {
+  raf: number[];
+  draws: number[];
+  renderMs: number[];
+  /** draw calls per drawn frame */
+  drawCalls: number[];
+}
+
+async function sampleFrames(ms: number, tickEach?: (elapsed: number) => void): Promise<ViewSample> {
+  const scene = (window as unknown as { __host: { scene: { onBeforeRenderObservable: { add(f: () => void): unknown; remove(o: unknown): void }; onAfterRenderObservable: { add(f: () => void): unknown; remove(o: unknown): void } } } }).__host.scene;
+  const out: ViewSample = { raf: [], draws: [], renderMs: [], drawCalls: [] };
+  const instrumentation = new SceneInstrumentation(scene as never);
+  instrumentation.captureFrameTime = false;
+  let t0 = 0;
+  let lastDraw = 0;
+  const before = scene.onBeforeRenderObservable.add(() => {
+    t0 = performance.now();
+  });
+  const after = scene.onAfterRenderObservable.add(() => {
+    const now = performance.now();
+    out.renderMs.push(now - t0);
+    out.drawCalls.push(instrumentation.drawCallsCounter.current);
+    if (lastDraw) out.draws.push(now - lastDraw);
+    lastDraw = now;
+  });
+  await new Promise<void>((resolve) => {
+    let last = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      if (last) out.raf.push(now - last);
+      last = now;
+      tickEach?.(now - start);
+      if (now - start < ms) requestAnimationFrame(tick);
+      else resolve();
+    };
+    requestAnimationFrame(tick);
+  });
+  scene.onBeforeRenderObservable.remove(before);
+  scene.onAfterRenderObservable.remove(after);
+  instrumentation.dispose();
+  return out;
+}
+
+export interface ViewResult extends ViewSample {
+  /** ms from the construction of the view until its first drawn frame with the model on it */
+  loadMs: number;
+  renderer: string;
+}
+
+/** A campaign with the company of act 1 (as at node 1-6), who has joined and their level: gear to show on the doll, the weapon view and in the armoury. */
+function viewCampaign(data: GameData) {
+  const nodes = data.acts[1]!.nodes;
+  const at = nodes.findIndex((n) => n.id === 'm1_6');
+  const c = newCampaign(data, 7, { difficulty: 'normal', deathMode: 'standard' }, { name: 'Rhen', pronoun: 'they', portrait: 'avatar_a', affinity: 'wind' });
+  const order = nodes.map((n) => n.id);
+  for (const ch of Object.values(data.chars)) {
+    const j = order.indexOf(ch.joins);
+    if (j >= 0 && j < at) addToRoster(data, c, ch.id);
+  }
+  // the armoury only shows relics and signature pieces: the company owns every one of them (the full vault, the worst case)
+  for (const d of Object.values(data.items)) if (d.stages || d.tags?.includes('relic') || d.tags?.includes('signature')) c.convoy.push(newItem(c, d.id, data));
+  return c;
+}
+
+const frame2 = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+/**
+ * Story 16.19 (AC 3): the 3D views of epic 16 on the page, each idling for `ms`: the figure sheet's doll (16.15, `UnitStageView`),
+ * the weapon view (16.14, `ItemStageView`) and the armoury of the keep (16.18, `ArmoryView`). `loadMs` runs from the constructor until
+ * the model is on the stage and the next two animation frames have passed.
+ */
+async function view(kind: 'doll' | 'weapon' | 'armory', opts: { quality?: 'low' | 'mid' | 'high'; ms?: number } = {}): Promise<ViewResult> {
+  const loaded = loadContent();
+  setLocales(loaded.locales);
+  await loadPack('act1').catch(() => undefined);
+  await loadPack('act2').catch(() => undefined);
+  const data = loaded.data;
+  const c = viewCampaign(data);
+  const slot = document.getElementById('board') as HTMLDivElement;
+  const quality = opts.quality ?? 'mid';
+  const host = (): { engine: { getGlInfo(): { renderer: string } } } => (window as unknown as { __host: ReturnType<typeof host> }).__host;
+  const t0 = performance.now();
+  let disposable: { dispose(): void };
+  if (kind === 'doll') {
+    const { UnitStageView } = await import('../../src/render/units/unitStage');
+    const unit = c.roster.find((u) => u.equip.mainHand && u.charId) ?? c.roster[0]!;
+    const v = new UnitStageView(slot, data, quality);
+    disposable = v;
+    if (!(await v.show(unit))) throw new Error('the doll model did not load');
+  } else if (kind === 'weapon') {
+    const { ItemStageView } = await import('../../src/render/items/itemStage');
+    const { weaponStageModel, stageRunes } = await import('../../src/app/screens/weaponViewModel');
+    const inst = c.roster.map((u) => u.equip.mainHand).find((i) => i && weaponStageModel(data, i));
+    if (!inst) throw new Error('no weapon with a model in the company');
+    const v = new ItemStageView(slot, data, quality);
+    disposable = v;
+    if (!(await v.show(weaponStageModel(data, inst)!, stageRunes(data, inst)))) throw new Error('the weapon model did not load');
+  } else {
+    const { ArmoryView } = await import('../../src/render/items/armory');
+    const { armorySpecs } = await import('../../src/app/screens/armoryModel');
+    const specs = armorySpecs(data, c, () => '');
+    const v = new ArmoryView(slot, data, { onFront: () => undefined, onOpen: () => undefined }, quality);
+    disposable = v;
+    await v.setStands(specs, 0);
+  }
+  await frame2();
+  const loadMs = performance.now() - t0;
+  await new Promise((r) => setTimeout(r, 1500));
+  const sample = await sampleFrames(opts.ms ?? 5000);
+  const out = { ...sample, loadMs, renderer: host().engine.getGlInfo().renderer };
+  disposable.dispose();
+  return out;
+}
+
+export interface StanceResult {
+  /** the same battle without and with a figure chosen after the other (the chosen one takes its ready stance, 16.10) */
+  idle: ViewSample;
+  select: ViewSample;
+  units: number;
+  selected: number;
+}
+
+/**
+ * Story 16.19 (AC 3, 16.10 AC 5): frame rate of the prepared battle board with no figure chosen against the chosen figure changing
+ * every `stepMs` through the company (the glow set of the overlays, which is what moves the figure into its ready stance and back).
+ */
+async function stance(opts: { ms?: number; stepMs?: number } = {}): Promise<StanceResult> {
+  if (!prepared) throw new Error('prepare() first');
+  const { board, state } = prepared;
+  const ms = opts.ms ?? 8000;
+  const step = opts.stepMs ?? 700;
+  const mine = state.units.filter((u) => u.team === 'player');
+  board.setOverlays({});
+  await new Promise((r) => setTimeout(r, 800));
+  const idle = await sampleFrames(ms);
+  let at = -1;
+  const select = await sampleFrames(ms, (t) => {
+    const i = Math.floor(t / step) % mine.length;
+    if (i !== at) {
+      at = i;
+      board.setOverlays({ glow: new Set([mine[i]!.id]) });
+    }
+  });
+  board.setOverlays({});
+  return { idle, select, units: state.units.length, selected: mine.length };
+}
+
+(window as unknown as { __bench: { prepare: typeof prepare; startEnemyPhase: typeof startEnemyPhase; enemyPhase: typeof enemyPhase; castle: typeof castle; view: typeof view; stance: typeof stance; terrainRebuild: typeof terrainRebuild; board: () => BoardView | undefined } }).__bench = { prepare, startEnemyPhase, enemyPhase, castle, view, stance, terrainRebuild, board: () => prepared?.board };
 document.body.dataset.ready = '1';
