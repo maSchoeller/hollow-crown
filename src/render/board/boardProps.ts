@@ -20,7 +20,9 @@ import { addSnow } from '../shared/snow';
 import { isPackRegistered } from '../../content/browser';
 import { modelAvailable, pickVariant, withState } from '../shared/scenery';
 import { fadeRule, hidesFigure, mayFade } from './fade';
-import { isStaticMaterial } from './staticMaterial';
+import { isFigureMaterial, isStaticMaterial } from './staticMaterial';
+import { staticRuneMaterials } from '../shared/runeGlow';
+import type { Material } from '@babylonjs/core/Materials/material';
 import { type PropSet, MAX_FIRES, FREEZE_FRAMES } from './boardBase';
 import { BoardSetup } from './boardSetup';
 
@@ -433,8 +435,20 @@ export abstract class BoardProps extends BoardSetup {
   }
 
   protected freezeStatic(): void {
-    this.frozen = this.scene.materials.filter((m) => isStaticMaterial(m.name));
-    for (const m of this.frozen) m.freeze();
+    const runes = new Set<Material>(staticRuneMaterials(this.store.materials));
+    this.frozen = this.scene.materials.filter((m) => isStaticMaterial(m.name) || isFigureMaterial(m.name) || runes.has(m));
+    for (const m of this.frozen) {
+      if (m.isFrozen) continue;
+      m.freeze();
+      // a frozen material only binds when the previous draw used another one; the baked animation's row is per mesh, so it binds every time
+      if (isFigureMaterial(m.name) && !this.vatBound.has(m)) {
+        this.vatBound.add(m);
+        m.onBindObservable.add((mesh) => {
+          mesh.bakedVertexAnimationManager?.bind(m.getEffect()!, false);
+        });
+      }
+    }
+    this.frozenCount = this.scene.materials.length;
   }
 
   /** Height and footprint radius of a template (its vertices are baked with the origin on the ground). */

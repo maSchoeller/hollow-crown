@@ -195,6 +195,10 @@ export abstract class BoardBase implements HostedView {
   /** Frames until the static materials freeze again (0 = frozen or nothing to do), see `thawStatic` */
   protected freezeIn = 0;
   protected frozen: Material[] = [];
+  /** the number of scene materials when the static ones were last frozen; more means a figure or rune material came later */
+  protected frozenCount = 0;
+  /** the frozen figure materials that rebind their meshes' baked animation row on each draw */
+  protected vatBound = new WeakSet<Material>();
   protected fires: ParticleSystem[] = [];
   protected flameTexture: DynamicTexture;
   protected units = new Map<string, UnitView>();
