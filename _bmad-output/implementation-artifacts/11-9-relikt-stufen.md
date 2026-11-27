@@ -128,3 +128,10 @@ Claude Opus 5.5 (zwei Sessions: Umsetzung, dann Abschluss nach den PO-Antworten)
 ## Change Log
 
 - 2026-11-09: Relikt-Stufen umgesetzt (Schema, Kern mit Pflicht-Kontext, Snapshot im Kampf, Inhalte, UI mit Relikt-Rahmen, content:check, Tests); PO-Antworten eingearbeitet, Status review.
+
+## Review 2026-11-27
+
+**Verdict:** VERIFIED (waits for PO act-2 run)
+
+- `src/core/rules/relics.ts` (`stagedItemDef`, `RelicCtx`), `relicStage`/`relicStages` in `src/core/campaign/relics.ts`, `battleSkeleton` schreibt `relicStages` (`setup.ts:65,98`); `itemStatMods`/`activeSkillIds` mit Pflichtparameter `rc`.
+- `pact_warden_shield.stages` und `dragon_ember` in `items.yaml:145-150`, `warden_ward_awake`, `ui.relic.stage.*` DE/EN, `validateRelics.ts`, Architektur „Stand (Story 11.9)“, GDD-Log 2026-11-09. Gezielte Tests auf main grün (12 Dateien, 168 Tests, gemeinsam mit 11.1–11.11).

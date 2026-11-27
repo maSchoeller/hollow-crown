@@ -144,3 +144,7 @@ Claude Opus 5.5 (gds-create-story, gds-dev-story), headless für die orchestrier
 ### Change Log
 
 - 2026-11-09: Story 11.21 angelegt und umgesetzt (Karte, Szenen DE/EN, Chronik-Seite, Knoten, Tests, Lab, Abnahme, Decision-Logs); Status review.
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** Map `n5_kupfermine.yaml` (linked mid doors, lever gate, Brann `recruit.by: [ilka, lucan]`, chests dragon_ember/earth_rune_3/a2_mine/moonsteel), node n5 with `ember_spark`; `tests/unit/n5-kupfermine.test.ts` 12/12 green.

@@ -178,3 +178,8 @@ Claude Opus 5.5 (gds-dev-story, 2026-11-10). Szenentexte selbst entworfen (Schre
 
 - 2026-11-09: Story 11.17 angelegt (ready-for-dev), fünf PO-Fragen als [ASSUMPTION] markiert.
 - 2026-11-10: Umgesetzt (Knotenfeld `epilogues`, Karte, Szenen DE/EN mit E6, Akademie-Hinweis und verbranntem Dorf, Tests, Lab, Abnahme, Decision-Logs); Sim Normal 100 % / 1,61 / 0,08 Tote / 13 Runden (Median) / 2 006 Gold; Status review. Sichtprüfung, Kampagnen-Sim und PR bei der lenkenden Session.
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** Map `m2_6_kraehenholm.yaml` (tides R4/R8/R9, Sable/captain, Grell, Nell guest), node epilogue `scn.m2_6.burnt_village` only with `e07: warn` (`campaign.yaml`), E6 in the outro; `tests/unit/m2-6-kraehenholm.test.ts` 18/18 green.
+Still open: picture 375 × 812, E6 card and epilogue in game (PO phone run); Easy/Hard covered by 11.27 campaign runs, `--haunts` not documented.

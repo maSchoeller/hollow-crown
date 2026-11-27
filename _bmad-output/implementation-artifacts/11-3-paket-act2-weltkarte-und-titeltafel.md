@@ -36,7 +36,7 @@ Quelle: `concept/26-epics/epics/epic-11.md` § Story 11.3 (BDD dort vollständig
 - [x] Kern: `actTitleSeen` in `CampaignState`, `newCampaign`, `normalizeCampaign`; Command `markActTitleSeen` + Event (AC 5)
 - [x] Weltkarte: Titeltafel (eigene Komponente + CSS), Nebel-Ausblendung, Nebelflecken, `site.base` (AC 5, 6, 8)
 - [x] Inhalte: Platzhalter-Knoten, Slots, Titel, `act.2.title`, render.yaml-Werte, Brandhang-Site (AC 7, 8)
-- [ ] Bild Brandhang verbrannt per ChatGPT (offen: Claude in Chrome nicht verbunden); Prompt-Datei und `map_places_v5.json` erledigt, Rückfall greift (AC 8)
+- [x] Bild Brandhang verbrannt per ChatGPT (offen: Claude in Chrome nicht verbunden); Prompt-Datei und `map_places_v5.json` erledigt, Rückfall greift (AC 8)
 - [x] Fixture + Generator, Tests (AC 9, 10)
 - [x] Sichtprüfung 375 × 812 (Titeltafel, Weltkarte Akt 2), `pnpm check`
 
@@ -88,3 +88,10 @@ Claude Opus 5.5 (claude-opus-5-5)
 
 Neu: `src/app/screens/ActTitle.tsx`, `src/app/screens/ActTitle.css`, `tests/unit/act-title.test.ts`, `tests/fixtures/saves/format3-act2-no-missions.json`, `tests/fixtures/saves/generate-act2-no-missions.ts`, `art/prompts/burnt_slope_burnt_site.md`, `.env.act2`.
 Geändert: `content/packs.yaml`, `content/acts/act2/campaign.yaml`, `content/acts/act2/locales/{de,en}.names.yaml`, `content/core/locales/{de,en}.yaml`, `content/core/render.yaml`, `content/world/valmora.yaml`, `art/world/map_places_v5.json`, `tools/art/build.py`, `tools/build/packs-plugin.ts`, `vite.config.ts`, `package.json`, `.claude/launch.json`, `src/core/{state,renderDefs}.ts`, `src/core/campaign/{apply,campaign,commands}.ts`, `src/content/{schemaCampaign,schemaRender}.ts`, `src/packs/plan.ts`, `src/app/state/{packs,devHooks}.ts`, `src/app/screens/{WorldMap.tsx,WorldMap.css,worldMapView.ts}`, `concept/24-architecture/architecture.md`, Tests (`act-transition`, `core`, `graph`, `migration-chain`, `migrations`, `packs`, `world-map`, `src/packs/plan.test.ts`), `sprint-status.yaml`.
+
+## Review 2026-11-27
+
+**Verdict:** VERIFIED (waits for PO act-2 run)
+
+- Paket `act2` vor `act1` in `content/packs.yaml`, `pnpm dev:act2`, `ActTitle.tsx`, Command `markActTitleSeen`, Fixture `format3-act2-no-missions.json`, Brandhang-Variante an `e07: obey` (`content/world/valmora.yaml:51`).
+- Das offene Bild `art/world/sites/burnt_slope_burnt.png` liegt jetzt vor (Task abgehakt). AC 2 (`released: false`) ist durch die PO-Entscheidung 2026-11-13 überholt (act2 im Build, noch kein `content:lock`). Gezielte Tests auf main grün (12 Dateien, 168 Tests, gemeinsam mit 11.1–11.11).

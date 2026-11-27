@@ -89,3 +89,8 @@ Claude Sonnet 5.5
 - src/app/screens/ElementBand.tsx, ElementBand.css (neu), BattleHud.tsx; src/ui/icons.tsx
 - content/core/locales/de.yaml, en.yaml; content/core/handbook.yaml
 - tests/unit/forecast-element.test.ts, element-band.test.ts (neu), lab.test.ts; tests/fixtures/lab/kampfvorschau-element.yaml (neu)
+
+## Review 2026-11-27
+
+**Urteil: DONE (ein Beleg offen).** Kern (`SideForecast.elementTier`/`guard`, `src/core/rules/combat.ts:30,32`), `ElementBand.tsx`/`.css`, `anchor: elements` (`content/core/handbook.yaml:101`), Lab `tests/fixtures/lab/kampfvorschau-element.yaml`; `element-band.test.ts` und `forecast-element.test.ts` grün (18 Tests).
+- Wirklich offen: Bild-Beleg aus AC 8 (Screenshot 375 × 812 neben dem Mockup) wurde nie gemacht; Status bleibt done.

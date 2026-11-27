@@ -144,3 +144,8 @@ Akt 2 bringt bisher keine eigenen Figuren oder Requisiten mit, das Brett lädt d
 - `concept/24-architecture/decision-log.md`
 - `_bmad-output/implementation-artifacts/sprint-status.yaml`
 - `_bmad-output/implementation-artifacts/11-26-leistung-von-akt-2.md` (neu)
+
+## Review 2026-11-27
+
+**PO.** Tooling and fix are on main (`.env.perf`, `tests/perf/bench.ts`, terrain rebuild in `src/render/shared/terrain3d.ts`), measurements in this file.
+Not met yet and only decidable on the device: NFR1 at 4× throttling (enemy phase 2-4 18 s, 2-8 ~23 s > 15 s; stalls 0.57–0.85 s > 100 ms; FPS below target). Measurement on the reference phone is open (AC 6, release check 9.14); acceptance with the PO act-2 phone run, like 15.11.

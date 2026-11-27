@@ -2,7 +2,7 @@
 
 # Story 10.3: Profi-Klassen und Werte
 
-Status: review
+Status: done
 
 ## Story
 
@@ -68,3 +68,11 @@ Claude Opus 5.5 (claude-opus-5-5)
 ### Change Log
 
 - 2026-11-08: Story umgesetzt, Status review.
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- 16 Profiklassen mit `proSkills` (`classes.yaml`), Bausteine `addWeaponGroups`/`usesBonus`/`radiusBonus` (`schemaUnits.ts:238-240`), sechs neue `pro_*`-Skills in `skills.yaml:25-30`.
+- Sim `--promote a|b` (`tools/simulate.ts:107`), 25 Steckbriefe `class_*`, Lab-Lage `tests/fixtures/lab/profi-wege.yaml`; `playable: false` nur noch bei Gegnerklassen (Barde, Bannerträger, Schatten, Fallensteller seit 10.4/10.5 spielbar).
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.

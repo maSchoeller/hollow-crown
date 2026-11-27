@@ -1,6 +1,6 @@
 # Story 8.5: Item-Bilder
 
-Status: review
+Status: done
 
 ## Story
 

@@ -198,3 +198,8 @@ Claude Opus 5.5 (gds-dev-story); Szenenentwurf und Übersetzung per Haiku-Subage
 
 - 2026-11-09: Story 11.12 umgesetzt (Karte, Szenen DE/EN, Knoten, Tests, Abnahme, Decision-Logs); PO-Antworten F1–F4 eingearbeitet; Status review.
 - 2026-11-09: PO-Entscheidungen nach der Abnahme: Niedergestreckte bleiben bis 11.27, Gold 2 000, Lanzenreiter und Bote mit eigener Halbfigur als Sprecher, zwei Heimsuchungs-Anker; Lab spielt Akt-2-Karten in Akt 2 (Herbst).
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** ACs on main: `content/acts/act2/maps/m2_1_windscharte.yaml` (ballistas b_west/b_east, lesson via `unit_enters`, waves R3/6/7/9, Jory guest with `recruit`, dragon shadow R8), node m2_1 with pre/post in `campaign.yaml`, takeover section in `levels/abnahme/s2_2_1_windscharte.md`; `tests/unit/m2-1-windscharte.test.ts` 14/14 green.
+Superseded by later PO decisions, not gaps: `act2` is `released: true` since 2026-11-13 (phone test, no `content:lock`); balance re-tuned in 11.27/16.2.

@@ -97,3 +97,10 @@ Weitere Karten (m1_1, m1_3–m1_8, m2_2, m2_4–m2_7): nicht geändert, siehe `a
 ### Review (2026-11-22)
 
 `gds-code-review` (Sonnet): keine kritischen Befunde. Behoben: Kommentar in `m2_1_windscharte.yaml` (m7 fehlt nur auf Normal). `pnpm check` grün (2628 Tests). Status review: Spielgefühl-Abnahme durch den PO steht aus.
+
+## Review 2026-11-27
+
+**Urteil: GAPS.** Die Kartenänderungen sind auf `main` (`aa6e2f3a`; Weckradien 1-2, m6/m7 in 2-1 nur Schwer, Trigger für Grell/w2/w4 in 2-8, Radius 3 in 2-3, Säulengang im Prolog), die Siegquoten liegen im Korridor. Offen gegenüber AC 3:
+- Niedergestreckte außerhalb 0,4–1,3 laut eigener Messung: Prolog 0,04, 2-1 4,30, 2-3 1,56, 2-8 1,66 (Prolog und 2-1 lagen schon vor 16.1 außerhalb).
+- 2-8 auf 92 % statt „rund 60 %“ gezogen (Ziel vom Auftraggeber geändert, [ASSUMPTION]); braucht Bestätigung oder Nachzug durch den Produktinhaber, ebenso die Spielgefühl-Abnahme.
+- Nicht neu gemessen (Review ohne Sim-Lauf).

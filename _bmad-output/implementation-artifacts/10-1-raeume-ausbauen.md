@@ -2,7 +2,7 @@
 
 # Story 10.1: Räume ausbauen
 
-Status: review
+Status: done
 
 ## Story
 
@@ -81,3 +81,11 @@ Claude Opus 5.5 (Subagent, Session epic10-castle)
 ### Change Log
 
 - 2026-11-13: Story umgesetzt, Status `review`.
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- 11 Räume mit 1 500/4 000 Gold und `any`/`alive`-Gefährten in `content/core/rooms.yaml`; `roomSchema` mit `cost.gold` und neuen Funktionen (`src/content/schemaCampaign.ts:8,15`), zwei Stufen geprüft (`validateCampaign.ts:95-96`).
+- `roomBuild`/`buildableRooms` (`src/core/campaign/camp.ts:229,243`) mit Fehlerfolge unknown_room → max_level → room_locked → not_enough_gold, Event `roomBuilt` (`apply.ts:536`); Stufen-Arrays in `balance.yaml`, Sim `buildRooms` (`tools/simCampaign.ts:279`).
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.

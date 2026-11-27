@@ -96,3 +96,7 @@ claude-opus-5-5
 - `tests/unit/act2-gallery.test.ts`, `tests/unit/scenery.test.ts`, `tests/unit/m2-3-rabenweide.test.ts`, `tests/unit/m2-5-silberquell.test.ts`
 - `concept/23-art-direction/decision-log.md`, `concept/23-art-direction/map-assets/build.py`, `matrix.md`, `site/index.html`, `groups/{coast,interior,village}.yaml`, `abnahme/11-24/*.jpg`
 - `art/README.md`, `_bmad-output/implementation-artifacts/sprint-status.yaml`
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** `art/models/props/horse_a.glb`, terrains `rope_bridge`/`quay` (`content/core/terrain.yaml:78-80`), `act2.props` in `content/packs.yaml`, art log section `concept/23-art-direction/decision-log.md:209`, game-camera pictures in `map-assets/abnahme/11-24/`; `tests/unit/act2-gallery.test.ts` 9/9 green.

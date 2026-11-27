@@ -1,6 +1,6 @@
 # Story 1.4: Kampagnen-Commands und Journal
 
-Status: review
+Status: done
 
 ## Story
 

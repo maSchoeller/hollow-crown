@@ -2,7 +2,7 @@
 
 # Story 10.2: Akademie und Aufstieg mit Glutfunke
 
-Status: review
+Status: done
 
 ## Story
 
@@ -86,3 +86,11 @@ Claude Opus 5.5 (claude-opus-5-5)
 ### Change Log
 
 - 2026-11-08: Story umgesetzt, Status review.
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- `ember_spark` mit `use: { promote: true, minLevel: 10 }` (`items.yaml:123`), Defaults `promotionGain`/`secondPath` in `normalizeCampaign` (`campaign.ts:121`), `balance.academy` vollständig.
+- `promotionPreview`/`promote`/`changeProPath` (`src/core/rules/progression.ts`), `promoteError` und `learnSecondPath` (`camp.ts`, `apply.ts`), Events `promoted`/`proPathChanged`/`secondPathLearned`; `Academy.tsx`, `src/ui/Sparks.tsx`, Bark `ember`.
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.

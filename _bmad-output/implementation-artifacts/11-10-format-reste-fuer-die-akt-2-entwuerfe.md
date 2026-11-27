@@ -112,3 +112,10 @@ Claude Opus 5.5
 
 - 2026-11-07: Story 11.10 umgesetzt (Format-Reste der Akt-2-Entwürfe), Status review.
 - 2026-11-07: Review-Befunde behoben (12 Punkte, 1 zurückgestellt).
+
+## Review 2026-11-27
+
+**Verdict:** VERIFIED (waits for PO act-2 run)
+
+- `src/content/drafts.ts` in `tools/content-check.ts`, `terrainWarnings` (`src/core/battle/terrainWarn.ts`), `guest` in `mapDefs.ts` mit Prüfung in `validateFormat.ts`, Fixture `dev_terrain_warn.yaml`, Level-Blatt-Farben in `tools/levels/sheet.ts`, Abnahme-PNGs `s2_*.png`.
+- Offen bleibt nur der Defer-Punkt „UI-Verdrahtung ohne automatischen Test“, kein AC. Gezielte Tests auf main grün (12 Dateien, 168 Tests, gemeinsam mit 11.1–11.11).

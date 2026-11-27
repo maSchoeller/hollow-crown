@@ -1,6 +1,6 @@
 # Story 10.12: Söldner-Traits
 
-Status: review
+Status: done
 
 ## Story
 
@@ -71,3 +71,11 @@ Claude Opus 5 (Subagent)
 ### Change Log
 
 - 2026-11-14: Story umgesetzt (sieben Traits in `traits.yaml`, Ziehung je Angebot nach Taverne-Stufe, Wirkung über `computeStats`, Preisaufschlag, Marken in Taverne und Truppe, Handbuch-Eintrag `tavern`, Tests).
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- `content/core/traits.yaml` mit genau den sieben Traits, `traitCount: [1, 2]`, `goodTraitChanceByLevel: [50, 75, 75]`, Wirkung in `skillTotals` (`rules/skills.ts:274`), `hireCost` (`camp.ts:377`), Texte DE/EN.
+- Marken im Taverne-Panel (`Rooms.tsx:460-476`) und seit Story 16.15 in der Figur-Ansicht der Truppe (`Doll.tsx:569`, vorher Truppe-Zeile); Handbuch `tavern` mit Verweisen.
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.

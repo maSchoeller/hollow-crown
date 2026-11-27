@@ -1,6 +1,6 @@
 # Story 6.3: Das Lager in Akt 1
 
-Status: review
+Status: done
 
 ## Story
 

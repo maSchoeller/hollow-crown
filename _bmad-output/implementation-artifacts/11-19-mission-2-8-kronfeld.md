@@ -114,3 +114,8 @@ Claude Opus 5.5 (2026-11-10). Szenentexte selbst entworfen (Schreib-Pipeline: Vo
 ### Change Log
 
 - 2026-11-10: Story 11.19 angelegt und umgesetzt (Karte, Szenen DE/EN, Folgen E5–E8, Relikt-Stufen, Akt-Ende, Tests, Lab, Abnahme, Decision-Log); Status review.
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** Map `m2_8_kronfeld.yaml` (survive → escape, four lieutenants, `lieutenantLevel: position` from 11.27), node m2_8 `fixed: finale` with two `ember_spark`, relic stages (`dragon_ember` stage at `completed m2_8`); `tests/unit/m2-8-kronfeld.test.ts` 16/16 green.
+Still open: pictures 375 × 812 of map, gate scene and outro (PO phone run).

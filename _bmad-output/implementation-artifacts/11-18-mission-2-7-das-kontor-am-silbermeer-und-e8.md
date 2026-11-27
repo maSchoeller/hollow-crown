@@ -115,3 +115,8 @@ Claude Opus 5.5 (2026-11-10). Szenentexte selbst entworfen (Schreib-Pipeline: Vo
 ### Change Log
 
 - 2026-11-10: Story 11.18 angelegt und umgesetzt (Karte, Szenen DE/EN mit E8, Chronik-Seite, Tests, Lab, Abnahme, Decision-Log); Status review.
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** Map `m2_7_kontor.yaml`, page `a2_kontor`, E8 in `scn.m2_7.outro`, node m2_7 with `effects: setFlag maelis_ledgers`; `tests/unit/m2-7-kontor.test.ts` 13/13 green.
+Still open: picture 375 × 812 and E8 card in game (PO phone run).

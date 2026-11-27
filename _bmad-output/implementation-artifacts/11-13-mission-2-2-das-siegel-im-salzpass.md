@@ -62,7 +62,7 @@ damit der erste Zweifel an Seraphine wächst.
 - [x] T7 Ansicht, Abnahme, Abschluss (AC 12, 13)
   - [ ] `pnpm levels` (Atlas) erledigt; Spielbild bei 375 × 812 über `pnpm dev:act2`, Lautstärken auf 0; Ortsbild `salzpass` ist in `ACT2_LOCATIONS` (`tools/art/build.py:49`) und `packs.yaml:71`, vor `pnpm art:build` `git lfs pull`.
   - [x] Abschnitt „Übernahme Story 11.13“ in `levels/abnahme/s2_2_2_salzpass.md` mit allen Abweichungen und Sim-Zahlen.
-  - [ ] Neue Entscheidungen (F1–F5) ins Decision-Log von `concept/22-narrative/` bzw. `concept/21-gdd/` eintragen, nie in `01-decisions.md`.
+  - [x] Neue Entscheidungen (F1–F5) ins Decision-Log von `concept/22-narrative/` bzw. `concept/21-gdd/` eintragen, nie in `01-decisions.md`.
   - [x] `pnpm check` grün; **kein** `released: true`, **kein** `content:lock`.
 
 ## Dev Notes
@@ -214,3 +214,8 @@ Claude Opus 5.5 (Subagent der orchestrierenden Session)
 ### Change Log
 
 - 2026-11-09: Mission 2-2 umgesetzt (Karte, Szenen, Chronik-Seite, Knoten, Test, Lab); F1–F5 vorläufig nach Vorschlag.
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** Map `m2_2_salzpass.yaml`, scenes `scn.m2_2.*` (7), chronicle page `a2_salzpass`, node pre/post; `tests/unit/m2-2-salzpass.test.ts` 15/15 green. F1–F5 are logged (`concept/26-epics/decision-log.md:59`, `concept/22-narrative/decision-log.md:134`), task ticked.
+Still open: in-game picture at 375 × 812 (part of the PO phone run).

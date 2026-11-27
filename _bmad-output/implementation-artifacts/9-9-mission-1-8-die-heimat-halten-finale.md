@@ -177,3 +177,8 @@ Story: diese Datei, `sprint-status.yaml` (nur die Zeile 9-9).
 ## Abnahme 2026-10-27
 
 Abgenommen (Status done). Gespielt bis Glutfunken-Moment und Hinweis auf Akt 2. Balancing PR #73: Leicht 100 %/0,46, Normal 92 %/0,45, Kampagne Schwer 61 %, Kampagne Normal 96 %; dritte Welle Runde 8 statt 7 (zur Bestätigung beim Produktinhaber). Gesamtbefund: `acceptance-2026-10-27.md`.
+
+## Review 2026-11-27
+
+**Urteil: DONE (ein Beleg offen).** Alle übrigen Tasks waren abgehakt; die Mission ist laut Abnahme 2026-10-27 bis zum Glutfunken-Moment gespielt (`acceptance-2026-10-27.md:37`).
+- Wirklich offen: T10 Screenshots (AC 13), nie erstellt.

@@ -137,3 +137,8 @@ Claude Opus 5.5 (gds-create-story, gds-dev-story), headless für die orchestrier
 
 - 2026-11-09: Story 11.22 angelegt (ready-for-dev).
 - 2026-11-10: umgesetzt (Karte, Laute, Szenen DE/EN, Knoten, Tests, Lab, Simulation, Abnahme, Decision-Logs); Status review.
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** Map `n6_auemarkt.yaml` (escort troupe master, footbridge flooded R6 with warning), `final_curtain` in `items.yaml:152`, node n6 with memorial and reward; `tests/unit/n6-auemarkt.test.ts` 9/9 green.
+Deviation from AC 3 by later tuning: the east boat lands in round 4 instead of 3 (11.27 round 2, documented there).

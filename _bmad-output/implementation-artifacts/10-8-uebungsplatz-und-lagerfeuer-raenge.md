@@ -1,6 +1,6 @@
 # Story 10.8: Übungsplatz und Lagerfeuer-Ränge
 
-Status: review
+Status: done
 
 ## Story
 
@@ -69,3 +69,11 @@ Claude Opus 5.5 (Subagent)
 ### Change Log
 
 - 2026-11-13: Story umgesetzt (Reserve-EP des Übungsplatzes, Ergebniszeile, Panel, Lagerfeuer-Sperren, Sim-Spalten, Handbuch).
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- `training.reservePctByLevel: [20, 35, 50]`, `trainReserve` in `finishBattle` (`campaign.ts:386`), `addExp`/`expShare`/`hauntCatchUp` in `rules/progression.ts`.
+- `campfireLock` (`camp.ts:159`, genutzt in `Rooms.tsx:521`), Ergebniszeile (`Result.tsx:186`), `Training.tsx`/`.css`, Sim-Spalten `res lv`/`res EP` (`tools/simulate.ts:183`).
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.

@@ -1,6 +1,6 @@
 # Story 10.9: Händler der Stufen 2 und 3
 
-Status: review
+Status: done
 
 ## Story
 
@@ -67,3 +67,11 @@ Claude Opus 5.5 (Subagent)
 ### Change Log
 
 - 2026-11-13: Story umgesetzt (Sortiment ab Stufe 2, Angebot des Tages, Rabatt mit Deckel, Glutfunke beim Händler, Sim, Handbuch).
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- `merchantDiscountByLevel`, `maxDiscountPct: 30`, `dailyOfferFromMerchantLevel: 3`, `emberShop` (`balance.yaml:301-305`); Akt-2-Liste `roomLevel: 2` (`content/acts/act2/campaign.yaml:64`).
+- `merchantLevel`/`shopPrice`/`emberSparkOffered` (`core/campaign/aid.ts`), Command `buyEmberSpark`, Default `emberShop` (`campaign.ts:126`), Sim „ember sparks … bought“ (`tools/simulate.ts:222`).
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.

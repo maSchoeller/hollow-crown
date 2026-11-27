@@ -130,3 +130,9 @@ Claude Opus 5.5 (lenkende Session und Subagenten)
 
 - Die Simulationstabellen vorher/nachher stehen in den PRs #191, #192, #193 und #195.
 - Ausgangswerte: `main` b197ed82, `pnpm sim --campaign act2 --runs 50` je Stufe.
+
+## Review 2026-11-27
+
+**PO.** Tuning parts 1–4 (#191–#193, #195) and rounds 2–3 are in YAML and the GDD log (`concept/21-gdd/decision-log.md:172-178`); playtest plan `concept/21-gdd/playtest-akt2.md` exists; discounts capped (`balance.yaml:302` maxDiscountPct 30, act 2 adds −10).
+Waiting for the PO: phone run (N4 d2, 2-8 Normal/Hard, playtime 10–12 h), the out-of-corridor calls still marked [ASSUMPTION] (N6 Normal 67 %, 2-4), and the release step he triggers (`pnpm content:lock`, fixtures of the live steps; `content/released-ids.json` does not exist yet).
+Evidence gap: runs with and without Varek and Brann are not documented in this file or the PR bodies (orders and E7 warn/obey are, PR #191/#193/#195).

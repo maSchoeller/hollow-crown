@@ -110,3 +110,10 @@ Claude Opus 5.5 (gds-dev-story)
 ## Change Log
 
 - 2026-11-09: Story 11.11 umgesetzt – N4/N6-Bedingungen nach PO-Entscheidung 2026-11-09, Reihenfolge- und Platzhalter-Test für Akt 2; Status review.
+
+## Review 2026-11-27
+
+**Verdict:** VERIFIED (waits for PO act-2 run)
+
+- N4/N6 `requires` nach den PO-Antworten 2026-11-09 in `acts/act2/campaign.yaml` (inzwischen mit `memorialIf` aus 11.20/11.22); `tests/unit/act2-campaign-order.test.ts` mit echtem `mapInBuild`.
+- Der Befund `resumeWhere` ohne `mapInBuild` (`src/app/campaignInfo.ts:38`) ist erledigt, weil jetzt alle 11 Karten von Akt 2 gebaut sind. Gezielte Tests auf main grün (12 Dateien, 168 Tests, gemeinsam mit 11.1–11.11).

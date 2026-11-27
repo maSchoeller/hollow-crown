@@ -105,3 +105,10 @@ Claude Opus 5.5 (claude-opus-5-5)
 - `concept/27-ueberarbeitung/levels/s2_2_5_silberquell.yaml`, `s2_2_6_kraehenholm.yaml`, `s2_2_8_kronfeld.yaml`; `concept/21-gdd/decision-log.md`, `concept/24-architecture/decision-log.md`
 - `src/core/defs.ts`, `src/core/rules/skills.ts`, `ballistaBase.ts`, `ballista.ts`, `movement.ts`; `src/content/schemaUnits.ts`, `validateReach.ts`
 - `tests/unit/act2-companions.test.ts` (neu), `act-title`, `act-transition`, `act2-drafts`, `sim-acts`, `lieutenants`, `lieutenants-join` (`.test.ts`); `tests/fixtures/maps/dev_eisenmark.yaml`; `tools/simulate.ts`
+
+## Review 2026-11-27
+
+**Verdict:** VERIFIED (waits for PO act-2 run)
+
+- 7 Gefährten mit `joins` nach AC 2 (`acts/act2/units.yaml`), 4 Leutnants (`lieutenants.yaml`) mit Szenen `scn.lt.*`, Stahl-Tier-Block in `items.yaml:161`, `materialByAct`/`tierUp iron_dagger` in `balance.yaml:365-369`.
+- Flags `e05`–`e08`, `joined_sable`, `maelis_ledgers`, `chronicle_read`, `m2_2_seal`; `e7_order`/`e7_warned` nur noch in Negativ-Tests; `siegeRangeBonus`/`besideBallista` in `src/core`. Gezielte Tests auf main grün (12 Dateien, 168 Tests, gemeinsam mit 11.1–11.11).

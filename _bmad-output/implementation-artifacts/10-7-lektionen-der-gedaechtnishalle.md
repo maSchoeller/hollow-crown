@@ -1,6 +1,6 @@
 # Story 10.7: Lektionen der Gedächtnishalle
 
-Status: review
+Status: done
 
 ## Story
 
@@ -70,3 +70,11 @@ Claude Opus 5.5 (Subagent)
 ### Change Log
 
 - 2026-11-13: Story umgesetzt (Lektionen in `heritage.yaml`, Command `inheritHeritage`, Panel der Gedächtnishalle, Truppen-Zeile, Handbuch).
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- `heritage.yaml` mit 7 Rollen, 14 Skills `source: heritage`, Gerrit `heritage_shield_wall` (`content/acts/act1/memorials.yaml:13`), `balance.memorial.heritagePerAct`/`heritageChoiceByLevel`.
+- `core/campaign/heritage.ts`, Event `heritageInherited`, Fehler `unknown_choice` (`commands.ts:140,161`), Lektion in `activeSkillIds` (`rules/skills.ts:41`); `Memorial.tsx`/`.css`, Architektur §5.10/§5.11.
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.

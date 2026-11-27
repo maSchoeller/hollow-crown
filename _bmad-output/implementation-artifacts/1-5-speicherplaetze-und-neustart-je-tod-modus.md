@@ -1,6 +1,6 @@
 # Story 1.5: Speicherplätze und Neustart je Tod-Modus
 
-Status: review
+Status: done
 
 ## Story
 

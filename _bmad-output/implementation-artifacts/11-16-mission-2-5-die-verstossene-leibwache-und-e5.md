@@ -230,3 +230,8 @@ Claude Opus 5.5 (gds-dev-story, 2026-11-09). Szenentexte selbst entworfen (Schre
 
 - 2026-11-09: Story 11.16 angelegt (ready-for-dev), vier PO-Fragen als [ASSUMPTION] markiert.
 - 2026-11-09: Umgesetzt (Bedingung `roomLevel`, Karte, Szenen DE/EN mit E5 und Akademie-Hinweis, Ortsbild eingebunden, Tests, Lab, Abnahme, Decision-Logs); Sim Normal 100 % / 0,86 / 0,14 Tote / 15 Runden (Median) / 2 312 Gold; Status review. Sichtprüfung, Kampagnen-Sim und PR bei der lenkenden Session.
+
+## Review 2026-11-27
+
+**VERIFIED (waits for PO act-2 run).** Map `m2_5_silberquell.yaml` (escort Odile, Sable/captain by `e07`, west bridge), E5 as `c01`/`c01_capped` with `roomLevel` condition, node with `place: silberquell`; `tests/unit/m2-5-silberquell.test.ts` 16/16 green.
+Still open: picture 375 × 812 and E5 card (PO phone run); Easy/Hard were later covered by the act-2 campaign runs of 11.27, `--haunts` runs are not documented.

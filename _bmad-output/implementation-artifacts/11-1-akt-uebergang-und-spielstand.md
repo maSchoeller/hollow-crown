@@ -72,3 +72,10 @@ Geändert (Auswahl): `src/core/gameData.ts`, `state.ts`, `defs.ts`, `index.ts`, 
 ### Change Log
 
 - 2026-11-08: Story angelegt und umgesetzt (Akte je Ordner, Übergang, Spielstand), Status review.
+
+## Review 2026-11-27
+
+**Verdict:** VERIFIED (waits for PO act-2 run)
+
+- `src/core/campaign/acts.ts` (`actOf`, `actCampaign`, `findNode`, `nodesUpTo`, `actUnlocked`, `scarDef`), kein `data.campaign` mehr in `src`/`tools`; `enterNextAct` meldet `actReached` (`graph.ts:42-49`); Räume mit `any: [{ act: 2 }, { storyCount }]` in `rooms.yaml`.
+- Fixture `tests/fixtures/saves/format3-act1-finale-done.json`, Akt-2-Kopfdateien, Architektur §5.4/§5.5/§5.14 „Stand (Story 11.1)“. Gezielte Tests auf main grün (12 Dateien, 168 Tests, gemeinsam mit 11.1–11.11).

@@ -1,6 +1,6 @@
 # Story 1.1: Neue Oberfläche – Steine, Tokens und Währung
 
-Status: review
+Status: done
 
 ## Story
 

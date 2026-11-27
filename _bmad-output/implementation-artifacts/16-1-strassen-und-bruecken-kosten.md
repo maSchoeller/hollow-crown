@@ -1,6 +1,6 @@
 # Story 16.1: Straßen und Brücken kosten ½
 
-Status: review
+Status: done
 
 ## Story
 
@@ -30,3 +30,9 @@ damit lange Laufwege auf großen Karten schneller gehen.
 - [ASSUMPTION] `walkDistances` (Autoplay, Schatzsuche) zählt Schritte hinter Mauern, keine Kosten, und bleibt unverändert.
 - Die Anzeige `ui.pursue.hint` zeigt die Restbewegung als Zahl (z. B. 1.5); die Formatierung mit „½“ gehört zu Story 16.11.
 - Keine gesperrten IDs, kein `content:lock`.
+
+## Review 2026-11-27
+
+**Urteil: DONE.** Alle AC auf `main` erfüllt.
+- `content/core/terrain.yaml:10,18,75,76,78`: road, bridge, boardwalk, footbridge, rope_bridge 0.5 für alle Bewegungsarten; gate, ramp, stairs, door_open, ash bleiben 1. `multipleOf(0.5)` in `src/content/schemaMap.ts:9` und `schemaUnits.ts:224` (`terrainCost`).
+- `minStepCost` (`src/core/rules/movement.ts:94`) in `ai.ts:48,283` und `autoplay.ts:66`; `tests/unit/road-half-cost.test.ts` (12 Tests: Reichweite, Rest 1½, Nachsetzen, walkPath, Gefahrenzone, KI, Autoplay) grün.

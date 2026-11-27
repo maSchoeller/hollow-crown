@@ -51,6 +51,7 @@ Je Epic eine Datei; nur die Datei des Epics lesen, an dem gearbeitet wird.
 | [epic-14.md](epic-14.md) | Epic 14: Handbuch |
 | [epic-15.md](epic-15.md) | Epic 15: Umbau von Akt 1 |
 | [epic-16.md](epic-16.md) | Epic 16: Ausrüstung zum Anfassen |
+| [epic-17.md](epic-17.md) | Epic 17: Filmszenen – grob |
 
 ## Epic List
 
@@ -117,6 +118,10 @@ Spieler bekommen Akt 1 in der abgenommenen Fassung der Überarbeitung: größere
 ### Epic 16: Ausrüstung zum Anfassen
 Spieler sehen und begreifen ihre Ausrüstung: Runenwaffen v2 für alle Waffengruppen mit der Rune im Metall, Signaturen und Relikte mit eigenem Merkmal, Griff-Rig mit Fingern und Kampfhaltung bei Auswahl für alle 45 Brettfiguren, Figurenblatt als 3D-Ankleidepuppe mit Waffenansicht, Verzauberer als Werkbank, Händler „zuerst die Person“, ein Brett, das Gelände, Kosten und Elemente selbst erklärt, die Regeln Straße ½, Gegnerphase 2×, Schild-Runen und Waffen-Chronik sowie die Waffenkammer im Bergfried. Festgeschrieben am 2026-11-21 nach den acht abgenommenen Themen der Konzeptreihe: 19 Stories (16.1 Straße ½, 16.2 Balancing-Nachzug Prolog, 1-2, 2-1, 2-8, 16.3 Gegnerphase 2×, 16.4 Schild-Runen, 16.5 Waffen-Chronik, 16.6 Runenwaffen v2 im Spiel, 16.7 übrige Waffengruppen, 16.8 Signaturen und Relikte, 16.9 Griff-Rig und Finger, 16.10 Ruhe und Kampfhaltung, 16.11 Gelände und Kosten, 16.12 Element-Band, 16.13 Änderungsliste und Icons, 16.14 Waffenansicht, 16.15 Figurenblatt, 16.16 Verzauberer, 16.17 Händler, 16.18 Waffenkammer, 16.19 Handbuch, Leistung und Abnahme). Läuft vor Story 9.14.
 **FRs covered:** FR64–FR69 · NFR17 · AR24–AR26 · UX-DR32–UX-DR39
+
+### Epic 17: Filmszenen – grob
+Spieler erleben die Schlüsselszenen der Staffel (4–5 je Akt) als kurze 3D-Filme auf der Karte der Mission: Die Figuren laufen, die Kamera schneidet je Zeile, ein Kinolook trägt das Bild; später Stimmen je Hauptfigur sowie Musik und Klang. Entwurf vom 2026-11-06 (PR #118, damals Epic 16), am 2026-11-27 als Epic 17 eingeplant: 12 Stories (17.1 Format, 17.2 Player, 17.3 Kinolook, 17.4 Bühnen, 17.5 Figuren für die Nähe, 17.6 Blender-Vorschau, 17.7 Stimmen, 17.8 Musik und Klang, 17.9–17.11 Filme je Akt, 17.12 Leistung). Vor der Umsetzung verfeinern; sechs offene Fragen beim Produktinhaber; Platz in der Reihenfolge offen.
+**FRs covered:** – (Darstellung bestehender Szenen, FR34–FR36) · neu vorzuschlagen: UX-DR für Filmszenen
 
 **Stand 2026-11-05:** Epic 1–8, 13 und 14 sind fertig, Epic 9 bis 9.13. Neu gilt: 15 → 9.14 (Release von Akt 1) → 10 → 11 → 12. Akt 2 geht erst nach dem Release von Akt 1 live. **Stand 2026-11-06:** Epic 11 ist auf die Überarbeitung neu geschnitten und Epic 10 nachgezogen (Lückenliste in `concept/27-ueberarbeitung/umsetzung-lueckenliste-akt2.md`, F1–F4 entschieden). Die Reihenfolge darunter ist die ursprüngliche Planung. **Stand 2026-11-21:** Epic 16 „Ausrüstung zum Anfassen“ kommt vor Story 9.14 (Produktinhaber); neu gilt: 15 → 16 → 9.14 → 12.
 

@@ -286,3 +286,10 @@ damit das Epic vor dem Release rund ist.
 **Wenn** das Handbuch Einträge zu Straße ½, Schild-Runen, Waffen-Chronik, Gelände-Linse und Element-Band hat (Werte aus den Daten, Kontext-„?“ an Linse, Feldkarte und Element-Band) und das Paket-Budget, die Ladezeit der 3D-Ansichten und die Bildrate auf dem Referenzgerät gemessen sind
 **Dann** liegen alle Messwerte in den Budgets aus NFR1 und `check-bundle-size.mjs`, und der Produktinhaber hat Akt 1 auf dem Handy mit allen Neuerungen durchgespielt
 **Und** Auffälligkeiten aus dem Durchlauf sind behoben oder als eigene Story eingetragen; danach ist Story 9.14 frei.
+
+**Nachträge aus dem Review vom 2026-11-27 (Produktinhaber: Teil von 16.19):**
+
+- Lanzen- und Stabende schweben etwa 0,1 über dem Boden: Griffpunkt tiefer setzen, sodass das Schaftende den Boden berührt (16.10).
+- Miras Bogen liegt in der Ruhe hinter dem Bein (16.10).
+- Bildrate der Kampfhaltung bei Auswahl messen (16.10 AK 5), zusammen mit den übrigen Messungen dieser Story.
+- Fehlende Vorlagen und Vorschauen von 16.7 nachziehen: Blaupausen für Bogen, Dolch, Stab, Buch, Laute und Fokus sowie `<gruppe>_v2_preview.png` in `art/mockups/weapons-2026-11/`, als Grundlage der Abnahme je Waffengruppe.

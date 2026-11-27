@@ -171,23 +171,23 @@ development_status:
   9-12-nebenquest-n3-das-erbe: done  # Nebenquest N3 „Das Erbe“
   9-13-supports-und-barks-von-akt-1: done  # Supports und Barks von Akt 1
   9-14-akt-1-abstimmen-und-veroeffentlichen: ready-for-dev  # Akt 1 abstimmen und veröffentlichen (am 2026-11-05 umgeschrieben: Release nach Epic 15)
-  9-15-akt-1-auf-schwer-abstimmen: backlog  # Akt 1 auf Schwer abstimmen (nach dem Release, aus 15.10, 2026-11-07)
+  9-15-akt-1-und-2-auf-schwer-abstimmen: backlog  # Akt 1 und 2 auf Schwer abstimmen (nach dem Release, aus 15.10, 2026-11-07; Akt 2 ergänzt 2026-11-27)
   epic-9-retrospective: optional
 
   # Epic 10: Die Burg ausbauen (ab Akt 2) – verfeinert 2026-10-31, neu geschnitten nach Readiness 2026-10-31
-  epic-10: in-progress  # alle 14 Stories auf review, nur die Geräte-Messung von 10-14 steht beim Produktinhaber aus
-  10-1-raeume-ausbauen: review  # Räume ausbauen
-  10-2-akademie-und-aufstieg-mit-glutfunke: review  # Akademie und Aufstieg mit Glutfunke
-  10-3-profi-klassen-und-werte: review  # Profi-Klassen und Werte
-  10-4-wirkungen-der-profi-wege: review  # Wirkungen der Profi-Wege
-  10-5-fallensteller-und-schatten: review  # Fallensteller und Schatten
-  10-6-verzauberer-und-werkstatt: review  # Verzauberer und Werkstatt
-  10-7-lektionen-der-gedaechtnishalle: review  # Lektionen der Gedächtnishalle
-  10-8-uebungsplatz-und-lagerfeuer-raenge: review  # Übungsplatz und Lagerfeuer-Ränge
-  10-9-haendler-der-stufen-2-und-3: review  # Händler der Stufen 2 und 3
-  10-10-konvoi-der-stufen-2-und-3: review  # Konvoi der Stufen 2 und 3
-  10-11-taverne-heiler-und-schmied-der-stufen-2-und-3: review  # Taverne, Heiler und Schmied der Stufen 2 und 3
-  10-12-soeldner-traits: review  # Söldner-Traits
+  epic-10: in-progress  # 10-1 bis 10-12 done (Review 2026-11-27); offen: 10-13 (Bildrate, Sichtabnahme der Teile) und 10-14 (Messung auf dem Gerät), beides beim Produktinhaber
+  10-1-raeume-ausbauen: done  # Räume ausbauen
+  10-2-akademie-und-aufstieg-mit-glutfunke: done  # Akademie und Aufstieg mit Glutfunke
+  10-3-profi-klassen-und-werte: done  # Profi-Klassen und Werte
+  10-4-wirkungen-der-profi-wege: done  # Wirkungen der Profi-Wege
+  10-5-fallensteller-und-schatten: done  # Fallensteller und Schatten
+  10-6-verzauberer-und-werkstatt: done  # Verzauberer und Werkstatt
+  10-7-lektionen-der-gedaechtnishalle: done  # Lektionen der Gedächtnishalle
+  10-8-uebungsplatz-und-lagerfeuer-raenge: done  # Übungsplatz und Lagerfeuer-Ränge
+  10-9-haendler-der-stufen-2-und-3: done  # Händler der Stufen 2 und 3
+  10-10-konvoi-der-stufen-2-und-3: done  # Konvoi der Stufen 2 und 3
+  10-11-taverne-heiler-und-schmied-der-stufen-2-und-3: done  # Taverne, Heiler und Schmied der Stufen 2 und 3
+  10-12-soeldner-traits: done  # Söldner-Traits
   10-13-anhaengeteile-der-profi-wege: review  # Anhängeteile der Profi-Wege
   10-14-burg-grafik-nach-der-3d-entscheidung: review  # Burg-Grafik nach der 3D-Entscheidung (PR 223: homeObject, castleScene, alle 15 Gegenstände, Vorwerk am Passfuß; offen nur die Messung auf dem echten Gerät durch den Produktinhaber)
   epic-10-retrospective: optional
@@ -221,7 +221,7 @@ development_status:
   11-25-brettfigur-rowena: review  # Brettfigur Rowena: altes Tripo-Modell abgenommen (PO 2026-11-11), kein Neubau, 0 Credits
   11-26-leistung-von-akt-2: review  # Leistung von Akt 2
   11-27-akt-2-abstimmen-und-abschliessen: review  # Akt 2 abstimmen und abschließen
-  11-28-simulation-wirbt-an: review  # Folge-Story aus 11.27 (Antwort 6 B): die Kampagnen-Simulation wirbt Söldner an
+  11-28-simulation-wirbt-an: done  # Folge-Story aus 11.27 (Antwort 6 B): die Kampagnen-Simulation wirbt Söldner an
   epic-11-retrospective: optional
 
   # Epic 12: Akt 3 „Krone“ und Staffelende – grob
@@ -288,7 +288,7 @@ development_status:
 
   # Epic 16: Ausrüstung zum Anfassen
   epic-16: in-progress
-  16-1-strassen-und-bruecken-kosten: review  # Straßen und Brücken kosten ½
+  16-1-strassen-und-bruecken-kosten: done  # Straßen und Brücken kosten ½
   16-2-balancing-nachzug-fuer-prolog-1-2-2-1-und-2-8: review  # Balancing-Nachzug für Prolog, 1-2, 2-1 und 2-8
   16-3-gegnerphase-standardmaessig-2: done  # Gegnerphase standardmäßig 2×
   16-4-schild-runen: done  # Schild-Runen
@@ -306,5 +306,21 @@ development_status:
   16-16-verzauberer-als-werkbank: done  # Verzauberer als Werkbank
   16-17-haendler-zuerst-die-person: done  # Händler „zuerst die Person“
   16-18-waffenkammer-im-bergfried: done  # Waffenkammer im Bergfried
-  16-19-handbuch-leistung-und-abnahme: backlog  # Handbuch, Leistung und Abnahme
+  16-19-handbuch-leistung-und-abnahme: backlog  # Handbuch, Leistung und Abnahme (dazu Lücken aus 16.7 und 16.10, Review 2026-11-27)
   epic-16-retrospective: optional
+
+  # Epic 17: Filmszenen (grob, Entwurf aus PR #118, eingeplant 2026-11-27; vor der Umsetzung verfeinern)
+  epic-17: backlog
+  17-1-filmformat-und-pruefung: backlog  # Filmformat und Prüfung
+  17-2-film-player-auf-dem-spielbrett: backlog  # Film-Player auf dem Spielbrett
+  17-3-kinolook: backlog  # Kinolook
+  17-4-buehnen-ohne-kampfkarte: backlog  # Bühnen ohne Kampfkarte
+  17-5-figuren-fuer-die-naehe: backlog  # Figuren für die Nähe
+  17-6-blender-vorschau-und-abnahme: backlog  # Blender-Vorschau und Abnahme
+  17-7-stimmen-der-hauptfiguren: backlog  # Stimmen der Hauptfiguren
+  17-8-musik-und-klang-der-filme: backlog  # Musik und Klang der Filme
+  17-9-filme-akt-1: backlog  # Filme Akt 1
+  17-10-filme-akt-2: backlog  # Filme Akt 2
+  17-11-filme-akt-3: backlog  # Filme Akt 3
+  17-12-leistung-und-rueckfall: backlog  # Leistung und Rückfall
+  epic-17-retrospective: optional

@@ -78,3 +78,10 @@ Geändert: `content/acts/act2/campaign.yaml`, `src/core/{storyDefs,mapDefs,state
 
 - 2026-11-08: Story angelegt (gds-create-story).
 - 2026-11-08: Umgesetzt (Positionsstufe, `levelOffset`, Beitrittsstufe, Rückfall der Heimsuchungen), Status review.
+
+## Review 2026-11-27
+
+**Verdict:** VERIFIED (waits for PO act-2 run)
+
+- `src/core/campaign/position.ts` (`nodeLevel`, `positionNow`, `joinLevel`, `raiseToLevel`); Leser in `refreshTavern`, `hauntLevel`, WorldMap (`ui.map.level`), `devNode`, Lab, `simCampaign`; `BattleState.positionLevel`; Prüfung in `src/content/validateLevels.ts`.
+- `positionLevel.base` steht inzwischen auf 12 (gemessen in 11.4, PO 2026-11-09). Fixture `dev_eisenmark.yaml`, `__hc.devMap(id, 2)`. Gezielte Tests auf main grün (12 Dateien, 168 Tests, gemeinsam mit 11.1–11.11).

@@ -135,3 +135,10 @@ Claude Opus 5.5
 - 2026-11-07: Review-Befunde behoben (11 Punkte) nach Rebase auf main mit 11.6; Status bleibt review.
 
 - 2026-11-07: Story 11.8 umgesetzt (Schema, Kern, KI, Autoplay, UI, content:check, Tests, Probekarte, Architektur, Decision-Log); Status review.
+
+## Review 2026-11-27
+
+**Verdict:** VERIFIED (waits for PO act-2 run)
+
+- `src/core/battle/activeVictory.ts` (`activeVictory`, `escapeOf`, `mustIds`, `escapeProgress`), gelesen von KI, Autoplay, `cast.ts`, `actions.ts`, Brett-Overlay; `BattleState.objectivePhase?`; `src/content/validatePhases.ts`.
+- Locales `ui.world.goal.survive_escape`, `ui.obj.escapedOf`, `ui.toast.objectiveChanged`; Fixture `dev_phases.yaml`, Architektur „Stand (Story 11.8)“. Gezielte Tests auf main grün (12 Dateien, 168 Tests, gemeinsam mit 11.1–11.11).

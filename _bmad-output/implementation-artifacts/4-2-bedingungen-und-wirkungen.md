@@ -1,6 +1,6 @@
 # Story 4.2: Bedingungen und Wirkungen
 
-Status: review
+Status: done
 
 ## Story
 

@@ -2,7 +2,7 @@
 
 # Story 10.4: Wirkungen der Profi-Wege
 
-Status: review
+Status: done
 
 ## Story
 
@@ -97,3 +97,11 @@ Claude Opus 5.5 (claude-opus-5-5)
 
 - 2026-11-08: Story angelegt (ready-for-dev).
 - 2026-11-08: Story umgesetzt, Status review.
+
+## Review 2026-11-27
+
+Verdict: DONE
+
+- Bausteine `guardNeighbors`…`cheerTargets` in `schemaUnits.ts:241-247`, `supports.guardMaxTotal: 30`, `experience.healExtraTarget`; Pflicht-`proSkills` (`validateUnits.ts:20`).
+- Alte Profiklassen tragen Rollen-Skill + `proSkills` (`classes.yaml:214-350`); kein `classId ===` in `src/core`; Anfeuern mit zweitem Ziel (`battle/actions.ts:133`), Rückstoß-Zeile im HUD (`ElementBand.tsx:84`).
+- pnpm vitest run (13 Story-Testdateien Epic 10): 154/154 grün.
