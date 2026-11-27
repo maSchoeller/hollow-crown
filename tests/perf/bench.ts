@@ -457,11 +457,18 @@ export interface ViewSample {
   renderMs: number[];
   /** draw calls per drawn frame */
   drawCalls: number[];
+  /**
+   * Story 16.20: per entry of `draws`, whether both of its frames were drawn at the active rate (`board.fpsActive`: the board is
+   * busy, e.g. a stance switch); the others are idle frames at `board.fpsIdle`. Empty for views without a board.
+   */
+  active: boolean[];
 }
 
 async function sampleFrames(ms: number, tickEach?: (elapsed: number) => void): Promise<ViewSample> {
   const scene = (window as unknown as { __host: { scene: { onBeforeRenderObservable: { add(f: () => void): unknown; remove(o: unknown): void }; onAfterRenderObservable: { add(f: () => void): unknown; remove(o: unknown): void } } } }).__host.scene;
-  const out: ViewSample = { raf: [], draws: [], renderMs: [], drawCalls: [] };
+  const out: ViewSample = { raf: [], draws: [], renderMs: [], drawCalls: [], active: [] };
+  const board = prepared?.board as unknown as { busy?(now: number): boolean } | undefined;
+  let wasBusy = false;
   const instrumentation = new SceneInstrumentation(scene as never);
   instrumentation.captureFrameTime = false;
   let t0 = 0;
@@ -473,7 +480,13 @@ async function sampleFrames(ms: number, tickEach?: (elapsed: number) => void): P
     const now = performance.now();
     out.renderMs.push(now - t0);
     out.drawCalls.push(instrumentation.drawCallsCounter.current);
-    if (lastDraw) out.draws.push(now - lastDraw);
+    // the host chose the rate of this frame from `busy` just before drawing it
+    const busy = !!board?.busy?.(now);
+    if (lastDraw) {
+      out.draws.push(now - lastDraw);
+      if (board?.busy) out.active.push(busy && wasBusy);
+    }
+    wasBusy = busy;
     lastDraw = now;
   });
   await new Promise<void>((resolve) => {

@@ -9,3 +9,12 @@
 const STATIC_MATERIAL = /^(props$|prop:(?!.*:fade$)|terrain-(caps|earth|rock|wall|decks|rails)$)/;
 
 export const isStaticMaterial = (name: string): boolean => STATIC_MATERIAL.test(name);
+
+/**
+ * The figures' shared materials at rest (`sharedFigureMaterial`, one per texture and desaturation): nothing writes to them after
+ * they are made (flash, fade and glow use the pooled `figure:tint:` ones), so they freeze too. The look's floor and rim are uniforms
+ * of the plug-in; a change of look thaws them (`thawStatic`).
+ */
+const FIGURE_MATERIAL = /^figure:\d+\|[\d.]+$/;
+
+export const isFigureMaterial = (name: string): boolean => FIGURE_MATERIAL.test(name);

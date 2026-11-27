@@ -13,6 +13,11 @@ import type { Facing } from '../shared/figures';
 import { type UnitView, type FxSprite, sleep, schedule } from './boardBase';
 import { BoardCamera } from './boardCamera';
 
+/** Sets a position only if it differs, so an unmoved node stays synchronised (no world matrix recompute). */
+function setPosition(p: { x: number; y: number; z: number; set(x: number, y: number, z: number): unknown }, x: number, y: number, z: number): void {
+  if (p.x !== x || p.y !== y || p.z !== z) p.set(x, y, z);
+}
+
 export abstract class BoardFrame extends BoardCamera {
   // ------------------------------------------------------------------ input
 
@@ -176,7 +181,7 @@ export abstract class BoardFrame extends BoardCamera {
     for (const v of this.units.values()) this.placeUnit(v, this.animClock);
     this.rings.flush();
     this.updateFade();
-    if (this.freezeIn > 0 && --this.freezeIn === 0) this.freezeStatic();
+    if (this.freezeIn > 0 ? --this.freezeIn === 0 : this.scene.materials.length !== this.frozenCount) this.freezeStatic();
     this.updateGrudgeLine();
     if (this.ghost) this.ghost.figure.tick(this.animClock, this.speed);
     const boost = this.look.pointBoost;
@@ -196,7 +201,8 @@ export abstract class BoardFrame extends BoardCamera {
     const y = v.y + v.offY;
     // on a ramp, stairs or ladder the feet follow its surface, step by step while walking (story 15.13)
     const h = (this.terrain?.surfaceAt(x, y) ?? 0) + v.lift;
-    v.figure.node.position.set(x + 0.5, h, -y - 0.5);
+    // only written when it moved: Vector3.set marks the node dirty, and a dirty node recomputes the world matrices of its whole subtree
+    setPosition(v.figure.node.position, x + 0.5, h, -y - 0.5);
     // a figure outside the view is switched off: the scene then skips its meshes, bones and nodes altogether (story 7.7)
     const onScreen = this.onScreen(x + 0.5, h, -y - 0.5);
     const fx = Math.round(x);
@@ -212,7 +218,7 @@ export abstract class BoardFrame extends BoardCamera {
     v.figure.tick(now, this.speed, onScreen);
     this.rings.place(v.uid, x + 0.5, h + 0.025, -y - 0.5, v.visible && !v.downed && v.alpha > 0.5 ? (v.desat > 0.3 ? 0.25 : 0.5) : 0);
     if (v.gold) {
-      v.gold.position.set(x + 0.5, h + 0.03, -y - 0.5);
+      setPosition(v.gold.position, x + 0.5, h + 0.03, -y - 0.5);
       v.gold.setEnabled(v.visible && onScreen && !v.downed && v.alpha > 0.5);
     }
   }

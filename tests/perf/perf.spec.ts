@@ -364,7 +364,7 @@ test('enemy phase of a saved battle (story 15.11)', async ({ page }, info) => {
  * weapon view, the armoury (turning stands) and the battle draw at the active rate (60): the FPS target of a level is capped at that rate. The frame
  * ms are the distances between two drawn frames (`draws`); the longest page frame (`raf`) is held to the 100 ms of story 7.8.
  * Writes `test-results/perf/views-<device>.json` and `.md`. Desktop throttling stands in for the phone; the reference devices stay a
- * release check.
+ * release check. `PERF_VIEWS_ONLY=doll,weapon,armory,board` (story 16.20) limits the rows (`board` = the two battle board rows).
  */
 test('3D views of epic 16 and the battle stance (story 16.19)', async ({ page }, info) => {
   test.skip(process.env.PERF_VIEWS !== '1', 'set PERF_VIEWS=1');
@@ -376,6 +376,8 @@ test('3D views of epic 16 and the battle stance (story 16.19)', async ({ page },
     { id: 'weapon', label: 'Waffenansicht', cap: 60 },
     { id: 'armory', label: 'Waffenkammer', cap: 60 },
   ] as const;
+  const only = process.env.PERF_VIEWS_ONLY?.split(',');
+  const wanted = (id: string) => !only || only.includes(id);
   interface Row { scenario: string; cpuSlowdown: number; loadMs: number | null; avgFps: number; p95Ms: number; maxMs: number; maxRafMs: number; renderMs: number; drawCalls: number; target: number | null; pass: boolean | null }
   const rows: Row[] = [];
   let renderer = '';
@@ -401,6 +403,7 @@ test('3D views of epic 16 and the battle stance (story 16.19)', async ({ page },
   };
   for (const stage of stages()) {
     for (const v of views) {
+      if (!wanted(v.id)) continue;
       const samples: ViewResult[] = [];
       for (let i = 0; i < RUNS; i++) {
         await setCpu(cdp, stage.cpuSlowdown);
@@ -414,6 +417,7 @@ test('3D views of epic 16 and the battle stance (story 16.19)', async ({ page },
       rows.push(row);
       console.log(`${device} ${stage.cpuSlowdown}x ${row.scenario}: load ${row.loadMs} ms, ${row.avgFps} FPS, p95 ${row.p95Ms} ms, max ${row.maxMs} ms (page ${row.maxRafMs} ms), render ${row.renderMs} ms, ${row.drawCalls} draw calls`);
     }
+    if (!wanted('board')) continue;
     const idle: StanceResult['idle'][] = [];
     const select: StanceResult['select'][] = [];
     for (let i = 0; i < RUNS; i++) {
@@ -427,9 +431,16 @@ test('3D views of epic 16 and the battle stance (story 16.19)', async ({ page },
       select.push(r.select);
       renderer = prepared.renderer;
     }
-    // nothing chosen: the board idles at `board.fpsIdle` (30); a chosen figure plays its stance and the board draws at the active rate (60)
-    for (const [label, list, cap] of [['Brett, nichts gewählt', idle, 30], ['Brett, Wahl wechselt (Kampfhaltung)', select, 60]] as const) {
-      const row = rowOf(label, stage.cpuSlowdown, list, null, cap, stage.fps);
+    // nothing chosen: the board idles at `board.fpsIdle` (30); a chosen figure switches its stance while the board draws at the active
+    // rate (60, `wake` after the choice), then rests in it at the idle rate like every other figure. Story 16.20: the stance is judged on
+    // the frames drawn at the active rate; the row over all frames (the mix of both rates) is only reported.
+    const activeOnly = select.map((x) => ({ ...x, draws: x.draws.filter((_, i) => x.active[i]) }));
+    for (const [label, list, cap, fps] of [
+      ['Brett, nichts gewählt', idle, 30, stage.fps],
+      ['Brett, Kampfhaltung (aktiver Takt)', activeOnly, 60, stage.fps],
+      ['Brett, Wahl wechselt (alle Bilder)', select, 60, null],
+    ] as const) {
+      const row = rowOf(label, stage.cpuSlowdown, list, null, cap, fps);
       rows.push(row);
       console.log(`${device} ${stage.cpuSlowdown}x ${row.scenario}: ${row.avgFps} FPS, p95 ${row.p95Ms} ms, max ${row.maxMs} ms (page ${row.maxRafMs} ms), render ${row.renderMs} ms, ${row.drawCalls} draw calls`);
     }

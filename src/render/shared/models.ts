@@ -73,7 +73,9 @@ export function teamColours(mesh: Mesh, ramp: readonly string[]): void {
  */
 export async function loadContainer(scene: Scene, path: string, materials: boolean): Promise<AssetContainer | null> {
   try {
-    const c = await LoadAssetContainerAsync(assetUrl(path), scene, { pluginOptions: { gltf: { skipMaterials: !materials, useSRGBBuffers: false } } });
+    // animationStartMode 0 (NONE): the loader would start each file's first animation group on the cached container; the scene then
+    // steps it every frame on bone nodes nobody draws (story 16.20: 313 animations, 7 % of a frame on the board). Copies start their own.
+    const c = await LoadAssetContainerAsync(assetUrl(path), scene, { pluginOptions: { gltf: { skipMaterials: !materials, useSRGBBuffers: false, animationStartMode: 0 } } });
     // Babylon keeps container entities off the scene with one scene-wide flag; files loading in parallel clear it for
     // each other, and some of a container's meshes and skeletons land in the scene lists anyway. Off with them: the
     // host clears the stage between scenes and must not dispose what the cache holds.

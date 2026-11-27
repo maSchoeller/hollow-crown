@@ -65,6 +65,12 @@ function register(c: Cache, scene: Scene, def: RuneGlowDef, key: string, m: Stan
   return m;
 }
 
+/** The scene's rune materials that never change after they are made (all but the tier III pulses): the board freezes them. */
+export function staticRuneMaterials(owner: object): StandardMaterial[] {
+  const c = caches.get(owner);
+  return c ? [...c.mats].filter(([key]) => !c.pulses.has(key)).map(([, m]) => m) : [];
+}
+
 function baseMaterial(name: string, scene: Scene): StandardMaterial {
   const m = new StandardMaterial(name, scene);
   m.diffuseColor = Color3.Black();
