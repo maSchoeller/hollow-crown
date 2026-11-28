@@ -53,7 +53,7 @@ damit beide Spuren zusammenlaufen.
 - [x] T4 Knoten verdrahten (AC 14, 17)
 - [x] T5 Tests und Lab (AC 2–14): `tests/unit/m2-6-kraehenholm.test.ts`, Lab `kraehenholm-2-6` und `kraehenholm-2-6-warn`, nachziehen `act-title`, `act-transition`, `sim-acts`.
 - [x] T6 Sim Normal (AC 15), beide `e07`-Varianten.
-  - [ ] (lenkende Session) Leicht/Schwer, `--haunts`, Kampagnen-Sim.
+  - [ ] teilweise: `--haunts` Normal am 2026-11-27 (siehe „Läufe mit `--haunts`“); Leicht/Schwer: 11.27; Haunts-Lauf mit `e07=warn` offen.
 - [x] T7 Abnahme, Decision-Logs, `pnpm check`, Status review (AC 16, 18).
   - [ ] (lenkende Session) Spielbild 375 × 812, Folgen-Karte E6 mit und ohne Hinweis, Nachspiel im Spiel.
 
@@ -178,6 +178,16 @@ Claude Opus 5.5 (gds-dev-story, 2026-11-10). Szenentexte selbst entworfen (Schre
 
 - 2026-11-09: Story 11.17 angelegt (ready-for-dev), fünf PO-Fragen als [ASSUMPTION] markiert.
 - 2026-11-10: Umgesetzt (Knotenfeld `epilogues`, Karte, Szenen DE/EN mit E6, Akademie-Hinweis und verbranntem Dorf, Tests, Lab, Abnahme, Decision-Logs); Sim Normal 100 % / 1,61 / 0,08 Tote / 13 Runden (Median) / 2 006 Gold; Status review. Sichtprüfung, Kampagnen-Sim und PR bei der lenkenden Session.
+
+### Läufe mit `--haunts` (2026-11-27)
+
+`pnpm sim m2_5_silberquell --campaign act2 --start expected --runs 50 --haunts --json m25_n_h.json` (Normal, standard, seed 1; die Kartenangabe ändert den Kampagnenlauf nicht, es spielt der ganze Akt 2). Eintritt: Armee-Stufe 12,0, Gold 6 000; Heimsuchungen 23,2 je Lauf, Siegquote 52 %, 4,04 Gefallene je Lauf.
+
+| Karte | erreicht | Sieg % | Niedergestreckte | Gold | Armee-Stufe |
+|---|---|---|---|---|---|
+| 2-6 `m2_6` | 50 | 100 | 1,62 ↑ | 2 090 | 17,9 |
+
+Ergebnis: Karte gewinnbar (100 %), Gold 2 090 im Korridor 2 000–3 000; Niedergestreckte 1,62 über dem Soll (Pfeil „downs“, wie schon in 11.27 geführt). Leicht/Schwer mit `--haunts` und `--flags e07=warn` mit `--haunts` sind nicht gelaufen.
 
 ## Review 2026-11-27
 
