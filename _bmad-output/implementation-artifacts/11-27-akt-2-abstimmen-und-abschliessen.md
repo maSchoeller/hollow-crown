@@ -131,6 +131,19 @@ Claude Opus 5.5 (lenkende Session und Subagenten)
 - Die Simulationstabellen vorher/nachher stehen in den PRs #191, #192, #193 und #195.
 - Ausgangswerte: `main` b197ed82, `pnpm sim --campaign act2 --runs 50` je Stufe.
 
+## Läufe mit und ohne Varek und Brann (2026-11-27)
+
+`pnpm sim <karte> --runs 50 --fresh [--leave varek,brann]` (Normal, standard, seed 1). `--leave` gilt nur für Kartenläufe, nicht für `--campaign`; Brann (`joins: n5`) steht im frischen Kader nicht, der Unterschied kommt hier von Varek. Der Kampagnenlauf mit Haunts steht in 11.16 / 11.17.
+
+| Karte | Truppe | Sieg % | Runden (Mittel) | Verluste je Lauf | Meistgefallene |
+|---|---|---|---|---|---|
+| 2-4 `m2_4` | mit | 98 | 13,0 | 5,54 | Ysolde 40, Liora 11, Mira 11 |
+| 2-4 `m2_4` | ohne | 98 | 13,0 | 5,12 | Jory 22, Ysolde 14, Liora 13 |
+| 2-8 `m2_8` | mit | 92 | 11,3 | 1,66 | Ysolde 12 |
+| 2-8 `m2_8` | ohne | 96 | 12,4 | 3,88 | Nell 23, Ilka 15, Amos 7 |
+
+Ergebnis: Beide Karten sind auf Normal mit und ohne Varek gewinnbar; ohne ihn gleiche Siegquote auf 2-4 und +4 Punkte auf 2-8 (im Rauschen, Standardfehler etwa 4–6 Punkte), dafür auf 2-8 mehr als doppelt so viele Verluste (3,88 gegen 1,66). Brann fehlt im frischen Kader und ist so nicht messbar; eine Messung mit Brann bräuchte `--campaign act2 --order n5`. Der Lauf über die Kette (`pnpm sim m2_8` ohne `--fresh`) kam nur mit 3 von 50 Läufen an und sagt nichts.
+
 ## Review 2026-11-27
 
 **PO.** Tuning parts 1–4 (#191–#193, #195) and rounds 2–3 are in YAML and the GDD log (`concept/21-gdd/decision-log.md:172-178`); playtest plan `concept/21-gdd/playtest-akt2.md` exists; discounts capped (`balance.yaml:302` maxDiscountPct 30, act 2 adds −10).

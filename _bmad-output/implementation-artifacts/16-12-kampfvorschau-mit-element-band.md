@@ -45,7 +45,7 @@ damit ich Elementvorteile nutze.
     3. Ziel mit Schild `fire_rune_1` gegen dieselbe Axt → „Feuer · Schaden ×0,8“ mit Schild-Chip; ein viertes Ziel mit Wasser-Schild II → „Wasser hält Feuer ab“.
     Genaue Einheiten-Syntax in `src/lab/scenario.ts` (Kopfkommentar, `add` im Karten-Einheitenformat mit `equip`/`runes`); die Fälle dürfen auf mehrere Szenario-Dateien verteilt werden, wenn eine Lage nicht alle Ziele trägt.
   - [x] `tests/unit/lab.test.ts`: das Szenario lädt (`buildLab`) und `labAttack` bzw. `forecast` liefert die erwarteten Faktoren (×1,2, ×0,8, 1).
-  - [ ] Bild: Dev-Server, 375 × 812, Spiel stumm (alle Lautstärken 0), `?lab=kampfvorschau-element`, Tipp auf das Ziel, Screenshot (Maßstab 0,5) mit dem Mockup `art/mockups/ausruestung-2026-11/brett.html`, Teil „Runen in der Kampfvorschau“, Variante B, daneben. Beide Bilder im Browser-Fenster zeigen. Mockup und Spiel dürfen in Maßen abweichen (Platzhalter-Medaillons), nicht in Reihenfolge und Zeilenaufbau.
+  - [x] Bild: Dev-Server, 375 × 812, Spiel stumm (alle Lautstärken 0), `?lab=kampfvorschau-element`, Tipp auf das Ziel, Screenshot (Maßstab 0,5) mit dem Mockup `art/mockups/ausruestung-2026-11/brett.html`, Teil „Runen in der Kampfvorschau“, Variante B, daneben. Beide Bilder im Browser-Fenster zeigen. Mockup und Spiel dürfen in Maßen abweichen (Platzhalter-Medaillons), nicht in Reihenfolge und Zeilenaufbau.
 - [x] T5 Abschluss
   - [x] `pnpm check` grün (lint, test, content:check, build; Paket-Budget hält); `pnpm test:coverage` für `src/core` nicht gesenkt.
   - [x] Handbuch-Eintrag `elements` ergänzt, falls er die Schild-Rune noch nicht erwähnt (`see: [... runes]` besteht schon).
@@ -94,3 +94,4 @@ Claude Sonnet 5.5
 
 **Urteil: DONE (ein Beleg offen).** Kern (`SideForecast.elementTier`/`guard`, `src/core/rules/combat.ts:30,32`), `ElementBand.tsx`/`.css`, `anchor: elements` (`content/core/handbook.yaml:101`), Lab `tests/fixtures/lab/kampfvorschau-element.yaml`; `element-band.test.ts` und `forecast-element.test.ts` grün (18 Tests).
 - Wirklich offen: Bild-Beleg aus AC 8 (Screenshot 375 × 812 neben dem Mockup) wurde nie gemacht; Status bleibt done.
+- **Nachgeholt 2026-11-28:** Bild-Beleg AC 8: `screens-16-12/vorschau-element-band-375x812.jpg` (Lab `kampfvorschau-element`, Axt-Kämpferin gegen Wind-Rüstung: „Feuer schlägt Wind · Schaden ×1,2“, Band über den Zeilen) und daneben mit dem Mockup (`brett.html`, Teil 3, Variante B): `screens-16-12/vorschau-element-band-spiel-links-mockup-rechts.jpg`. Reihenfolge und Zeilenaufbau stimmen überein.

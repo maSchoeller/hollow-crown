@@ -35,7 +35,7 @@ damit Akt 1 mit etwas endet, das der Truppe gehört.
 - [x] T7 Torregel und Gegner-Zugang zum Bergfried prüfen (AC 1, OFFEN 1)
 - [x] T8 Sim-Abstimmung auf Leicht/Normal/Schwer, mit und ohne Grosk, Kette (AC 11)
 - [x] T9 Unit-Tests und E2E (AC 12)
-- [ ] T10 Screenshots (AC 13): nicht erstellt (Ablauf im Browser geprüft, siehe Dev Agent Record)
+- [x] T10 Screenshots (AC 13): 2026-11-28 nachgeholt, siehe Review 2026-11-27
 - [x] T11 Verwalter-Zeile in `scn.m1_6.outro` mit Story 9.7 abstimmen (AC 2)
 
 ## Dev Notes
@@ -182,3 +182,4 @@ Abgenommen (Status done). Gespielt bis Glutfunken-Moment und Hinweis auf Akt 2. 
 
 **Urteil: DONE (ein Beleg offen).** Alle übrigen Tasks waren abgehakt; die Mission ist laut Abnahme 2026-10-27 bis zum Glutfunken-Moment gespielt (`acceptance-2026-10-27.md:37`).
 - Wirklich offen: T10 Screenshots (AC 13), nie erstellt.
+- **Nachgeholt 2026-11-28:** T10 erledigt, 375 × 812, Dev-Build per Playwright, Spiel stumm, Ordner `screens-9-x/`: `9-9-01-karte-wellen` (Runde 1, 12 Runden), `9-9-02-szene-davor-shelter` und `-secret` (beide E4-Zeilen), `9-9-03-morra-flucht`, `9-9-04-tafel`, `9-9-05-funkenmoment`, `9-9-06-karte-glutfunke`, `9-9-07-ergebnis`, `9-9-08-weltkarte-nach-finale`. Szenen davor und Morra-Flucht über `__hc.screen` aufgerufen (E4-Flag per Hook gesetzt), Rest wie `tests/e2e/finale.spec.ts` gespielt. Nicht belegbar: Weltkarte mit „Akt 2 „Glut“ erscheint bald“, weil Akt 2 seit 2026-11-13 ausgeliefert ist (statt des Hinweises kommt die Titelkarte „Akt 2 · Glut“, Sicherungs-Abfrage in 08).

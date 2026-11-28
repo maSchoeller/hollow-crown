@@ -35,7 +35,7 @@ damit ich die Gräber junger Könige und die versiegelte Chronik finde.
 - [x] T6 Heimsuchungs-Anker (AC 7)
 - [x] T7 Sim-Abstimmung auf Leicht/Normal/Schwer, mit und ohne Fenn (AC 8)
 - [x] T8 Unit-Tests und E2E (AC 9)
-- [ ] T9 Screenshots (AC 10)
+- [x] T9 Screenshots (AC 10)
 
 ## Dev Notes
 
@@ -141,3 +141,4 @@ Abgenommen (Status done). Verdacht geklärt: der Simulator (kein Bergen, volle T
 **Urteil: DONE (ein Beleg offen).** T1–T8 auf `main`: Karte (`treasure`, seit Story 15.10 nur Chronik in 12 Runden), Flag `wardens_chronicle` (`content/acts/act1/flags.yaml:13`, Knotenwirkung `campaign.yaml:47`), versiegelter Chronik-Eintrag (`balance.yaml:164`, Locale `chronicle.sealed.wardens_chronicle.*`), sechs Szenen `scn.m1_7.*`, `node: m1_7` in `content/world/valmora.yaml:55`; `tests/unit/m1-7.test.ts` (11 Tests) grün, E2E `tests/e2e/m1-7.spec.ts`.
 - Heimsuchungs-Anker (T6) später durch `noHaunts: true` abgelöst (`m1_7_gewoelbe.yaml:70`). Niedergestreckte Normal 0,14 liegt beim Produktinhaber (`acceptance-2026-10-27.md:94`).
 - Wirklich offen: T9 Screenshots (AC 10), nie im Repo abgelegt.
+- **Nachgeholt 2026-11-28:** T9 erledigt, 375 × 812, Dev-Build per Playwright, Spiel stumm, Ordner `screens-9-x/`: `9-8-01-karte-nebel`, `9-8-02-relief-west`, `9-8-03-relief-gruft`, `9-8-04-chronik-szene`, `9-8-05-beben`, `9-8-06-ergebnis`, `9-8-07-chronik` (Eintrag „Versiegelte Chronik“, 0 von 12 Seiten). Die Szenen (02–05) sind per `__hc.screen` im laufenden Kampf-Build aufgerufen, nicht über ihre Auslöser auf der Karte gespielt; Karte Runde 1 zeigt Nebel und Fristanzeige „Runde 1 von 12“ (der Einsturz-Hinweis kommt erst ab Runde 7).

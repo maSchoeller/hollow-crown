@@ -65,7 +65,7 @@ damit ich von Halvards Briefen erfahre.
   - [x] Stand 2026-11-09 22:40: Die lenkende Session hat `art/mockups/locations-s1/silberquell.png` (1672 × 941) und `art/prompts/loc_silberquell.md` schon im Worktree erzeugt (noch nicht committet). Dev-Phase: Datei prüfen, PNG über Git LFS committen (`.gitattributes` greift für `art/**/*.png`, mit `git lfs ls-files` belegen), Eintrag in `concept/23-art-direction/abnahme/akt2-ortsbilder.md` (Abnahme offen, blockiert nicht).
   - [x] Fehlt das Bild doch: Prompt-Datei nach Muster `art/prompts/loc_windscharte.md`, Bild erzeugt die lenkende Session; T4 erst mit dem Bild committen, damit `pnpm art:build`/content:check nicht scheitern.
 - [x] T6 Simulation (AC 13)
-  - [ ] (nur Normal erledigt; Leicht/Schwer, Haunts und Kampagnen-Sim: lenkende Session) `pnpm sim m2_5_silberquell --campaign act2 --start expected --runs 50`, alle drei Schwierigkeiten, mit und ohne `--haunts`; Variante `e07: warn` (Hauptmann statt Sable; Startflag per `--set` oder Lab-Szenario). Varianten per `--json` + `pnpm sim:diff`. Achtung: `m2_5` verlangt `completed: m2_4`, dessen Karte fehlt – Start über `--start expected` / `--node`.
+  - [ ] (teilweise: Normal mit `--haunts` am 2026-11-27, siehe „Läufe mit `--haunts`“; Leicht/Schwer: 11.27; `e07: warn` mit Haunts nicht gelaufen) `pnpm sim m2_5_silberquell --campaign act2 --start expected --runs 50`, alle drei Schwierigkeiten, mit und ohne `--haunts`; Variante `e07: warn` (Hauptmann statt Sable; Startflag per `--set` oder Lab-Szenario). Varianten per `--json` + `pnpm sim:diff`. Achtung: `m2_5` verlangt `completed: m2_4`, dessen Karte fehlt – Start über `--start expected` / `--node`.
   - [x] Prüfen: autoplay führt Odile (Profil `follow`) bis zum Ausgang; Westbrücke R6 trennt nicht dauerhaft.
   - [x] Act-1-Basislauf `pnpm sim --campaign act1 --runs 50 --seed 1` unverändert (keine Akt-1-Datei geändert → kein sim:diff nötig).
 - [x] T7 Tests (AC 2–12)
@@ -230,6 +230,16 @@ Claude Opus 5.5 (gds-dev-story, 2026-11-09). Szenentexte selbst entworfen (Schre
 
 - 2026-11-09: Story 11.16 angelegt (ready-for-dev), vier PO-Fragen als [ASSUMPTION] markiert.
 - 2026-11-09: Umgesetzt (Bedingung `roomLevel`, Karte, Szenen DE/EN mit E5 und Akademie-Hinweis, Ortsbild eingebunden, Tests, Lab, Abnahme, Decision-Logs); Sim Normal 100 % / 0,86 / 0,14 Tote / 15 Runden (Median) / 2 312 Gold; Status review. Sichtprüfung, Kampagnen-Sim und PR bei der lenkenden Session.
+
+### Läufe mit `--haunts` (2026-11-27)
+
+`pnpm sim m2_5_silberquell --campaign act2 --start expected --runs 50 --haunts --json m25_n_h.json` (Normal, standard, seed 1; die Kartenangabe ändert den Kampagnenlauf nicht, es spielt der ganze Akt 2). Eintritt: Armee-Stufe 12,0, Gold 6 000; Heimsuchungen 23,2 je Lauf, Siegquote 52 %, 4,04 Gefallene je Lauf.
+
+| Karte | erreicht | Sieg % | Niedergestreckte | Gold | Armee-Stufe |
+|---|---|---|---|---|---|
+| 2-5 `m2_5` | 50 | 84 | 0,62 | 2 300 | 17,2 |
+
+Ergebnis: Karte gewinnbar (84 %), Gold 2 300 im Korridor 2 000–3 000, nur das Flag „level“ (Armee über Soll durch die Heimsuchungen). Leicht/Schwer mit `--haunts` und `e07: warn` mit `--haunts` sind nicht gelaufen (Leicht/Schwer ohne Haunts: 11.27).
 
 ## Review 2026-11-27
 

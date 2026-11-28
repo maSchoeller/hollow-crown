@@ -44,7 +44,7 @@ damit die Truppe mitten in Akt 1 ein Zuhause bekommt.
 - [x] T8 Heimsuchungs-Anker (AC 8)
 - [x] T9 Sim-Abstimmung der Gegnerstufen, Reiter, Nebenziele auf Leicht/Normal/Schwer (AC 9)
 - [x] T10 E2E-Test (AC 10)
-- [ ] T11 Screenshots (AC 11)
+- [x] T11 Screenshots (AC 11)
 
 ## Dev Notes
 
@@ -162,3 +162,4 @@ Abgenommen (Status done). Gespielt; E4 und Burg als Heimat; E2E `tests/e2e/m1-6.
 
 **Urteil: DONE (ein Beleg offen).** T10 erledigt: `tests/e2e/m1-6.spec.ts:14` (Sieg, Tafel, Gespräch, E4, Folgen-Karte, Burg als Heimat).
 - Wirklich offen: T11 Screenshots (AC 11). Die Bilder der Abnahme 2026-10-27 lagen nur im Scratchpad der damaligen Session, der Ordner ist leer; beide E4-Antworten sind als Bild nie belegt.
+- **Nachgeholt 2026-11-28:** T11 erledigt, 375 × 812, Dev-Build per Playwright, Spiel stumm; Sieg aus Spielstand kurz vor dem Sieg (wie `tests/e2e/m1-6.spec.ts`). Beide E4-Antworten: `screens-9-x/9-7-a-*.jpg` (Flüchtlinge aufgenommen) und `screens-9-x/9-7-b-*.jpg` (Burg bleibt geheim), je 01 Karte, 02 Tafel, 03 Tafel-Zeile 2, 04 Gespräch + Entscheidung, 05 Folgen-Karte, 06 Ergebnis „Neue Heimat“, 07 Weltkarte.
